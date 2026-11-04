@@ -1,0 +1,314 @@
+{
+  "dataset": "test1",
+  "rows": 900,
+  "labels": [
+    "c1",
+    "c234",
+    "c5"
+  ],
+  "phase": "comparison",
+  "scope": "Isolated test1 comparison; no test2 delivery was performed by this evaluation.",
+  "input_sha256": "e626f030d4bf2be889fc41dd1fe9b81fb31f1f50f3ace50530d658683260449f",
+  "gold_sha256": "c92658298f95b6325a49b017b58673ebda450fa54dc2280d74393cb093378406",
+  "model_id": "Qwen/Qwen3-1.7B",
+  "base_revision": "70d244cc86ccca08cf5af4e1e306ecf908b1ad5e",
+  "adapter_sha256": "38d47334228fa1be8d1acae5e4e6520f364e99d69476372d08a0824baafc838c",
+  "adapter_weights_sha256": "099fa94ccd7e9d40c7a0e0110154e64c5b5bc7430d71c1f0063bee589e935b50",
+  "predictions_sha256": "77c6ac941c6f4c8157950352460891f7e0c9362e689751b2b8ff421776485486",
+  "implementation_sha256": "d52f73a18bb227b48388fdf0bd8eefa2428d8c8601a4e766cdaaa9fa45f14c04",
+  "evaluation_script_sha256": "92b51ab7d56bf4461e79fe82c57ad7a2cb5559af01ef03a90ea13f83b1854de5",
+  "config": {
+    "model_id": "Qwen/Qwen3-1.7B",
+    "revision": "70d244cc86ccca08cf5af4e1e306ecf908b1ad5e",
+    "mode": "qlora",
+    "max_length": 256,
+    "rank": 8,
+    "alpha": 16,
+    "dropout": 0.05,
+    "target_modules": [
+      "q_proj",
+      "k_proj",
+      "v_proj",
+      "o_proj"
+    ],
+    "learning_rate": 0.0002,
+    "epochs": 3,
+    "batch_size": 4,
+    "accumulation_steps": 4,
+    "warmup_ratio": 0.05,
+    "weight_decay": 0.01,
+    "seed": 42,
+    "folds": 5,
+    "fold": 0,
+    "attention": "sdpa",
+    "gradient_checkpointing": false,
+    "eval_batch_size": 16,
+    "group_by_length": true
+  },
+  "runtime_versions": {
+    "torch": "2.8.0+rocm6.4",
+    "transformers": "4.57.1",
+    "peft": "0.17.1",
+    "accelerate": "1.10.1",
+    "bitsandbytes": "0.50.2",
+    "numpy": "2.3.3",
+    "scikit-learn": "1.7.2"
+  },
+  "device": {
+    "name": "AMD Radeon RX 6650 XT",
+    "architecture": "gfx1030",
+    "hip": "6.4.43482-0f2d60242",
+    "cuda": null,
+    "total_vram_mib": 8176.0
+  },
+  "gfx_override": "10.3.0",
+  "training_audit": {
+    "status": "passed",
+    "epochs": 3.0,
+    "optimizer_steps": 3003,
+    "max_steps": 3003,
+    "verified_lora_update": true,
+    "skipped_overflow_steps": 0,
+    "saved_trainable_parameters_checked_finite": 3217408,
+    "nonzero_lora_b_tensors": 112,
+    "classification_head_present": true,
+    "best_checkpoint": "checkpoint-3003",
+    "selected_by": "internal_validation_accuracy",
+    "export_matches_best_checkpoint": true,
+    "training_run_sha256": "f0d0e938e6b1b9477dc7f92132b964a9eb96e05f02058df2806e48186e2d7171",
+    "config_sha256": "4db34ea5d4d55f092d3cf4b674e52bb1ff947253feca9008100f8f6b919d9c57",
+    "duration_seconds": 11222.187819151,
+    "validation_metrics": {
+      "accuracy": 0.4583537481626654,
+      "f1_macro": 0.45517400611549536,
+      "precision_macro": 0.4539675131508929,
+      "recall_macro": 0.45730315525099474,
+      "label_order": [
+        "c1",
+        "c234",
+        "c5"
+      ],
+      "confusion_matrix": [
+        [
+          640,
+          389,
+          279
+        ],
+        [
+          436,
+          465,
+          451
+        ],
+        [
+          284,
+          372,
+          766
+        ]
+      ],
+      "classification_report": {
+        "c1": {
+          "precision": 0.47058823529411764,
+          "recall": 0.4892966360856269,
+          "f1-score": 0.47976011994003,
+          "support": 1308.0
+        },
+        "c234": {
+          "precision": 0.3792822185970636,
+          "recall": 0.34393491124260356,
+          "f1-score": 0.360744763382467,
+          "support": 1352.0
+        },
+        "c5": {
+          "precision": 0.5120320855614974,
+          "recall": 0.5386779184247539,
+          "f1-score": 0.5250171350239891,
+          "support": 1422.0
+        },
+        "accuracy": 0.4583537481626654,
+        "macro avg": {
+          "precision": 0.4539675131508929,
+          "recall": 0.45730315525099474,
+          "f1-score": 0.45517400611549536,
+          "support": 4082.0
+        },
+        "weighted avg": {
+          "precision": 0.45478407569240203,
+          "recall": 0.4583537481626654,
+          "f1-score": 0.45610669352738054,
+          "support": 4082.0
+        }
+      }
+    },
+    "validation_history": [
+      {
+        "epoch": 1.0,
+        "eval_accuracy": 0.4353258206761392,
+        "eval_f1_macro": 0.34957983118940045,
+        "eval_loss": 1.0627050399780273,
+        "eval_precision_macro": 0.40120274622584606,
+        "eval_recall_macro": 0.4333630486750825,
+        "eval_runtime": 332.3165,
+        "eval_samples_per_second": 12.283,
+        "eval_steps_per_second": 0.77,
+        "step": 1001
+      },
+      {
+        "epoch": 2.0,
+        "eval_accuracy": 0.42283194512493877,
+        "eval_f1_macro": 0.3993787058866085,
+        "eval_loss": 1.1419826745986938,
+        "eval_precision_macro": 0.45705802079052177,
+        "eval_recall_macro": 0.42944461674417994,
+        "eval_runtime": 343.131,
+        "eval_samples_per_second": 11.896,
+        "eval_steps_per_second": 0.746,
+        "step": 2002
+      },
+      {
+        "epoch": 3.0,
+        "eval_accuracy": 0.4583537481626654,
+        "eval_f1_macro": 0.45517400611549536,
+        "eval_loss": 1.0491137504577637,
+        "eval_precision_macro": 0.4539675131508929,
+        "eval_recall_macro": 0.45730315525099474,
+        "eval_runtime": 342.5398,
+        "eval_samples_per_second": 11.917,
+        "eval_steps_per_second": 0.747,
+        "step": 3003
+      }
+    ]
+  },
+  "training_partition": {
+    "training_rows": 16010,
+    "validation_rows": 4082,
+    "source_rows": 20092
+  },
+  "execution": {
+    "training_performed": false,
+    "evaluation_performed": true,
+    "network_access": false,
+    "input_mount_read_only": true,
+    "gold_read_after_predictions": true,
+    "adapter_reloaded_for_inference": true,
+    "inference_seconds": 235.74751456800004,
+    "inference_memory": {
+      "peak_allocated_mib": 1640.8740234375,
+      "peak_reserved_mib": 1746.0,
+      "free_vram_mib": 6080.0
+    }
+  },
+  "metrics": {
+    "rows": 900,
+    "accuracy": 0.4666666666666667,
+    "f1_macro": 0.4643762311993924,
+    "label_order": [
+      "c1",
+      "c234",
+      "c5"
+    ],
+    "confusion_matrix": [
+      [
+        147,
+        85,
+        68
+      ],
+      [
+        82,
+        110,
+        108
+      ],
+      [
+        65,
+        72,
+        163
+      ]
+    ],
+    "classification_report": {
+      "c1": {
+        "precision": 0.5,
+        "recall": 0.49,
+        "f1-score": 0.494949494949495,
+        "support": 300.0
+      },
+      "c234": {
+        "precision": 0.41198501872659177,
+        "recall": 0.36666666666666664,
+        "f1-score": 0.3880070546737213,
+        "support": 300.0
+      },
+      "c5": {
+        "precision": 0.4808259587020649,
+        "recall": 0.5433333333333333,
+        "f1-score": 0.5101721439749609,
+        "support": 300.0
+      },
+      "accuracy": 0.4666666666666667,
+      "macro avg": {
+        "precision": 0.4642703258095522,
+        "recall": 0.4666666666666666,
+        "f1-score": 0.4643762311993924,
+        "support": 900.0
+      },
+      "weighted avg": {
+        "precision": 0.46427032580955224,
+        "recall": 0.4666666666666667,
+        "f1-score": 0.4643762311993924,
+        "support": 900.0
+      }
+    },
+    "prediction_counts": {
+      "c1": 294,
+      "c234": 267,
+      "c5": 339
+    },
+    "precision_macro": 0.4642703258095522,
+    "recall_macro": 0.4666666666666666,
+    "correct": 420,
+    "incorrect": 480
+  },
+  "independent_verification": {
+    "status": "passed",
+    "gold_reader": "Python standard-library ZIP/XML; no model imports",
+    "rows": 900,
+    "confusion_matrix": [
+      [
+        147,
+        85,
+        68
+      ],
+      [
+        82,
+        110,
+        108
+      ],
+      [
+        65,
+        72,
+        163
+      ]
+    ],
+    "metrics_recomputed": true,
+    "probabilities_and_logits_verified": true,
+    "input_and_prediction_hashes_verified": true,
+    "training_performed": false,
+    "inference_performed": false
+  },
+  "comparison_with_ep1": {
+    "baseline": "Original EP1 NorBERTo submission",
+    "baseline_correct": 432,
+    "qwen_correct": 420,
+    "both_correct": 310,
+    "only_baseline_correct": 122,
+    "only_qwen_correct": 110,
+    "both_incorrect": 358,
+    "accuracy_delta": -0.013333333333333334,
+    "mcnemar_exact_two_sided_p": 0.4702578061777516,
+    "mcnemar_chi2_continuity_corrected": 0.521551724137931,
+    "baseline_predictions_sha256": "6d82ec85b7ad16a91331f89494667c5752c2e9e78fe6b4857430b89bed579963",
+    "caveat": "Descriptive paired comparison on previously inspected test1; repeated texts limit independence."
+  },
+  "artifacts": {
+    "training_run": "results/qwen-fast-training",
+    "evaluation_run": "results/qwen-test1-evaluation-20261104-225455-verified/qwen"
+  }
+}

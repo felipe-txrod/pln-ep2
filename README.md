@@ -5,6 +5,11 @@ A RX 6650 XT usa o override gfx1030. Consulte
 [instalação, compatibilidade, treino e inferência](docs/qwen-finetuning.md).
 A implementação GPT e os resultados abaixo permanecem como referência histórica.
 
+The completed Qwen adapter achieved **46.67% accuracy (420/900)** and
+**46.44% macro-F1** in the [isolated test1 comparison](docs/avaliacao-qwen-test1.md).
+The report includes training verification, per-class metrics, and comparison
+with the original EP1 NorBERTo submission.
+
 O modelo definitivo já treinado do EP1 também está disponível no pacote
 [`src/norberto_classifier`](src/norberto_classifier/README.md), exclusivamente
 para inferência, com cópia local da base e do adapter oficial.

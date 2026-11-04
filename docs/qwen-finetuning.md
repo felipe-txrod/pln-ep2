@@ -1,5 +1,8 @@
 # Fine-tuning do Qwen3 na RX 6650 XT
 
+See the [completed training audit and test1 evaluation](avaliacao-qwen-test1.md)
+for the frozen adapter results, per-class metrics, and provenance hashes.
+
 ## Visão geral
 
 O experimento atual usa `Qwen/Qwen3-1.7B` para classificação supervisionada de
