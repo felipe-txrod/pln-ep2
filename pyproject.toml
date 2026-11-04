@@ -14,13 +14,23 @@ rag = ["onnxruntime==1.31.1", "tokenizers==0.23.3", "huggingface-hub==1.33.0"]
 api = ["openai>=2.0,<3"]
 dev = ["pytest>=8.4,<10", "httpx>=0.28,<1", "openai>=2.0,<3"]
 qwen = ["transformers==4.57.1", "peft==0.17.1", "accelerate==1.10.1", "bitsandbytes==0.50.2"]
+norberto = ["transformers==4.57.1", "peft==0.17.1", "accelerate==1.10.1"]
+lexical = ["joblib==1.5.2", "threadpoolctl==3.6.0"]
 
 [project.scripts]
 classifica-ep2 = "gpt_classifier.cli:main"
 qwen-ep2 = "qwen_classifier.cli:main"
+norberto-ep2 = "norberto_classifier.cli:main"
+svm-ep2 = "svm_classifier.cli:main"
+rl-ep2 = "rl_classifier.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.package-data]
+norberto_classifier = ["frozen_manifest.json"]
+svm_classifier = ["frozen_manifest.json"]
+rl_classifier = ["frozen_manifest.json"]
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]

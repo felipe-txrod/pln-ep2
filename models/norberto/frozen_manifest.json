@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "source_project": "EP1",
+  "source_artifact": "artifacts/norberto-lora-final-ctx512-20260928",
+  "source_config": "configs/norberto-lora-development-ctx512.json",
+  "model_id": "Itau-Unibanco/NorBERTo-base",
+  "revision": "db73446f89c96044863ea05a39f680524b84bccb",
+  "labels": [
+    "c1",
+    "c234",
+    "c5"
+  ],
+  "approved_epochs": 3,
+  "trained_epochs": 2,
+  "files": {
+    "config.json": "eccf4e6da8338f4cde448c161f32fa006b9bd1f5bf264074ec9571e42d099a2c",
+    "run.json": "26a7a4bdf41ddd36481ca767a9cdf1331f2375301fc946f262f04503d086b37d",
+    "approved_config.json": "2be18bf5445f74fa7c69e16ed130d96ff1a1445f4075afe53b1150ef096e3f66",
+    "final_model/adapter_config.json": "9536fbf4c5f5ccd305fa7c8a2f03b9f7427a0e3e1e66a4cf0ee116ff2712d976",
+    "final_model/adapter_model.safetensors": "d693f6e2995d117ad04a5692817527764fcccee6bfb2dde99120baf9fdd2d385",
+    "final_model/special_tokens_map.json": "ff04ad61d10cbcd7ada89158b41fb665d3c2982a33070da8bbe25c521f58c4c0",
+    "final_model/tokenizer.json": "4d94eba9ab0a7d90459ab12fd8125f37ed111bdd4c6a71ebf91a694bcc2ba582",
+    "final_model/tokenizer_config.json": "46574f524b36624c9550cbfff31f12a09016aef63af6908dcbf5af3492c25e81",
+    "base_model/config.json": "698fe516bdf775a11b80bd69b82c01e440ef1b8c2d17b6aa0ff22b9c74a48df9",
+    "base_model/model.safetensors": "f632545c4a06a5d053af8ea726b0d0048420929f35d9aade1e3da77e0b057066",
+    "base_model/special_tokens_map.json": "14312eab40fcda429ecbe9b548bfdcf18b051c534e12970c6a8e86ae759cd885",
+    "base_model/tokenizer.json": "4d94eba9ab0a7d90459ab12fd8125f37ed111bdd4c6a71ebf91a694bcc2ba582",
+    "base_model/tokenizer_config.json": "f5488e40f66f1d59c89d9f2eb51392ebc978d4096e3f33c66d30b2cb4b22c2e8"
+  },
+  "source_reference_sha256": {
+    "src/clarity/finetune.py": "0c8e4c04b3becc626c31a50e3827daef3cd708252905824dcd9e4c4fb439ee4a",
+    "src/clarity/finetune_predict.py": "6d70e32f1240e0fb2df927fef56cdb88f781aec1c067f4519ea3deb8e64279f2",
+    "docs/modelo-escolhido-norberto-512.md": "a1e0ca483ed1f5ce9a84c9916d0572116cc40b5a9ea5d6ec44ac98d48709e29b"
+  },
+  "omitted_source_files": [
+    "final_model/README.md",
+    "final_model/training_args.bin"
+  ]
+}

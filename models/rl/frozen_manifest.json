@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "model_type": "rl",
+  "classifier": "LogisticRegression",
+  "labels": [
+    "c1",
+    "c234",
+    "c5"
+  ],
+  "artifact_sha256": "f7af61142f43e1c8a37f0cd5a8191dd6d83ba1222cd8ecf12281f9929ac827c9",
+  "source_artifact": "artifacts/final-logistic-20260928.joblib",
+  "source_config": "configs/research/final-logistic.json",
+  "source_metadata": "results/research/final-logistic-20260928/metadata.json",
+  "files": {
+    "metadata.json": "7519d53a776cee1d0aeb24771932585bdf8d1974b1cdfad2e3f7d20914c44ff2",
+    "config.json": "d1f3ef6d59cd458be3fee5aa1a30c8a960ab0f2f6bde3c8d536d71bd4ed2b9a0"
+  },
+  "selected": "final_word_char_logistic",
+  "threads": 2,
+  "normalization": "html_unescape_whitespace_lowercase",
+  "word": {
+    "ngram_range": [
+      1,
+      2
+    ],
+    "min_df": 2,
+    "max_df": 0.98,
+    "sublinear_tf": true,
+    "max_features": 60000,
+    "analyzer": "word",
+    "norm": "l2",
+    "use_idf": true,
+    "smooth_idf": true,
+    "binary": false,
+    "strip_accents": null,
+    "token_pattern": "(?u)\\b\\w\\w+\\b",
+    "lowercase": true
+  },
+  "char": {
+    "ngram_range": [
+      3,
+      5
+    ],
+    "min_df": 3,
+    "max_df": 1.0,
+    "sublinear_tf": true,
+    "max_features": 50000,
+    "analyzer": "char_wb",
+    "norm": "l2",
+    "use_idf": true,
+    "smooth_idf": true,
+    "binary": false,
+    "strip_accents": null,
+    "lowercase": true
+  },
+  "feature_dtype": "float32",
+  "classifier_parameters": {
+    "C": 0.25,
+    "max_iter": 1500,
+    "solver": "lbfgs",
+    "random_state": 42,
+    "tol": 0.0001,
+    "penalty": "l2",
+    "class_weight": null,
+    "fit_intercept": true
+  },
+  "runtime_versions": {
+    "numpy": "2.3.3",
+    "scipy": "1.16.2",
+    "scikit-learn": "1.7.2",
+    "joblib": "1.5.2"
+  }
+}

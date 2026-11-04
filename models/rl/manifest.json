@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "model": "rl",
+  "format": "joblib",
+  "labels": [
+    "c1",
+    "c234",
+    "c5"
+  ],
+  "files": {
+    "metadata.json": "7519d53a776cee1d0aeb24771932585bdf8d1974b1cdfad2e3f7d20914c44ff2",
+    "config.json": "d1f3ef6d59cd458be3fee5aa1a30c8a960ab0f2f6bde3c8d536d71bd4ed2b9a0",
+    "model.joblib": "f7af61142f43e1c8a37f0cd5a8191dd6d83ba1222cd8ecf12281f9929ac827c9",
+    "frozen_manifest.json": "bab666fed4319c8d55a8ee5be73f10b778c68af048e8646f72cd3a5e96509338"
+  },
+  "training_supported": false
+}

@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "model_id": "Itau-Unibanco/NorBERTo-base",
+  "revision": "db73446f89c96044863ea05a39f680524b84bccb",
+  "license": "cc-by-nc-sa-4.0",
+  "source": "https://huggingface.co/Itau-Unibanco/NorBERTo-base/tree/db73446f89c96044863ea05a39f680524b84bccb",
+  "files": {
+    "config.json": "698fe516bdf775a11b80bd69b82c01e440ef1b8c2d17b6aa0ff22b9c74a48df9",
+    "model.safetensors": "f632545c4a06a5d053af8ea726b0d0048420929f35d9aade1e3da77e0b057066",
+    "special_tokens_map.json": "14312eab40fcda429ecbe9b548bfdcf18b051c534e12970c6a8e86ae759cd885",
+    "tokenizer.json": "4d94eba9ab0a7d90459ab12fd8125f37ed111bdd4c6a71ebf91a694bcc2ba582",
+    "tokenizer_config.json": "f5488e40f66f1d59c89d9f2eb51392ebc978d4096e3f33c66d30b2cb4b22c2e8"
+  }
+}

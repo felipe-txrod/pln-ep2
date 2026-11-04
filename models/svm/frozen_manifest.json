@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "model_type": "svm",
+  "classifier": "LinearSVC",
+  "labels": [
+    "c1",
+    "c234",
+    "c5"
+  ],
+  "artifact_sha256": "9a30abb664d5023d70f444641c4095cf800acba0c98fd8658087e7adad78ee12",
+  "source_artifact": "artifacts/svm-fixed-holdout-20260923.joblib",
+  "source_config": "configs/research/final-svm.json",
+  "source_metadata": "results/research/svm-fixed-holdout-20260923/metadata.json",
+  "files": {
+    "metadata.json": "d2a079995c3b49441f85e01a7b93e328fce1f494ab6b821e915a72267d1576ae",
+    "config.json": "bddddde433ba7446732523d5175080e813916ee1791fde2302d830bcb0bf5947"
+  },
+  "selected": "final_word_char_svc",
+  "threads": 2,
+  "normalization": "html_unescape_whitespace_lowercase",
+  "word": {
+    "ngram_range": [
+      1,
+      2
+    ],
+    "min_df": 2,
+    "max_df": 0.98,
+    "sublinear_tf": true,
+    "max_features": 60000,
+    "analyzer": "word",
+    "norm": "l2",
+    "use_idf": true,
+    "smooth_idf": true,
+    "binary": false,
+    "strip_accents": null,
+    "token_pattern": "(?u)\\b\\w\\w+\\b",
+    "lowercase": true
+  },
+  "char": {
+    "ngram_range": [
+      3,
+      5
+    ],
+    "min_df": 3,
+    "max_df": 1.0,
+    "sublinear_tf": true,
+    "max_features": 50000,
+    "analyzer": "char_wb",
+    "norm": "l2",
+    "use_idf": true,
+    "smooth_idf": true,
+    "binary": false,
+    "strip_accents": null,
+    "lowercase": true
+  },
+  "feature_dtype": "float32",
+  "classifier_parameters": {
+    "C": 0.05,
+    "dual": "auto",
+    "max_iter": 10000,
+    "tol": 0.0001,
+    "random_state": 42,
+    "penalty": "l2",
+    "loss": "squared_hinge",
+    "class_weight": null,
+    "fit_intercept": true,
+    "intercept_scaling": 1
+  },
+  "runtime_versions": {
+    "numpy": "2.3.3",
+    "scipy": "1.16.2",
+    "scikit-learn": "1.7.2",
+    "joblib": "1.5.2"
+  }
+}

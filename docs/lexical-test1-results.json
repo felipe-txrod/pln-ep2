@@ -1,0 +1,235 @@
+{
+  "dataset": "test1",
+  "rows": 900,
+  "labels": [
+    "c1",
+    "c234",
+    "c5"
+  ],
+  "input_sha256": "e626f030d4bf2be889fc41dd1fe9b81fb31f1f50f3ace50530d658683260449f",
+  "gold_sha256": "c92658298f95b6325a49b017b58673ebda450fa54dc2280d74393cb093378406",
+  "execution": {
+    "device": "cpu",
+    "threads": 2,
+    "gpu_devices_exposed": false,
+    "gpu_runtime_imported": false,
+    "training_performed": false
+  },
+  "runtime_versions": {
+    "numpy": "2.3.3",
+    "scipy": "1.16.2",
+    "scikit-learn": "1.7.2",
+    "joblib": "1.5.2",
+    "threadpoolctl": "3.6.0",
+    "openpyxl": "3.1.5"
+  },
+  "evaluation_script_sha256": "745efe52cafed8ad5a4b9cc424de62c58946b4548b8f23c32bfd3d0eff021196",
+  "models": {
+    "svm": {
+      "artifact_sha256": "9a30abb664d5023d70f444641c4095cf800acba0c98fd8658087e7adad78ee12",
+      "artifact_manifest_sha256": "a0688c7f08e2ea74323e62d72b15cf930041fabf847d43102eaf024aeb7e764f",
+      "implementation_sha256": "949b274f6e355f874059f5ed2dc471ce82db59eb9b8e8645d24322f9ae30a2a7",
+      "predictions_sha256": "01f7df834ea9b4f8d1c681171de439fb49f8b5655d054aa5e0329ef58f51cee3",
+      "inference_seconds": 2.073389491000853,
+      "metrics": {
+        "rows": 900,
+        "accuracy": 0.49444444444444446,
+        "f1_macro": 0.49059492844467895,
+        "label_order": [
+          "c1",
+          "c234",
+          "c5"
+        ],
+        "confusion_matrix": [
+          [
+            142,
+            82,
+            76
+          ],
+          [
+            82,
+            118,
+            100
+          ],
+          [
+            54,
+            61,
+            185
+          ]
+        ],
+        "classification_report": {
+          "c1": {
+            "precision": 0.5107913669064749,
+            "recall": 0.47333333333333333,
+            "f1-score": 0.4913494809688581,
+            "support": 300.0
+          },
+          "c234": {
+            "precision": 0.4521072796934866,
+            "recall": 0.3933333333333333,
+            "f1-score": 0.4206773618538324,
+            "support": 300.0
+          },
+          "c5": {
+            "precision": 0.5124653739612188,
+            "recall": 0.6166666666666667,
+            "f1-score": 0.5597579425113465,
+            "support": 300.0
+          },
+          "accuracy": 0.49444444444444446,
+          "macro avg": {
+            "precision": 0.49178800685372676,
+            "recall": 0.49444444444444446,
+            "f1-score": 0.49059492844467895,
+            "support": 900.0
+          },
+          "weighted avg": {
+            "precision": 0.4917880068537267,
+            "recall": 0.49444444444444446,
+            "f1-score": 0.490594928444679,
+            "support": 900.0
+          }
+        },
+        "prediction_counts": {
+          "c234": 261,
+          "c5": 361,
+          "c1": 278
+        },
+        "precision_macro": 0.49178800685372676,
+        "recall_macro": 0.49444444444444446,
+        "correct": 445,
+        "incorrect": 455
+      }
+    },
+    "rl": {
+      "artifact_sha256": "f7af61142f43e1c8a37f0cd5a8191dd6d83ba1222cd8ecf12281f9929ac827c9",
+      "artifact_manifest_sha256": "bab666fed4319c8d55a8ee5be73f10b778c68af048e8646f72cd3a5e96509338",
+      "implementation_sha256": "6d9de8f43fa175d64fc1c4844522e9f1ef525675029a9354f862a62aad909fbe",
+      "predictions_sha256": "8b2ac941db04c1f5efb055aa3c72c53e7e3fdc97a8ccec29a4e626f4ddeb8f7e",
+      "inference_seconds": 2.6850481540004694,
+      "metrics": {
+        "rows": 900,
+        "accuracy": 0.49333333333333335,
+        "f1_macro": 0.49139820856855465,
+        "label_order": [
+          "c1",
+          "c234",
+          "c5"
+        ],
+        "confusion_matrix": [
+          [
+            133,
+            100,
+            67
+          ],
+          [
+            77,
+            130,
+            93
+          ],
+          [
+            47,
+            72,
+            181
+          ]
+        ],
+        "classification_report": {
+          "c1": {
+            "precision": 0.5175097276264592,
+            "recall": 0.44333333333333336,
+            "f1-score": 0.47755834829443444,
+            "support": 300.0
+          },
+          "c234": {
+            "precision": 0.4304635761589404,
+            "recall": 0.43333333333333335,
+            "f1-score": 0.4318936877076412,
+            "support": 300.0
+          },
+          "c5": {
+            "precision": 0.530791788856305,
+            "recall": 0.6033333333333334,
+            "f1-score": 0.5647425897035881,
+            "support": 300.0
+          },
+          "accuracy": 0.49333333333333335,
+          "macro avg": {
+            "precision": 0.49292169754723486,
+            "recall": 0.49333333333333335,
+            "f1-score": 0.49139820856855465,
+            "support": 900.0
+          },
+          "weighted avg": {
+            "precision": 0.4929216975472348,
+            "recall": 0.49333333333333335,
+            "f1-score": 0.4913982085685546,
+            "support": 900.0
+          }
+        },
+        "prediction_counts": {
+          "c234": 302,
+          "c5": 341,
+          "c1": 257
+        },
+        "precision_macro": 0.49292169754723486,
+        "recall_macro": 0.49333333333333335,
+        "correct": 444,
+        "incorrect": 456
+      }
+    }
+  },
+  "artifacts": {
+    "evaluation_run": "results/lexical-test1-cpu-20261104-182046"
+  },
+  "scope": "Fixed, previously trained EP1 classifiers evaluated on all 900 labeled test1 rows; no parameter selection.",
+  "agreement_analysis": {
+    "dataset": "test1",
+    "models": [
+      "svm",
+      "rl"
+    ],
+    "rows": 900,
+    "gold_sha256": "c92658298f95b6325a49b017b58673ebda450fa54dc2280d74393cb093378406",
+    "predictions_sha256": {
+      "svm": "01f7df834ea9b4f8d1c681171de439fb49f8b5655d054aa5e0329ef58f51cee3",
+      "rl": "8b2ac941db04c1f5efb055aa3c72c53e7e3fdc97a8ccec29a4e626f4ddeb8f7e"
+    },
+    "agreement": {
+      "rows": 780,
+      "coverage": 0.8666666666666667,
+      "correct": 398,
+      "incorrect": 382,
+      "accuracy": 0.5102564102564102,
+      "by_predicted_class": {
+        "c1": {
+          "agreed_rows": 228,
+          "correct": 120,
+          "incorrect": 108,
+          "accuracy_when_agreed": 0.5263157894736842
+        },
+        "c234": {
+          "agreed_rows": 234,
+          "correct": 105,
+          "incorrect": 129,
+          "accuracy_when_agreed": 0.44871794871794873
+        },
+        "c5": {
+          "agreed_rows": 318,
+          "correct": 173,
+          "incorrect": 145,
+          "accuracy_when_agreed": 0.5440251572327044
+        }
+      }
+    },
+    "disagreement": {
+      "rows": 120,
+      "coverage": 0.13333333333333333,
+      "only_svm_correct": 47,
+      "only_rl_correct": 46,
+      "both_incorrect": 27
+    },
+    "inference_performed": false,
+    "training_performed": false,
+    "analysis_script_sha256": "f18ab7cebf35b4e1e96424aeab4594ccdf956713f4c15ef25adf78de881aafa4"
+  }
+}

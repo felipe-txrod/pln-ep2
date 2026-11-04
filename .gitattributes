@@ -1,2 +1,4 @@
 * text=auto eol=lf
 *.xlsx binary
+models/**/*.joblib binary
+models/**/*.safetensors binary

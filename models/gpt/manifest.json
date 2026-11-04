@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "model": "gpt",
+  "format": "remote-service",
+  "labels": [
+    "c1",
+    "c234",
+    "c5"
+  ],
+  "backend": "api",
+  "remote_model": "gpt-5.4-mini-2026-03-17",
+  "weights_available_locally": false,
+  "files": {
+    "config.json": "29c8b43b0e4f4c47a2e9b761b5cd702aae563a3fe7ea5a3fdfccb7fcaa54712a",
+    "prompt.txt": "c9fcd316ab421d3e7b658ccd247e927efebd352a93c281404af2bdc0b37a08fa",
+    "empirical_prompt.txt": "d3d7ba66a06a4a3c9a5b1d4ed27b16e3e0af2c88e5885b28fbc879d5fcd625f1"
+  },
+  "prompt_implementation_sha256": "3c3d0ab8b1faf4be22b509bcb010123d7a48cf6fb0a1ff34245f2478693c0841"
+}
