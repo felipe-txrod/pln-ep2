@@ -1,0 +1,14 @@
+.git
+.agents
+.venv
+.venv-lexical
+.cache
+.pytest_cache
+**/__pycache__
+data
+results
+deliveries
+artifacts
+models
+.env
+.env.*

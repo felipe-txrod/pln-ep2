@@ -133,7 +133,8 @@ def write_jsonl(path: Path, rows) -> None:
 
 
 def read_jsonl(path: Path) -> list[dict]:
-    rows = [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
+    # JSONL uses LF delimiters; Unicode line separators can occur inside JSON strings.
+    rows = [json.loads(line) for line in path.read_text(encoding="utf-8").split("\n") if line.strip()]
     if not rows or not all(isinstance(row, dict) for row in rows):
         raise ValueError("JSONL deve conter objetos e ao menos um registro.")
     return rows

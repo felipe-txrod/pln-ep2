@@ -1,0 +1,442 @@
+{
+  "date": "2026-11-04",
+  "scope": "Compatibility checks and a bounded real-data pilot; no full-corpus training or official test evaluation",
+  "native_gfx1032": {
+    "status": "failed",
+    "platform": "Linux-7.2.14-200.fc44.x86_64-x86_64-with-glibc2.39",
+    "returncode": -6,
+    "error": "rocBLAS lacks Tensile kernels for gfx1032 in the installed ROCm 6.4 stack"
+  },
+  "override": {
+    "HSA_OVERRIDE_GFX_VERSION": "10.3.0",
+    "physical_architecture": "gfx1032",
+    "effective_architecture": "gfx1030"
+  },
+  "kernel_probes": {
+    "environment": {
+      "python": "3.12.3 (main, Jun 19 2026, 12:46:00) [GCC 13.3.0]",
+      "platform": "Linux-7.2.15-200.fc44.x86_64-x86_64-with-glibc2.39",
+      "packages": {
+        "torch": "2.8.0+rocm6.4",
+        "transformers": "4.57.1",
+        "peft": "0.17.1",
+        "accelerate": "1.10.1",
+        "bitsandbytes": "0.50.2",
+        "numpy": "2.3.3",
+        "scikit-learn": "1.7.2"
+      },
+      "pci_devices": [
+        {
+          "vendor": "0x1002",
+          "device": "0x73ef"
+        }
+      ],
+      "device_nodes": {
+        "/dev/kfd": true,
+        "/dev/dri": true
+      },
+      "variables": {
+        "HSA_OVERRIDE_GFX_VERSION": "10.3.0",
+        "AMDGPU_TARGETS": "gfx1030",
+        "HIP_VISIBLE_DEVICES": null,
+        "ROCR_VISIBLE_DEVICES": null,
+        "CUDA_VISIBLE_DEVICES": null,
+        "PYTORCH_CUDA_ALLOC_CONF": null
+      },
+      "implementation_sha256": "cc5ca52c376f9b47a8568731102520ad35c3afee1fbe406d429c5d01a5a0c5ba"
+    },
+    "environment_sha256": "577c49175793d45a670b772c679d77129b313e822ae522e9b60947a26d7fe07b",
+    "fp16": {
+      "status": "passed",
+      "device": {
+        "name": "AMD Radeon RX 6650 XT",
+        "architecture": "gfx1030",
+        "hip": "6.4.43482-0f2d60242",
+        "cuda": null,
+        "total_vram_mib": 8176.0
+      },
+      "gemm_max_abs_error": 0.00024318695068359375,
+      "sdpa_forward_backward": true,
+      "peak_allocated_mib": 64.1572265625,
+      "peak_reserved_mib": 66.0,
+      "free_vram_mib": 7799.0,
+      "returncode": 0,
+      "stderr_tail": ""
+    },
+    "qlora": {
+      "status": "passed",
+      "device": {
+        "name": "AMD Radeon RX 6650 XT",
+        "architecture": "gfx1030",
+        "hip": "6.4.43482-0f2d60242",
+        "cuda": null,
+        "total_vram_mib": 8176.0
+      },
+      "nf4": true,
+      "double_quantization": true,
+      "backward": true,
+      "optimizer_update": true,
+      "peak_allocated_mib": 64.2158203125,
+      "peak_reserved_mib": 66.0,
+      "free_vram_mib": 7766.0,
+      "returncode": 0,
+      "stderr_tail": ""
+    },
+    "recommended_mode": "qlora",
+    "support_caveat": "Kernel success is empirical compatibility, not official gfx1032 or Fedora support."
+  },
+  "real_model_smoke": {
+    "mode": "qlora",
+    "status": "passed",
+    "smoke": true,
+    "pilot": false,
+    "config": {
+      "model_id": "Qwen/Qwen3-1.7B",
+      "revision": "70d244cc86ccca08cf5af4e1e306ecf908b1ad5e",
+      "mode": "qlora",
+      "max_length": 256,
+      "rank": 8,
+      "alpha": 16,
+      "dropout": 0.05,
+      "target_modules": [
+        "q_proj",
+        "k_proj",
+        "v_proj",
+        "o_proj"
+      ],
+      "learning_rate": 0.0002,
+      "epochs": 3,
+      "batch_size": 1,
+      "accumulation_steps": 16,
+      "warmup_ratio": 0.05,
+      "weight_decay": 0.01,
+      "seed": 42,
+      "folds": 5,
+      "fold": 0,
+      "attention": "sdpa"
+    },
+    "config_sha256": "8324e79341df4ec41180a54a74407402e4d34b463be68fd5ed667ab62033ec09",
+    "environment": {
+      "python": "3.12.3 (main, Jun 19 2026, 12:46:00) [GCC 13.3.0]",
+      "platform": "Linux-7.2.15-200.fc44.x86_64-x86_64-with-glibc2.39",
+      "packages": {
+        "torch": "2.8.0+rocm6.4",
+        "transformers": "4.57.1",
+        "peft": "0.17.1",
+        "accelerate": "1.10.1",
+        "bitsandbytes": "0.50.2",
+        "numpy": "2.3.3",
+        "scikit-learn": "1.7.2"
+      },
+      "pci_devices": [
+        {
+          "vendor": "0x1002",
+          "device": "0x73ef"
+        }
+      ],
+      "device_nodes": {
+        "/dev/kfd": true,
+        "/dev/dri": true
+      },
+      "variables": {
+        "HSA_OVERRIDE_GFX_VERSION": "10.3.0",
+        "AMDGPU_TARGETS": "gfx1030",
+        "HIP_VISIBLE_DEVICES": null,
+        "ROCR_VISIBLE_DEVICES": null,
+        "CUDA_VISIBLE_DEVICES": null,
+        "PYTORCH_CUDA_ALLOC_CONF": null
+      },
+      "implementation_sha256": "cc5ca52c376f9b47a8568731102520ad35c3afee1fbe406d429c5d01a5a0c5ba"
+    },
+    "device": {
+      "name": "AMD Radeon RX 6650 XT",
+      "architecture": "gfx1030",
+      "hip": "6.4.43482-0f2d60242",
+      "cuda": null,
+      "total_vram_mib": 8176.0
+    },
+    "memory": {
+      "peak_allocated_mib": 2476.70849609375,
+      "peak_reserved_mib": 2922.0,
+      "free_vram_mib": 5983.0
+    },
+    "optimizer_steps": 2,
+    "verified_lora_update": true,
+    "skipped_overflow_steps": 0,
+    "trainable_parameters": 3217408,
+    "total_parameters": 1723798528,
+    "effective_batch_size": 16,
+    "adapter_reload_verified": true,
+    "training_loss": 28.37969970703125,
+    "duration_seconds": 57.44170865199999,
+    "train_rows": 16,
+    "validation_rows": 3,
+    "truncated_train_rows": 16,
+    "truncated_validation_rows": 3,
+    "metric_scope": "Synthetic compatibility data, not classifier quality",
+    "best_checkpoint": null
+  },
+  "real_data_pilot": {
+    "status": "completed",
+    "smoke": false,
+    "pilot": true,
+    "config": {
+      "model_id": "Qwen/Qwen3-1.7B",
+      "revision": "70d244cc86ccca08cf5af4e1e306ecf908b1ad5e",
+      "mode": "qlora",
+      "max_length": 256,
+      "rank": 8,
+      "alpha": 16,
+      "dropout": 0.05,
+      "target_modules": [
+        "q_proj",
+        "k_proj",
+        "v_proj",
+        "o_proj"
+      ],
+      "learning_rate": 0.0002,
+      "epochs": 3,
+      "batch_size": 1,
+      "accumulation_steps": 16,
+      "warmup_ratio": 0.05,
+      "weight_decay": 0.01,
+      "seed": 42,
+      "folds": 5,
+      "fold": 0,
+      "attention": "sdpa"
+    },
+    "config_sha256": "8324e79341df4ec41180a54a74407402e4d34b463be68fd5ed667ab62033ec09",
+    "environment": {
+      "python": "3.12.3 (main, Jun 19 2026, 12:46:00) [GCC 13.3.0]",
+      "platform": "Linux-7.2.15-200.fc44.x86_64-x86_64-with-glibc2.39",
+      "packages": {
+        "torch": "2.8.0+rocm6.4",
+        "transformers": "4.57.1",
+        "peft": "0.17.1",
+        "accelerate": "1.10.1",
+        "bitsandbytes": "0.50.2",
+        "numpy": "2.3.3",
+        "scikit-learn": "1.7.2"
+      },
+      "pci_devices": [
+        {
+          "vendor": "0x1002",
+          "device": "0x73ef"
+        }
+      ],
+      "device_nodes": {
+        "/dev/kfd": true,
+        "/dev/dri": true
+      },
+      "variables": {
+        "HSA_OVERRIDE_GFX_VERSION": "10.3.0",
+        "AMDGPU_TARGETS": "gfx1030",
+        "HIP_VISIBLE_DEVICES": null,
+        "ROCR_VISIBLE_DEVICES": null,
+        "CUDA_VISIBLE_DEVICES": null,
+        "PYTORCH_CUDA_ALLOC_CONF": null
+      },
+      "implementation_sha256": "cc5ca52c376f9b47a8568731102520ad35c3afee1fbe406d429c5d01a5a0c5ba"
+    },
+    "device": {
+      "name": "AMD Radeon RX 6650 XT",
+      "architecture": "gfx1030",
+      "hip": "6.4.43482-0f2d60242",
+      "cuda": null,
+      "total_vram_mib": 8176.0
+    },
+    "memory": {
+      "peak_allocated_mib": 2476.70849609375,
+      "peak_reserved_mib": 2922.0,
+      "free_vram_mib": 5969.0
+    },
+    "optimizer_steps": 2,
+    "verified_lora_update": true,
+    "skipped_overflow_steps": 0,
+    "trainable_parameters": 3217408,
+    "total_parameters": 1723798528,
+    "effective_batch_size": 16,
+    "adapter_reload_verified": false,
+    "training_loss": 31.9560546875,
+    "duration_seconds": 63.282913433999965,
+    "train_rows": 96,
+    "validation_rows": 48,
+    "truncated_train_rows": 33,
+    "truncated_validation_rows": 17,
+    "validation_metrics": {
+      "accuracy": 0.375,
+      "f1_macro": 0.3463414634146342,
+      "precision_macro": 0.4083333333333334,
+      "recall_macro": 0.37369281045751634,
+      "label_order": [
+        "c1",
+        "c234",
+        "c5"
+      ],
+      "confusion_matrix": [
+        [
+          7,
+          2,
+          6
+        ],
+        [
+          5,
+          2,
+          9
+        ],
+        [
+          8,
+          0,
+          9
+        ]
+      ],
+      "classification_report": {
+        "c1": {
+          "precision": 0.35,
+          "recall": 0.4666666666666667,
+          "f1-score": 0.4,
+          "support": 15.0
+        },
+        "c234": {
+          "precision": 0.5,
+          "recall": 0.125,
+          "f1-score": 0.2,
+          "support": 16.0
+        },
+        "c5": {
+          "precision": 0.375,
+          "recall": 0.5294117647058824,
+          "f1-score": 0.43902439024390244,
+          "support": 17.0
+        },
+        "accuracy": 0.375,
+        "macro avg": {
+          "precision": 0.4083333333333334,
+          "recall": 0.37369281045751634,
+          "f1-score": 0.3463414634146342,
+          "support": 48.0
+        },
+        "weighted avg": {
+          "precision": 0.4088541666666667,
+          "recall": 0.375,
+          "f1-score": 0.34715447154471546,
+          "support": 48.0
+        }
+      }
+    },
+    "metric_scope": "Two-step pilot on training-corpus partitions; not a final quality estimate",
+    "best_checkpoint": "results/qwen-pilot-verified/checkpoints/checkpoint-2"
+  },
+  "unit_tests": {
+    "passed": 105,
+    "failed": 0
+  },
+  "artifacts": {
+    "native_report": "results/qwen-compatibility-native-unset.json",
+    "smoke_report": "results/qwen-smoke-verified/summary.json",
+    "smoke_adapter": "results/qwen-smoke-verified/qlora/adapter",
+    "pilot_run": "results/qwen-pilot-verified",
+    "pilot_adapter": "results/qwen-pilot-verified/adapter",
+    "prepared_data": "results/qwen-data",
+    "fp16_smoke_report": "results/qwen-smoke-fp16-verified/summary.json",
+    "pilot_inference": "results/qwen-pilot-inference"
+  },
+  "fp16_fallback_smoke": {
+    "mode": "fp16",
+    "status": "passed",
+    "smoke": true,
+    "pilot": false,
+    "config": {
+      "model_id": "Qwen/Qwen3-1.7B",
+      "revision": "70d244cc86ccca08cf5af4e1e306ecf908b1ad5e",
+      "mode": "fp16",
+      "max_length": 256,
+      "rank": 8,
+      "alpha": 16,
+      "dropout": 0.05,
+      "target_modules": [
+        "q_proj",
+        "k_proj",
+        "v_proj",
+        "o_proj"
+      ],
+      "learning_rate": 0.0002,
+      "epochs": 3,
+      "batch_size": 1,
+      "accumulation_steps": 16,
+      "warmup_ratio": 0.05,
+      "weight_decay": 0.01,
+      "seed": 42,
+      "folds": 5,
+      "fold": 0,
+      "attention": "sdpa"
+    },
+    "config_sha256": "37ccfec5de96c83350c02a5285578402f112e7fc7e74dcfd8bf272e4c9956ec2",
+    "environment": {
+      "python": "3.12.3 (main, Jun 19 2026, 12:46:00) [GCC 13.3.0]",
+      "platform": "Linux-7.2.15-200.fc44.x86_64-x86_64-with-glibc2.39",
+      "packages": {
+        "torch": "2.8.0+rocm6.4",
+        "transformers": "4.57.1",
+        "peft": "0.17.1",
+        "accelerate": "1.10.1",
+        "bitsandbytes": "0.50.2",
+        "numpy": "2.3.3",
+        "scikit-learn": "1.7.2"
+      },
+      "pci_devices": [
+        {
+          "vendor": "0x1002",
+          "device": "0x73ef"
+        }
+      ],
+      "device_nodes": {
+        "/dev/kfd": true,
+        "/dev/dri": true
+      },
+      "variables": {
+        "HSA_OVERRIDE_GFX_VERSION": "10.3.0",
+        "AMDGPU_TARGETS": "gfx1030",
+        "HIP_VISIBLE_DEVICES": null,
+        "ROCR_VISIBLE_DEVICES": null,
+        "CUDA_VISIBLE_DEVICES": null,
+        "PYTORCH_CUDA_ALLOC_CONF": null
+      },
+      "implementation_sha256": "cc5ca52c376f9b47a8568731102520ad35c3afee1fbe406d429c5d01a5a0c5ba"
+    },
+    "device": {
+      "name": "AMD Radeon RX 6650 XT",
+      "architecture": "gfx1030",
+      "hip": "6.4.43482-0f2d60242",
+      "cuda": null,
+      "total_vram_mib": 8176.0
+    },
+    "memory": {
+      "peak_allocated_mib": 3467.38037109375,
+      "peak_reserved_mib": 3486.0,
+      "free_vram_mib": 4337.0
+    },
+    "optimizer_steps": 2,
+    "verified_lora_update": true,
+    "skipped_overflow_steps": 0,
+    "trainable_parameters": 3217408,
+    "total_parameters": 1723798528,
+    "effective_batch_size": 16,
+    "adapter_reload_verified": true,
+    "training_loss": 25.6221923828125,
+    "duration_seconds": 40.20078145299999,
+    "train_rows": 16,
+    "validation_rows": 3,
+    "truncated_train_rows": 16,
+    "truncated_validation_rows": 3,
+    "metric_scope": "Synthetic compatibility data, not classifier quality",
+    "best_checkpoint": null
+  },
+  "pilot_cli_inference": {
+    "status": "passed",
+    "rows": 3,
+    "labels_match_saved_validation": true,
+    "finite_logits_and_probabilities": true,
+    "no_input_labels": true
+  }
+}

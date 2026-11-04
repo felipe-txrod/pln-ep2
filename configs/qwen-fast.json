@@ -1,0 +1,28 @@
+{
+  "model_id": "Qwen/Qwen3-1.7B",
+  "revision": "70d244cc86ccca08cf5af4e1e306ecf908b1ad5e",
+  "mode": "qlora",
+  "max_length": 256,
+  "rank": 8,
+  "alpha": 16,
+  "dropout": 0.05,
+  "target_modules": [
+    "q_proj",
+    "k_proj",
+    "v_proj",
+    "o_proj"
+  ],
+  "learning_rate": 0.0002,
+  "epochs": 3,
+  "batch_size": 4,
+  "accumulation_steps": 4,
+  "warmup_ratio": 0.05,
+  "weight_decay": 0.01,
+  "seed": 42,
+  "folds": 5,
+  "fold": 0,
+  "attention": "sdpa",
+  "gradient_checkpointing": false,
+  "eval_batch_size": 16,
+  "group_by_length": true
+}

@@ -1,0 +1,942 @@
+{
+  "date": "2026-11-04",
+  "scope": "Full-context synthetic throughput, same effective batch 16, one warmup and three timed optimizer updates",
+  "baseline": {
+    "config": {
+      "model_id": "Qwen/Qwen3-1.7B",
+      "revision": "70d244cc86ccca08cf5af4e1e306ecf908b1ad5e",
+      "mode": "qlora",
+      "max_length": 256,
+      "rank": 8,
+      "alpha": 16,
+      "dropout": 0.05,
+      "target_modules": [
+        "q_proj",
+        "k_proj",
+        "v_proj",
+        "o_proj"
+      ],
+      "learning_rate": 0.0002,
+      "epochs": 3,
+      "batch_size": 1,
+      "accumulation_steps": 16,
+      "warmup_ratio": 0.05,
+      "weight_decay": 0.01,
+      "seed": 42,
+      "folds": 5,
+      "fold": 0,
+      "attention": "sdpa",
+      "gradient_checkpointing": true,
+      "eval_batch_size": 1,
+      "group_by_length": false
+    },
+    "status": "passed",
+    "seconds_per_update": 12.001962267333207,
+    "examples_per_second": 1.3331153392765283,
+    "update_seconds": [
+      12.106416876999901,
+      11.949557977999575,
+      11.949911947000146
+    ],
+    "skipped_overflow_steps": 0,
+    "verified_adapter_update": true,
+    "peak_allocated_mib": 1529.7548828125,
+    "peak_reserved_mib": 1786.0,
+    "free_vram_mib": 5963.0,
+    "experiment": "qlora-checkpoint"
+  },
+  "qlora_selection": {
+    "config": {
+      "model_id": "Qwen/Qwen3-1.7B",
+      "revision": "70d244cc86ccca08cf5af4e1e306ecf908b1ad5e",
+      "mode": "qlora",
+      "max_length": 256,
+      "rank": 8,
+      "alpha": 16,
+      "dropout": 0.05,
+      "target_modules": [
+        "q_proj",
+        "k_proj",
+        "v_proj",
+        "o_proj"
+      ],
+      "learning_rate": 0.0002,
+      "epochs": 3,
+      "batch_size": 4,
+      "accumulation_steps": 4,
+      "warmup_ratio": 0.05,
+      "weight_decay": 0.01,
+      "seed": 42,
+      "folds": 5,
+      "fold": 0,
+      "attention": "sdpa",
+      "gradient_checkpointing": false,
+      "eval_batch_size": 1,
+      "group_by_length": false
+    },
+    "status": "passed",
+    "seconds_per_update": 4.066658545666542,
+    "examples_per_second": 3.9344340864441905,
+    "update_seconds": [
+      4.0657751600001575,
+      4.069727119999698,
+      4.06447335699977
+    ],
+    "skipped_overflow_steps": 0,
+    "verified_adapter_update": true,
+    "peak_allocated_mib": 6070.6142578125,
+    "peak_reserved_mib": 6134.0,
+    "free_vram_mib": 1607.0,
+    "experiment": "qlora-no-checkpoint"
+  },
+  "qlora_speedup": 2.951308090550798,
+  "results": [
+    {
+      "config": {
+        "model_id": "Qwen/Qwen3-1.7B",
+        "revision": "70d244cc86ccca08cf5af4e1e306ecf908b1ad5e",
+        "mode": "qlora",
+        "max_length": 256,
+        "rank": 8,
+        "alpha": 16,
+        "dropout": 0.05,
+        "target_modules": [
+          "q_proj",
+          "k_proj",
+          "v_proj",
+          "o_proj"
+        ],
+        "learning_rate": 0.0002,
+        "epochs": 3,
+        "batch_size": 1,
+        "accumulation_steps": 16,
+        "warmup_ratio": 0.05,
+        "weight_decay": 0.01,
+        "seed": 42,
+        "folds": 5,
+        "fold": 0,
+        "attention": "sdpa",
+        "gradient_checkpointing": false,
+        "eval_batch_size": 1,
+        "group_by_length": false
+      },
+      "status": "passed",
+      "seconds_per_update": 8.181529570333623,
+      "examples_per_second": 1.9556245396968672,
+      "update_seconds": [
+        8.22822131400062,
+        8.16576403199997,
+        8.15060336500028
+      ],
+      "skipped_overflow_steps": 0,
+      "verified_adapter_update": true,
+      "peak_allocated_mib": 2597.265625,
+      "peak_reserved_mib": 2636.0,
+      "free_vram_mib": 5113.0,
+      "experiment": "qlora-no-checkpoint"
+    },
+    {
+      "config": {
+        "model_id": "Qwen/Qwen3-1.7B",
+        "revision": "70d244cc86ccca08cf5af4e1e306ecf908b1ad5e",
+        "mode": "qlora",
+        "max_length": 256,
+        "rank": 8,
+        "alpha": 16,
+        "dropout": 0.05,
+        "target_modules": [
+          "q_proj",
+          "k_proj",
+          "v_proj",
+          "o_proj"
+        ],
+        "learning_rate": 0.0002,
+        "epochs": 3,
+        "batch_size": 2,
+        "accumulation_steps": 8,
+        "warmup_ratio": 0.05,
+        "weight_decay": 0.01,
+        "seed": 42,
+        "folds": 5,
+        "fold": 0,
+        "attention": "sdpa",
+        "gradient_checkpointing": false,
+        "eval_batch_size": 1,
+        "group_by_length": false
+      },
+      "status": "passed",
+      "seconds_per_update": 5.209104488333348,
+      "examples_per_second": 3.071545221608561,
+      "update_seconds": [
+        5.2031476510001085,
+        5.210144276999927,
+        5.214021537000008
+      ],
+      "skipped_overflow_steps": 0,
+      "verified_adapter_update": true,
+      "peak_allocated_mib": 3750.9130859375,
+      "peak_reserved_mib": 3786.0,
+      "free_vram_mib": 3963.0,
+      "experiment": "qlora-no-checkpoint"
+    },
+    {
+      "config": {
+        "model_id": "Qwen/Qwen3-1.7B",
+        "revision": "70d244cc86ccca08cf5af4e1e306ecf908b1ad5e",
+        "mode": "qlora",
+        "max_length": 256,
+        "rank": 8,
+        "alpha": 16,
+        "dropout": 0.05,
+        "target_modules": [
+          "q_proj",
+          "k_proj",
+          "v_proj",
+          "o_proj"
+        ],
+        "learning_rate": 0.0002,
+        "epochs": 3,
+        "batch_size": 4,
+        "accumulation_steps": 4,
+        "warmup_ratio": 0.05,
+        "weight_decay": 0.01,
+        "seed": 42,
+        "folds": 5,
+        "fold": 0,
+        "attention": "sdpa",
+        "gradient_checkpointing": false,
+        "eval_batch_size": 1,
+        "group_by_length": false
+      },
+      "status": "passed",
+      "seconds_per_update": 4.066658545666542,
+      "examples_per_second": 3.9344340864441905,
+      "update_seconds": [
+        4.0657751600001575,
+        4.069727119999698,
+        4.06447335699977
+      ],
+      "skipped_overflow_steps": 0,
+      "verified_adapter_update": true,
+      "peak_allocated_mib": 6070.6142578125,
+      "peak_reserved_mib": 6134.0,
+      "free_vram_mib": 1607.0,
+      "experiment": "qlora-no-checkpoint"
+    },
+    {
+      "config": {
+        "model_id": "Qwen/Qwen3-1.7B",
+        "revision": "70d244cc86ccca08cf5af4e1e306ecf908b1ad5e",
+        "mode": "qlora",
+        "max_length": 256,
+        "rank": 8,
+        "alpha": 16,
+        "dropout": 0.05,
+        "target_modules": [
+          "q_proj",
+          "k_proj",
+          "v_proj",
+          "o_proj"
+        ],
+        "learning_rate": 0.0002,
+        "epochs": 3,
+        "batch_size": 8,
+        "accumulation_steps": 2,
+        "warmup_ratio": 0.05,
+        "weight_decay": 0.01,
+        "seed": 42,
+        "folds": 5,
+        "fold": 0,
+        "attention": "sdpa",
+        "gradient_checkpointing": false,
+        "eval_batch_size": 1,
+        "group_by_length": false
+      },
+      "status": "out_of_memory",
+      "error": "HIP out of memory. Tried to allocate 16.00 MiB. GPU 0 has a total capacity of 7.98 GiB of which 2.00 MiB is free. Of the allocated memory 7.53 GiB is allocated by PyTorch, and 28.00 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)",
+      "peak_allocated_mib": 7727.984375,
+      "peak_reserved_mib": 7742.0,
+      "free_vram_mib": 10.0,
+      "experiment": "qlora-no-checkpoint"
+    },
+    {
+      "config": {
+        "model_id": "Qwen/Qwen3-1.7B",
+        "revision": "70d244cc86ccca08cf5af4e1e306ecf908b1ad5e",
+        "mode": "qlora",
+        "max_length": 256,
+        "rank": 8,
+        "alpha": 16,
+        "dropout": 0.05,
+        "target_modules": [
+          "q_proj",
+          "k_proj",
+          "v_proj",
+          "o_proj"
+        ],
+        "learning_rate": 0.0002,
+        "epochs": 3,
+        "batch_size": 1,
+        "accumulation_steps": 16,
+        "warmup_ratio": 0.05,
+        "weight_decay": 0.01,
+        "seed": 42,
+        "folds": 5,
+        "fold": 0,
+        "attention": "sdpa",
+        "gradient_checkpointing": true,
+        "eval_batch_size": 1,
+        "group_by_length": false
+      },
+      "status": "passed",
+      "seconds_per_update": 12.001962267333207,
+      "examples_per_second": 1.3331153392765283,
+      "update_seconds": [
+        12.106416876999901,
+        11.949557977999575,
+        11.949911947000146
+      ],
+      "skipped_overflow_steps": 0,
+      "verified_adapter_update": true,
+      "peak_allocated_mib": 1529.7548828125,
+      "peak_reserved_mib": 1786.0,
+      "free_vram_mib": 5963.0,
+      "experiment": "qlora-checkpoint"
+    },
+    {
+      "config": {
+        "model_id": "Qwen/Qwen3-1.7B",
+        "revision": "70d244cc86ccca08cf5af4e1e306ecf908b1ad5e",
+        "mode": "qlora",
+        "max_length": 256,
+        "rank": 8,
+        "alpha": 16,
+        "dropout": 0.05,
+        "target_modules": [
+          "q_proj",
+          "k_proj",
+          "v_proj",
+          "o_proj"
+        ],
+        "learning_rate": 0.0002,
+        "epochs": 3,
+        "batch_size": 4,
+        "accumulation_steps": 4,
+        "warmup_ratio": 0.05,
+        "weight_decay": 0.01,
+        "seed": 42,
+        "folds": 5,
+        "fold": 0,
+        "attention": "sdpa",
+        "gradient_checkpointing": true,
+        "eval_batch_size": 1,
+        "group_by_length": false
+      },
+      "status": "passed",
+      "seconds_per_update": 5.56758970933303,
+      "examples_per_second": 2.873774978996561,
+      "update_seconds": [
+        5.562886372999856,
+        5.566107377999288,
+        5.573775376999947
+      ],
+      "skipped_overflow_steps": 0,
+      "verified_adapter_update": true,
+      "peak_allocated_mib": 1858.3779296875,
+      "peak_reserved_mib": 1950.0,
+      "free_vram_mib": 5799.0,
+      "experiment": "qlora-checkpoint"
+    },
+    {
+      "config": {
+        "model_id": "Qwen/Qwen3-1.7B",
+        "revision": "70d244cc86ccca08cf5af4e1e306ecf908b1ad5e",
+        "mode": "qlora",
+        "max_length": 256,
+        "rank": 8,
+        "alpha": 16,
+        "dropout": 0.05,
+        "target_modules": [
+          "q_proj",
+          "k_proj",
+          "v_proj",
+          "o_proj"
+        ],
+        "learning_rate": 0.0002,
+        "epochs": 3,
+        "batch_size": 8,
+        "accumulation_steps": 2,
+        "warmup_ratio": 0.05,
+        "weight_decay": 0.01,
+        "seed": 42,
+        "folds": 5,
+        "fold": 0,
+        "attention": "sdpa",
+        "gradient_checkpointing": true,
+        "eval_batch_size": 1,
+        "group_by_length": false
+      },
+      "status": "passed",
+      "seconds_per_update": 5.509134954666782,
+      "examples_per_second": 2.9042672092188297,
+      "update_seconds": [
+        5.504279862000658,
+        5.51117639200038,
+        5.511948609999308
+      ],
+      "skipped_overflow_steps": 0,
+      "verified_adapter_update": true,
+      "peak_allocated_mib": 2314.5419921875,
+      "peak_reserved_mib": 2490.0,
+      "free_vram_mib": 5259.0,
+      "experiment": "qlora-checkpoint"
+    },
+    {
+      "config": {
+        "model_id": "Qwen/Qwen3-1.7B",
+        "revision": "70d244cc86ccca08cf5af4e1e306ecf908b1ad5e",
+        "mode": "qlora",
+        "max_length": 256,
+        "rank": 8,
+        "alpha": 16,
+        "dropout": 0.05,
+        "target_modules": [
+          "q_proj",
+          "k_proj",
+          "v_proj",
+          "o_proj"
+        ],
+        "learning_rate": 0.0002,
+        "epochs": 3,
+        "batch_size": 16,
+        "accumulation_steps": 1,
+        "warmup_ratio": 0.05,
+        "weight_decay": 0.01,
+        "seed": 42,
+        "folds": 5,
+        "fold": 0,
+        "attention": "sdpa",
+        "gradient_checkpointing": true,
+        "eval_batch_size": 1,
+        "group_by_length": false
+      },
+      "status": "passed",
+      "seconds_per_update": 5.378354152666664,
+      "examples_per_second": 2.974887771581009,
+      "update_seconds": [
+        5.378699816000335,
+        5.379565563999677,
+        5.376797077999981
+      ],
+      "skipped_overflow_steps": 0,
+      "verified_adapter_update": true,
+      "peak_allocated_mib": 3214.6201171875,
+      "peak_reserved_mib": 3532.0,
+      "free_vram_mib": 4217.0,
+      "experiment": "qlora-checkpoint"
+    },
+    {
+      "config": {
+        "model_id": "Qwen/Qwen3-1.7B",
+        "revision": "70d244cc86ccca08cf5af4e1e306ecf908b1ad5e",
+        "mode": "fp16",
+        "max_length": 256,
+        "rank": 8,
+        "alpha": 16,
+        "dropout": 0.05,
+        "target_modules": [
+          "q_proj",
+          "k_proj",
+          "v_proj",
+          "o_proj"
+        ],
+        "learning_rate": 0.0002,
+        "epochs": 3,
+        "batch_size": 1,
+        "accumulation_steps": 16,
+        "warmup_ratio": 0.05,
+        "weight_decay": 0.01,
+        "seed": 42,
+        "folds": 5,
+        "fold": 0,
+        "attention": "sdpa",
+        "gradient_checkpointing": false,
+        "eval_batch_size": 1,
+        "group_by_length": false
+      },
+      "status": "passed",
+      "seconds_per_update": 5.913189829999889,
+      "examples_per_second": 2.705815382219904,
+      "update_seconds": [
+        5.917173410999567,
+        5.9042306029996325,
+        5.918165476000468
+      ],
+      "skipped_overflow_steps": 0,
+      "verified_adapter_update": true,
+      "peak_allocated_mib": 4335.7255859375,
+      "peak_reserved_mib": 4352.0,
+      "free_vram_mib": 3400.0,
+      "experiment": "fp16-no-checkpoint"
+    },
+    {
+      "config": {
+        "model_id": "Qwen/Qwen3-1.7B",
+        "revision": "70d244cc86ccca08cf5af4e1e306ecf908b1ad5e",
+        "mode": "fp16",
+        "max_length": 256,
+        "rank": 8,
+        "alpha": 16,
+        "dropout": 0.05,
+        "target_modules": [
+          "q_proj",
+          "k_proj",
+          "v_proj",
+          "o_proj"
+        ],
+        "learning_rate": 0.0002,
+        "epochs": 3,
+        "batch_size": 2,
+        "accumulation_steps": 8,
+        "warmup_ratio": 0.05,
+        "weight_decay": 0.01,
+        "seed": 42,
+        "folds": 5,
+        "fold": 0,
+        "attention": "sdpa",
+        "gradient_checkpointing": false,
+        "eval_batch_size": 1,
+        "group_by_length": false
+      },
+      "status": "passed",
+      "seconds_per_update": 3.9443310563331884,
+      "examples_per_second": 4.056454636156798,
+      "update_seconds": [
+        3.9409476290002203,
+        3.945969415000036,
+        3.9460761249993084
+      ],
+      "skipped_overflow_steps": 0,
+      "verified_adapter_update": true,
+      "peak_allocated_mib": 5212.373046875,
+      "peak_reserved_mib": 5242.0,
+      "free_vram_mib": 2510.0,
+      "experiment": "fp16-no-checkpoint"
+    },
+    {
+      "config": {
+        "model_id": "Qwen/Qwen3-1.7B",
+        "revision": "70d244cc86ccca08cf5af4e1e306ecf908b1ad5e",
+        "mode": "fp16",
+        "max_length": 256,
+        "rank": 8,
+        "alpha": 16,
+        "dropout": 0.05,
+        "target_modules": [
+          "q_proj",
+          "k_proj",
+          "v_proj",
+          "o_proj"
+        ],
+        "learning_rate": 0.0002,
+        "epochs": 3,
+        "batch_size": 4,
+        "accumulation_steps": 4,
+        "warmup_ratio": 0.05,
+        "weight_decay": 0.01,
+        "seed": 42,
+        "folds": 5,
+        "fold": 0,
+        "attention": "sdpa",
+        "gradient_checkpointing": false,
+        "eval_batch_size": 1,
+        "group_by_length": false
+      },
+      "status": "passed",
+      "seconds_per_update": 3.2098547253332677,
+      "examples_per_second": 4.9846492658133545,
+      "update_seconds": [
+        3.2142947239999557,
+        3.2079885639996064,
+        3.2072808880002412
+      ],
+      "skipped_overflow_steps": 0,
+      "verified_adapter_update": true,
+      "peak_allocated_mib": 7024.66796875,
+      "peak_reserved_mib": 7076.0,
+      "free_vram_mib": 676.0,
+      "experiment": "fp16-no-checkpoint"
+    }
+  ],
+  "hardware": {
+    "name": "AMD Radeon RX 6650 XT",
+    "architecture": "gfx1030",
+    "hip": "6.4.43482-0f2d60242",
+    "cuda": null,
+    "total_vram_mib": 8176.0
+  },
+  "quality_caveat": "Throughput measurements do not establish classifier quality; epochs, context and data split are preserved.",
+  "qlora_smoke": {
+    "mode": "qlora",
+    "status": "passed",
+    "smoke": true,
+    "pilot": false,
+    "config": {
+      "model_id": "Qwen/Qwen3-1.7B",
+      "revision": "70d244cc86ccca08cf5af4e1e306ecf908b1ad5e",
+      "mode": "qlora",
+      "max_length": 256,
+      "rank": 8,
+      "alpha": 16,
+      "dropout": 0.05,
+      "target_modules": [
+        "q_proj",
+        "k_proj",
+        "v_proj",
+        "o_proj"
+      ],
+      "learning_rate": 0.0002,
+      "epochs": 3,
+      "batch_size": 4,
+      "accumulation_steps": 4,
+      "warmup_ratio": 0.05,
+      "weight_decay": 0.01,
+      "seed": 42,
+      "folds": 5,
+      "fold": 0,
+      "attention": "sdpa",
+      "gradient_checkpointing": false,
+      "eval_batch_size": 16,
+      "group_by_length": true
+    },
+    "config_sha256": "4db34ea5d4d55f092d3cf4b674e52bb1ff947253feca9008100f8f6b919d9c57",
+    "environment": {
+      "python": "3.12.3 (main, Jun 19 2026, 12:46:00) [GCC 13.3.0]",
+      "platform": "Linux-7.2.15-200.fc44.x86_64-x86_64-with-glibc2.39",
+      "packages": {
+        "torch": "2.8.0+rocm6.4",
+        "transformers": "4.57.1",
+        "peft": "0.17.1",
+        "accelerate": "1.10.1",
+        "bitsandbytes": "0.50.2",
+        "numpy": "2.3.3",
+        "scikit-learn": "1.7.2"
+      },
+      "pci_devices": [
+        {
+          "vendor": "0x1002",
+          "device": "0x73ef"
+        }
+      ],
+      "device_nodes": {
+        "/dev/kfd": true,
+        "/dev/dri": true
+      },
+      "variables": {
+        "HSA_OVERRIDE_GFX_VERSION": "10.3.0",
+        "AMDGPU_TARGETS": "gfx1030",
+        "HIP_VISIBLE_DEVICES": null,
+        "ROCR_VISIBLE_DEVICES": null,
+        "CUDA_VISIBLE_DEVICES": null,
+        "PYTORCH_CUDA_ALLOC_CONF": null
+      },
+      "implementation_sha256": "d52f73a18bb227b48388fdf0bd8eefa2428d8c8601a4e766cdaaa9fa45f14c04"
+    },
+    "device": {
+      "name": "AMD Radeon RX 6650 XT",
+      "architecture": "gfx1030",
+      "hip": "6.4.43482-0f2d60242",
+      "cuda": null,
+      "total_vram_mib": 8176.0
+    },
+    "memory": {
+      "peak_allocated_mib": 6070.68017578125,
+      "peak_reserved_mib": 6136.0,
+      "free_vram_mib": 5949.0
+    },
+    "optimizer_steps": 2,
+    "verified_lora_update": true,
+    "skipped_overflow_steps": 0,
+    "trainable_parameters": 3217408,
+    "total_parameters": 1723798528,
+    "effective_batch_size": 16,
+    "update_seconds": [
+      4.8020388750001075,
+      4.0307939040003475
+    ],
+    "mean_update_seconds": 4.4164163895002275,
+    "validation_runtime_seconds": null,
+    "adapter_reload_verified": true,
+    "training_loss": 1.7750455141067505,
+    "duration_seconds": 33.17272597400006,
+    "train_rows": 16,
+    "validation_rows": 3,
+    "truncated_train_rows": 16,
+    "truncated_validation_rows": 3,
+    "validation_metrics": {
+      "accuracy": 0.3333333333333333,
+      "f1_macro": 0.16666666666666666,
+      "precision_macro": 0.1111111111111111,
+      "recall_macro": 0.3333333333333333,
+      "label_order": [
+        "c1",
+        "c234",
+        "c5"
+      ],
+      "confusion_matrix": [
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ]
+      ],
+      "classification_report": {
+        "c1": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 1.0
+        },
+        "c234": {
+          "precision": 0.3333333333333333,
+          "recall": 1.0,
+          "f1-score": 0.5,
+          "support": 1.0
+        },
+        "c5": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 1.0
+        },
+        "accuracy": 0.3333333333333333,
+        "macro avg": {
+          "precision": 0.1111111111111111,
+          "recall": 0.3333333333333333,
+          "f1-score": 0.16666666666666666,
+          "support": 3.0
+        },
+        "weighted avg": {
+          "precision": 0.1111111111111111,
+          "recall": 0.3333333333333333,
+          "f1-score": 0.16666666666666666,
+          "support": 3.0
+        }
+      }
+    },
+    "metric_scope": "Synthetic compatibility data, not classifier quality",
+    "best_checkpoint": null
+  },
+  "optimized_config": {
+    "model_id": "Qwen/Qwen3-1.7B",
+    "revision": "70d244cc86ccca08cf5af4e1e306ecf908b1ad5e",
+    "mode": "qlora",
+    "max_length": 256,
+    "rank": 8,
+    "alpha": 16,
+    "dropout": 0.05,
+    "target_modules": [
+      "q_proj",
+      "k_proj",
+      "v_proj",
+      "o_proj"
+    ],
+    "learning_rate": 0.0002,
+    "epochs": 3,
+    "batch_size": 4,
+    "accumulation_steps": 4,
+    "warmup_ratio": 0.05,
+    "weight_decay": 0.01,
+    "seed": 42,
+    "folds": 5,
+    "fold": 0,
+    "attention": "sdpa",
+    "gradient_checkpointing": false,
+    "eval_batch_size": 16,
+    "group_by_length": true
+  },
+  "tests": {
+    "passed": 116,
+    "failed": 0
+  },
+  "smoke_report": "results/qwen-fast-final/summary.json",
+  "classification_loss_normalization_corrected": true,
+  "loss_caveat": "Historical Trainer losses were scaled by gradient accumulation; the corrected explicit loss is sample-normalized and handles partial batches.",
+  "real_data_pilot": {
+    "status": "completed",
+    "smoke": false,
+    "pilot": true,
+    "config": {
+      "model_id": "Qwen/Qwen3-1.7B",
+      "revision": "70d244cc86ccca08cf5af4e1e306ecf908b1ad5e",
+      "mode": "qlora",
+      "max_length": 256,
+      "rank": 8,
+      "alpha": 16,
+      "dropout": 0.05,
+      "target_modules": [
+        "q_proj",
+        "k_proj",
+        "v_proj",
+        "o_proj"
+      ],
+      "learning_rate": 0.0002,
+      "epochs": 3,
+      "batch_size": 4,
+      "accumulation_steps": 4,
+      "warmup_ratio": 0.05,
+      "weight_decay": 0.01,
+      "seed": 42,
+      "folds": 5,
+      "fold": 0,
+      "attention": "sdpa",
+      "gradient_checkpointing": false,
+      "eval_batch_size": 16,
+      "group_by_length": true
+    },
+    "config_sha256": "4db34ea5d4d55f092d3cf4b674e52bb1ff947253feca9008100f8f6b919d9c57",
+    "environment": {
+      "python": "3.12.3 (main, Jun 19 2026, 12:46:00) [GCC 13.3.0]",
+      "platform": "Linux-7.2.15-200.fc44.x86_64-x86_64-with-glibc2.39",
+      "packages": {
+        "torch": "2.8.0+rocm6.4",
+        "transformers": "4.57.1",
+        "peft": "0.17.1",
+        "accelerate": "1.10.1",
+        "bitsandbytes": "0.50.2",
+        "numpy": "2.3.3",
+        "scikit-learn": "1.7.2"
+      },
+      "pci_devices": [
+        {
+          "vendor": "0x1002",
+          "device": "0x73ef"
+        }
+      ],
+      "device_nodes": {
+        "/dev/kfd": true,
+        "/dev/dri": true
+      },
+      "variables": {
+        "HSA_OVERRIDE_GFX_VERSION": "10.3.0",
+        "AMDGPU_TARGETS": "gfx1030",
+        "HIP_VISIBLE_DEVICES": null,
+        "ROCR_VISIBLE_DEVICES": null,
+        "CUDA_VISIBLE_DEVICES": null,
+        "PYTORCH_CUDA_ALLOC_CONF": null
+      },
+      "implementation_sha256": "d52f73a18bb227b48388fdf0bd8eefa2428d8c8601a4e766cdaaa9fa45f14c04"
+    },
+    "device": {
+      "name": "AMD Radeon RX 6650 XT",
+      "architecture": "gfx1030",
+      "hip": "6.4.43482-0f2d60242",
+      "cuda": null,
+      "total_vram_mib": 8176.0
+    },
+    "memory": {
+      "peak_allocated_mib": 6070.66357421875,
+      "peak_reserved_mib": 6464.0,
+      "free_vram_mib": 5939.0
+    },
+    "optimizer_steps": 2,
+    "verified_lora_update": true,
+    "skipped_overflow_steps": 0,
+    "trainable_parameters": 3217408,
+    "total_parameters": 1723798528,
+    "effective_batch_size": 16,
+    "update_seconds": [
+      4.104541577999953,
+      3.4213937220001753
+    ],
+    "mean_update_seconds": 3.762967650000064,
+    "validation_runtime_seconds": 5.4713,
+    "adapter_reload_verified": false,
+    "training_loss": 2.118149518966675,
+    "duration_seconds": 44.53431003300011,
+    "train_rows": 96,
+    "validation_rows": 48,
+    "truncated_train_rows": 33,
+    "truncated_validation_rows": 17,
+    "validation_metrics": {
+      "accuracy": 0.3958333333333333,
+      "f1_macro": 0.33389238294898665,
+      "precision_macro": 0.4890350877192982,
+      "recall_macro": 0.4077614379084968,
+      "label_order": [
+        "c1",
+        "c234",
+        "c5"
+      ],
+      "confusion_matrix": [
+        [
+          13,
+          1,
+          1
+        ],
+        [
+          13,
+          1,
+          2
+        ],
+        [
+          12,
+          0,
+          5
+        ]
+      ],
+      "classification_report": {
+        "c1": {
+          "precision": 0.34210526315789475,
+          "recall": 0.8666666666666667,
+          "f1-score": 0.49056603773584906,
+          "support": 15.0
+        },
+        "c234": {
+          "precision": 0.5,
+          "recall": 0.0625,
+          "f1-score": 0.1111111111111111,
+          "support": 16.0
+        },
+        "c5": {
+          "precision": 0.625,
+          "recall": 0.29411764705882354,
+          "f1-score": 0.4,
+          "support": 17.0
+        },
+        "accuracy": 0.3958333333333333,
+        "macro avg": {
+          "precision": 0.4890350877192982,
+          "recall": 0.4077614379084968,
+          "f1-score": 0.33389238294898665,
+          "support": 48.0
+        },
+        "weighted avg": {
+          "precision": 0.49492872807017546,
+          "recall": 0.3958333333333333,
+          "f1-score": 0.3320055904961565,
+          "support": 48.0
+        }
+      }
+    },
+    "metric_scope": "Two-step pilot on training-corpus partitions; not a final quality estimate",
+    "best_checkpoint": "results/qwen-fast-final-pilot/checkpoints/checkpoint-2"
+  },
+  "selection_reason": "NF4 QLoRA with maximum measured throughput, at least 512 MiB free in the benchmark, and verified training, evaluation, adapter saving and reloading.",
+  "fp16_alternative_config": "configs/qwen-fp16-fast.json",
+  "fp16_alternative_full_optimized_smoke_passed": false,
+  "artifacts": {
+    "smoke": "results/qwen-fast-final/summary.json",
+    "pilot": "results/qwen-fast-final-pilot/run.json"
+  }
+}
