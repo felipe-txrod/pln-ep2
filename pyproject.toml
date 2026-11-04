@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ep2-gpt-classifier"
+version = "0.1.0"
+description = "Classificação de clareza e-SIC com GPT e avaliação pareada"
+requires-python = ">=3.11"
+dependencies = ["openpyxl==3.1.5", "numpy==2.3.3", "scipy==1.16.2", "scikit-learn==1.7.2"]
+
+[project.optional-dependencies]
+api = ["openai>=2.0,<3"]
+dev = ["pytest>=8.4,<10", "httpx>=0.28,<1", "openai>=2.0,<3"]
+
+[project.scripts]
+classifica-ep2 = "gpt_classifier.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
