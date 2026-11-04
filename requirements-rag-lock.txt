@@ -1,0 +1,12 @@
+# Complemento opcional do ambiente base, validado com Python 3.14 em CPU.
+-r requirements-lock.txt
+click==8.5.0
+filelock==4.2.8
+flatbuffers==25.12.19
+fsspec==2026.9.0
+hf-xet==1.8.0
+huggingface_hub==1.33.0
+onnxruntime==1.31.1
+protobuf==7.36.2
+PyYAML==6.0.3
+tokenizers==0.23.3

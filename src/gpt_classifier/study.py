@@ -13,12 +13,14 @@ from .selection import development_split
 
 
 def develop(records, config: Config, *, output_dir: Path, cache_path: Path,
-            limit: int = 150, dry_run: bool = False, backend=None, provenance=None):
+            limit: int = 150, dry_run: bool = False, backend=None, provenance=None, retrieval_cache=None):
     bank, validation = development_split(records, seed=config.seed, limit=limit)
     configs = [replace(config, strategy="zero", per_class=0),
                replace(config, strategy="representative", per_class=1),
                replace(config, strategy="similar", per_class=1),
                replace(config, strategy="similar", per_class=2)]
+    if config.strategy == "hybrid":
+        configs.append(replace(config, strategy="hybrid", per_class=1))
     identity = {"configs": [c.to_dict() for c in configs], "limit": limit, "dry_run": dry_run,
                 "data_sha256": digest(canonical([(r.excel_row, r.text, r.label) for r in records]))}
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -35,7 +37,7 @@ def develop(records, config: Config, *, output_dir: Path, cache_path: Path,
             directory = output_dir / f"candidate-{index:02d}"
             predictions = run([Text(r.excel_row, r.text) for r in validation], bank, candidate,
                               output_dir=directory, cache_path=cache_path, dry_run=dry_run,
-                              backend=backend, provenance=provenance)
+                              backend=backend, provenance=provenance, retrieval_cache=retrieval_cache)
             if not dry_run:
                 manifest = json.loads((directory / "run.json").read_text(encoding="utf-8"))
                 result = {"candidate": directory.name, "config": candidate.to_dict(),

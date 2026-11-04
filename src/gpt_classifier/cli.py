@@ -14,6 +14,7 @@ from .explain import explain
 from .pipeline import environment, run
 from .prompt import Config
 from .study import develop
+from .embeddings import DEFAULT_CACHE, prepare_model
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -30,6 +31,19 @@ def parser():
     sub = parser.add_subparsers(dest="command", required=True)
     audit = sub.add_parser("audit", help="Inspeção local de planilhas; nenhuma chamada GPT")
     audit.add_argument("--output", type=Path)
+    prepare = sub.add_parser("prepare-retrieval", help="Baixar encoder público fixado; não envia dados da base")
+    prepare.add_argument("--retrieval-cache", type=Path, default=DEFAULT_CACHE)
+    retrieval = sub.add_parser("retrieval-study", help="Diagnóstico local e piloto pareado de recuperação; treino somente")
+    retrieval.add_argument("--train", type=Path, default=ROOT / "data/train_ep1.xlsx")
+    retrieval.add_argument("--config", type=Path, default=ROOT / "configs/codex-hibrido-experimental.json")
+    retrieval.add_argument("--output-dir", type=Path, required=True)
+    retrieval.add_argument("--retrieval-cache", type=Path, default=DEFAULT_CACHE)
+    retrieval.add_argument("--local-limit", type=int, default=300)
+    retrieval.add_argument("--pilot-limit", type=int, default=12)
+    retrieval.add_argument("--max-new-requests", type=int, default=8)
+    retrieval.add_argument("--execute", action="store_true", help="Autorizar piloto GPT; padrão é diagnóstico local e prévia")
+    retrieval.add_argument("--codex-bin", default="codex")
+    retrieval.add_argument("--timeout", type=float, default=300)
     for name in ("develop", "predict"):
         p = sub.add_parser(name, help="Grade interna no treino" if name == "develop" else "Classificar sem enviar gabarito")
         p.add_argument("--train", type=Path, default=ROOT / "data/train_ep1.xlsx")
@@ -38,6 +52,8 @@ def parser():
         p.add_argument("--model", help="Modelo explícito, gravado na configuração efetiva")
         p.add_argument("--batch-size", type=int, help="Textos por execução Codex (1 a 8); padrão da configuração")
         p.add_argument("--prompt-profile", choices=("original", "empirical"), help="Variante explícita do prompt")
+        p.add_argument("--strategy", choices=("zero", "similar", "representative", "hybrid"), help="Substituir estratégia; zero ajusta per_class=0")
+        p.add_argument("--retrieval-cache", type=Path, default=DEFAULT_CACHE)
         p.add_argument("--codex-bin", default="codex", help="Executável Codex CLI (backend codex)")
         p.add_argument("--output-dir", type=Path, required=True)
         p.add_argument("--cache", type=Path, default=ROOT / ".cache/responses.sqlite3")
@@ -74,6 +90,20 @@ def parser():
 
 
 def execute(args):
+    if args.command == "prepare-retrieval":
+        return prepare_model(args.retrieval_cache)
+    if args.command == "retrieval-study":
+        from .retrieval_study import retrieval_study
+        train, info = read_xlsx(args.train, labeled=True)
+        config = Config.load(args.config)
+        if config.backend != "codex" or config.strategy != "hybrid":
+            raise ValueError("retrieval-study exige configuração Codex com strategy=hybrid.")
+        backend = make_backend(config, codex_bin=args.codex_bin, timeout=args.timeout,
+                               max_requests=args.max_new_requests)
+        return retrieval_study(train, config, output_dir=args.output_dir,
+                               retrieval_cache=args.retrieval_cache, local_limit=args.local_limit,
+                               pilot_limit=args.pilot_limit, execute=args.execute, backend=backend,
+                               max_new_requests=args.max_new_requests, provenance={"train_info": info})
     if args.command == "audit":
         report = {p.name: describe(p, labeled=p.name not in {"test1.xlsx", "test2.xlsx"}) for p in sorted((ROOT / "data").glob("*.xlsx"))}
         if args.output:
@@ -90,6 +120,9 @@ def execute(args):
             config = replace(config, batch_size=args.batch_size)
         if args.prompt_profile:
             config = replace(config, prompt_profile=args.prompt_profile)
+        if args.strategy:
+            config = replace(config, strategy=args.strategy,
+                             per_class=0 if args.strategy == "zero" else max(1, config.per_class))
         train, train_info = read_xlsx(args.train, labeled=True)
         backend = make_backend(config, codex_bin=args.codex_bin, timeout=args.timeout, retries=args.retries,
                                max_requests=args.max_new_requests, min_interval=args.min_interval)
@@ -98,7 +131,8 @@ def execute(args):
             if args.limit < 3:
                 raise ValueError("limit deve ser >=3.")
             return develop(train, config, output_dir=args.output_dir, cache_path=args.cache,
-                           limit=args.limit, dry_run=args.dry_run, backend=backend, provenance=provenance)
+                           limit=args.limit, dry_run=args.dry_run, backend=backend, provenance=provenance,
+                           retrieval_cache=args.retrieval_cache)
         if args.train.resolve() == args.input.resolve():
             raise ValueError("Treino e entrada de teste devem ser arquivos distintos.")
         texts, info = read_xlsx(args.input)  # Labels are never read into prediction records.
@@ -118,7 +152,8 @@ def execute(args):
             provenance["test2_run_fingerprint"] = previous["fingerprint"]
         provenance.update(input=str(args.input.resolve()), input_info=info, phase=args.phase)
         predictions = run(texts, train, config, output_dir=args.output_dir, cache_path=args.cache,
-                          dry_run=args.dry_run, backend=backend, provenance=provenance)
+                          dry_run=args.dry_run, backend=backend, provenance=provenance,
+                          retrieval_cache=args.retrieval_cache)
         return {"status": "dry_run" if args.dry_run else "completed", "rows": len(texts),
                 "predictions": len(predictions), "output_dir": str(args.output_dir.resolve())}
     if args.command == "evaluate":

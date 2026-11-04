@@ -5,7 +5,7 @@ O pipeline oferece dois backends: **API Responses** com o SDK Python oficial e
 Recebe `resp_text`, retorna uma classe entre `c1`, `c234` e `c5`, sem fine-tuning.
 Na API, o snapshot inicial é `gpt-5.4-mini-2026-03-17` (`configs/gpt.json`).
 No Codex, a configuração inicial usa `gpt-6.1-sol` (`configs/codex.json`).
-As configurações são hipóteses iniciais, ainda sem acurácia preditiva medida.
+O primeiro resultado e as variantes experimentais estão descritos abaixo.
 
 **Regra do enunciado:** teste2 (897 linhas) é a entrega; teste1 (900 linhas) fica
 reservado à comparação final por McNemar. A busca de exemplos/prompts usa somente
@@ -124,6 +124,56 @@ classificação ausente do cache. **Sem chave é possível auditar, executar tod
 os testes e preparar requests com `--dry-run`.**
 
 ## Preparação e desenvolvimento
+
+### Recuperação híbrida de exemplos (RAG experimental)
+
+`strategy=hybrid` combina TF-IDF e embeddings locais do multilingual E5-small.
+O encoder tem revisão fixada e executa em CPU via ONNX, sem API de embeddings.
+O prompt continua com um exemplo inteiro por classe (três no total), filtrando
+textos repetidos, conflitantes e o próprio alvo. Os padrões anteriores continuam
+disponíveis. Consulte [método e avaliação](docs/recuperacao-hibrida.md).
+
+```bash
+# Instalação reproduzível do complemento opcional:
+.venv/bin/python -m pip install -r requirements-rag-lock.txt
+.venv/bin/python -m pip install --no-deps -e .
+# Alternativa com resolução das dependências: pip install -e '.[rag]'
+
+# Só baixa os pesos públicos. Não envia textos da base:
+.venv/bin/python -m gpt_classifier prepare-retrieval
+
+# Diagnóstico local (300 registros) e prévia do piloto, sem chamadas GPT:
+.venv/bin/python -m gpt_classifier retrieval-study \
+  --output-dir results/retrieval-hibrida
+
+# Mesmo estudo e mesma amostra; até oito novas execuções Codex:
+.venv/bin/python -m gpt_classifier retrieval-study --execute \
+  --max-new-requests 8 --output-dir results/retrieval-hibrida
+```
+
+O piloto compara 12 textos do treino, com o mesmo prompt e lotes de três nos
+dois braços. A prévia verifica quantas chamadas serão necessárias e recusa
+iniciar se exceder o teto. Ele não escolhe automaticamente uma configuração
+nem demonstra ganho de generalização. Uma execução interrompida pode ser
+retomada com o mesmo comando. Modelos e vetores ficam em `.cache/retrieval/`;
+`--retrieval-cache` muda esse local. `predict` nunca baixa modelos implicitamente.
+
+Para preparar predições experimentais, sem iniciar classificação:
+
+```bash
+.venv/bin/python -m gpt_classifier predict \
+  --config configs/codex-hibrido-experimental.json --dry-run \
+  --output-dir results/test2-hibrido-preview
+```
+
+Para usar a mesma recuperação com API, acrescente `--strategy hybrid` ao comando
+com `configs/gpt.json` (mantém `batch_size=1`). Em `develop`, uma configuração
+híbrida acrescenta um quinto candidato à grade original; isso pode consumir
+muitas chamadas. Prefira o piloto limitado antes de executar a grade.
+Mudanças no código/ambiente invalidam a identidade de execuções anteriores:
+preserve os resultados completos existentes e use novos diretórios.
+
+### Resultados anteriores
 
 O primeiro resultado real e o piloto de eficiência estão documentados na
 [análise de 04/11/2026](docs/analise-primeiro-resultado-gpt.md): o GPT obteve

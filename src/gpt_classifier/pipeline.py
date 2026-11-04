@@ -11,12 +11,12 @@ from .backend import API_BASE, Cache, make_backend, file_lock
 from .data import Example, Text, canonical, digest, file_digest, write_json, write_jsonl
 from .prompt import Config, build_request, validate_response
 from .batching import prepare_batches
-from .selection import Selector
+from .selection import make_selector
 
 
 def environment():
     packages = {}
-    for name in ("openai", "openpyxl", "numpy", "scipy", "scikit-learn"):
+    for name in ("openai", "openpyxl", "numpy", "scipy", "scikit-learn", "onnxruntime", "tokenizers", "huggingface-hub"):
         try:
             packages[name] = importlib.metadata.version(name)
         except importlib.metadata.PackageNotFoundError:
@@ -26,7 +26,8 @@ def environment():
 
 
 def run(records: list[Text], bank: list[Example], config: Config, *, output_dir: Path,
-        cache_path: Path, dry_run: bool = False, backend=None, provenance: dict | None = None):
+        cache_path: Path, dry_run: bool = False, backend=None, provenance: dict | None = None,
+        retrieval_cache: Path | None = None):
     if not records or any(type(r) is not Text for r in records):
         raise ValueError("Inferência exige registros sem rótulos.")
     if len({r.excel_row for r in records}) != len(records):
@@ -37,10 +38,13 @@ def run(records: list[Text], bank: list[Example], config: Config, *, output_dir:
         raise ValueError("O backend não corresponde à configuração.")
     backend_info = backend.metadata() if hasattr(backend, "metadata") else {"kind": config.backend, "endpoint": API_BASE}
     env = environment()
+    selector = make_selector(bank, config, retrieval_cache=retrieval_cache)
     identity = {"config": config.to_dict(), "endpoint": backend_info["endpoint"], "backend": backend_info, "dry_run": dry_run,
                 "texts_sha256": digest(canonical([(r.excel_row, r.text) for r in records])),
                 "bank_sha256": digest(canonical([(r.excel_row, r.text, r.label) for r in bank])),
                 "environment": env, "provenance": provenance or {}}
+    if selector is not None and selector.embeddings is not None:
+        identity["retrieval"] = selector.summary
     fingerprint = digest(canonical(identity))
     with file_lock(output_dir / ".lock"), file_lock(cache_path.with_suffix(".lock")):
         manifest_path = output_dir / "run.json"
@@ -53,7 +57,8 @@ def run(records: list[Text], bank: list[Example], config: Config, *, output_dir:
         manifest = {**identity, "fingerprint": fingerprint, "status": "preparing",
                     "started_at": datetime.now(timezone.utc).isoformat(), "rows": len(records)}
         write_json(manifest_path, manifest)
-        selector = None if config.strategy == "zero" else Selector(bank, max_chars=config.max_example_chars)
+        if selector is not None:
+            selector.prepare_targets([r.text for r in records])
         requests, plans = [], []
         for record in records:
             examples = [] if selector is None else selector.select(record.text, strategy=config.strategy, per_class=config.per_class)

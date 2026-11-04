@@ -50,6 +50,8 @@ class Config:
     prompt_profile: str = "original"
     model: str = "gpt-5.4-mini-2026-03-17"
     strategy: str = "similar"
+    hybrid_semantic_weight: float = 0.5
+    hybrid_length_weight: float = 0.0
     per_class: int = 1
     max_example_chars: int = 1600
     max_text_chars: int = 14000
@@ -70,8 +72,12 @@ class Config:
             raise ValueError("prompt_profile deve ser original ou empirical.")
         if not isinstance(self.model, str) or not self.model.strip():
             raise ValueError("model precisa ser uma string não vazia.")
-        if self.strategy not in {"zero", "similar", "representative"}:
-            raise ValueError("strategy deve ser zero, similar ou representative.")
+        if self.strategy not in {"zero", "similar", "representative", "hybrid"}:
+            raise ValueError("strategy deve ser zero, similar, representative ou hybrid.")
+        for name in ("hybrid_semantic_weight", "hybrid_length_weight"):
+            value = getattr(self, name)
+            if type(value) not in (int, float) or not math.isfinite(value) or not 0 <= value <= 1:
+                raise ValueError(f"{name} deve ser um número finito entre 0 e 1.")
         if type(self.per_class) is not int or not 0 <= self.per_class <= 8:
             raise ValueError("per_class deve estar entre 0 e 8.")
         if (self.strategy == "zero") != (self.per_class == 0):

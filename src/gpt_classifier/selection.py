@@ -42,9 +42,10 @@ def development_split(records: list[Example], *, seed: int = 42, limit: int = 15
 
 
 class Selector:
-    """Train-only lexical retrieval with class balance and diversity penalty."""
+    """Train-only lexical/hybrid retrieval with class balance and diversity."""
 
-    def __init__(self, records: list[Example], *, max_chars: int = 1600):
+    def __init__(self, records: list[Example], *, max_chars: int = 1600, embeddings=None,
+                 semantic_weight: float = 0.5, length_weight: float = 0.0):
         groups = defaultdict(list)
         for r in records:
             if r.label not in LABELS:
@@ -71,15 +72,55 @@ class Selector:
             center = np.asarray(self.matrix[indices].mean(axis=0)).ravel()
             center /= max(np.linalg.norm(center), 1e-12)
             self.centrality[indices] = np.asarray(self.matrix[indices] @ center).ravel()
+        self.embeddings = embeddings
+        self.semantic_weight, self.length_weight = semantic_weight, length_weight
+        self.semantic_matrix = None
+        self.lengths = np.log1p([len(clean(r.text)) for r in self.records])
+        if embeddings is not None:
+            self.semantic_matrix = embeddings.encode([r.text for r in self.records])
+            self.summary.update(semantic_encoder=embeddings.metadata, fusion="weighted_rrf_k60_per_class",
+                                semantic_weight=semantic_weight, length_weight=length_weight)
+
+    def prepare_targets(self, texts: list[str]):
+        if self.embeddings is not None:
+            self.embeddings.encode(texts)  # Batch once, then per-target reads reuse the cache.
+
+    @staticmethod
+    def _rank_scores(values):
+        # Equal scores share a rank; zero lexical matches cannot bias fusion by row order.
+        from scipy.stats import rankdata
+        ranks = rankdata(-values, method="min")
+        return 61.0 / (60.0 + ranks)
+
+    def relevance(self, text: str, *, strategy: str, balanced: bool = True):
+        if strategy == "representative":
+            return self.centrality
+        lexical = (self.matrix @ self.vectorizer.transform([clean(text)]).T).toarray().ravel()
+        if strategy != "hybrid":
+            return lexical
+        if self.embeddings is None:
+            raise ValueError("Estratégia hybrid exige encoder local.")
+        semantic = self.semantic_matrix @ self.embeddings.encode([text])[0]
+        scores = np.zeros(len(self.records))
+        target_group = group(text)
+        partitions = self.indices.values() if balanced else [np.arange(len(self.records))]
+        for indices in partitions:
+            eligible = indices[np.array([self.group_ids[i] != target_group for i in indices])]
+            fused = ((1 - self.semantic_weight) * self._rank_scores(lexical[eligible])
+                     + self.semantic_weight * self._rank_scores(semantic[eligible]))
+            if self.length_weight:
+                length_similarity = np.exp(-np.abs(self.lengths[eligible] - np.log1p(len(clean(text)))))
+                fused = (1 - self.length_weight) * fused + self.length_weight * length_similarity
+            scores[eligible] = fused
+        return scores
 
     def select(self, text: str, *, strategy: str, per_class: int) -> list[Example]:
         if strategy == "zero":
             return []
-        if strategy not in {"similar", "representative"} or per_class < 1:
+        if strategy not in {"similar", "representative", "hybrid"} or per_class < 1:
             raise ValueError("Seleção inválida.")
         target_group = group(text)
-        relevance = self.centrality if strategy == "representative" else (
-            self.matrix @ self.vectorizer.transform([clean(text)]).T).toarray().ravel()
+        relevance = self.relevance(text, strategy=strategy)
         chosen = {label: [] for label in LABELS}
         for label, indices in self.indices.items():
             eligible = [int(i) for i in indices if self.group_ids[i] != target_group]
@@ -89,9 +130,23 @@ class Selector:
                 scores = relevance[eligible].copy()
                 if chosen[label]:
                     redundant = (self.matrix[eligible] @ self.matrix[chosen[label]].T).toarray().max(axis=1)
+                    if strategy == "hybrid":
+                        semantic_redundant = (self.semantic_matrix[eligible] @ self.semantic_matrix[chosen[label]].T).max(axis=1)
+                        redundant = (1 - self.semantic_weight) * redundant + self.semantic_weight * semantic_redundant
                     scores = 0.8 * scores - 0.2 * redundant
                 best = eligible[int(np.argmax(scores))]  # Ties use stable Excel order.
                 chosen[label].append(best)
                 eligible.remove(best)
         # Interleave classes, avoiding a block of last-class demonstrations.
         return [self.records[chosen[label][k]] for k in range(per_class) for label in LABELS]
+
+
+def make_selector(records, config, *, retrieval_cache=None):
+    if config.strategy == "zero":
+        return None
+    embeddings = None
+    if config.strategy == "hybrid":
+        from .embeddings import DEFAULT_CACHE, LocalEmbeddings
+        embeddings = LocalEmbeddings(DEFAULT_CACHE if retrieval_cache is None else retrieval_cache)
+    return Selector(records, max_chars=config.max_example_chars, embeddings=embeddings,
+                    semantic_weight=config.hybrid_semantic_weight, length_weight=config.hybrid_length_weight)
