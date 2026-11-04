@@ -101,7 +101,7 @@ concluídas após interrupções. JSON é validado também localmente; nenhuma f
 rótulo majoritário. Retentativas são limitadas e só para falhas transitórias.
 Os rótulos do alvo não integram sequer o objeto aceito pelo construtor de requests.
 
-## Extensão solicitada: Codex CLI
+## Backend Codex CLI
 
 Além da API, há o backend `codex`, selecionável na CLI ou em configuração.
 Usa `codex exec` com autenticação do próprio CLI, inclusive login ChatGPT, sem
@@ -141,7 +141,7 @@ Fontes adicionais: [execução não interativa](https://learn.chatgpt.com/docs/n
 reservado; tais overrides não são utilizados. Não se afirma ter desativado
 retentativas internas do Codex.
 
-## Comparação isolada solicitada pelo usuário
+## Comparação isolada de teste1
 
 Após a inclusão de `data/test1.xlsx`, foi acrescentado o modo `comparison` para
 classificar suas 900 respostas sem exigir uma execução anterior de teste2.

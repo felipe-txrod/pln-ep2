@@ -31,7 +31,7 @@ ignoradas pelo Git. Os previews originais correspondem ao código anterior à
 extensão Codex; novos experimentos devem usar diretórios novos. Textos de treino,
 teste, planilhas e artefatos do EP1 não foram alterados.
 
-**Não foi medida acurácia GPT:** `OPENAI_API_KEY` não estava configurada.
+**Esta etapa não mediu acurácia GPT.**
 Respostas simuladas dos testes são fixtures de software e não evidência de
 qualidade do classificador. A acurácia 48,0% do EP1 no teste1 foi recalculada a
 partir da entrega existente, exclusivamente como referência histórica. Ainda
@@ -41,7 +41,7 @@ entrega dependem desses resultados e dos dados do grupo.
 
 ## Verificação da extensão Codex
 
-- Codex CLI local: **0.165.0**, sessão autenticada com ChatGPT.
+- Codex CLI: **0.165.0**, com backend de autenticação ChatGPT.
 - Chamada real de integração: uma frase sintética, zero-shot, `gpt-6.1-sol`,
   reasoning `low`, sem `OPENAI_API_KEY`, sem acesso às bases oficiais pelo modelo.
   Retorno validado: `{"label":"c5"}`. Usage informado: 5.724 tokens de entrada,
@@ -79,7 +79,7 @@ linhas, deduplicação, teto de bytes e retomada somente dos lotes pendentes.
 
 O resultado completo de teste1 foi analisado: GPT 382/900 contra NorBERTo
 432/900. Os arquivos originais e seus dados foram preservados. Foi executado
-um piloto autorizado com exatamente dez processos Codex e seis alvos retirados
+um piloto com dez processos Codex e seis alvos retirados
 do treino, em três variantes. Os lotes de três reduziram o consumo observado
 de entrada, mas o piloto não demonstrou ganho de acurácia. Nenhuma configuração
 nova foi promovida. A análise, os custos e as limitações estão em
@@ -110,7 +110,7 @@ para experimentos seguintes.
 
 ## Comparação em lotes nos 300 registros — 04/11/2026
 
-- Ampliação solicitada pelo usuário, com teto explícito de 200 processos e
+- Comparação com teto de 200 processos e
   três textos por chamada. O orçamento padrão continua oito; testes confirmam
   a aceitação do orçamento maior, a rejeição de valores inválidos e a
   preservação dos padrões.

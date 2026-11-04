@@ -88,7 +88,7 @@ explicações internas do GPT. Uma recuperação só por assunto pode selecionar
 textos similares sem transmitir bem o critério subjetivo de avaliação.
 Pesos e contribuições locais estão em `results/comparison-test1-codex/interpretation-local.json`.
 
-## Custo real e piloto limitado pelo usuário
+## Consumo e piloto em lotes
 
 O histórico da execução completa registra **5.642.206 tokens de entrada**,
 dos quais 3.087.744 informados como cache remoto, e 29.040 de saída, em 879
@@ -102,7 +102,7 @@ do lote são enviados uma única vez; cada alvo tem um ID opaco e referências
 rejeita duplicatas, omissões, IDs desconhecidos e classes inválidas, e restaura
 a ordem original. Há cache por lote e retomada sem refazer lotes completos.
 
-O usuário autorizou poucas novas chamadas. O piloto consumiu **exatamente dez
+O piloto consumiu **dez
 processos Codex**, com seis registros do treino, dois por classe, excluindo do
 banco o fold inteiro de validação. Não leu gabarito de teste1 ou teste2 para
 construir os requests. Não foram feitas outras chamadas após o teto.
@@ -127,7 +127,7 @@ nem assumir que os lotes preservem todas as decisões do modo individual.
 
 Resultados: `results/pilot-efficiency-20261104/report.json`; reprodução em
 `scripts/pilot_efficiency.py`, com dry-run como padrão e limite de dez processos.
-O comando com `--execute` pode consumir o plano; não foi repetido nesta análise.
+O comando com `--execute` consome chamadas do plano.
 
 ## Próximas melhorias, por prioridade
 
@@ -150,9 +150,9 @@ O comando com `--execute` pode consumir o plano; não foi repetido nesta anális
    Não selecionar limiares/contagens de classe por este resultado nem prometer
    que uma nova rodada no mesmo teste1 seja uma confirmação independente.
 
-O primeiro passo concreto recomendado é um estudo local de uma cascata,
-com uma pequena amostra do treino para medir quando o GPT acrescenta acertos.
-Não recomendo gastar outra rodada de 900 chamadas no método atual.
+A próxima hipótese é uma cascata, avaliada em uma amostra do treino para medir
+quando o GPT acrescenta acertos. Os resultados não justificam repetir uma
+rodada de 900 chamadas com o método atual.
 
 ## Referências oficiais e mudanças de código
 

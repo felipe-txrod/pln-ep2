@@ -148,14 +148,12 @@ automaticamente e não usar o gabarito do teste1 para ajustar pesos ou prompts.
 Se houver uma próxima rodada, a hipótese precisa ser avaliada em amostra maior
 do treino com orçamento e critérios previamente definidos.
 
-Hardware: a preparação foi concluída em CPU. A NVIDIA MX550 de 2 GB estava
-acessível fora do sandbox, mas o ambiente instalado oferece somente o provider
-CPU; não houve instalação do runtime CUDA nesta rodada. Mais de 80% do cache
-já estava pronto quando a GPU foi autorizada, e a decisão foi reaproveitá-lo.
+Hardware: a preparação usou o provider CPU do ONNX Runtime, com reutilização
+do cache de embeddings.
 
-## Ampliação autorizada para 300 registros
+## Comparação em 300 registros
 
-O usuário solicitou ampliar o teste em lotes aos 300 registros do diagnóstico.
+O teste em lotes abrange os 300 registros do diagnóstico.
 Mantiveram-se seleção e prompt congelados, mesmo fold, seed 42, um exemplo por
 classe e `batch_size=3`. A única mudança operacional foi aceitar um orçamento
 explicitamente maior no comando; o padrão de oito chamadas continua preservado.

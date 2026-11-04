@@ -1,4 +1,6 @@
 .venv/
+.venv-qwen/
+.venv-lexical/
 __pycache__/
 *.egg-info/
 .pytest_cache/
@@ -9,3 +11,13 @@ __pycache__/
 results/*
 !results/README.md
 deliveries/
+artifacts/norberto-ep1/
+artifacts/svm-ep1/
+artifacts/rl-ep1/
+models/*/base_model/*.safetensors
+models/*/base_model/*.bin
+models/**/.freeze-*
+models/**/.base-download-*
+.agents/
+.codex/
+AGENTS.md
