@@ -1,0 +1,72 @@
+# Verificação da implementação — 03/11/2026
+
+Ambiente isolado `EP2/.venv`, Python 3.14.8, OpenAI SDK 2.54.0; dependências
+registradas em `requirements-lock.txt`. `pip check`: nenhuma incompatibilidade.
+Compilação dos módulos: sem erros.
+
+`python -m pytest -q`: **58 testes aprovados** após a extensão para Codex e a cópia de comparação de teste1. O transporte HTTP simulado usa o
+SDK oficial real e verifica o payload de `/v1/responses`, parsing, accounting de
+usage, retries transitórios, autenticação/quota sem retry e limite de tentativas.
+Também se verificam ausência de gabarito nos requests, partições agrupadas,
+seleção balanceada, recusas e JSON inválido, retomada de execução interrompida,
+cache de duplicatas, grade completa com seleção e empate, McNemar bilateral e
+direção do ganho, alinhamento dos 900 textos da entrega EP1 e exportação das 897
+linhas em arquivo temporário. Na exportação, apenas o XML da primeira planilha
+mudou no ZIP; as demais entradas ficaram idênticas, inclusive os estilos.
+
+Execuções locais com dados reais, **sem chamadas de API**:
+
+| Verificação | Resultado |
+|---|---|
+| `audit` nas quatro bases | concluída, 20.092 exemplos de treino; teste1=900; teste2=897 |
+| `develop --limit 150 --dry-run` | quatro candidatos preparados, 146 requests distintos por candidato |
+| Banco interno da partição | 16.010 linhas; 11.661 exemplos elegíveis para recuperação |
+| `predict --dry-run` de teste2 | 897 linhas; 862 requests distintos; zero alvos truncados |
+| Banco final | 20.092 linhas; 14.597 exemplos elegíveis para recuperação |
+| Estado das execuções | `dry_run`; nenhum arquivo de previsões fictícias publicado |
+
+Os planos ficam em `results/development-preview/` e `results/test2-preview/`;
+a inspeção das bases fica em `results/data-audit.json`. São saídas locais
+ignoradas pelo Git. Os previews originais correspondem ao código anterior à
+extensão Codex; novos experimentos devem usar diretórios novos. Textos de treino,
+teste, planilhas e artefatos do EP1 não foram alterados.
+
+**Não foi medida acurácia GPT:** `OPENAI_API_KEY` não estava configurada.
+Respostas simuladas dos testes são fixtures de software e não evidência de
+qualidade do classificador. A acurácia 48,0% do EP1 no teste1 foi recalculada a
+partir da entrega existente, exclusivamente como referência histórica. Ainda
+precisam ser executados o estudo autenticado, teste2 e a comparação final para
+afirmar qualquer melhora. O relatório acadêmico, a apresentação PDF e o ZIP da
+entrega dependem desses resultados e dos dados do grupo.
+
+## Verificação da extensão Codex
+
+- Codex CLI local: **0.165.0**, sessão autenticada com ChatGPT.
+- Chamada real de integração: uma frase sintética, zero-shot, `gpt-6.1-sol`,
+  reasoning `low`, sem `OPENAI_API_KEY`, sem acesso às bases oficiais pelo modelo.
+  Retorno validado: `{"label":"c5"}`. Usage informado: 5.724 tokens de entrada,
+  16 tokens de saída, nenhum token de entrada em cache remoto. Não é uma medida
+  de acurácia. O fluxo de invocação foi mantido após ajustes locais de validação
+  e metadados; as execuções de software seguintes usam subprocesso simulado.
+- `predict --backend codex --dry-run`: plano completo das **897** linhas de
+  teste2 em `results/test2-codex-preview/`, com **862** requests distintos,
+  zero alvos truncados e nenhuma classificação remota iniciada. O manifesto
+  registra a configuração final, o runtime e hashes do adaptador.
+- Novos testes usam executável real de subprocesso com implementação simulada,
+  sem rede: stdin sem interpolação shell, diretório temporário, flags de
+  isolamento, ausência de import do SDK/chave, orçamento, versão ausente/antiga,
+  timeout com encerramento do processo, saída inválida, eventos de ferramenta,
+  falha, ausência de conclusão/usage, cache/retomada e separação API/Codex.
+- O SDK OpenAI passou a ser dependência opcional `[api]`; a instalação editável
+  foi atualizada. O lock completo continua incluindo API e testes.
+
+A classificação integral de treino/desenvolvimento/teste2/teste1 via Codex não
+foi iniciada. Esse processamento pode ser feito pelos comandos documentados,
+observando os limites da conta. A integração validada não demonstra melhora
+sobre o NorBERTo.
+
+O fluxo isolado de teste1 também foi verificado: classificação simulada das 900
+linhas, exportação de uma cópia XLSX, avaliação contra o gabarito e rejeição de
+teste1 como entrega oficial. O teste confere preservação da entrada e recusa
+exportar a partir do gabarito. Nenhuma classificação remota das bases oficiais
+foi executada nessa verificação.
