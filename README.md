@@ -1,14 +1,39 @@
 # EP2 — Classificação de clareza com GPT pelo terminal
 
+**Experimento atual:** fine-tuning supervisionado do Qwen3-1.7B.
+A RX 6650 XT usa o override gfx1030. Consulte
+[instalação, compatibilidade, treino e inferência](docs/qwen-finetuning.md).
+A implementação GPT e os resultados abaixo permanecem como referência histórica.
+
+O modelo definitivo já treinado do EP1 também está disponível no pacote
+[`src/norberto_classifier`](src/norberto_classifier/README.md), exclusivamente
+para inferência, com cópia local da base e do adapter oficial.
+
+Os classificadores lexicais já treinados do EP1 estão em
+[`svm_classifier`](src/svm_classifier/README.md), com `C=0.05`, e
+[`rl_classifier`](src/rl_classifier/README.md), com `C=0.25`.
+Ambos reutilizam o TF-IDF salvo e executam exclusivamente em CPU.
+
+Frozen inference artifacts for SVM, logistic regression, and NorBERTo are
+versionable under [`models/`](models/README.md), alongside GPT configuration
+and prompt snapshots. The public NorBERTo base uses a pinned revision and
+SHA-256 checksums; restore it with `python3 scripts/prepare-model-base.py`.
+Qwen retains its own artifact directories.
+
+O [plano de ensemble extensível](docs/ensemble.md) descreve o contrato comum,
+a combinação de Qwen e NorBERTo sem retreino, com GPT inicialmente apenas
+para resolver divergências entre os rótulos e avaliação final no teste1 rotulado.
+`ensemble_classifier` combina arquivos de previsões com seleção por
+`--models qwen norberto svm rl`; os membros e o árbitro são selecionados separadamente.
+O árbitro é selecionável por `--tiebreaker`, com `gpt` como padrão. A arquitetura
+permite adicionar outros classificadores.
+
 O pipeline oferece dois backends: **API Responses** com o SDK Python oficial e
 **Codex CLI** com `codex exec`, ambos com JSON Schema estrito.
 Recebe `resp_text`, retorna uma classe entre `c1`, `c234` e `c5`, sem fine-tuning.
 Na API, o snapshot inicial é `gpt-5.4-mini-2026-03-17` (`configs/gpt.json`).
 No Codex, a configuração inicial usa `gpt-6.1-sol` (`configs/codex.json`).
 O primeiro resultado e as variantes experimentais estão descritos abaixo.
-
-Para continuar o trabalho em outra sessão, consulte [AGENTS.md](AGENTS.md) e o
-[contexto persistente](.agents/CONTEXT.md), com decisões, resultados e retomada.
 
 **Regra do enunciado:** teste2 (897 linhas) é a entrega; teste1 (900 linhas) fica
 reservado à comparação final por McNemar. A busca de exemplos/prompts usa somente

@@ -23,6 +23,7 @@ qwen-ep2 = "qwen_classifier.cli:main"
 norberto-ep2 = "norberto_classifier.cli:main"
 svm-ep2 = "svm_classifier.cli:main"
 rl-ep2 = "rl_classifier.cli:main"
+ensemble-ep2 = "ensemble_classifier.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

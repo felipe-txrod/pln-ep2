@@ -1,0 +1,12 @@
+{
+  "models": ["qwen", "norberto"],
+  "strategy": "consensus",
+  "tiebreaker": "gpt",
+  "gpt_config": "configs/gpt.json",
+  "members": {
+    "qwen": {"run": "results/qwen-test2", "adapter": "results/qwen-fast-training/adapter"},
+    "norberto": {"run": "results/norberto-test2"},
+    "svm": {"run": "results/svm-test2"},
+    "rl": {"run": "results/rl-test2"}
+  }
+}
