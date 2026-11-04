@@ -172,3 +172,21 @@ def test_pipeline_hybrid_metadata_and_model_change_refuses_resume(tmp_path, bank
     monkeypatch.setattr(FakeEmbeddings, "metadata", {"model": "fixture", "revision": "changed"})
     with pytest.raises(ValueError, match="outro experimento"):
         run(records, bank, config, dry_run=True, **kwargs)
+
+
+def test_explicit_larger_study_budget_and_default_remain_separate(tmp_path, bank, monkeypatch):
+    from gpt_classifier import embeddings
+    from gpt_classifier.cli import parser
+    monkeypatch.setattr(embeddings, "LocalEmbeddings", FakeEmbeddings)
+    config = Config(backend="codex", max_output_tokens=None, batch_size=3, strategy="hybrid")
+    backend = MockBackend()
+    kwargs = dict(output_dir=tmp_path / "expanded", retrieval_cache=tmp_path / "embeddings",
+                  local_limit=9, pilot_limit=6, backend=backend)
+    report = retrieval_study(bank, config, execute=True, max_new_requests=200, **kwargs)
+    assert report["status"] == "completed" and backend.attempts <= 4
+    assert report["max_new_requests"] == 200
+    defaults = parser().parse_args(["retrieval-study", "--output-dir", str(tmp_path)])
+    assert defaults.max_new_requests == 8 and defaults.pilot_limit == 12
+    for budget in (-1, True, 2.5):
+        with pytest.raises(ValueError, match="inteiro não negativo"):
+            retrieval_study(bank, config, max_new_requests=budget, **kwargs)

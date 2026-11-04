@@ -1,4 +1,4 @@
-"""Train-only retrieval diagnostics and an explicitly bounded paired GPT pilot."""
+"""Train-only retrieval diagnostics and an explicitly bounded paired GPT study."""
 from __future__ import annotations
 
 import json
@@ -49,8 +49,10 @@ def retrieval_study(records, config, *, output_dir: Path, retrieval_cache: Path,
                     backend, max_new_requests: int = 8, provenance=None):
     if config.strategy != "hybrid" or config.backend != "codex":
         raise ValueError("Estudo exige configuração Codex/hybrid.")
-    if not 3 <= pilot_limit <= local_limit or not 0 <= max_new_requests <= 12:
-        raise ValueError("Exija 3 <= pilot_limit <= local_limit e orçamento entre 0 e 12 chamadas.")
+    if not 3 <= pilot_limit <= local_limit:
+        raise ValueError("Exija 3 <= pilot_limit <= local_limit.")
+    if type(max_new_requests) is not int or max_new_requests < 0:
+        raise ValueError("O orçamento de chamadas deve ser inteiro não negativo.")
     output_dir.mkdir(parents=True, exist_ok=True)
     identity = {"config": config.to_dict(), "local_limit": local_limit, "pilot_limit": pilot_limit,
                 "max_new_requests": max_new_requests, "environment": environment(),
@@ -95,7 +97,7 @@ def retrieval_study(records, config, *, output_dir: Path, retrieval_cache: Path,
                 return previous  # A later preview must not erase measured results.
         report = {"status": "preview", "diagnostic": diagnostic, "previews": previews,
                   "pilot_rows": len(pilot), "planned_requests": planned, "max_new_requests": max_new_requests,
-                  "caveat": "Piloto pequeno e exploratório; não demonstra ganho de generalização nem seleciona método de produção. Ambos os braços usam o mesmo prompt e lote; difere somente a recuperação. Nenhum teste1/teste2 foi usado."}
+                  "caveat": "Comparação exploratória na validação interna do treino; não é avaliação independente em teste externo nem seleciona automaticamente método de produção. Ambos os braços usam o mesmo prompt e lote; difere somente a recuperação. Nenhum teste1/teste2 foi usado."}
         write_json(report_path, report)
         if not execute:
             return report

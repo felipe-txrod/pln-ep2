@@ -40,7 +40,8 @@ def parser():
     retrieval.add_argument("--retrieval-cache", type=Path, default=DEFAULT_CACHE)
     retrieval.add_argument("--local-limit", type=int, default=300)
     retrieval.add_argument("--pilot-limit", type=int, default=12)
-    retrieval.add_argument("--max-new-requests", type=int, default=8)
+    retrieval.add_argument("--max-new-requests", type=int, default=8,
+                           help="Teto compartilhado de processos Codex novos; padrão 8. Ampliação exige valor explícito.")
     retrieval.add_argument("--execute", action="store_true", help="Autorizar piloto GPT; padrão é diagnóstico local e prévia")
     retrieval.add_argument("--codex-bin", default="codex")
     retrieval.add_argument("--timeout", type=float, default=300)
