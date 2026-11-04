@@ -36,6 +36,8 @@ def parser():
         p.add_argument("--config", type=Path, help="Padrão: configs/gpt.json (API) ou configs/codex.json (Codex)")
         p.add_argument("--backend", choices=("api", "codex"), help="Selecione a API ou o Codex CLI autenticado")
         p.add_argument("--model", help="Modelo explícito, gravado na configuração efetiva")
+        p.add_argument("--batch-size", type=int, help="Textos por execução Codex (1 a 8); padrão da configuração")
+        p.add_argument("--prompt-profile", choices=("original", "empirical"), help="Variante explícita do prompt")
         p.add_argument("--codex-bin", default="codex", help="Executável Codex CLI (backend codex)")
         p.add_argument("--output-dir", type=Path, required=True)
         p.add_argument("--cache", type=Path, default=ROOT / ".cache/responses.sqlite3")
@@ -84,6 +86,10 @@ def execute(args):
             raise ValueError("--backend diverge do arquivo de configuração; use uma configuração correspondente.")
         if args.model:
             config = replace(config, model=args.model)
+        if args.batch_size is not None:
+            config = replace(config, batch_size=args.batch_size)
+        if args.prompt_profile:
+            config = replace(config, prompt_profile=args.prompt_profile)
         train, train_info = read_xlsx(args.train, labeled=True)
         backend = make_backend(config, codex_bin=args.codex_bin, timeout=args.timeout, retries=args.retries,
                                max_requests=args.max_new_requests, min_interval=args.min_interval)

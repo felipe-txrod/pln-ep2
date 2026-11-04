@@ -11,7 +11,7 @@ from email.utils import parsedate_to_datetime
 from pathlib import Path
 
 from .data import canonical, digest
-from .prompt import parse_response
+from .prompt import validate_response
 
 API_BASE = "https://api.openai.com/v1"
 
@@ -52,11 +52,11 @@ class Cache:
         if row[0] != canonical(request):
             raise ValueError("Cache inconsistente: payload divergente.")
         response = json.loads(row[1])
-        parse_response(response)
+        validate_response(request, response)
         return response
 
     def put(self, request: dict, response: dict):
-        parse_response(response)
+        validate_response(request, response)
         self.connection.execute("INSERT OR IGNORE INTO responses VALUES (?, ?, ?)",
                                 (self.key(request), canonical(request), canonical(response)))
         self.connection.commit()  # Each successful prediction survives an interrupted run.

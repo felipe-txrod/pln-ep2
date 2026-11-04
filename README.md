@@ -125,6 +125,43 @@ os testes e preparar requests com `--dry-run`.**
 
 ## Preparação e desenvolvimento
 
+O primeiro resultado real e o piloto de eficiência estão documentados na
+[análise de 04/11/2026](docs/analise-primeiro-resultado-gpt.md): o GPT obteve
+42,44% contra 48,00% do EP1. Ainda não há uma configuração nova com ganho de
+acurácia demonstrado. Evite repetir as 900 chamadas apenas para tentar outro
+prompt; faça o estudo no treino.
+
+### Lotes experimentais para economizar chamadas Codex
+
+O padrão continua sendo `batch_size=1` e `prompt_profile=original`. O modo em
+lote aceita de 2 a 8 textos por processo, com IDs, JSON validado, deduplicação
+de exemplos e retomada por cache. As opções são gravadas na configuração
+efetiva; devem permanecer iguais entre teste2 e teste1. O limite de bytes pode
+reduzir o tamanho de um lote sem truncar alvos adicionais.
+
+```bash
+# Preparar um estudo pequeno, sem consumir classificações remotas:
+.venv/bin/python -m gpt_classifier develop --backend codex \
+  --batch-size 3 --limit 6 --max-new-requests 10 --dry-run \
+  --output-dir results/development-lotes-preview
+```
+
+No piloto de seis textos, o modo em lote reduziu tokens, mas mudou algumas
+predições e não mostrou ganho de acurácia. Portanto, permanece experimental.
+`configs/codex-economico-experimental.json` usa também um prompt curto
+(`prompt_profile=empirical`); não substitui `configs/codex.json`.
+O comando de estudo acima prepara quatro candidatos, nominalmente até oito
+execuções com lotes de três; se o limite de bytes exigir lotes menores, o teto
+`--max-new-requests` ainda interrompe a execução antes de exceder dez processos.
+Lotes não são suportados pelo backend API nesta implementação.
+
+Para reproduzir o piloto pareado (individual/original em lote/curto em lote),
+`scripts/pilot_efficiency.py` prepara os requests por padrão. `--execute` inicia
+até dez processos Codex e pode consumir o plano. A amostra de seis registros
+serve apenas à triagem; não é suficiente para escolher o modelo final.
+
+### Grade de exemplos
+
 Inspecione as bases e prepare a grade sem consumir API:
 
 ```bash
@@ -265,7 +302,7 @@ dos autores após ler os casos, não do algoritmo.
 
 ## Robustez, eficiência e auditoria
 
-- Uma classificação por request e saída estrita `{"label":"c1|c234|c5"}`
+- Por padrão, uma classificação por request e saída estrita `{"label":"c1|c234|c5"}`
   (a string real é exatamente uma das três classes). Recusas, JSON inválido,
   chaves duplicadas e respostas incompletas interrompem sem inventar rótulos.
 - Poucos exemplos balanceados, um por grupo e sem rótulos conflitantes. Textos

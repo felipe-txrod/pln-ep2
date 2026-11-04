@@ -70,3 +70,19 @@ linhas, exportação de uma cópia XLSX, avaliação contra o gabarito e rejeiç
 teste1 como entrega oficial. O teste confere preservação da entrada e recusa
 exportar a partir do gabarito. Nenhuma classificação remota das bases oficiais
 foi executada nessa verificação.
+
+## Atualização de 04/11/2026 — análise e lotes experimentais
+
+Suíte atual: **69 testes aprovados**. Novos testes verificam JSON por ID,
+rejeição de lotes incompletos/duplicados/inválidos, preservação da ordem de
+linhas, deduplicação, teto de bytes e retomada somente dos lotes pendentes.
+
+O resultado completo de teste1 foi analisado: GPT 382/900 contra NorBERTo
+432/900. Os arquivos originais e seus dados foram preservados. Foi executado
+um piloto autorizado com exatamente dez processos Codex e seis alvos retirados
+do treino, em três variantes. Os lotes de três reduziram o consumo observado
+de entrada, mas o piloto não demonstrou ganho de acurácia. Nenhuma configuração
+nova foi promovida. A análise, os custos e as limitações estão em
+`analise-primeiro-resultado-gpt.md`; o padrão continua individual e com o prompt
+original. A nova funcionalidade altera fingerprints, exigindo diretórios novos
+para experimentos seguintes.

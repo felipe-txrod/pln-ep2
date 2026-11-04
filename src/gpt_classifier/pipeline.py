@@ -9,7 +9,8 @@ from pathlib import Path
 
 from .backend import API_BASE, Cache, make_backend, file_lock
 from .data import Example, Text, canonical, digest, file_digest, write_json, write_jsonl
-from .prompt import Config, build_request, parse_response
+from .prompt import Config, build_request, validate_response
+from .batching import prepare_batches
 from .selection import Selector
 
 
@@ -65,13 +66,22 @@ def run(records: list[Text], bank: list[Example], config: Config, *, output_dir:
             plans.append({"excel_row": record.excel_row, "text_sha256": record.text_sha256,
                           "request_key": Cache.key(request), "example_excel_rows": [e.excel_row for e in examples],
                           "text_truncated": truncated, "request_bytes": len(canonical(request).encode("utf-8"))})
+        if config.batch_size > 1:
+            execution = prepare_batches(requests, batch_size=config.batch_size, max_bytes=config.max_request_bytes)
+            for request, mapping in execution:
+                for identifier, indices in mapping:
+                    for index in indices:
+                        plans[index].update(request_key=Cache.key(request), batch_item_id=identifier,
+                                            request_bytes=len(canonical(request).encode("utf-8")))
+        else:
+            execution = [(request, [(None, [index])]) for index, request in enumerate(requests)]
         write_jsonl(output_dir / "plan.jsonl", plans)
-        write_json(output_dir / "request-preview.json", requests[0])
+        write_json(output_dir / "request-preview.json", execution[0][0])
         write_json(output_dir / "config.json", config.to_dict())
         manifest.update(selection=None if selector is None else selector.summary,
                         unique_requests=len({p["request_key"] for p in plans}),
                         truncated_rows=sum(p["text_truncated"] for p in plans),
-                        total_request_bytes=sum(p["request_bytes"] for p in plans))
+                        total_request_bytes=sum(len(canonical(r).encode("utf-8")) for r, _ in execution))
         if dry_run:
             manifest["status"] = "dry_run"
             write_json(manifest_path, manifest)
@@ -79,34 +89,41 @@ def run(records: list[Text], bank: list[Example], config: Config, *, output_dir:
         initial_attempts = backend.attempts
         initial_usage = backend.usage.copy()
         cache = Cache(cache_path)
-        predictions, hits = [], 0
+        predictions, hits = {}, 0
         manifest["status"] = "running"
         write_json(manifest_path, manifest)
         try:
-            for index, (request, plan) in enumerate(zip(requests, plans), 1):
+            for batch_index, (request, mapping) in enumerate(execution, 1):
                 response = cache.get(request)
                 cached = response is not None
-                if cached:
-                    hits += 1
-                else:
+                if not cached:
                     response = backend.create(request)
                     # Persist received failures for diagnosis/usage but never as predictions.
                     try:
-                        parse_response(response)
+                        validate_response(request, response)
                     except ValueError:
-                        write_json(output_dir / "failed-response.json", {"plan": plan, "response": response})
+                        write_json(output_dir / "failed-response.json", {"request_key": Cache.key(request), "response": response})
                         raise
                     cache.put(request, response)
-                predictions.append({**plan, "label": parse_response(response), "cache_hit": cached,
-                                    "response_id": response.get("id"), "response_model": response.get("model"),
-                                    "backend": config.backend,
-                                    "model_is_requested_alias": response.get("codex", {}).get("model_is_requested_alias", False),
-                                    "usage": response.get("usage")})
-                if index == 1 or index % 25 == 0 or index == len(records):
-                    print(f"{index}/{len(records)} classificados; {hits} cache; {backend.attempts - initial_attempts} tentativas novas ({config.backend})", file=sys.stderr)
-            write_jsonl(output_dir / "predictions.jsonl", predictions)
+                parsed = validate_response(request, response)
+                previous_count = len(predictions)
+                for identifier, indices in mapping:
+                    label = parsed[identifier] if identifier is not None else parsed
+                    for duplicate, index in enumerate(indices):
+                        hit = cached or duplicate > 0
+                        hits += int(hit)
+                        predictions[index] = {**plans[index], "label": label, "cache_hit": hit,
+                                              "response_id": response.get("id"), "response_model": response.get("model"),
+                                              "backend": config.backend,
+                                              "model_is_requested_alias": response.get("codex", {}).get("model_is_requested_alias", False),
+                                              "usage": response.get("usage")}
+                count = len(predictions)
+                if batch_index == 1 or count // 25 > previous_count // 25 or count == len(records):
+                    print(f"{count}/{len(records)} classificados; {hits} cache; {backend.attempts - initial_attempts} tentativas novas ({config.backend})", file=sys.stderr)
+            ordered = [predictions[index] for index in range(len(records))]
+            write_jsonl(output_dir / "predictions.jsonl", ordered)
             manifest["status"] = "completed"
-            return predictions
+            return ordered
         except BaseException as exc:
             manifest.update(status="interrupted" if isinstance(exc, KeyboardInterrupt) else "failed",
                             error_type=type(exc).__name__, completed_rows=len(predictions))

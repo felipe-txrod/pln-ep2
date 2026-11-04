@@ -1,0 +1,15 @@
+{
+  "backend": "codex",
+  "model": "gpt-6.1-sol",
+  "batch_size": 3,
+  "prompt_profile": "empirical",
+  "strategy": "similar",
+  "per_class": 1,
+  "max_example_chars": 1600,
+  "max_text_chars": 14000,
+  "max_request_bytes": 96000,
+  "max_output_tokens": null,
+  "reasoning_effort": "low",
+  "temperature": null,
+  "seed": 42
+}

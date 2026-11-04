@@ -13,7 +13,7 @@ from pathlib import Path
 
 from .backend import BackendError
 from .data import canonical, file_digest
-from .prompt import parse_response
+from .prompt import validate_response
 
 # Included in the cache identity. Changes to CLI context/tools must invalidate it.
 CODEX_POLICY = {
@@ -165,5 +165,5 @@ class CodexBackend:
                       "usage": {"input_tokens": usage["input_tokens"], "output_tokens": usage["output_tokens"],
                                 "input_tokens_details": {"cached_tokens": usage["cached_input_tokens"]}},
                       "codex": {"runtime": metadata, "model_is_requested_alias": True}}
-            parse_response(result)
+            validate_response(request, result)
             return result
