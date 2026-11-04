@@ -175,6 +175,34 @@ muitas chamadas. Prefira o piloto limitado antes de executar a grade.
 Mudanças no código/ambiente invalidam a identidade de execuções anteriores:
 preserve os resultados completos existentes e use novos diretórios.
 
+Para ampliar explicitamente a comparação aos mesmos 300 registros do treino,
+mantendo três textos por chamada e teto compartilhado de 200 processos:
+
+```bash
+# Prévia, sem chamadas GPT:
+.venv/bin/python -m gpt_classifier retrieval-study \
+  --pilot-limit 300 --local-limit 300 --max-new-requests 200 \
+  --output-dir results/retrieval-hibrida-300
+
+# Executar (ou retomar) exatamente o plano preparado:
+.venv/bin/python -m gpt_classifier retrieval-study --execute \
+  --pilot-limit 300 --local-limit 300 --max-new-requests 200 \
+  --output-dir results/retrieval-hibrida-300
+```
+
+O limite de oito chamadas continua sendo o padrão; a ampliação depende do valor
+explícito. Na amostra de seed 42, a deduplicação reduz o plano para 96 chamadas
+por seletor, totalizando 192. São 300 linhas da amostra, avaliadas
+pelos dois métodos, sem incluir teste1/teste2. Há textos normalizados repetidos;
+isso deve ser considerado ao interpretar a comparação.
+
+Na execução concluída, o GPT com recuperação híbrida acertou **127/300 (42,33%)**,
+contra **121/300 (40,33%)** com TF-IDF. O ganho foi de seis acertos; o recall de
+`c1` permaneceu em 27,08%. Foram 192 processos Codex e 1.572.211 tokens de entrada.
+Veja a [análise completa](docs/recuperacao-hibrida.md#resultado-dos-300-registros)
+e as [métricas agregadas](docs/resultados-validacao-300.json). O resultado é de
+validação interna do treino e não substitui a comparação final com EP1.
+
 ### Resultados anteriores
 
 O primeiro resultado real e o piloto de eficiência estão documentados na

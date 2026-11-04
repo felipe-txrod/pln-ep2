@@ -1,0 +1,240 @@
+{
+  "date": "2026-11-04",
+  "timezone": "America/Sao_Paulo",
+  "source_commit": "09211b5",
+  "source_directory": "results/retrieval-hibrida-300-20261104",
+  "data_sha256": "912d63eafba15b112839e3e597729c48d593894b8763066f79c9e4cdd5155ca3",
+  "config": {
+    "backend": "codex",
+    "batch_size": 3,
+    "prompt_profile": "original",
+    "model": "gpt-6.1-sol",
+    "strategy": "hybrid",
+    "hybrid_semantic_weight": 0.5,
+    "hybrid_length_weight": 0.0,
+    "per_class": 1,
+    "max_example_chars": 1600,
+    "max_text_chars": 14000,
+    "max_request_bytes": 96000,
+    "max_output_tokens": null,
+    "reasoning_effort": "low",
+    "temperature": null,
+    "seed": 42
+  },
+  "protocol": {
+    "rows": 300,
+    "unique_normalized_texts": 287,
+    "class_counts": {
+      "c1": 96,
+      "c234": 99,
+      "c5": 105
+    },
+    "split": "first StratifiedGroupKFold(5,shuffle=True,seed=42); whole validation fold excluded from bank",
+    "test1_used": false,
+    "test2_used": false,
+    "target_labels_in_requests": false
+  },
+  "new_codex_processes": 192,
+  "new_usage": {
+    "input_tokens": 1572211,
+    "output_tokens": 20283,
+    "cached_input_tokens": 468864
+  },
+  "results": [
+    {
+      "arm": "lexical",
+      "config": {
+        "backend": "codex",
+        "batch_size": 3,
+        "prompt_profile": "original",
+        "model": "gpt-6.1-sol",
+        "strategy": "similar",
+        "hybrid_semantic_weight": 0.5,
+        "hybrid_length_weight": 0.0,
+        "per_class": 1,
+        "max_example_chars": 1600,
+        "max_text_chars": 14000,
+        "max_request_bytes": 96000,
+        "max_output_tokens": null,
+        "reasoning_effort": "low",
+        "temperature": null,
+        "seed": 42
+      },
+      "metrics": {
+        "rows": 300,
+        "accuracy": 0.4033333333333333,
+        "f1_macro": 0.39759510879830545,
+        "label_order": [
+          "c1",
+          "c234",
+          "c5"
+        ],
+        "confusion_matrix": [
+          [
+            26,
+            40,
+            30
+          ],
+          [
+            8,
+            44,
+            47
+          ],
+          [
+            15,
+            39,
+            51
+          ]
+        ],
+        "classification_report": {
+          "c1": {
+            "precision": 0.5306122448979592,
+            "recall": 0.2708333333333333,
+            "f1-score": 0.3586206896551724,
+            "support": 96.0
+          },
+          "c234": {
+            "precision": 0.35772357723577236,
+            "recall": 0.4444444444444444,
+            "f1-score": 0.3963963963963964,
+            "support": 99.0
+          },
+          "c5": {
+            "precision": 0.3984375,
+            "recall": 0.4857142857142857,
+            "f1-score": 0.43776824034334766,
+            "support": 105.0
+          },
+          "accuracy": 0.4033333333333333,
+          "macro avg": {
+            "precision": 0.42892444071124386,
+            "recall": 0.4003306878306878,
+            "f1-score": 0.39759510879830545,
+            "support": 300.0
+          },
+          "weighted avg": {
+            "precision": 0.42729782385515186,
+            "recall": 0.4033333333333333,
+            "f1-score": 0.39878831562063766,
+            "support": 300.0
+          }
+        },
+        "prediction_counts": {
+          "c5": 128,
+          "c234": 123,
+          "c1": 49
+        }
+      },
+      "new_usage": {
+        "input_tokens": 778370,
+        "output_tokens": 10142,
+        "cached_input_tokens": 185856
+      },
+      "new_requests": 96,
+      "elapsed_seconds": 669.0016311200006
+    },
+    {
+      "arm": "hybrid",
+      "config": {
+        "backend": "codex",
+        "batch_size": 3,
+        "prompt_profile": "original",
+        "model": "gpt-6.1-sol",
+        "strategy": "hybrid",
+        "hybrid_semantic_weight": 0.5,
+        "hybrid_length_weight": 0.0,
+        "per_class": 1,
+        "max_example_chars": 1600,
+        "max_text_chars": 14000,
+        "max_request_bytes": 96000,
+        "max_output_tokens": null,
+        "reasoning_effort": "low",
+        "temperature": null,
+        "seed": 42
+      },
+      "metrics": {
+        "rows": 300,
+        "accuracy": 0.42333333333333334,
+        "f1_macro": 0.41528514177511505,
+        "label_order": [
+          "c1",
+          "c234",
+          "c5"
+        ],
+        "confusion_matrix": [
+          [
+            26,
+            41,
+            29
+          ],
+          [
+            10,
+            48,
+            41
+          ],
+          [
+            14,
+            38,
+            53
+          ]
+        ],
+        "classification_report": {
+          "c1": {
+            "precision": 0.52,
+            "recall": 0.2708333333333333,
+            "f1-score": 0.3561643835616438,
+            "support": 96.0
+          },
+          "c234": {
+            "precision": 0.3779527559055118,
+            "recall": 0.48484848484848486,
+            "f1-score": 0.4247787610619469,
+            "support": 99.0
+          },
+          "c5": {
+            "precision": 0.43089430894308944,
+            "recall": 0.5047619047619047,
+            "f1-score": 0.4649122807017544,
+            "support": 105.0
+          },
+          "accuracy": 0.42333333333333334,
+          "macro avg": {
+            "precision": 0.4429490216162004,
+            "recall": 0.4201479076479076,
+            "f1-score": 0.41528514177511505,
+            "support": 300.0
+          },
+          "weighted avg": {
+            "precision": 0.44193741757890026,
+            "recall": 0.42333333333333334,
+            "f1-score": 0.4168688921357825,
+            "support": 300.0
+          }
+        },
+        "prediction_counts": {
+          "c5": 123,
+          "c234": 127,
+          "c1": 50
+        }
+      },
+      "new_usage": {
+        "input_tokens": 793841,
+        "output_tokens": 10141,
+        "cached_input_tokens": 283008
+      },
+      "new_requests": 96,
+      "elapsed_seconds": 668.5766824210004
+    }
+  ],
+  "paired": {
+    "rows": 300,
+    "same_prediction": 252,
+    "both_correct": 105,
+    "only_lexical_correct": 16,
+    "only_hybrid_correct": 22,
+    "both_wrong": 157,
+    "same_code_and_environment": true,
+    "caveat": "Comparação descritiva em validação do treino; há 287 grupos de texto em 300 registros. Não é comparação oficial no teste1."
+  },
+  "decision": "Ganho observado de 6/300 (2 pontos percentuais) para o híbrido, sem melhora em c1. Manter experimental; não demonstra superioridade ao EP1 nem substitui teste1/teste2."
+}

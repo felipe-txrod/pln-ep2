@@ -71,8 +71,8 @@ pequenas diferenças numéricas; o alias remoto Codex também limita reproduçã
 3. Piloto pareado em 12 registros desse fold, com prompt original, um exemplo
    por classe, mesmo modelo e mesmo lote de três em ambos os braços. Só varia
    o seletor. Rótulos, métricas, tempos, consumo e exemplos escolhidos são salvos.
-4. Prévia das duas variantes antes de qualquer chamada. Teto compartilhado de
-   oito processos Codex novos na invocação; se os bytes exigirem mais lotes,
+4. Prévia das duas variantes antes de qualquer chamada. No piloto inicial, teto
+   compartilhado de oito processos Codex novos na invocação; se os bytes exigirem mais lotes,
    o estudo recusa iniciar. Sem retentativa automática do adaptador.
 
 O piloto não seleciona configuração de produção: 12 registros não estabelecem
@@ -152,3 +152,92 @@ Hardware: a preparação foi concluída em CPU. A NVIDIA MX550 de 2 GB estava
 acessível fora do sandbox, mas o ambiente instalado oferece somente o provider
 CPU; não houve instalação do runtime CUDA nesta rodada. Mais de 80% do cache
 já estava pronto quando a GPU foi autorizada, e a decisão foi reaproveitá-lo.
+
+## Ampliação autorizada para 300 registros
+
+O usuário solicitou ampliar o teste em lotes aos 300 registros do diagnóstico.
+Mantiveram-se seleção e prompt congelados, mesmo fold, seed 42, um exemplo por
+classe e `batch_size=3`. A única mudança operacional foi aceitar um orçamento
+explicitamente maior no comando; o padrão de oito chamadas continua preservado.
+Os resultados anteriores permanecem em seus diretórios originais.
+
+Comando executado a partir de `EP2/`:
+
+```bash
+.venv/bin/python -m gpt_classifier retrieval-study --execute \
+  --pilot-limit 300 --local-limit 300 --max-new-requests 200 \
+  --output-dir results/retrieval-hibrida-300-20261104
+```
+
+A prévia tem 96 chamadas por braço, total de 192, devido à deduplicação dos
+pedidos. Distribuição: 96 c1, 99 c234 e 105 c5. Há 287 textos normalizados únicos
+nos 300 registros; a partição continua excluindo do banco todo o fold de
+validação, e nenhum rótulo de alvo entra no prompt. O baseline constante c5
+atinge 105/300 (35%) nesta amostra. Estes números não são resultados do teste1.
+
+O cache de respostas do piloto foi copiado via backup SQLite para um novo
+diretório, preservando o original. Nenhum dos lotes completos coincidiu com
+o novo plano; portanto a prévia não encontrou chamadas reutilizáveis. Todos
+os embeddings necessários foram reutilizados localmente.
+
+### Resultado dos 300 registros
+
+| Métrica | GPT + TF-IDF | GPT + recuperação híbrida |
+|---|---:|---:|
+| Acurácia | 40,33% (121/300) | 42,33% (127/300) |
+| F1 macro | 39,76% | 41,53% |
+| Recall c1 | 27,08% (26/96) | 27,08% (26/96) |
+| Recall c234 | 44,44% (44/99) | 48,48% (48/99) |
+| Recall c5 | 48,57% (51/105) | 50,48% (53/105) |
+| Processos Codex novos | 96 | 96 |
+| Tokens de entrada | 778.370 | 793.841 |
+| Entrada em cache remoto (subconjunto da entrada) | 185.856 | 283.008 |
+| Tokens de saída | 10.142 | 10.141 |
+| Tempo do braço | 669,00 s | 668,58 s |
+
+Total: **192 processos, 1.572.211 tokens de entrada, 468.864 deles informados
+como cache remoto, e 20.283 tokens de saída**. Os dois braços sequenciais
+levaram aproximadamente 22 minutos e 18 segundos, além da prévia. Estes são
+contadores do CLI, sem conversão em preço ou créditos da assinatura.
+Nenhum alvo precisou ser truncado no prompt. A deduplicação reutilizou as
+predições de 13 linhas em cada braço; os lotes não repetiram chamadas por elas.
+
+O alinhamento dos 300 IDs e hashes dos textos foi conferido nos dois resultados.
+Ambos usaram o mesmo código e ambiente, e todas as linhas das demonstrações
+pertencem ao banco separado. Contagem pareada:
+
+- Ambos acertaram: 105.
+- Somente lexical acertou: 16.
+- Somente híbrido acertou: 22.
+- Ambos erraram: 157.
+- Mesma classe prevista pelos dois: 252/300; classes diferentes: 48/300.
+
+Matrizes de confusão, com linhas verdadeiras e colunas previstas na ordem
+`c1`, `c234`, `c5`:
+
+```text
+Lexical                  Híbrido
+[[26, 40, 30],           [[26, 41, 29],
+ [ 8, 44, 47],            [10, 48, 41],
+ [15, 39, 51]]            [14, 38, 53]]
+```
+
+**Conclusão:** a recuperação híbrida ganhou **2 pontos percentuais** de acurácia
+e **1,77 ponto** de F1 macro nesta validação. Corrigiu 22 casos e perdeu outros
+16, com saldo de seis acertos. O ganho veio de c234 (+4 acertos) e c5 (+2);
+o gargalo c1 permaneceu. Os tokens de entrada aumentaram cerca de 1,99%, e não
+houve diferença material de tempo entre os braços nesta execução.
+
+O ganho observado é modesto e não demonstra superioridade ao NorBERTo: não se
+deve compará-lo diretamente aos 48% do EP1 no teste1, que é outra amostra.
+Também não se trata de um teste independente de generalização. Os 287 grupos
+nos 300 registros limitam inferências que suponham independência entre linhas.
+Não foi usado o McNemar oficial EP1 x EP2 nesta comparação interna, e não foi
+promovida automaticamente uma configuração nem iniciada outra rodada remota.
+Os padrões anteriores permanecem; o híbrido continua como variante experimental.
+
+As métricas agregadas foram versionadas em
+[resultados-validacao-300.json](resultados-validacao-300.json). Previsões por
+registro, planos, consumo e conferência pareada estão em
+`results/retrieval-hibrida-300-20261104/`, preservados localmente e ignorados
+pelo Git conforme a política existente do projeto.
