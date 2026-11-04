@@ -7,6 +7,9 @@ Na API, o snapshot inicial é `gpt-5.4-mini-2026-03-17` (`configs/gpt.json`).
 No Codex, a configuração inicial usa `gpt-6.1-sol` (`configs/codex.json`).
 O primeiro resultado e as variantes experimentais estão descritos abaixo.
 
+Para continuar o trabalho em outra sessão, consulte [AGENTS.md](AGENTS.md) e o
+[contexto persistente](.agents/CONTEXT.md), com decisões, resultados e retomada.
+
 **Regra do enunciado:** teste2 (897 linhas) é a entrega; teste1 (900 linhas) fica
 reservado à comparação final por McNemar. A busca de exemplos/prompts usa somente
 treino. Consulte [requisitos e decisões](docs/decisoes-e-requisitos.md) para a
