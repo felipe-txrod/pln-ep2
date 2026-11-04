@@ -4,6 +4,7 @@ from __future__ import annotations
 import importlib.metadata
 import sqlite3
 import sys
+from contextlib import closing
 from pathlib import Path
 
 import numpy as np
@@ -107,7 +108,7 @@ class LocalEmbeddings:
         unique = list(dict.fromkeys(normalized))
         values, missing = {}, []
         self.cache_dir.mkdir(parents=True, exist_ok=True)
-        with sqlite3.connect(self.cache_dir / "embeddings.sqlite3", timeout=60) as db:
+        with closing(sqlite3.connect(self.cache_dir / "embeddings.sqlite3", timeout=60)) as db:
             db.execute("CREATE TABLE IF NOT EXISTS embeddings (key TEXT PRIMARY KEY, vector BLOB NOT NULL)")
             for text in unique:
                 key = digest(canonical([self.namespace, text]))

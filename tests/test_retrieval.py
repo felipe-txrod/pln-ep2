@@ -73,7 +73,7 @@ def test_embedding_cache_normalizes_deduplicates_orders_and_invalidates_model(tm
     assert np.allclose(first[0], first[2]) and encoder.stats["encoded_texts"] == 2
     resumed = cached_encoder(tmp_path)
     resumed._encode = lambda _: pytest.fail("Cache quente não deve chamar encoder")
-    assert np.allclose(resumed.encode(["Texto B", "Texto A"]), first[[1, 0]])
+    assert np.array_equal(resumed.encode(["Texto B", "Texto A"]), first[[1, 0]])
     assert resumed.stats["cache_hits"] == 2
     changed = cached_encoder(tmp_path, namespace="model-v2")
     changed.encode(["Texto A"])
