@@ -25,7 +25,8 @@ def retrieval_diagnostic(bank, validation, config, *, retrieval_cache):
         selections[strategy] = []
         for target in validation:
             scores = selector.relevance(target.text, strategy=strategy, balanced=False).copy()
-            scores[np.array([g == group(target.text) for g in selector.group_ids])] = -np.inf
+            target_group = group(target.text)
+            scores[np.array([g == target_group for g in selector.group_ids])] = -np.inf
             top = np.argsort(-scores, kind="stable")[:5]
             predictions.append({"excel_row": target.excel_row, "text_sha256": digest(target.text),
                                 "label": selector.records[top[0]].label})
