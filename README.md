@@ -132,6 +132,8 @@ O encoder tem revisão fixada e executa em CPU via ONNX, sem API de embeddings.
 O prompt continua com um exemplo inteiro por classe (três no total), filtrando
 textos repetidos, conflitantes e o próprio alvo. Os padrões anteriores continuam
 disponíveis. Consulte [método e avaliação](docs/recuperacao-hibrida.md).
+No piloto real, o híbrido acertou 3/12 contra 2/12 do lexical, em oito chamadas
+totais. Isso não demonstra ganho confiável: os padrões não foram substituídos.
 
 ```bash
 # Instalação reproduzível do complemento opcional:

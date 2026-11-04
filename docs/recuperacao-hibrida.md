@@ -96,4 +96,59 @@ indisponíveis.
   recuperação de demonstrações em outros benchmarks sustentam investigar a
   hipótese; não são evidência de ganho neste corpus.
 
-Os resultados da execução real serão registrados na seção seguinte.
+## Execução real
+
+Fonte: `results/retrieval-hibrida-v2-20261104/`, com plano, partição, hashes,
+linhas recuperadas, prévias e métricas locais. O primeiro preparo do cache
+calculou 11.948 textos únicos (banco elegível e validação local). Os vetores
+ficam persistidos e não precisam ser recalculados nas comparações seguintes.
+
+| Diagnóstico em 300 registros do treino | TF-IDF | Híbrido |
+|---|---:|---:|
+| Acurácia do vizinho global mais próximo | 42,67% (128/300) | 45,33% (136/300) |
+| F1 macro desse proxy | 42,61% | 45,35% |
+| Pureza média dos cinco vizinhos | 38,13% | 39,27% |
+
+A seleção das três demonstrações mudou em 242/300 alvos. Esses resultados
+descrevem a recuperação; não permitem afirmar que o GPT melhorou nem escolher
+o método de entrega. A configuração permanece a definida antes do diagnóstico:
+fusão 0,5/0,5, sem peso de comprimento, sem aumentar o número de exemplos.
+
+A prévia do piloto contém 12 alvos, quatro de cada classe, e quatro execuções
+por braço. Bytes dos pedidos: 55.043 no lexical e 59.624 no híbrido; não há
+promessa de economia de tokens só por trocar o seletor.
+
+| GPT/Codex nos mesmos 12 alvos do treino | TF-IDF | Híbrido |
+|---|---:|---:|
+| Acurácia | 16,67% (2/12) | 25,00% (3/12) |
+| F1 macro | 16,67% | 23,15% |
+| Recall c1 | 25,00% (1/4) | 25,00% (1/4) |
+| Recall c234 | 0,00% (0/4) | 0,00% (0/4) |
+| Recall c5 | 25,00% (1/4) | 50,00% (2/4) |
+| Processos Codex novos | 4 | 4 |
+| Tokens de entrada informados pelo CLI | 33.744 | 34.850 |
+| Tokens de saída informados pelo CLI | 340 | 406 |
+| Tempo do braço com cache de embeddings pronto | 28,87 s | 35,06 s |
+
+Consumo total: **8 processos, 68.594 tokens de entrada e 746 de saída**;
+o CLI informou zero tokens de entrada em cache remoto. Os tempos incluem
+preparação local de pedidos e execução sequencial; não incluem a criação inicial
+do cache de embeddings. Não são preços nem estimativas de cobrança.
+
+**Decisão:** manter a variante experimental. Houve só uma previsão diferente
+entre os seletores, corrigindo um caso c5. O gargalo c1 permaneceu e nenhum
+dos quatro c234 foi acertado. Ambos ficaram abaixo dos quatro acertos de uma
+predição constante nesta amostra balanceada. O pequeno piloto não sustenta
+superioridade de generalização; também não permite comparar suas porcentagens
+diretamente com as 900 linhas do teste1, que são outra amostra.
+
+O ganho do vizinho no diagnóstico local não se traduziu em evidência suficiente
+de ganho do GPT. Não alterar `configs/codex.json`, não expandir as chamadas
+automaticamente e não usar o gabarito do teste1 para ajustar pesos ou prompts.
+Se houver uma próxima rodada, a hipótese precisa ser avaliada em amostra maior
+do treino com orçamento e critérios previamente definidos.
+
+Hardware: a preparação foi concluída em CPU. A NVIDIA MX550 de 2 GB estava
+acessível fora do sandbox, mas o ambiente instalado oferece somente o provider
+CPU; não houve instalação do runtime CUDA nesta rodada. Mais de 80% do cache
+já estava pronto quando a GPU foi autorizada, e a decisão foi reaproveitá-lo.

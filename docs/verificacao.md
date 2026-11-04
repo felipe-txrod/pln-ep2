@@ -86,3 +86,24 @@ nova foi promovida. A análise, os custos e as limitações estão em
 `analise-primeiro-resultado-gpt.md`; o padrão continua individual e com o prompt
 original. A nova funcionalidade altera fingerprints, exigindo diretórios novos
 para experimentos seguintes.
+
+## Recuperação híbrida — 04/11/2026
+
+- Suíte final: `82 passed in 21.75s`; `git diff --check` sem erros e
+  `pip check` sem conflitos. Os testes remotos usam transportes/executáveis
+  simulados e não consomem chamadas reais.
+- Embeddings reais E5/ONNX em CPU: smoke test de dimensão e similaridade,
+  cache persistente com 11.948 textos únicos da preparação inicial. Pesos
+  e tokenizador fixados por revisão e hashes; dependências opcionais em
+  `requirements-rag-lock.txt`.
+- Diagnóstico em 300 registros do treino: vizinho mais próximo 128/300 lexical
+  e 136/300 híbrido. São proxies locais, não classificações GPT.
+- Piloto real pareado em 12 registros do treino: oito processos Codex no total,
+  2/12 acertos lexical e 3/12 híbrido. Total informado pelo CLI: 68.594 tokens
+  de entrada e 746 de saída. Nenhum gabarito de teste1/teste2 foi utilizado.
+- Artefatos em `results/retrieval-hibrida-v2-20261104/`; detalhes e limitações
+  em [recuperacao-hibrida.md](recuperacao-hibrida.md). O piloto não selecionou
+  automaticamente um método nem alterou os padrões anteriores.
+- A primeira prévia local foi interrompida para eliminar normalizações
+  repetidas; não fez chamadas GPT. Seus artefatos foram preservados em
+  `results/retrieval-hibrida-20261104/` e a execução concluída usa outro destino.
