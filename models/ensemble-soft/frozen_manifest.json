@@ -1,0 +1,9 @@
+{
+  "artifact_sha256": "f39a2200ecbaf124b95c78e249087f2f12302aa4f46768db756d828863301bec",
+  "labels": [
+    "c1",
+    "c234",
+    "c5"
+  ],
+  "model_type": "weighted_soft_voting"
+}

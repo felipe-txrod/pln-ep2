@@ -12,6 +12,7 @@ its inference files to SHA-256 checksums.
 | [rl/](rl/README.md) | Historical full-corpus logistic pipeline; not the default | None |
 | [norberto/](norberto/README.md) | LoRA adapter, classification head, tokenizer, configuration | Public NorBERTo base, pinned revision and checksums |
 | [gpt/](gpt/README.md) | Configuration and prompt snapshots | Remote service; weights unavailable locally |
+| [ensemble-soft/](ensemble-soft/README.md) | Frozen calibration, soft-vote weights and holdout roles | The selected SVM, development LR and original NorBERTo packages |
 
 Qwen retains its own pipeline and artifact directories. The packaging scripts
 exclude its checkpoints, configuration, and cache.

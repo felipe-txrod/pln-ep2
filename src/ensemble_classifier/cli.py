@@ -12,6 +12,20 @@ from .config import EnsembleConfig
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Offline ensemble with selectable classifiers")
     commands = parser.add_subparsers(dest="command", required=True)
+    fit_soft_parser = commands.add_parser("fit-soft", help="Calibrate frozen scores and choose soft weights on disjoint holdout roles")
+    fit_soft_parser.add_argument("--config", type=Path, default=Path("configs/ensemble-soft.json"))
+    fit_soft_parser.add_argument("--output-dir", type=Path, required=True)
+    fit_soft_parser.add_argument("--device", choices=("cpu", "gpu"), default="cpu")
+    predict_soft_parser = commands.add_parser("predict-soft", help="Apply a frozen calibrated soft ensemble without reading labels")
+    predict_soft_parser.add_argument("--model", type=Path, required=True)
+    predict_soft_parser.add_argument("--input", type=Path, required=True)
+    predict_soft_parser.add_argument("--output-dir", type=Path, required=True)
+    predict_soft_parser.add_argument("--device", choices=("cpu", "gpu"), default="cpu")
+    predict_soft_parser.add_argument("--live-norberto", action="store_true", help="Use local NorBERTo inference instead of the pinned historical score files")
+    evaluate_soft_parser = commands.add_parser("evaluate-soft", help="Final comparison on the 900 professor labels; no parameter updates")
+    evaluate_soft_parser.add_argument("--run", type=Path, required=True)
+    evaluate_soft_parser.add_argument("--gold", type=Path, default=Path("data/test1-rotulado-para-teste-estatistico.xlsx"))
+    evaluate_soft_parser.add_argument("--output-dir", type=Path, required=True)
     combine_parser = commands.add_parser("combine")
     combine_parser.add_argument("--config", type=Path, default=Path("configs/ensemble.json"))
     combine_parser.add_argument("--models", nargs="+")
@@ -32,6 +46,17 @@ def main(argv: list[str] | None = None) -> int:
     comparison_parser.add_argument("--output-dir", type=Path, required=True)
     args = parser.parse_args(argv)
     try:
+        if args.command in {"fit-soft", "predict-soft", "evaluate-soft"}:
+            from .soft_pipeline import evaluate_soft, fit_soft, predict_soft
+            if args.command == "fit-soft":
+                report = fit_soft(args.config, args.output_dir, device=args.device)
+            elif args.command == "predict-soft":
+                report = predict_soft(args.model, args.input, args.output_dir,
+                                      device=args.device, live_norberto=args.live_norberto)
+            else:
+                report = evaluate_soft(args.run, args.gold, args.output_dir)
+            print(json.dumps(report, ensure_ascii=False, indent=2))
+            return 0
         if args.command == "compare-majority":
             from .comparison import compare_majority
             report = compare_majority(EnsembleConfig.load(args.config), args.input, args.gold, args.output_dir)

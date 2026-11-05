@@ -1,0 +1,19 @@
+{
+  "seed": 42,
+  "train": "data/train.xlsx",
+  "split": "../EP1/results/research/dataset-hypotheses-20260923/splits.csv",
+  "recorded_norberto": {
+    "holdout": {
+      "csv": "../EP1/results/norberto/delivery/norberto-lora-final-holdout-20260928/holdout-predictions.csv",
+      "csv_sha256": "6c9064f344ca3cb1adf70698467b8048b3289d80fa7f4544b20b13dfad17676a",
+      "metadata": "../EP1/results/norberto/delivery/norberto-lora-final-holdout-20260928/results.json",
+      "metadata_sha256": "5b73e30582f3a9dc134cd61b2203d2f0f649e49aa32fc726c1091c4ac48c682e"
+    },
+    "test1": {
+      "csv": "../EP1/results/norberto/delivery/norberto-lora-test1-20260929/predictions.csv",
+      "csv_sha256": "6d82ec85b7ad16a91331f89494667c5752c2e9e78fe6b4857430b89bed579963",
+      "metadata": "../EP1/results/norberto/delivery/norberto-lora-test1-20260929/manifest.json",
+      "metadata_sha256": "fd3856cd3206b898f3fd94ecd8eeef354be55b7596a29b284985976c5926213b"
+    }
+  }
+}

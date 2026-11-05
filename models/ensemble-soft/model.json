@@ -1,0 +1,111 @@
+{
+  "version": 1,
+  "labels": [
+    "c1",
+    "c234",
+    "c5"
+  ],
+  "models": [
+    "svm",
+    "rl",
+    "norberto"
+  ],
+  "weights": {
+    "svm": 0.75,
+    "rl": 0.0,
+    "norberto": 0.25
+  },
+  "calibration": {
+    "svm": {
+      "method": "sigmoid_ovr",
+      "a": [
+        -2.419949900930932,
+        -1.077683471736457,
+        -2.082415545144616
+      ],
+      "b": [
+        -0.07475435888733295,
+        0.27001899295894133,
+        0.12713762894145972
+      ]
+    },
+    "rl": {
+      "method": "temperature",
+      "temperature": 1.1391917666933158,
+      "calibration_only_check": {
+        "native_log_loss": 1.047865775823393,
+        "temperature_oof_log_loss": 1.047417617429238,
+        "folds": 3,
+        "criterion": "OOF log loss improves by >1e-4"
+      }
+    },
+    "norberto": {
+      "method": "temperature",
+      "temperature": 1.1171232074295399,
+      "calibration_only_check": {
+        "native_log_loss": 1.0414639998056683,
+        "temperature_oof_log_loss": 1.040995131437804,
+        "folds": 3,
+        "criterion": "OOF log loss improves by >1e-4"
+      }
+    }
+  },
+  "model_identities": {
+    "svm": {
+      "artifact_sha256": "9a30abb664d5023d70f444641c4095cf800acba0c98fd8658087e7adad78ee12",
+      "manifest_sha256": "a0688c7f08e2ea74323e62d72b15cf930041fabf847d43102eaf024aeb7e764f",
+      "bundle": "models/svm"
+    },
+    "rl": {
+      "artifact_sha256": "05d69e147a10b7c49ebe3893f247e0f23e8d61005aaf4fd7b7eb45845d49a20f",
+      "manifest_sha256": "823580763f0be9555f3365d59cf83055675a019d3807d874bf8f48200597d47f",
+      "bundle": "models/rl-development"
+    },
+    "norberto": {
+      "artifact_sha256": "d693f6e2995d117ad04a5692817527764fcccee6bfb2dde99120baf9fdd2d385",
+      "manifest_sha256": "d5f7b0f8a18bc216c72fb0dc67e4de68ba89f343b99dc4b1e9546290431fd5fe",
+      "training_manifest_sha256": "26a7a4bdf41ddd36481ca767a9cdf1331f2375301fc946f262f04503d086b37d",
+      "bundle": "models/norberto"
+    }
+  },
+  "score_configuration": {
+    "seed": 42,
+    "train": "data/train.xlsx",
+    "split": "../EP1/results/research/dataset-hypotheses-20260923/splits.csv",
+    "recorded_norberto": {
+      "holdout": {
+        "csv": "../EP1/results/norberto/delivery/norberto-lora-final-holdout-20260928/holdout-predictions.csv",
+        "csv_sha256": "6c9064f344ca3cb1adf70698467b8048b3289d80fa7f4544b20b13dfad17676a",
+        "metadata": "../EP1/results/norberto/delivery/norberto-lora-final-holdout-20260928/results.json",
+        "metadata_sha256": "5b73e30582f3a9dc134cd61b2203d2f0f649e49aa32fc726c1091c4ac48c682e"
+      },
+      "test1": {
+        "csv": "../EP1/results/norberto/delivery/norberto-lora-test1-20260929/predictions.csv",
+        "csv_sha256": "6d82ec85b7ad16a91331f89494667c5752c2e9e78fe6b4857430b89bed579963",
+        "metadata": "../EP1/results/norberto/delivery/norberto-lora-test1-20260929/manifest.json",
+        "metadata_sha256": "fd3856cd3206b898f3fd94ecd8eeef354be55b7596a29b284985976c5926213b"
+      }
+    }
+  },
+  "source_sha256": "0e9219233664ac675fc47982bbc822acd3bb15d67fb7bfc26b67bec047e46818",
+  "split_sha256": "0f78e7a809c7b7584db05b33cf03a73ff586d5de02ba824c16562d5070d41494",
+  "partition_sha256": "fcbd64ea192fe3706f51edf4038b796cac28842494febd21220cb2883f68a7d8",
+  "fit_code": {
+    "ensemble_classifier/files.py": "4d1903fdaf3210edf69e57ae9d79c6467d4ca4b9dec155805931c79783e7f45c",
+    "ensemble_classifier/soft_pipeline.py": "a5d1d288f5c41718f4f96ad3149f9b4d33fe9d046b177e49f086892ec7deffb3",
+    "ensemble_classifier/soft_sources.py": "23659d490f9cc1c707fa367019a9b9df6388b24f872aed85b1bdfdc5b68ac351",
+    "ensemble_classifier/soft_voting.py": "d10ad4b4e9af9a27a3d6c233dc77e0f5e918043464d89a9b9d6c94980d2ddf88",
+    "gpt_classifier/data.py": "4e99c8c28bcc1062dd2b5259df48b4dc7d70b83c3e7e48e32a45129f6e1a9521",
+    "lexical_classifier/__init__.py": "ce765fb1eb7a3f5e983cac2f984adb87477da66785dfd5ca43d4bff71480115d",
+    "lexical_classifier/cli.py": "3b95ed01c1c9f4bc8de53ef520ebb58f6810e793e566b30436991317caa283cb",
+    "lexical_classifier/inference.py": "3127b32ef519407ad7a60c459b1b864e5f7ba4634ca21b0baf9e8a1c2542d065",
+    "norberto_classifier/__init__.py": "4a7e46b0c59e9bbfb7a775bd6daaf338dd6536d67ebfea4cfc95836a64140eab",
+    "norberto_classifier/__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+    "norberto_classifier/artifacts.py": "daae38b6b712ab7e8bd7ac253c4f18e8ebced180b22d8dc030320d74d5fd694f",
+    "norberto_classifier/cli.py": "e42babe3e373748cc309cb43b7ca691328b5cf74ec781a3511bf3ace77c50f2c",
+    "norberto_classifier/inference.py": "67b56f425ab849d99c7bcfe9b6129984b41e5e0eb3b6a85204345556305acf3b",
+    "norberto_classifier/tokenization.py": "0763eb125d6075fed15927362c990d0d835013d885fc76ca59a2635a8494a0ae"
+  },
+  "selection_criterion": "macro_f1_on_disjoint_weight_partition",
+  "candidate_count": 16
+}

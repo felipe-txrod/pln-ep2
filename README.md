@@ -26,6 +26,7 @@ measured results, assignment references, and historical experiments are separate
 | Retrain Qwen on the same 16,093/3,999 split as EP1 models | [Exact EP1 partition](docs/guides/qwen-finetuning.md#retrain-with-the-exact-ep1-partition) |
 | Train development-only lexical logistic regression with holdout reserved | [RL workflow](src/rl_classifier/README.md) |
 | Select ensemble members and the tie-breaking model | [Ensemble](docs/guides/ensemble.md) |
+| Calibrate frozen models and select weighted soft votes without test-label tuning | [Weighted soft voting](docs/guides/ensemble-soft.md) |
 | Browse runnable scripts by model and purpose | [Script index](scripts/README.md) |
 | Restore frozen models and their pinned public bases | [Model artifacts](models/README.md) |
 | Compare measured classifier results | [Results index](docs/results/README.md) |
