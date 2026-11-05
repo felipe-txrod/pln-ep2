@@ -9,8 +9,8 @@
   "gpt_config": "configs/gpt.json",
   "members": {
     "qwen": {
-      "run": "results/qwen-test1",
-      "adapter": "results/qwen-fast-training/adapter"
+      "run": "results/qwen-ep1-test1",
+      "adapter": "models/qwen/adapter"
     },
     "norberto": {
       "run": "results/norberto-ep1-test1",

@@ -11,12 +11,15 @@ its inference files to SHA-256 checksums.
 | [rl-development/](rl-development/README.md) | Verified development-only logistic pipeline, `C=0.25`, trained on 16,093 rows | None for inference |
 | [rl/](rl/README.md) | Historical full-corpus logistic pipeline; not the default | None |
 | [norberto/](norberto/README.md) | LoRA adapter, classification head, tokenizer, configuration | Public NorBERTo base, pinned revision and checksums |
+| [qwen/](qwen/README.md) | Selected EP1-split QLoRA adapter, trained head, tokenizer and checksummed provenance | Public Qwen3-1.7B base at the pinned revision |
 | [gpt/](gpt/README.md) | Configuration and prompt snapshots | Remote service; weights unavailable locally |
 | [ensemble-soft/](ensemble-soft/README.md) | Frozen calibration, soft-vote weights and holdout roles | The selected SVM, development LR and original NorBERTo packages |
 | [ensemble-stacking/](ensemble-stacking/README.md) | Frozen multinomial meta-LR and grouped CV provenance | The same calibrated probabilities and disjoint meta-training rows as soft voting |
 
-Qwen retains its own pipeline and artifact directories. The packaging scripts
-exclude its checkpoints, configuration, and cache.
+Qwen now defaults to `models/qwen/adapter/`; its historical run directories
+remain preserved. Qwen checkpoints, optimizer states and public base weights
+stay outside the versioned package. Qwen is still excluded from the default
+ensemble membership.
 
 ## Artifact formats
 
@@ -61,6 +64,8 @@ python3 scripts/models/freeze.py --model svm
 python3 scripts/models/freeze.py --model rl
 python3 scripts/models/freeze.py --model norberto
 python3 scripts/models/freeze.py --model gpt
+python3 scripts/models/freeze.py --model qwen \
+  --training-run results/qwen-ep1-training-20261105
 ```
 
 The `--model rl` exporter preserves the historical full-corpus model in

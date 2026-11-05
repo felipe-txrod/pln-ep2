@@ -13,6 +13,10 @@ The active ensemble uses **NorBERTo + SVM + RL**, equal majority votes, and
 RL to break three-way ties. Qwen is currently excluded from the default
 membership. All three selected models reserve the same 3,999-row EP1 holdout.
 
+The default Qwen adapter is saved in `models/qwen/adapter/`, trained on the
+same 16,093/3,999 EP1 partition. Its validation accuracy is 44.79%; Qwen remains
+excluded from default ensemble membership. See the [selected model verification](docs/results/qwen-ep1-model.md).
+
 ## Documentation
 
 Start with the **[documentation index](docs/README.md)**. Operational guides,

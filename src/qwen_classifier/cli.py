@@ -38,7 +38,8 @@ def main(argv: list[str] | None = None) -> int:
     performance.add_argument("--checkpointing", action="store_true")
     performance.add_argument("--measured-steps", type=int, default=3)
     inference = commands.add_parser("predict")
-    inference.add_argument("--adapter", type=Path, required=True)
+    inference.add_argument("--adapter", type=Path,
+                           help="Explicit adapter override; defaults to the verified models/qwen/adapter package")
     inference.add_argument("--input", type=Path, required=True)
     inference.add_argument("--output-dir", type=Path, required=True)
     inference.add_argument("--cache-dir", type=Path, default=Path(".cache/qwen-model"))

@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "model": "qwen",
+  "format": "peft-safetensors",
+  "labels": [
+    "c1",
+    "c234",
+    "c5"
+  ],
+  "adapter_sha256": "a045c5726a85c466914c55f9cee9fb0d412af4d66387e14b590e53b4782beed5",
+  "adapter_weights_sha256": "c419c68572ab8e5cd6bda6730714ec27cb28d2d7374d5954a812469346427e53",
+  "source_training_run": "results/qwen-ep1-training-20261105",
+  "source_training_run_sha256": "73b372ec83b1e00ab1655e7935545441da2852f8eb4c1b4090585c78ce50b244",
+  "base_reference": "base_reference.json",
+  "training_rows": 16093,
+  "validation_rows": 3999,
+  "split_sha256": "0f78e7a809c7b7584db05b33cf03a73ff586d5de02ba824c16562d5070d41494",
+  "files": {
+    "adapter/adapter_model.safetensors": "c419c68572ab8e5cd6bda6730714ec27cb28d2d7374d5954a812469346427e53",
+    "adapter/adapter_config.json": "c6e3d3dfba65be7683cc45a9efa01cbdc8b9fb62b8665c64d7a9f60bf6773a39",
+    "adapter/experiment.json": "a6d66ab698dd1ca099a6d73e6b4578d217ff06402c397b82038ccb0cc9af1c17",
+    "adapter/tokenizer.json": "aeb13307a71acd8fe81861d94ad54ab689df773318809eed3cbe794b4492dae4",
+    "adapter/tokenizer_config.json": "7447a0872829b76b513c1beed8cf125e89143e1ee38632459dfe3362af1bcea1",
+    "adapter/special_tokens_map.json": "76862e765266b85aa9459767e33cbaf13970f327a0e88d1c65846c2ddd3a1ecd",
+    "adapter/added_tokens.json": "c0284b582e14987fbd3d5a2cb2bd139084371ed9acbae488829a1c900833c680",
+    "adapter/vocab.json": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910",
+    "adapter/merges.txt": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5",
+    "adapter/chat_template.jinja": "a55ee1b1660128b7098723e0abcd92caa0788061051c62d51cbe87d9cf1974d8",
+    "adapter/README.md": "e9fff75f3a575ab8da318fe385a98349f04685ce39af195c256a9b633e69da22",
+    "training.json": "82d8a6b9fefd526942ba1a7504dfd5441d28b108988d3b6cda2b0758edfe3fc6",
+    "validation-metrics.json": "a039f0654360eb73dbf92a0e9e0924198e90f7649819a8906560defe14a0dea6",
+    "partition/split.json": "c1a6fe8c7d69c3c5fec2e3248ee7b88045d5e6ad4ed202c92bca8e3a48c4095c",
+    "partition/frozen-split.csv": "0f78e7a809c7b7584db05b33cf03a73ff586d5de02ba824c16562d5070d41494",
+    "base_reference.json": "b10381cf16d899c6dc12632142930c9fb9711fd21f70bdfaee918d83078b260b"
+  },
+  "training_supported": false
+}

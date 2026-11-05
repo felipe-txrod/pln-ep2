@@ -102,7 +102,8 @@ NorBERTo and SVM use their original 16,093-row development models. RL defaults
 to `models/rl-development/`, fitted on the same partition with all 3,999
 holdout rows reserved. Create it once with `bash scripts/rl/train.sh`; a
 missing bundle never falls back to the historical full-corpus RL model.
-Qwen retains its existing 16,010/4,082 grouped split.
+The optional Qwen member now selects `models/qwen/adapter/`, trained on the
+same 16,093/3,999 EP1 split; it remains excluded from default membership.
 
 The optional `manifest` member field pins an external model contract. For
 `identity_field=artifact_sha256`, the run must match that contract's artifact

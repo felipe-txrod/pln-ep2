@@ -1,0 +1,53 @@
+{
+  "config": {
+    "model_id": "Qwen/Qwen3-1.7B",
+    "revision": "70d244cc86ccca08cf5af4e1e306ecf908b1ad5e",
+    "mode": "qlora",
+    "max_length": 256,
+    "rank": 8,
+    "alpha": 16,
+    "dropout": 0.05,
+    "target_modules": [
+      "q_proj",
+      "k_proj",
+      "v_proj",
+      "o_proj"
+    ],
+    "learning_rate": 0.0002,
+    "epochs": 3,
+    "batch_size": 4,
+    "accumulation_steps": 4,
+    "warmup_ratio": 0.05,
+    "weight_decay": 0.01,
+    "seed": 42,
+    "folds": 5,
+    "fold": 0,
+    "attention": "sdpa",
+    "gradient_checkpointing": false,
+    "eval_batch_size": 16,
+    "group_by_length": true
+  },
+  "labels": [
+    "c1",
+    "c234",
+    "c5"
+  ],
+  "partition": {
+    "method": "frozen_ep1_development_holdout",
+    "source_sha256": "0e9219233664ac675fc47982bbc822acd3bb15d67fb7bfc26b67bec047e46818",
+    "split_path": "data/ep1-development-holdout.csv",
+    "split_sha256": "0f78e7a809c7b7584db05b33cf03a73ff586d5de02ba824c16562d5070d41494",
+    "train_role": "development",
+    "validation_role": "holdout",
+    "train_groups": 12956,
+    "validation_groups": 3281,
+    "row_overlap": 0,
+    "group_overlap": 0,
+    "normalized_text_overlap": 0,
+    "holdout_used_for_fit": false,
+    "holdout_used_for_checkpoint_selection": true,
+    "split_manifest_sha256": "c1a6fe8c7d69c3c5fec2e3248ee7b88045d5e6ad4ed202c92bca8e3a48c4095c",
+    "train_records_sha256": "9c2f7e371d10e191ea86eaecef1538ab6d37432466aa8cd79e2e415366917cd2",
+    "validation_records_sha256": "acde3023e02752869d561fae043535aae767b9c3db7e024c6ad7db846d2b25ae"
+  }
+}

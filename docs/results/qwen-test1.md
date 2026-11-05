@@ -2,6 +2,11 @@
 
 [Documentation index](../README.md)
 
+This report describes the historical `qwen-fast-training` adapter and its
+16,010/4,082 split. The [new default Qwen](qwen-ep1-model.md) uses the exact
+16,093/3,999 EP1 split and is preserved in `models/qwen/adapter/`. The test1
+scores below do not describe that newly selected model.
+
 The completed QLoRA NF4 adapter achieved **46.67% accuracy (420/900)** and
 **46.44% macro-F1** on all original test1 rows. The workbook, row IDs, and text
 hashes were preserved. Inference consumed only texts from `data/test1.xlsx`;

@@ -6,6 +6,17 @@ Compare results only on the same dataset and preserve the training recipe
 and partition recorded by each report. The original EP1 NorBERTo reference
 has 48.00% accuracy on test1 and 45.31% on its frozen holdout.
 
+## Selected Qwen: frozen EP1 partition
+
+The completed 16,093/3,999 run is now the default Qwen model in
+`models/qwen/adapter/`. It completed three epochs and 3,018 updates; validation
+scored **1,791/3,999 (44.79%)**, macro-F1 **44.44%**. All source rows, selected
+checkpoint, package checksums and 225 finite tensors were checked, followed
+by real GPU reload on synthetic texts. The original per-row validation export
+had a length-grouping order bug; exact checkpoint-RNG recovery reproduced
+the aggregate metrics and saved aligned records separately. Qwen remains
+excluded from the default ensemble. See the [model and audit](qwen-ep1-model.md).
+
 ## Stacking versus weighted soft voting
 
 The [stacking comparison](ensemble-stacking.md) reuses the same frozen models,
@@ -80,8 +91,9 @@ The historical 20,092-row RL remains archived in `models/rl/` and is not a
 fallback. The subsequent RL evaluation is recorded below.
 
 Both ensemble configurations pin the selected NorBERTo/SVM/RL manifests and
-reject saved predictions from different artifacts. Qwen keeps its existing
-16,010/4,082 grouped split, but is currently excluded. The user subsequently
+reject saved predictions from different artifacts. Historical Qwen used a
+16,010/4,082 split; its newly selected package uses the same EP1 16,093/3,999
+split and remains excluded. The user subsequently
 selected NorBERTo + SVM + RL majority voting with RL arbitration as the default. The
 available suite passed 121 tests, including a synthetic logistic fit verifying
 that holdout-only vocabulary is excluded and the exported bundle reloads.

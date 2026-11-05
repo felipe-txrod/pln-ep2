@@ -1,0 +1,108 @@
+{
+  "schema_version": 1,
+  "status": "verified_and_selected",
+  "date": "2026-11-05",
+  "selected_adapter": "models/qwen/adapter",
+  "source_training_run": "results/qwen-ep1-training-20261105",
+  "adapter_sha256": "a045c5726a85c466914c55f9cee9fb0d412af4d66387e14b590e53b4782beed5",
+  "adapter_weights_sha256": "c419c68572ab8e5cd6bda6730714ec27cb28d2d7374d5954a812469346427e53",
+  "package_manifest_sha256": "15a5aaccb3c4fc975783e9ba7c8a6a7c5588bc4dc9103f70e11016e5ad8ac093",
+  "base_model": "Qwen/Qwen3-1.7B",
+  "base_revision": "70d244cc86ccca08cf5af4e1e306ecf908b1ad5e",
+  "verification": {
+    "status": "passed",
+    "source_rows_verified": 20092,
+    "train_rows": 16093,
+    "validation_rows": 3999,
+    "train_ids_match_selected_rl": true,
+    "row_and_normalized_text_overlap": 0,
+    "correct": 1791,
+    "accuracy": 0.44786196549137286,
+    "f1_macro": 0.44442894502589025,
+    "confusion_matrix": [
+      [
+        571,
+        359,
+        327
+      ],
+      [
+        432,
+        463,
+        522
+      ],
+      [
+        260,
+        308,
+        757
+      ]
+    ],
+    "completed_epochs": 3.0,
+    "optimizer_steps": 3018,
+    "training_seconds": 11273.367010563998,
+    "skipped_overflow_steps": 0,
+    "adapter_sha256": "a045c5726a85c466914c55f9cee9fb0d412af4d66387e14b590e53b4782beed5",
+    "adapter_weights_sha256": "c419c68572ab8e5cd6bda6730714ec27cb28d2d7374d5954a812469346427e53",
+    "all_manifest_files_verified": true,
+    "selected_checkpoint_matches_published_weights": true,
+    "finite_tensors": 225,
+    "classification_head_shape": [
+      3,
+      2048
+    ],
+    "training_performed": false,
+    "test1_test2_inference_performed": false,
+    "holdout_used_for_fit": false,
+    "holdout_used_for_checkpoint_selection": true,
+    "verifier_sha256": "dad6ce918eddf8693996914cab3455f67fc854ba8dd09fb76d76e55711627d93",
+    "original_validation_predictions_were_misaligned": true,
+    "prediction_order_recovered_from_checkpoint_rng": true,
+    "original_prediction_file_preserved": true,
+    "aligned_predictions_sha256": "4b2cbcebe21928259815cb88ef4f14604075924afcbdf8554795b43ad6c02be0",
+    "evaluation_order_sha256": "ff0d6e33aaf9e22de681de5e0d3a54b1ae22e709d0da6905e6420064b02f149f"
+  },
+  "gpu_reload": {
+    "status": "passed",
+    "selected_adapter": "models/qwen/adapter",
+    "adapter_sha256": "a045c5726a85c466914c55f9cee9fb0d412af4d66387e14b590e53b4782beed5",
+    "synthetic_rows": 3,
+    "reload_seconds": 28.2003662850002,
+    "training_performed": false,
+    "real_dataset_inference_performed": false,
+    "adapter_files_unchanged": true,
+    "finite_logits_and_normalized_probabilities": true,
+    "verifier_sha256": "d53d31b0ffad68892facfcf7d9ef0ca5625c02a2ffa8df021a4235cdc7fc4fe1"
+  },
+  "qwen_in_default_ensemble": false,
+  "historical_adapter_preserved": true,
+  "training_performed": false,
+  "test1_test2_inference_performed": false,
+  "validation_order_issue": {
+    "cause": "Trainer LengthGroupedSampler reorders evaluation while the old export zipped logits with sequential record IDs.",
+    "aggregate_metrics_valid": true,
+    "original_per_row_export_misaligned": true,
+    "recovery": "Reproduce original test dataloader order from final checkpoint CPU RNG; exact confusion-matrix match.",
+    "changed_positions": 3998,
+    "recovered_correct": 1791,
+    "aligned_predictions": "results/qwen-ep1-publication-20261105/validation-predictions-aligned.jsonl",
+    "raw_original_preserved": true,
+    "model_weights_changed": false,
+    "future_prevention": "Sequential evaluation sampler and explicit label-order assertion."
+  },
+  "raw_verification_directory": "results/qwen-ep1-publication-20261105",
+  "audit_files_sha256": {
+    "verify.py": "dad6ce918eddf8693996914cab3455f67fc854ba8dd09fb76d76e55711627d93",
+    "recover-order.py": "43d88fef7cdaa6564cbe8969dc433cc6c52f08de23e5acf35a910ff1eca741d5",
+    "reload.py": "d53d31b0ffad68892facfcf7d9ef0ca5625c02a2ffa8df021a4235cdc7fc4fe1",
+    "evaluation-order.json": "ff0d6e33aaf9e22de681de5e0d3a54b1ae22e709d0da6905e6420064b02f149f",
+    "validation-predictions-aligned.jsonl": "4b2cbcebe21928259815cb88ef4f14604075924afcbdf8554795b43ad6c02be0"
+  },
+  "limitation": "Holdout selected the checkpoint and was consulted historically; this is validation, not an independent final test.",
+  "tests": {
+    "available_suite_passed": 165,
+    "duration_seconds": 26.0,
+    "excluded_optional_sdk_modules": [
+      "tests/test_backend_pipeline.py",
+      "tests/test_study_cli.py"
+    ]
+  }
+}

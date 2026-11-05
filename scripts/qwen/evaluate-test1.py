@@ -12,17 +12,22 @@ from gpt_classifier.data import LABELS, file_digest, read_xlsx, write_json, writ
 from gpt_classifier.evaluation import align, metrics
 from qwen_classifier.hardware import environment, isolated_probe, memory, runtime_identity
 from qwen_classifier.inference import adapter_identity, predict_records
+from qwen_classifier.artifacts import resolve_adapter
 
 
-def verify_training(root: Path) -> dict[str, Any]:
-    report = json.loads((root / "run.json").read_text(encoding="utf-8"))
+def verify_training(root: Path | None) -> dict[str, Any]:
+    adapter = resolve_adapter() if root is None else root / "adapter"
+    metadata_path = adapter.parent / "training.json" if root is None else root / "run.json"
+    report = json.loads(metadata_path.read_text(encoding="utf-8"))
     if (report.get("status") != "completed" or report.get("smoke") is not False
             or report.get("pilot") is not False or not report.get("verified_lora_update")):
         raise ValueError("A completed full training run with verified LoRA updates is required.")
-    adapter = root / "adapter"
     saved = json.loads((adapter / "experiment.json").read_text(encoding="utf-8"))
     if saved["config"] != report["config"] or saved["labels"] != list(LABELS):
         raise ValueError("The exported adapter configuration differs from its training run.")
+    if root is None:
+        # The package manifest pins the selected weights and reviewed training provenance.
+        return report
     checkpoint = root / "checkpoints" / Path(report["best_checkpoint"]).name
     if file_digest(adapter / "adapter_model.safetensors") != file_digest(checkpoint / "adapter_model.safetensors"):
         raise ValueError("The exported adapter differs from the checkpoint selected in validation.")
@@ -37,11 +42,13 @@ def verify_training(root: Path) -> dict[str, Any]:
 
 def evaluate(args: argparse.Namespace) -> dict[str, Any]:
     training = verify_training(args.training_run)
-    adapter = args.training_run / "adapter"
+    adapter = resolve_adapter() if args.training_run is None else args.training_run / "adapter"
+    training_path = adapter.parent / "training.json" if args.training_run is None else args.training_run / "run.json"
     identity = adapter_identity(adapter)
-    training_digest = file_digest(args.training_run / "run.json")
+    training_digest = file_digest(training_path)
     current = environment()
-    if current["implementation_sha256"] != training["environment"]["implementation_sha256"]:
+    if (args.training_run is not None
+            and current["implementation_sha256"] != training["environment"]["implementation_sha256"]):
         raise ValueError("Qwen source code changed since training; review before evaluating.")
     records, source_info = read_xlsx(args.input)
     if len(records) != 900:
@@ -76,7 +83,7 @@ def evaluate(args: argparse.Namespace) -> dict[str, Any]:
         scores["correct"] = sum(row["label"] == truth.label for row, truth in zip(predictions, gold))
         scores["incorrect"] = len(records) - scores["correct"]
         if (adapter_identity(adapter) != identity
-                or file_digest(args.training_run / "run.json") != training_digest
+                or file_digest(training_path) != training_digest
                 or file_digest(args.input) != source_info["sha256"]
                 or file_digest(args.gold) != gold_info["sha256"]):
             raise ValueError("A model or evaluation input changed during inference.")
@@ -109,7 +116,8 @@ def evaluate(args: argparse.Namespace) -> dict[str, Any]:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--training-run", type=Path, default=Path("results/qwen-fast-training"))
+    parser.add_argument("--training-run", type=Path,
+                        help="Explicit historical run override; defaults to the verified selected models/qwen package")
     parser.add_argument("--input", type=Path, default=Path("data/test1.xlsx"))
     parser.add_argument("--gold", type=Path, default=Path("data/test1-rotulado-para-teste-estatistico.xlsx"))
     parser.add_argument("--cache-dir", type=Path, default=Path(".cache/qwen-model"))

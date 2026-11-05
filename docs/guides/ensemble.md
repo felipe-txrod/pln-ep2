@@ -94,7 +94,7 @@ the best trio and 49.67% for RL alone on the previously consulted test1 set.
 | NorBERTo | 16,093 | 3,999 | Unchanged original EP1 delivery adapter |
 | SVM | 16,093 | 3,999 | Original fixed-holdout SVM |
 | RL | 16,093 | 3,999 | `models/rl-development/`, generated with `bash scripts/rl/train.sh` |
-| Qwen | 16,010 | 4,082 | Existing adapter with its own grouped validation split |
+| Qwen (optional, excluded) | 16,093 | 3,999 | Selected `models/qwen/adapter/`, exact EP1 split |
 
 Holdout rows are reserved for evaluation, not used as training data. RL's
 historical full-corpus package remains in `models/rl/`, but a missing
@@ -300,11 +300,11 @@ Uma composição ou política alternativa exige outra configuração e identidad
 
 ## Avaliação final em teste1, sem retreino
 
-O NorBERTo definitivo foi treinado em 16.093 respostas de desenvolvimento,
-excluindo um holdout de 3.999. O Qwen usa 16.010 respostas para treino e 4.082
-para validação. As partições diferentes não impedem a combinação nem exigem
-um novo treinamento. Não é necessário construir uma interseção dos holdouts
-para executar ou avaliar o ensemble fixo em teste1.
+The selected NorBERTo and the newly selected Qwen both use the frozen 16,093
+development rows and 3,999 holdout rows. Qwen's earlier 16,010/4,082 split is
+historical; optional Qwen entries now point to the saved EP1-split adapter.
+Qwen remains excluded from the default NorBERTo/SVM/RL ensemble. Its holdout
+selected the best checkpoint, while the weights were fitted only on development.
 SVM and logistic regression now default to the same frozen 16,093 development
 rows, reserving 3,999 holdout rows. The fixed EP1 parameters remain `C=0.05`
 and `C=0.25`. The development-only RL artifact completed training and verification; its

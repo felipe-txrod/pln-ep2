@@ -9,16 +9,19 @@ from gpt_classifier.delivery import export_test1, export_test2
 from .config import Config
 from .dataset import TokenizedTexts
 from .model import build_model, tokenizer_for
+from .artifacts import resolve_adapter
 
 
-def adapter_identity(adapter: Path) -> str:
+def adapter_identity(adapter: Path | None) -> str:
+    adapter = resolve_adapter(adapter)
     from gpt_classifier.data import canonical
     names = ("adapter_config.json", "adapter_model.safetensors", "experiment.json",
              "tokenizer.json", "tokenizer_config.json", "special_tokens_map.json")
     return digest(canonical({name: file_digest(adapter / name) for name in names if (adapter / name).exists()}))
 
 
-def predict_records(adapter: Path, cache_dir: Path, records) -> list[dict]:
+def predict_records(adapter: Path | None, cache_dir: Path, records) -> list[dict]:
+    adapter = resolve_adapter(adapter)
     import torch
     from torch.utils.data import DataLoader
     from transformers import DataCollatorWithPadding
@@ -48,11 +51,12 @@ def predict_records(adapter: Path, cache_dir: Path, records) -> list[dict]:
     return predictions
 
 
-def predict(adapter: Path, cache_dir: Path, source: Path, output: Path, *, phase: str = "inference",
+def predict(adapter: Path | None, cache_dir: Path, source: Path, output: Path, *, phase: str = "inference",
             test2_run: Path | None = None, workbook: Path | None = None) -> dict:
     from .hardware import isolated_probe
     if output.exists():
         raise FileExistsError(f"Use a new inference directory: {output}")
+    adapter = resolve_adapter(adapter)
     identity = adapter_identity(adapter)
     records, info = read_xlsx(source)  # Deliberately ignores any clarity column.
     official = {}

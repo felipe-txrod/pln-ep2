@@ -2,8 +2,24 @@
 
 [Documentation index](../README.md)
 
-See the [completed training audit and test1 evaluation](../results/qwen-test1.md)
-for the frozen adapter results, per-class metrics, and provenance hashes.
+The selected model is now saved under `models/qwen/adapter/`, trained on the
+exact EP1 development/holdout split. See the [selected model verification](../results/qwen-ep1-model.md).
+The [earlier test1 report](../results/qwen-test1.md) describes the historical
+adapter with a different split; its score does not describe the new default.
+
+## Saved default
+
+`predict` uses the checksum-verified `models/qwen/adapter/` when `--adapter`
+is omitted. The completed three-epoch run scored 1,791/3,999 (44.79%) on the
+EP1 holdout and retains the same NF4 recipe. Qwen remains outside the active
+ensemble until explicitly selected. The package includes the trained head,
+tokenizer, frozen partition, training provenance and a pinned base reference.
+No new training is required to load it.
+
+The original per-row validation export was reordered by length grouping and
+has been preserved as historical evidence. Correctly aligned predictions were
+recovered separately from checkpoint RNG; see the [ordering audit](../results/qwen-ep1-model.md#per-row-export-ordering-audit).
+Future exports use sequential evaluation and verify the output label order.
 
 ## Retrain with the exact EP1 partition
 
