@@ -73,6 +73,11 @@ python3 scripts/models/freeze.py --help
 
 ## Diagnostics and experiments
 
+`diagnostics/audit-dataset-overlap.py` compares the seven provided EP1/EP2
+workbooks on CPU, without model loading. It reports file/content identity,
+exact and normalized text overlap, and conflicting labels. See the
+[dataset audit](../docs/results/dataset-overlap.md) for results and reproduction.
+
 `diagnostics/norberto/` contains optimizer, backend, sensitivity, and training
 regression audits. `probe-training-prefix.py` runs bounded real training when
 explicitly invoked; the other probes may perform forward/backward passes.

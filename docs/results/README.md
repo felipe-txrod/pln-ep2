@@ -39,6 +39,9 @@ training investigations are listed in the [archive](../archive/README.md).
 
 ## Technical aggregates
 
+[Dataset overlap audit](dataset-overlap.md) verifies the reused training corpus,
+test1 identity, and exact/normalized text overlap across training and both tests.
+
 JSON files in [`data/`](data/) contain the recorded metrics, hashes, execution
 checks, and paired comparisons. They retain their original filenames and bytes.
 Each detailed report links its own aggregate. Raw predictions, checkpoints,
