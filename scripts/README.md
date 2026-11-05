@@ -31,6 +31,23 @@ bash scripts/norberto/test1.sh compare \
 See the [training guide](../docs/guides/norberto-training.md) and
 [test1 guide](../docs/guides/norberto-test1.md) for environment and data details.
 
+## SVM
+
+Evaluate a newly trained EP1 artifact without replacing the frozen model:
+
+```bash
+bash scripts/svm/test1.sh \
+  --artifact results/svm-full/model.joblib \
+  --input data/test1.xlsx \
+  --gold data/test1-rotulado-para-teste-estatistico.xlsx \
+  --output-dir results/svm-full-test1
+```
+
+This offline CPU-only command validates the saved recipe and adjacent metadata,
+persists text-only predictions, then reads gold labels to produce `metrics.json`.
+The output includes accuracy, macro-F1, precision, recall, and the confusion
+matrix. Use a new output directory. `SVM_IMAGE` overrides the existing image.
+
 ## Qwen
 
 | Entry point | Purpose |

@@ -58,6 +58,14 @@ class ScriptLayoutTests(unittest.TestCase):
         self.assertIn("HSA_OVERRIDE_GFX_VERSION", args)
         self.assertEqual(args[-4:], ["python3", "-m", "qwen_classifier", "--help"])
 
+    def test_svm_evaluation_is_cpu_only(self):
+        args = self.capture_launcher("scripts/svm/test1.sh", ["--help"])
+        self.assertIn(f"{ROOT}:/workspace", args)
+        self.assertIn("--cpus=2", args)
+        self.assertFalse(any(arg.startswith("--device=") for arg in args))
+        self.assertIn("scripts/svm/evaluate-test1.py", args)
+        self.assertEqual(args[-1], "--help")
+
     def test_python_root_expressions_resolve_to_repository(self):
         checked = 0
         for path in (ROOT / "scripts").rglob("*.py"):
