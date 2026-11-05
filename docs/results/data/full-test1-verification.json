@@ -1,0 +1,203 @@
+{
+  "status": "verified",
+  "verification_scope": "Recomputed metrics from saved predictions; checked source, gold, model and training provenance. No model inference or retraining.",
+  "input_sha256": "e626f030d4bf2be889fc41dd1fe9b81fb31f1f50f3ace50530d658683260449f",
+  "gold_sha256": "c92658298f95b6325a49b017b58673ebda450fa54dc2280d74393cb093378406",
+  "models": {
+    "svm": {
+      "status": "verified",
+      "training_rows": 20092,
+      "metrics": {
+        "rows": 900,
+        "accuracy": 0.5011111111111111,
+        "f1_macro": 0.49869045431198195,
+        "label_order": [
+          "c1",
+          "c234",
+          "c5"
+        ],
+        "confusion_matrix": [
+          [
+            143,
+            90,
+            67
+          ],
+          [
+            81,
+            124,
+            95
+          ],
+          [
+            46,
+            70,
+            184
+          ]
+        ],
+        "classification_report": {
+          "c1": {
+            "precision": 0.5296296296296297,
+            "recall": 0.4766666666666667,
+            "f1-score": 0.5017543859649123,
+            "support": 300.0
+          },
+          "c234": {
+            "precision": 0.43661971830985913,
+            "recall": 0.41333333333333333,
+            "f1-score": 0.4246575342465753,
+            "support": 300.0
+          },
+          "c5": {
+            "precision": 0.5317919075144508,
+            "recall": 0.6133333333333333,
+            "f1-score": 0.5696594427244582,
+            "support": 300.0
+          },
+          "accuracy": 0.5011111111111111,
+          "macro avg": {
+            "precision": 0.49934708515131315,
+            "recall": 0.5011111111111112,
+            "f1-score": 0.49869045431198195,
+            "support": 900.0
+          },
+          "weighted avg": {
+            "precision": 0.4993470851513132,
+            "recall": 0.5011111111111111,
+            "f1-score": 0.49869045431198195,
+            "support": 900.0
+          }
+        },
+        "prediction_counts": {
+          "c234": 284,
+          "c5": 346,
+          "c1": 270
+        },
+        "correct": 451,
+        "incorrect": 449,
+        "precision_macro": 0.49934708515131315,
+        "recall_macro": 0.5011111111111112
+      },
+      "identity": {
+        "artifact_sha256": "dfd5f6f8d65edb31f0880fe7672c9bed56d306a968148bf3da82073754604a0f",
+        "metadata_sha256": "2c0e66cfc357234e368a02318a5192abeb8787a02294391b3f5f8e31120696d2"
+      },
+      "predictions_sha256": "584cfdce52afdec0c663bb56c8b7828b92c805918810921e5ae71b87cca5affd",
+      "source_metrics_sha256": "4b0030c726affecc24cbf127a7ca9899ba0a4368207fe198a4019da48de6f993",
+      "source_run_sha256": "192536464835f2978835d79ac4e31845840056a7552ab07b0758e1364d7e8eea"
+    },
+    "norberto": {
+      "status": "verified",
+      "training_rows": 20092,
+      "metrics": {
+        "rows": 900,
+        "accuracy": 0.38555555555555554,
+        "f1_macro": 0.332876884305787,
+        "label_order": [
+          "c1",
+          "c234",
+          "c5"
+        ],
+        "confusion_matrix": [
+          [
+            91,
+            24,
+            185
+          ],
+          [
+            65,
+            27,
+            208
+          ],
+          [
+            60,
+            11,
+            229
+          ]
+        ],
+        "classification_report": {
+          "c1": {
+            "precision": 0.4212962962962963,
+            "recall": 0.30333333333333334,
+            "f1-score": 0.35271317829457366,
+            "support": 300.0
+          },
+          "c234": {
+            "precision": 0.43548387096774194,
+            "recall": 0.09,
+            "f1-score": 0.14917127071823205,
+            "support": 300.0
+          },
+          "c5": {
+            "precision": 0.36816720257234725,
+            "recall": 0.7633333333333333,
+            "f1-score": 0.4967462039045553,
+            "support": 300.0
+          },
+          "accuracy": 0.38555555555555554,
+          "macro avg": {
+            "precision": 0.40831578994546186,
+            "recall": 0.3855555555555556,
+            "f1-score": 0.332876884305787,
+            "support": 900.0
+          },
+          "weighted avg": {
+            "precision": 0.40831578994546186,
+            "recall": 0.38555555555555554,
+            "f1-score": 0.332876884305787,
+            "support": 900.0
+          }
+        },
+        "prediction_counts": {
+          "c5": 622,
+          "c1": 216,
+          "c234": 62
+        },
+        "correct": 347,
+        "incorrect": 553,
+        "precision_macro": 0.40831578994546186,
+        "recall_macro": 0.3855555555555556
+      },
+      "identity": {
+        "adapter_weights_sha256": "f73a255a225ded43d7dba8d1ecb8d0774b88dc59d823a4f966f3b2c43416bf7c",
+        "training_run_sha256": "42d562b530ccba9107d309719876cc3f6ed783d460e047a87669952f51fe874c"
+      },
+      "predictions_sha256": "9093f915786139d5d78d7504521907792d2db6637bdd72b411d1377a490d5288",
+      "source_metrics_sha256": "edc534c3775070ebef5d1d58201973bf83d228f249a9119cef208bbaa1b0b8cc",
+      "source_run_sha256": "6668e984db37793c30858ff594929c6c00a90782065fed776a40e0740f709a68"
+    }
+  },
+  "training_checks": {
+    "norberto_full": {
+      "training_rows": 20092,
+      "recipe_version": 3,
+      "epochs_executed": 2.0,
+      "training_stopped_by_budget": false,
+      "training_seconds": 2412.073383956,
+      "training_loss": 1.1100679051344562,
+      "optimizer_gradient_scale": 4,
+      "max_logged_preclip_gradient": {
+        "loss": 1.2581,
+        "grad_norm": 1196.8634033203125,
+        "learning_rate": 0.0006163716814159292,
+        "epoch": 0.891897272546287,
+        "step": 1120
+      }
+    },
+    "norberto_development": {
+      "training_rows": 16093,
+      "recipe_version": 3,
+      "epochs_executed": 2.0,
+      "training_stopped_by_budget": false,
+      "training_seconds": 1879.4120314870015,
+      "training_loss": 1.0714111693099764,
+      "optimizer_gradient_scale": 4,
+      "max_logged_preclip_gradient": {
+        "loss": 1.151,
+        "grad_norm": 22.58406639099121,
+        "learning_rate": 0.0008469613259668509,
+        "epoch": 0.47713717693836977,
+        "step": 480
+      }
+    }
+  },
+  "interpretation": "The full NorBERTo completed but regressed on test1 with strongly c5-biased predictions and a large logged gradient spike. The cause is not established by these checks. No model was promoted or training recipe changed."
+}
