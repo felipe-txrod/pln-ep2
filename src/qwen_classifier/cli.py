@@ -20,6 +20,8 @@ def main(argv: list[str] | None = None) -> int:
             command.add_argument("--output-dir", type=Path, required=True)
         if name in {"prepare", "train"}:
             command.add_argument("--input", type=Path, default=Path("data/train.xlsx"))
+            command.add_argument("--ep1-split", type=Path,
+                                 help="Reuse the checksum-pinned EP1 development/holdout CSV without resampling")
         if name != "prepare":
             command.add_argument("--cache-dir", type=Path, default=Path(".cache/qwen-model"))
         if name == "train":
@@ -65,7 +67,7 @@ def main(argv: list[str] | None = None) -> int:
             result = {"snapshot": path, "revision": config.revision}
         elif args.command == "prepare":
             from .dataset import prepare
-            manifest = prepare(args.input, args.output_dir, config)
+            manifest = prepare(args.input, args.output_dir, config, ep1_split=args.ep1_split)
             result = {key: value for key, value in manifest.items() if key not in {"train_rows", "validation_rows"}}
             result.update(train_rows=len(manifest["train_rows"]), validation_rows=len(manifest["validation_rows"]))
         elif args.command == "smoke":
@@ -77,7 +79,7 @@ def main(argv: list[str] | None = None) -> int:
         elif args.command == "train":
             from .training import train
             result = train(config, args.input, args.output_dir, args.cache_dir,
-                           smoke_report=args.smoke_report, pilot=args.pilot)
+                           smoke_report=args.smoke_report, pilot=args.pilot, ep1_split=args.ep1_split)
         elif args.command == "predict":
             from .inference import predict
             result = predict(args.adapter, args.cache_dir, args.input, args.output_dir, phase=args.phase,

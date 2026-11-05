@@ -5,6 +5,62 @@
 See the [completed training audit and test1 evaluation](../results/qwen-test1.md)
 for the frozen adapter results, per-class metrics, and provenance hashes.
 
+## Retrain with the exact EP1 partition
+
+Use `--ep1-split data/ep1-development-holdout.csv` to reuse the same 16,093
+development rows and 3,999 holdout rows as NorBERTo, SVM, and development-only
+RL. The versioned CSV is byte-identical to the original EP1 split, SHA-256
+`0f78e7a809c7b7584db05b33cf03a73ff586d5de02ba824c16562d5070d41494`.
+The workbook and split checksums are validated before GPU preflight. No new
+folds are generated; the seed and fold settings do not change membership.
+
+From the EP2 root, using the existing local image, runtime cache, and base:
+
+```bash
+QWEN_IMAGE=pln-rocm:6.4.1 \
+QWEN_RUNTIME_PATH=/workspace/.cache/qwen-runtime \
+bash scripts/qwen/container.sh train \
+  --config configs/qwen-fast.json \
+  --input data/train.xlsx \
+  --ep1-split data/ep1-development-holdout.csv \
+  --output-dir results/qwen-ep1-training-20261105
+```
+
+This keeps the existing optimized QLoRA NF4 recipe: three epochs, batch 4,
+accumulation 4, context 256, rank 8/alpha 16, and the pinned public base.
+A fresh synthetic two-step compatibility preflight runs automatically in the
+adjacent `qwen-ep1-training-20261105-preflight/` directory. Old smoke reports
+are invalidated by the implementation change and must not be supplied.
+Existing results and adapters are preserved; choose a new output directory
+if either training or preflight destination already exists.
+
+The 3,999 holdout rows receive no gradient updates. They are evaluated each
+epoch and select the best checkpoint, matching the existing Qwen training
+behavior; the resulting score is validation, not an untouched final test.
+No test1 or test2 workbook enters fitting or checkpoint selection. Qwen stays
+excluded from the default ensemble until explicitly selected again.
+
+To inspect the split without model training:
+
+```bash
+PYTHONPATH=src python3 -m qwen_classifier prepare \
+  --config configs/qwen-fast.json --input data/train.xlsx \
+  --ep1-split data/ep1-development-holdout.csv \
+  --output-dir results/qwen-ep1-prepared-new
+```
+
+Preparation checks complete row coverage and order, similarity-group isolation,
+normalized-text isolation, and class coverage. It snapshots the CSV and saves
+all original row IDs in `data/split.json`, `train.jsonl`, and `validation.jsonl`
+inside a training run. The final `adapter/experiment.json` and training
+`run.json` record partition and prepared-data checksums. The final adapter
+will be under `results/qwen-ep1-training-20261105/adapter/`.
+
+Omitting `--ep1-split` retains the historical grouped-fold method described
+below; its 16,010/4,082 partition differs from EP1. The frozen preparation was
+verified against all original EP1 row IDs and source texts without GPU
+execution. See the [preparation evidence](../results/data/qwen-ep1-preparation.json).
+
 ## Visão geral
 
 O experimento atual usa `Qwen/Qwen3-1.7B` para classificação supervisionada de

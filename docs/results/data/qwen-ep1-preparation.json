@@ -1,0 +1,52 @@
+{
+  "status": "passed",
+  "source_rows_verified": 20092,
+  "train_rows": 16093,
+  "validation_rows": 3999,
+  "exact_norberto_and_rl_training_ids_match": true,
+  "all_source_texts_labels_order_and_hashes_verified": true,
+  "row_overlap": 0,
+  "group_overlap": 0,
+  "normalized_text_overlap": 0,
+  "dataset_sha256": "0e9219233664ac675fc47982bbc822acd3bb15d67fb7bfc26b67bec047e46818",
+  "split_sha256": "0f78e7a809c7b7584db05b33cf03a73ff586d5de02ba824c16562d5070d41494",
+  "split_method": "frozen_ep1_development_holdout",
+  "train_counts": {
+    "c5": 5567,
+    "c1": 5090,
+    "c234": 5436
+  },
+  "validation_counts": {
+    "c234": 1417,
+    "c1": 1257,
+    "c5": 1325
+  },
+  "holdout_used_for_fit": false,
+  "holdout_used_for_checkpoint_selection": true,
+  "training_performed": false,
+  "gpu_preflight_performed": false,
+  "ensemble_members_changed": false,
+  "qwen_in_default_ensemble": false,
+  "raw_preparation_directory": "results/qwen-ep1-prepared-20261105",
+  "preparation_files_sha256": {
+    "split.json": "c1a6fe8c7d69c3c5fec2e3248ee7b88045d5e6ad4ed202c92bca8e3a48c4095c",
+    "train.jsonl": "9c2f7e371d10e191ea86eaecef1538ab6d37432466aa8cd79e2e415366917cd2",
+    "validation.jsonl": "acde3023e02752869d561fae043535aae767b9c3db7e024c6ad7db846d2b25ae",
+    "frozen-split.csv": "0f78e7a809c7b7584db05b33cf03a73ff586d5de02ba824c16562d5070d41494"
+  },
+  "verifier_sha256": "1f2488f1529fe3d2d86e25df80d1e42ae98ec71d8bc7e761f932f1bc3e5a27bf",
+  "implementation_sha256": {
+    "src/qwen_classifier/partitions.py": "f0ef538db332ad66b31d9452f1d95871d113487385a7017eca2d024ec448129d",
+    "src/qwen_classifier/dataset.py": "dfa8ed0f9bf63edcdb831d9732ab11cf8fcc103082fad8e8dd09ef50b0d4aac3",
+    "src/qwen_classifier/cli.py": "ad682f1c8eac07e6578cf14c7a665b29a17fb0238eef44373df7f63ff69e00c1",
+    "src/qwen_classifier/training.py": "d8196461331f854ecf42a9f70b91b02d88d17a63775d49674be9dfca5062765c"
+  },
+  "tests": {
+    "available_suite_passed": 143,
+    "duration_seconds": 23.56,
+    "excluded_optional_sdk_modules": [
+      "tests/test_backend_pipeline.py",
+      "tests/test_study_cli.py"
+    ]
+  }
+}

@@ -23,6 +23,7 @@ measured results, assignment references, and historical experiments are separate
 | Reuse the unchanged EP1 NorBERTo adapter | [Original model](src/norberto_classifier/README.md) |
 | Predict test1, then compare with gold labels | [NorBERTo test1 workflow](docs/guides/norberto-test1.md) |
 | Set up, train, and run Qwen QLoRA | [Qwen fine-tuning](docs/guides/qwen-finetuning.md) |
+| Retrain Qwen on the same 16,093/3,999 split as EP1 models | [Exact EP1 partition](docs/guides/qwen-finetuning.md#retrain-with-the-exact-ep1-partition) |
 | Train development-only lexical logistic regression with holdout reserved | [RL workflow](src/rl_classifier/README.md) |
 | Select ensemble members and the tie-breaking model | [Ensemble](docs/guides/ensemble.md) |
 | Browse runnable scripts by model and purpose | [Script index](scripts/README.md) |

@@ -4,6 +4,7 @@ from __future__ import annotations
 from collections import Counter
 from dataclasses import asdict
 from pathlib import Path
+from shutil import copyfile
 
 import numpy as np
 from sklearn.model_selection import StratifiedGroupKFold
@@ -30,23 +31,34 @@ def split_records(records: list[Example], config: Config) -> tuple[list[Example]
     return train, validation
 
 
-def prepare(source: Path, output: Path, config: Config) -> dict:
+def prepare(source: Path, output: Path, config: Config, *, ep1_split: Path | None = None) -> dict:
     root = Path(__file__).resolve().parents[2]
     for name in ("test1.xlsx", "test2.xlsx", "test1-rotulado-para-teste-estatistico.xlsx"):
         protected = root / "data" / name
         if protected.exists() and file_digest(source) == file_digest(protected):
             raise ValueError("Official test workbooks cannot be used for development.")
     records, source_info = read_xlsx(source, labeled=True)
-    train, validation = split_records(records, config)
+    partition = None
+    if ep1_split is None:
+        train, validation = split_records(records, config)
+    else:
+        from .partitions import split_ep1
+        train, validation, partition = split_ep1(records, source, ep1_split)
     output.mkdir(parents=True, exist_ok=False)
     manifest = {
         "source": source_info, "config": config.to_dict(), "labels": list(LABELS),
-        "split_method": "StratifiedGroupKFold over HTML-unescaped, whitespace-normalized lowercase text",
+        "split_method": partition["method"] if partition else
+                        "StratifiedGroupKFold over HTML-unescaped, whitespace-normalized lowercase text",
         "train_rows": [r.excel_row for r in train], "validation_rows": [r.excel_row for r in validation],
         "train_counts": dict(Counter(r.label for r in train)),
         "validation_counts": dict(Counter(r.label for r in validation)),
         "duplicates_and_conflicting_labels": "Retained in the same partition; no evaluation rows removed.",
     }
+    if partition is not None:
+        copyfile(ep1_split, output / "frozen-split.csv")
+        if file_digest(output / "frozen-split.csv") != partition["split_sha256"]:
+            raise ValueError("The frozen split changed during preparation.")
+        manifest["partition"] = partition
     write_json(output / "split.json", manifest)
     write_jsonl(output / "train.jsonl", [asdict(r) for r in train])
     write_jsonl(output / "validation.jsonl", [asdict(r) for r in validation])

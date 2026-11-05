@@ -13,7 +13,7 @@ from pathlib import Path
 import numpy as np
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix, precision_recall_fscore_support
 
-from gpt_classifier.data import LABELS, Example, canonical, digest, read_jsonl, write_json
+from gpt_classifier.data import LABELS, Example, canonical, digest, file_digest, read_jsonl, write_json
 from .config import Config
 from .dataset import TokenizedTexts, prepare
 from .hardware import environment, memory, probe, runtime_identity
@@ -99,7 +99,7 @@ def _guard_callback():
 
 
 def fit(config: Config, output: Path, cache_dir: Path, *, source: Path | None = None,
-        smoke: bool = False, pilot: bool = False) -> dict:
+        smoke: bool = False, pilot: bool = False, ep1_split: Path | None = None) -> dict:
     import torch
     from transformers import DataCollatorWithPadding, Trainer, TrainingArguments, set_seed
 
@@ -111,6 +111,7 @@ def fit(config: Config, output: Path, cache_dir: Path, *, source: Path | None = 
     device = runtime_identity()
     torch.cuda.reset_peak_memory_stats()
     tokenizer = tokenizer_for(config, cache_dir)
+    partition = None
     if smoke:
         # Stress the configured token length without inspecting any test workbook.
         text = "This public response supplies the requested information. " * config.max_length
@@ -120,7 +121,14 @@ def fit(config: Config, output: Path, cache_dir: Path, *, source: Path | None = 
     else:
         if source is None:
             raise ValueError("A labeled training workbook is required.")
-        prepare(source, output / "data", config)
+        prepared = prepare(source, output / "data", config, ep1_split=ep1_split)
+        partition = {
+            **prepared.get("partition", {}), "method": prepared["split_method"],
+            "source_sha256": prepared["source"]["sha256"],
+            "split_manifest_sha256": file_digest(output / "data/split.json"),
+            "train_records_sha256": file_digest(output / "data/train.jsonl"),
+            "validation_records_sha256": file_digest(output / "data/validation.jsonl"),
+        }
         train_records = [Example(**row) for row in read_jsonl(output / "data" / "train.jsonl")]
         validation_records = [Example(**row) for row in read_jsonl(output / "data" / "validation.jsonl")]
         if pilot:
@@ -179,7 +187,8 @@ def fit(config: Config, output: Path, cache_dir: Path, *, source: Path | None = 
     adapter = output / "adapter"
     model.save_pretrained(adapter, safe_serialization=True)
     tokenizer.save_pretrained(adapter)
-    write_json(adapter / "experiment.json", {"config": config.to_dict(), "labels": list(LABELS)})
+    write_json(adapter / "experiment.json", {"config": config.to_dict(), "labels": list(LABELS),
+                                            "partition": partition})
     write_json(output / "validation-metrics.json", scores)
     write_json(output / "validation-predictions.json", [
         {"excel_row": r.excel_row, "text_sha256": digest(r.text), "label": LABELS[int(index)],
@@ -216,7 +225,8 @@ def fit(config: Config, output: Path, cache_dir: Path, *, source: Path | None = 
               "metric_scope": "Synthetic compatibility data, not classifier quality" if smoke else
                               "Two-step pilot on training-corpus partitions; not a final quality estimate" if pilot else
                               "Grouped internal validation; not official test1 or test2",
-              "best_checkpoint": None if smoke else trainer.state.best_model_checkpoint}
+              "best_checkpoint": None if smoke else trainer.state.best_model_checkpoint,
+              "partition": partition}
     write_json(output / "run.json", report)
     return report
 
@@ -261,9 +271,12 @@ def smoke_test(config: Config, output: Path, cache_dir: Path) -> dict:
 
 
 def train(config: Config, source: Path, output: Path, cache_dir: Path, *, smoke_report: Path | None = None,
-          pilot: bool = False) -> dict:
+          pilot: bool = False, ep1_split: Path | None = None) -> dict:
     if output.exists():
         raise FileExistsError(f"Use a new experiment directory: {output}")
+    if ep1_split is not None:
+        from .partitions import validate_ep1_sources
+        validate_ep1_sources(source, ep1_split)
     if smoke_report is None:
         report = smoke_test(config, output.with_name(output.name + "-preflight"), cache_dir)
     else:
@@ -280,7 +293,7 @@ def train(config: Config, source: Path, output: Path, cache_dir: Path, *, smoke_
             raise ValueError("GPU identity changed since the real-model smoke test.")
     effective = replace(config, mode=report["selected_mode"])
     try:
-        result = fit(effective, output, cache_dir, source=source, pilot=pilot)
+        result = fit(effective, output, cache_dir, source=source, pilot=pilot, ep1_split=ep1_split)
     except Exception as error:
         if output.exists():
             write_json(output / "failure.json", {"error": f"{type(error).__name__}: {error}",

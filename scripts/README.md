@@ -72,6 +72,12 @@ RL model is preserved and never selected as a fallback. See the
 
 [Qwen workflow and compatibility](../docs/guides/qwen-finetuning.md).
 
+For retraining on the same development/holdout rows as the other local models,
+pass `--ep1-split data/ep1-development-holdout.csv` to `train` or `prepare`.
+The [exact command](../docs/guides/qwen-finetuning.md#retrain-with-the-exact-ep1-partition)
+uses a fresh output and automatic compatibility preflight; Qwen remains excluded
+from the default ensemble until explicitly selected again.
+
 ## Model artifacts
 
 | Entry point | Purpose |
