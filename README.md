@@ -18,6 +18,10 @@ the frozen reference.
 The [training-only regression investigation](docs/investigacao-norberto-full.md)
 records the evidence and the corrected loss normalization for future refits.
 
+The [completed loss-normalized refit](docs/avaliacao-norberto-normalized-test1.md)
+achieved **45.33% accuracy (408/900)** and **43.83% macro-F1**. This recovered
+67 correct predictions over the legacy full refit and remained 24 below EP1.
+
 O modelo definitivo já treinado do EP1 também está disponível no pacote
 [`src/norberto_classifier`](src/norberto_classifier/README.md), exclusivamente
 para inferência, com cópia local da base e do adapter oficial.

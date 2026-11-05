@@ -6,16 +6,17 @@ The current command normalizes cross entropy by the total example count across
 gradient accumulation, fixing a confirmed legacy ModernBERT/Trainer bug.
 Optimizer hyperparameters remain unchanged, but this is a new loss computation,
 recorded as recipe version 2. The historical 341/900 refit used the legacy loss.
-Nine CPU tests and a dry-run passed; no full training or test1 result exists for
-version 2. See the [investigation](investigacao-norberto-full.md) for evidence
-and causal limits.
+Nine CPU tests and a dry-run passed. The completed version-2 run achieved
+**408/900 (45.33%)** in its isolated
+[test1 comparison](avaliacao-norberto-normalized-test1.md). See the
+[investigation](investigacao-norberto-full.md) for initial evidence and causal limits.
 
 The historical output directory already exists. Inspect a new version-2 plan
 without starting training:
 
 ```bash
 bash scripts/train-norberto-full.sh \
-  --output-dir /workspace/results/norberto-full-normalized --dry-run
+  --output-dir /workspace/results/norberto-full-normalized-new --dry-run
 ```
 
 ## Training command and original parameters

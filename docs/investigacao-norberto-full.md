@@ -1,5 +1,10 @@
 # Investigation of the full-corpus NorBERTo regression
 
+Follow-up: the [completed normalized refit](avaliacao-norberto-normalized-test1.md)
+achieved 408/900 (45.33%), compared with 341/900 for the legacy full refit and
+432/900 for the original EP1 submission. The initial investigation below
+remains a training-only diagnostic; the follow-up is a separate test1 comparison.
+
 Evidence points to **unstable optimization during the full-corpus run**. A
 separate loss-normalization bug was reproduced, but it affects both historical
 runs and is not a proven sole cause of the regression. No full model was
@@ -101,7 +106,8 @@ Numerical hyperparameters and EP1 sources remain unchanged; the legacy Trainer
 constructor is restored after the call. Historical artifacts were preserved.
 Nine targeted CPU tests passed, including actual ModernBERT/PEFT/Trainer
 gradient equivalence on an unequal tail. A full-corpus dry-run passed without
-model imports. **No full training or test1 reevaluation used this correction.**
+model imports. At that stage, no full training or test1 reevaluation had used
+the correction; the subsequent follow-up is linked above.
 
 Further causal experiments should isolate normalization, data inclusion, and
 update budget using development-only controls and internal validation. Test1

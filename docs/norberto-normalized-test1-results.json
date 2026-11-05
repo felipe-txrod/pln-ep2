@@ -1,0 +1,271 @@
+{
+  "dataset": "test1",
+  "rows": 900,
+  "labels": [
+    "c1",
+    "c234",
+    "c5"
+  ],
+  "model_type": "norberto-full-normalized",
+  "phase": "comparison",
+  "scope": "Isolated test1 comparison of the full-corpus refit; no test2 delivery performed.",
+  "recipe_version": 2,
+  "loss_normalization": "sample_count_across_accumulation",
+  "model_id": "Itau-Unibanco/NorBERTo-base",
+  "base_revision": "db73446f89c96044863ea05a39f680524b84bccb",
+  "config": {
+    "description": "Three-fold NorBERTo-512 evaluation on frozen development rows only; reserve the fixed holdout for a later decision and preserve all fold adapters.",
+    "model_name": "Itau-Unibanco/NorBERTo-base",
+    "revision": "db73446f89c96044863ea05a39f680524b84bccb",
+    "max_length": 512,
+    "truncation": "head_tail",
+    "lora_rank": 4,
+    "lora_alpha": 8,
+    "lora_dropout": 0.05,
+    "lora_layers": null,
+    "batch_size": 4,
+    "gradient_accumulation": 4,
+    "eval_batch_size": 8,
+    "learning_rate": 0.001,
+    "epochs": 2,
+    "patience": 1,
+    "weight_decay": 0.01,
+    "warmup_ratio": 0.1,
+    "fp16": false,
+    "attention": "sdpa",
+    "outer_folds": 3,
+    "inner_folds": 5,
+    "seed": 42,
+    "threads": 2,
+    "train_subset_folds": 1,
+    "budget_minutes": 75,
+    "holdout_split_sha256": "0f78e7a809c7b7584db05b33cf03a73ff586d5de02ba824c16562d5070d41494"
+  },
+  "input_sha256": "e626f030d4bf2be889fc41dd1fe9b81fb31f1f50f3ace50530d658683260449f",
+  "gold_sha256": "c92658298f95b6325a49b017b58673ebda450fa54dc2280d74393cb093378406",
+  "adapter_sha256": "699d279ccb449c1f857d89cf89f31d30bb806549da2a9487bb5151141ce327f9",
+  "adapter_weights_sha256": "f43ebe2b9cc1670057bdaa5c7d43b6235d002837bd8d68dbac50b243a1485d71",
+  "training_run_sha256": "2df4c35457b1d736891b3234adf467758c81bcae11bfdab88513a0c2e9ea5d60",
+  "training_wrapper_sha256": "b60cbd9b66fc7ee26f19b22e8e362d9eaefb41eef4d5fd6192762a48e1cbf537",
+  "loss_implementation_sha256": "1c35394b7b68dac274342370dd2989fb1161dbb356083f56af4251ca1e2070ea",
+  "evaluation_script_sha256": "9245ec7c4a3cbe007ff9d55ccdd487beea04ec8dd8d31168d01854b53a0c2765",
+  "predictions_sha256": "d682d6e5a4a78f9968f5c281633b4f06f7aca85173d1d0fe7285321c0ddb9640",
+  "runtime_versions": {
+    "torch": "2.8.0+rocm6.4",
+    "transformers": "4.57.1",
+    "peft": "0.17.1",
+    "accelerate": "1.10.1",
+    "numpy": "2.3.3",
+    "scikit-learn": "1.7.2",
+    "openpyxl": "3.1.5"
+  },
+  "device": {
+    "backend": "rocm",
+    "device_name": "AMD Radeon RX 6650 XT",
+    "architecture": "gfx1030",
+    "runtime_version": "6.4.43482-0f2d60242",
+    "torch_version": "2.8.0+rocm6.4",
+    "total_memory_mib": 8176.0
+  },
+  "training_audit": {
+    "status": "passed",
+    "recipe_version": 2,
+    "loss_normalization": "sample_count_across_accumulation",
+    "training_status": "completed",
+    "rows": 20092,
+    "epochs": 2.0,
+    "optimizer_steps": 2512,
+    "max_steps": 2512,
+    "training_seconds": 2334.802417005998,
+    "budget_stop": false,
+    "finite_trainable_parameters": 272643,
+    "nonzero_lora_b_tensors": 22,
+    "exported_hashes_verified": true,
+    "wrapper_implementation_matches": true,
+    "loss_implementation_matches": true,
+    "training_run_sha256": "2df4c35457b1d736891b3234adf467758c81bcae11bfdab88513a0c2e9ea5d60",
+    "training_rows_sha256": "6ad83e7812a75b45f782ef6b2b12e676e08817e32e1550ef5dd2bbb995befa36",
+    "adapter_weights_sha256": "f43ebe2b9cc1670057bdaa5c7d43b6235d002837bd8d68dbac50b243a1485d71",
+    "mean_training_loss": 1.08899171716848,
+    "max_logged_gradient_norm": 10.038596153259277,
+    "training_performed_by_audit": false
+  },
+  "training_rows_verified": true,
+  "training_history_summary": [
+    {
+      "epoch_start": 0,
+      "epoch_end": 0.5,
+      "mean_loss": 1.1276451612903227,
+      "mean_gradient_norm": 3.1544896152711686,
+      "max_gradient_norm": 10.038596153259277
+    },
+    {
+      "epoch_start": 0.5,
+      "epoch_end": 1,
+      "mean_loss": 1.0975064516129032,
+      "mean_gradient_norm": 1.3906800227780496,
+      "max_gradient_norm": 2.7724757194519043
+    },
+    {
+      "epoch_start": 1,
+      "epoch_end": 1.5,
+      "mean_loss": 1.072184375,
+      "mean_gradient_norm": 1.3527832720428705,
+      "max_gradient_norm": 2.322770595550537
+    },
+    {
+      "epoch_start": 1.5,
+      "epoch_end": 2,
+      "mean_loss": 1.0598258064516128,
+      "mean_gradient_norm": 1.4497170909758537,
+      "max_gradient_norm": 2.617223024368286
+    }
+  ],
+  "execution": {
+    "training_performed": false,
+    "evaluation_performed": true,
+    "network_access": false,
+    "input_and_weights_read_only": true,
+    "gold_read_after_predictions": true,
+    "inference_seconds": 34.589313259002665,
+    "memory": {
+      "peak_allocated_mib": 951.8125,
+      "peak_reserved_mib": 1136.0
+    },
+    "tokenization": {
+      "rows": 900,
+      "truncated_rows": 83,
+      "truncated_fraction": 0.09222222222222222,
+      "median_raw_tokens": 181.0,
+      "p95_raw_tokens": 628.4499999999996,
+      "input_case_preserved": true,
+      "cache_fingerprint": "622eea359c8565435e0fb89f1ab53e334628ba2910267a1b6bbd719c63478523"
+    }
+  },
+  "metrics": {
+    "rows": 900,
+    "accuracy": 0.4533333333333333,
+    "f1_macro": 0.4383253488099532,
+    "label_order": [
+      "c1",
+      "c234",
+      "c5"
+    ],
+    "confusion_matrix": [
+      [
+        141,
+        59,
+        100
+      ],
+      [
+        101,
+        75,
+        124
+      ],
+      [
+        69,
+        39,
+        192
+      ]
+    ],
+    "classification_report": {
+      "c1": {
+        "precision": 0.4533762057877814,
+        "recall": 0.47,
+        "f1-score": 0.46153846153846156,
+        "support": 300.0
+      },
+      "c234": {
+        "precision": 0.43352601156069365,
+        "recall": 0.25,
+        "f1-score": 0.3171247357293869,
+        "support": 300.0
+      },
+      "c5": {
+        "precision": 0.46153846153846156,
+        "recall": 0.64,
+        "f1-score": 0.5363128491620112,
+        "support": 300.0
+      },
+      "accuracy": 0.4533333333333333,
+      "macro avg": {
+        "precision": 0.4494802262956455,
+        "recall": 0.4533333333333333,
+        "f1-score": 0.4383253488099532,
+        "support": 900.0
+      },
+      "weighted avg": {
+        "precision": 0.4494802262956455,
+        "recall": 0.4533333333333333,
+        "f1-score": 0.4383253488099532,
+        "support": 900.0
+      }
+    },
+    "prediction_counts": {
+      "c234": 173,
+      "c5": 416,
+      "c1": 311
+    },
+    "precision_macro": 0.4494802262956455,
+    "recall_macro": 0.4533333333333333,
+    "correct": 408,
+    "incorrect": 492
+  },
+  "independent_verification": {
+    "status": "passed",
+    "gold_reader": "Independent standard-library ZIP/XML parser",
+    "rows": 900,
+    "row_ids_verified": true,
+    "probabilities_logits_argmax_verified": true,
+    "source_and_prediction_hashes_verified": true,
+    "confusion_matrix": [
+      [
+        141,
+        59,
+        100
+      ],
+      [
+        101,
+        75,
+        124
+      ],
+      [
+        69,
+        39,
+        192
+      ]
+    ],
+    "metrics_recomputed": true,
+    "training_performed": false,
+    "inference_performed": false
+  },
+  "paired_comparisons": {
+    "original_ep1": {
+      "baseline_correct": 432,
+      "normalized_correct": 408,
+      "both_correct": 287,
+      "only_baseline_correct": 145,
+      "only_normalized_correct": 121,
+      "both_incorrect": 347,
+      "accuracy_delta": -0.02666666666666667,
+      "mcnemar_exact_two_sided_p": 0.1583459222379026,
+      "caveat": "Previously inspected test1 and repeated texts limit confirmatory interpretation; no ensemble or parameter selection performed."
+    },
+    "full_legacy": {
+      "baseline_correct": 341,
+      "normalized_correct": 408,
+      "both_correct": 187,
+      "only_baseline_correct": 154,
+      "only_normalized_correct": 221,
+      "both_incorrect": 338,
+      "accuracy_delta": 0.07444444444444444,
+      "mcnemar_exact_two_sided_p": 0.0006346511814790758,
+      "caveat": "Previously inspected test1 and repeated texts limit confirmatory interpretation; no ensemble or parameter selection performed."
+    }
+  },
+  "artifacts": {
+    "training_run": "results/norberto-full-normalized",
+    "evaluation_run": "results/norberto-normalized-test1-20261105/norberto-normalized"
+  },
+  "interpretation": "A single completed corrected-loss refit recovered 67 correct test1 predictions relative to the legacy full refit, remaining 24 below the original EP1 submission. No ensemble selection or further parameter tuning performed."
+}

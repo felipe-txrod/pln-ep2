@@ -265,5 +265,18 @@
   ],
   "artifacts": {
     "investigation_run": "results/norberto-full-investigation-20261105"
+  },
+  "follow_up": {
+    "recipe_version": 2,
+    "training_completed": true,
+    "training_rows": 20092,
+    "test1_correct": 408,
+    "test1_rows": 900,
+    "test1_accuracy": 0.4533333333333333,
+    "test1_macro_f1": 0.4383253488099532,
+    "legacy_full_correct": 341,
+    "original_ep1_correct": 432,
+    "result_file": "norberto-normalized-test1-results.json",
+    "scope": "Subsequent isolated test1 comparison; initial diagnostics did not retrain or access test1."
   }
 }
