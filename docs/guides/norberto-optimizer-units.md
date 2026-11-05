@@ -58,7 +58,7 @@ Reproduce the bounded diagnostic inside the validated ROCm image:
 
 ```bash
 HSA_OVERRIDE_GFX_VERSION=10.3.0 PYTHONPATH=src \
-python3 scripts/probe-norberto-training-prefix.py \
+python3 scripts/diagnostics/norberto/probe-training-prefix.py \
   --ep1-root /ep1 --updates 600 \
   --output-dir /workspace/results/norberto-v3-prefix-new
 ```
@@ -66,7 +66,7 @@ python3 scripts/probe-norberto-training-prefix.py \
 A full development-only run can be started separately:
 
 ```bash
-NORBERTO_IMAGE=pln-rocm:6.4.1 bash scripts/train-norberto-full.sh \
+NORBERTO_IMAGE=pln-rocm:6.4.1 bash scripts/norberto/train.sh \
   --partition development \
   --output-dir /workspace/results/norberto-development-compatible-v3
 ```

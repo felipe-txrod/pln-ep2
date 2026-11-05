@@ -13,7 +13,7 @@ from gpt_classifier.data import LABELS, Example, Text, digest, file_digest, writ
 
 @pytest.fixture
 def comparison(tmp_path, monkeypatch):
-    source = Path(__file__).resolve().parents[1] / "scripts/evaluate-norberto-test1.py"
+    source = Path(__file__).resolve().parents[1] / "scripts/norberto/evaluate-test1.py"
     spec = importlib.util.spec_from_file_location("norberto_test1_stages", source)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)

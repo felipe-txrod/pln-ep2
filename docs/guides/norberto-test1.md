@@ -9,7 +9,7 @@ image, sibling EP1 sources/cache, and the completed recipe-3 development adapter
 First, predict using only the texts in the unlabeled workbook:
 
 ```bash
-bash scripts/norberto-test1.sh predict \
+bash scripts/norberto/test1.sh predict \
   --training-run results/norberto-development-recipe3 \
   --input data/test1.xlsx \
   --output-dir results/norberto-recipe3-test1
@@ -24,7 +24,7 @@ adapter identity, input hash, prediction hash, and `gold_accessed=false`.
 Then compare the saved predictions with the labeled workbook:
 
 ```bash
-bash scripts/norberto-test1.sh compare \
+bash scripts/norberto/test1.sh compare \
   --prediction-dir results/norberto-recipe3-test1 \
   --input data/test1.xlsx \
   --gold data/test1-rotulado-para-teste-estatistico.xlsx \

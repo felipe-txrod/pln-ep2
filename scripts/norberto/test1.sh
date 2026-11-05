@@ -3,11 +3,11 @@
 set -euo pipefail
 stage="${1:-}"
 if [[ "$stage" != predict && "$stage" != compare ]]; then
-    printf '%s\n' 'Usage: bash scripts/norberto-test1.sh predict|compare [arguments]' >&2
+    printf '%s\n' 'Usage: bash scripts/norberto/test1.sh predict|compare [arguments]' >&2
     exit 2
 fi
 shift
-project_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
+project_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../.." && pwd)"
 ep1_root="${NORBERTO_EP1_ROOT:-$(dirname -- "$project_root")/EP1}"
 image="${NORBERTO_IMAGE:-pln-rocm:6.4.1}"
 devices=()
@@ -21,5 +21,5 @@ exec docker run --rm --pull=never --network=none \
     -v "$ep1_root/.cache/huggingface:/workspace/.cache/huggingface:ro" \
     -w /workspace -e PYTHONPATH=/workspace/src -e PYTHONDONTWRITEBYTECODE=1 \
     -e HF_HUB_OFFLINE=1 -e HF_HUB_DISABLE_TELEMETRY=1 -e TOKENIZERS_PARALLELISM=false \
-    --entrypoint python3 "$image" -u scripts/evaluate-norberto-test1.py \
+    --entrypoint python3 "$image" -u scripts/norberto/evaluate-test1.py \
     --stage "$stage" --ep1-root /ep1 "$@"

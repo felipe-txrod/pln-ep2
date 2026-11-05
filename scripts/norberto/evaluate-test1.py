@@ -13,7 +13,7 @@ from typing import Any
 from gpt_classifier.data import LABELS, canonical, digest, file_digest, read_jsonl, read_xlsx, write_json, write_jsonl
 from gpt_classifier.evaluation import align, metrics
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 
 
 def compare_saved(args: argparse.Namespace) -> dict[str, Any]:

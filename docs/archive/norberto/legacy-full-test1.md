@@ -118,14 +118,14 @@ cache were mounted read-only. Loading, tokenization, and inference took
 **951.81 / 1,136 MiB**.
 
 The reusable entry point is
-[`scripts/evaluate-norberto-test1.py`](../../../scripts/evaluate-norberto-test1.py).
+[`scripts/norberto/evaluate-test1.py`](../../../scripts/norberto/evaluate-test1.py).
 It requires the original EP1 source and pinned base cache. Inside the validated
 ROCm container, with EP1 mounted at `/ep1` and its Hugging Face cache mounted
 at `/workspace/.cache/huggingface`:
 
 ```bash
 HSA_OVERRIDE_GFX_VERSION=10.3.0 PYTHONPATH=src \
-python3 scripts/evaluate-norberto-test1.py \
+python3 scripts/norberto/evaluate-test1.py \
   --ep1-root /ep1 \
   --training-run results/norberto-full-training \
   --output-dir results/norberto-full-test1-another-new-run

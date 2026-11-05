@@ -32,14 +32,14 @@ pins the public repository, commit, and SHA-256 of every required base file.
 After cloning the repository, restore missing files without loading the model:
 
 ```bash
-python3 scripts/prepare-model-base.py
+python3 scripts/models/prepare-base.py
 ```
 
 The command uses only the Python standard library and verifies downloaded files
 against the frozen inference contract. Verify an existing copy without networking:
 
 ```bash
-python3 scripts/prepare-model-base.py --verify-only
+python3 scripts/models/prepare-base.py --verify-only
 ```
 
 `models/norberto/base_model/model.safetensors` is available locally after
@@ -52,10 +52,10 @@ The exporter copies existing artifacts and checks their hashes. It does not
 import model libraries, deserialize weights, train, or perform inference:
 
 ```bash
-python3 scripts/freeze-models.py --model svm
-python3 scripts/freeze-models.py --model rl
-python3 scripts/freeze-models.py --model norberto
-python3 scripts/freeze-models.py --model gpt
+python3 scripts/models/freeze.py --model svm
+python3 scripts/models/freeze.py --model rl
+python3 scripts/models/freeze.py --model norberto
+python3 scripts/models/freeze.py --model gpt
 ```
 
 Exports use the preserved local EP1 artifacts. A fresh clone receives the

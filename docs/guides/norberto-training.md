@@ -20,7 +20,7 @@ The container is offline, mounts EP1/cache read-only, and uses
 
 ```bash
 NORBERTO_IMAGE=pln-rocm:6.4.1 \
-bash scripts/train-norberto-full.sh \
+bash scripts/norberto/train.sh \
   --partition full \
   --output-dir /workspace/results/norberto-full-recipe3
 ```
@@ -36,7 +36,7 @@ RX 6650 XT environment; duration is not a completion guarantee.
 
 ```bash
 NORBERTO_IMAGE=pln-rocm:6.4.1 \
-bash scripts/train-norberto-full.sh \
+bash scripts/norberto/train.sh \
   --partition development \
   --output-dir /workspace/results/norberto-development-recipe3-new
 ```
@@ -58,7 +58,7 @@ Append `--dry-run` to either command. A dry-run checks data and parameters
 without importing model libraries, creating the output directory, or training:
 
 ```bash
-bash scripts/train-norberto-full.sh \
+bash scripts/norberto/train.sh \
   --partition full \
   --output-dir /workspace/results/norberto-full-recipe3-preview \
   --dry-run
@@ -106,6 +106,6 @@ installed in its inference package or selected by the ensemble.
 
 Use the [two-stage test1 workflow](norberto-test1.md) to predict and then score
 saved predictions. For a completed development-only run, the separate
-[`evaluate-norberto-holdout.py`](../../scripts/evaluate-norberto-holdout.py)
+[`evaluate-holdout.py`](../../scripts/norberto/evaluate-holdout.py)
 script can validate the frozen holdout. Holdout results and the recorded
 training audits are in the [recipe-3 report](../results/norberto-recipe3-holdout.md).

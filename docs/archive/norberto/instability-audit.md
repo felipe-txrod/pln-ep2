@@ -14,7 +14,7 @@ checks does not certify the entire training pipeline or recover model quality.
 
 ## Complete optimizer-loop verification
 
-[`audit-norberto-optimizer.py`](../../../scripts/audit-norberto-optimizer.py) uses a
+[`audit-norberto-optimizer.py`](../../../scripts/diagnostics/norberto/audit-optimizer.py) uses a
 random two-layer ModernBERT with PEFT, 29 synthetic examples, and zero dropout.
 It executes four updates over two epochs, alternately accumulating batches of
 `4+4+4+4` and `4+4+4+1`. The production loss-injection context is used unchanged.
@@ -43,7 +43,7 @@ in a full-size training run.
 
 ## Real saved-adapter gradients on CPU and GPU
 
-[`audit-norberto-backends.py`](../../../scripts/audit-norberto-backends.py) selected
+[`audit-norberto-backends.py`](../../../scripts/diagnostics/norberto/audit-backends.py) selected
 the first four responses per class with at most 64 tokens from the shared
 development training rows. This fixed batch has 12 examples, padded to 64
 tokens. Dropout was disabled to isolate numerical differences. No optimizer
@@ -69,7 +69,7 @@ the current environment. This does not prove historical bitwise identity.
 
 ## Local derivative verification and first-layer localization
 
-[`audit-norberto-sensitivity.py`](../../../scripts/audit-norberto-sensitivity.py)
+[`audit-norberto-sensitivity.py`](../../../scripts/diagnostics/norberto/audit-sensitivity.py)
 reloaded the development-only adapter on CPU and used the same 12 training
 responses. The measured norm was approximately **158.83**, with **99.911% of
 the squared gradient norm** in the first attention layer's LoRA parameters.
@@ -160,16 +160,16 @@ Inside the validated image with the project, EP1, and cache mounts available,
 the diagnostics can be reproduced with new output paths:
 
 ```bash
-PYTHONPATH=src python3 scripts/audit-norberto-optimizer.py \
+PYTHONPATH=src python3 scripts/diagnostics/norberto/audit-optimizer.py \
   --device cpu --output results/new-audit/optimizer-cpu.json
 HSA_OVERRIDE_GFX_VERSION=10.3.0 PYTHONPATH=src \
-python3 scripts/audit-norberto-optimizer.py \
+python3 scripts/diagnostics/norberto/audit-optimizer.py \
   --device gpu --output results/new-audit/optimizer-gpu.json
 HSA_OVERRIDE_GFX_VERSION=10.3.0 PYTHONPATH=src \
-python3 scripts/audit-norberto-backends.py --ep1-root /ep1 \
+python3 scripts/diagnostics/norberto/audit-backends.py --ep1-root /ep1 \
   --output results/new-audit/backends.json
 # Run this final command in a CPU-only container without GPU device exposure.
-PYTHONPATH=src python3 scripts/audit-norberto-sensitivity.py --ep1-root /ep1 \
+PYTHONPATH=src python3 scripts/diagnostics/norberto/audit-sensitivity.py --ep1-root /ep1 \
   --backend-report results/new-audit/backends.json \
   --output results/new-audit/sensitivity.json
 ```

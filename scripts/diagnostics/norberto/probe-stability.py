@@ -25,7 +25,7 @@ def main() -> int:
     import torch
 
     torch.set_num_threads(2)
-    root = Path(__file__).resolve().parents[1]
+    root = Path(__file__).resolve().parents[3]
     old_root = args.ep1_root / "artifacts/norberto-lora-final-ctx512-20260928"
     new_root = root / "results/norberto-full-training"
     old = json.loads((old_root / "run.json").read_text())

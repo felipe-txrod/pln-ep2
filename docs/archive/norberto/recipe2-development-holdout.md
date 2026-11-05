@@ -110,7 +110,7 @@ LoRA. It also explains why the changed loss scale alters the clipping regime.
 
 ## Execution and independent verification
 
-The [evaluation script](../../../scripts/evaluate-norberto-holdout.py) loaded the new
+The [evaluation script](../../../scripts/norberto/evaluate-holdout.py) loaded the new
 adapter and predicted all 3,999 held-out texts once in FP32, batch 8, on the
 RX 6650 XT with ROCm override `10.3.0`. Loading, tokenization, and inference
 took **163.31 seconds**. Peak allocated/reserved VRAM was **951.81/1,270 MiB**.
@@ -130,7 +130,7 @@ Face cache mounted at the configured cache location, choose a new output path:
 
 ```bash
 HSA_OVERRIDE_GFX_VERSION=10.3.0 PYTHONPATH=src \
-python3 scripts/evaluate-norberto-holdout.py \
+python3 scripts/norberto/evaluate-holdout.py \
   --ep1-root /ep1 \
   --training-run results/norberto-development-normalized \
   --output-dir results/norberto-development-holdout-another-new-run

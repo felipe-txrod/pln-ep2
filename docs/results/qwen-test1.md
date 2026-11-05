@@ -98,13 +98,13 @@ argmax predictions, and source/prediction hashes matched the saved report.
 The original training run and adapter were unchanged.
 
 The reusable comparison entry point is
-[`scripts/evaluate-qwen-test1.py`](../../scripts/evaluate-qwen-test1.py). Inside the
+[`scripts/qwen/evaluate-test1.py`](../../scripts/qwen/evaluate-test1.py). Inside the
 validated ROCm environment, with the original base cache available:
 
 ```bash
 HSA_OVERRIDE_GFX_VERSION=10.3.0 \
 PYTHONPATH=.cache/qwen-runtime:src \
-python3 scripts/evaluate-qwen-test1.py \
+python3 scripts/qwen/evaluate-test1.py \
   --training-run results/qwen-fast-training \
   --output-dir results/qwen-test1-another-new-run
 ```

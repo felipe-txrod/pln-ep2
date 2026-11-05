@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Run the classifier with a mounted workspace and explicit GPU architecture policy.
 set -euo pipefail
-project_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
+project_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../.." && pwd)"
 runtime="${CONTAINER_RUNTIME:-docker}"
 image="${QWEN_IMAGE:-ep2-qwen:rocm6.4}"
 environment_args=()

@@ -18,7 +18,7 @@ d693f6e2995d117ad04a5692817527764fcccee6bfb2dde99120baf9fdd2d385
 ```
 
 `base_reference.json` records the required base revision and file hashes.
-After cloning, run `python3 scripts/prepare-model-base.py` to restore and verify
+After cloning, run `python3 scripts/models/prepare-base.py` to restore and verify
 missing base files without loading or retraining the model. Git ignores the
 large base weights file.
 

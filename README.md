@@ -15,6 +15,7 @@ measured results, assignment references, and historical experiments are separate
 | Predict test1, then compare with gold labels | [NorBERTo test1 workflow](docs/guides/norberto-test1.md) |
 | Set up, train, and run Qwen QLoRA | [Qwen fine-tuning](docs/guides/qwen-finetuning.md) |
 | Select ensemble members and the tie-breaking model | [Ensemble](docs/guides/ensemble.md) |
+| Browse runnable scripts by model and purpose | [Script index](scripts/README.md) |
 | Restore frozen models and their pinned public bases | [Model artifacts](models/README.md) |
 | Compare measured classifier results | [Results index](docs/results/README.md) |
 | Consult earlier GPT/Codex and training investigations | [Experiment archive](docs/archive/README.md) |
@@ -24,7 +25,7 @@ measured results, assignment references, and historical experiments are separate
 ```text
 configs/       Classifier and experiment configurations
 src/           Classifier packages and shared utilities
-scripts/       Training, inference, evaluation, and artifact commands
+scripts/       Commands grouped by model, artifacts, diagnostics, and experiments
 models/        Frozen model packages and base references
 data/         Input workbooks
 results/       Local runs and predictions; ignored by Git

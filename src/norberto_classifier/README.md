@@ -60,7 +60,7 @@ metadata are versioned. `base_model/model.safetensors` is ignored by Git;
 `base_reference.json` pins its public revision and SHA-256. After cloning:
 
 ```bash
-python3 scripts/prepare-model-base.py
+python3 scripts/models/prepare-base.py
 ```
 
 This restores and verifies missing base files without loading a model or

@@ -110,7 +110,7 @@ documents the bug, original instability, tests, and causal limits.
 
 The exported adapter was evaluated once on the RX 6650 XT, in FP32 with batch
 8 and ROCm override `10.3.0`, using the existing
-[`evaluate-norberto-test1.py`](../../../scripts/evaluate-norberto-test1.py) script.
+[`evaluate-norberto-test1.py`](../../../scripts/norberto/evaluate-test1.py) script.
 The container had no network access; project files, original sources, and base
 cache were read-only. Loading, tokenization, and inference took **34.59 seconds**.
 
@@ -127,7 +127,7 @@ For reproduction in the validated environment with EP1 and its cache mounted:
 
 ```bash
 HSA_OVERRIDE_GFX_VERSION=10.3.0 PYTHONPATH=src \
-python3 scripts/evaluate-norberto-test1.py \
+python3 scripts/norberto/evaluate-test1.py \
   --ep1-root /ep1 \
   --training-run results/norberto-full-normalized \
   --output-dir results/norberto-normalized-test1-another-new-run

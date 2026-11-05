@@ -226,7 +226,7 @@ execuções com lotes de três; se o limite de bytes exigir lotes menores, o tet
 Lotes não são suportados pelo backend API nesta implementação.
 
 Para reproduzir o piloto pareado (individual/original em lote/curto em lote),
-`scripts/pilot_efficiency.py` prepara os requests por padrão. `--execute` inicia
+`scripts/experiments/gpt/pilot-efficiency.py` prepara os requests por padrão. `--execute` inicia
 até dez processos Codex e pode consumir o plano. A amostra de seis registros
 serve apenas à triagem; não é suficiente para escolher o modelo final.
 

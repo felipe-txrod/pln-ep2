@@ -128,7 +128,7 @@ promovido; não é correto transformar 0/6 em uma estimativa de desempenho geral
 nem assumir que os lotes preservem todas as decisões do modo individual.
 
 Resultados: `results/pilot-efficiency-20261104/report.json`; reprodução em
-`scripts/pilot_efficiency.py`, com dry-run como padrão e limite de dez processos.
+`scripts/experiments/gpt/pilot-efficiency.py`, com dry-run como padrão e limite de dez processos.
 O comando com `--execute` consome chamadas do plano.
 
 ## Próximas melhorias, por prioridade

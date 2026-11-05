@@ -115,9 +115,9 @@ carregam somente arquivos locais, com código remoto de modelos desabilitado.
 Prepare os pesos públicos, o diagnóstico numérico e a partição agrupada:
 
 ```bash
-bash scripts/qwen-container.sh download --config configs/qwen.json
-bash scripts/qwen-container.sh probe --output results/qwen-probe-new.json
-bash scripts/qwen-container.sh prepare --config configs/qwen.json \
+bash scripts/qwen/container.sh download --config configs/qwen.json
+bash scripts/qwen/container.sh probe --output results/qwen-probe-new.json
+bash scripts/qwen/container.sh prepare --config configs/qwen.json \
   --input data/train_ep2.xlsx --output-dir results/qwen-prepared-new
 ```
 
@@ -125,7 +125,7 @@ Antes de um treino completo, o teste do modelo executa duas atualizações,
 avaliação, salvamento dos adaptadores/cabeça e recarga com comparação de logits:
 
 ```bash
-bash scripts/qwen-container.sh smoke --config configs/qwen-fast.json \
+bash scripts/qwen/container.sh smoke --config configs/qwen-fast.json \
   --output-dir results/qwen-fast-smoke-new
 ```
 
@@ -133,7 +133,7 @@ Opcionalmente, verifique o fluxo com dados reais em um piloto de duas atualizaç
 96 respostas de treino e 48 de validação:
 
 ```bash
-bash scripts/qwen-container.sh train --pilot --config configs/qwen-fast.json \
+bash scripts/qwen/container.sh train --pilot --config configs/qwen-fast.json \
   --smoke-report results/qwen-fast-smoke-new/summary.json \
   --output-dir results/qwen-fast-pilot-new
 ```
@@ -142,7 +142,7 @@ O comando de treino completo deve ser executado uma única vez, depois da
 validação da configuração escolhida:
 
 ```bash
-bash scripts/qwen-container.sh train --config configs/qwen-fast.json \
+bash scripts/qwen/container.sh train --config configs/qwen-fast.json \
   --smoke-report results/qwen-fast-smoke-new/summary.json \
   --output-dir results/qwen-fast-training
 ```
@@ -158,7 +158,7 @@ A base original permanece necessária em `.cache/qwen-model/`; o adaptador não
 é um modelo completo mesclado. Recalcule as métricas salvas com:
 
 ```bash
-bash scripts/qwen-container.sh evaluate --run results/qwen-fast-training
+bash scripts/qwen/container.sh evaluate --run results/qwen-fast-training
 ```
 
 ## Dados, rótulos e avaliação
@@ -196,11 +196,11 @@ verificação independente. A seleção de checkpoint usa acurácia de validaç�
 Depois de congelar o método, produza teste2 antes da comparação em teste1:
 
 ```bash
-bash scripts/qwen-container.sh predict \
+bash scripts/qwen/container.sh predict \
   --adapter results/qwen-fast-training/adapter --input data/test2.xlsx \
   --output-dir results/qwen-test2 --workbook deliveries/test2-qwen.xlsx
 
-bash scripts/qwen-container.sh predict --phase statistical \
+bash scripts/qwen/container.sh predict --phase statistical \
   --adapter results/qwen-fast-training/adapter \
   --input data/test1-rotulado-para-teste-estatistico.xlsx \
   --test2-run results/qwen-test2 --output-dir results/qwen-test1
@@ -249,7 +249,7 @@ os batches crescentes naquele processo, preservando os resultados anteriores.
 Não rode benchmarks junto com um treino completo.
 
 ```bash
-bash scripts/qwen-container.sh benchmark \
+bash scripts/qwen/container.sh benchmark \
   --config results/qwen-performance/qlora-config.json \
   --batches 1 2 4 8 16 \
   --output-dir results/qwen-performance/qlora-no-checkpoint-new
@@ -350,7 +350,7 @@ completo otimizado antes do treino.
 Para treinar com a configuração otimizada e o relatório correspondente:
 
 ```bash
-bash scripts/qwen-container.sh train --config configs/qwen-fast.json \
+bash scripts/qwen/container.sh train --config configs/qwen-fast.json \
   --smoke-report results/qwen-fast-final/summary.json \
   --output-dir results/qwen-fast-training
 ```

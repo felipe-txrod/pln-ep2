@@ -15,7 +15,7 @@ def main() -> int:
     args = parser.parse_args()
     if not 1 <= args.updates < 2012:
         parser.error('Choose a positive prefix shorter than the complete 2,012-update run.')
-    source = Path(__file__).with_name('train-norberto-full.py')
+    source = Path(__file__).resolve().parents[3] / "scripts/train-norberto-full.py"
     spec = importlib.util.spec_from_file_location('training_runner', source)
     runner = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(runner)

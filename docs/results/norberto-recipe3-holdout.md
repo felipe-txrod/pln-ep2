@@ -126,7 +126,7 @@ destination to reproduce:
 
 ```bash
 HSA_OVERRIDE_GFX_VERSION=10.3.0 PYTHONPATH=src \
-python3 scripts/evaluate-norberto-holdout.py \
+python3 scripts/norberto/evaluate-holdout.py \
   --ep1-root /ep1 \
   --training-run results/norberto-development-recipe3 \
   --output-dir results/norberto-recipe3-holdout-another-new-run

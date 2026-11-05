@@ -1,6 +1,6 @@
 """Small paired train-only pilot; at most ten new Codex processes.
 
-Run from EP2 with: .venv/bin/python scripts/pilot_efficiency.py --execute
+Run from EP2 with: .venv/bin/python scripts/experiments/gpt/pilot-efficiency.py --execute
 The default is a dry run. This is a smoke/triage experiment, not model selection.
 """
 from __future__ import annotations
@@ -19,7 +19,7 @@ from gpt_classifier.pipeline import run
 from gpt_classifier.prompt import Config
 from gpt_classifier.selection import development_split
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[3]
 
 
 def main():

@@ -6,6 +6,8 @@ Use **Guides** for commands, **Results** for measured quality, **Reference**
 for assignment material, and **Archive** for superseded experiments. All
 command examples assume the EP2 repository root unless stated otherwise.
 
+Executable entry points are listed in the [script index](../scripts/README.md).
+
 ## Guides
 
 | Subject | Document |

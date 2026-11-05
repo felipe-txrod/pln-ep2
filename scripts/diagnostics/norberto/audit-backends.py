@@ -28,7 +28,7 @@ def main() -> None:
     import torch
 
     torch.set_num_threads(2)
-    root = Path(__file__).resolve().parents[1]
+    root = Path(__file__).resolve().parents[3]
     bundles = {"original": root / "models/norberto",
                "full_normalized": root / "results/norberto-full-normalized",
                "development_normalized": root / "results/norberto-development-normalized"}

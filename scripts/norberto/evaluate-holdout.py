@@ -14,7 +14,7 @@ from gpt_classifier.data import LABELS, canonical, digest, file_digest, read_jso
 from gpt_classifier.evaluation import metrics
 from norberto_classifier.partitions import development_partition
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 
 
 def evaluate(args: argparse.Namespace) -> dict:

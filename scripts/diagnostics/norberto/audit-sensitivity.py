@@ -26,7 +26,7 @@ def main() -> None:
     if torch.cuda.is_available():
         raise RuntimeError("Run this diagnostic without GPU device exposure.")
     torch.set_num_threads(2)
-    root = Path(__file__).resolve().parents[1]
+    root = Path(__file__).resolve().parents[3]
     bundle = root / "results/norberto-development-normalized"
     run = json.loads((bundle / "run.json").read_text())
     audit = json.loads(args.backend_report.read_text())
