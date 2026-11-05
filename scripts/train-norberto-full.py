@@ -1,4 +1,4 @@
-"""Refit NorBERTo on the full EP1 training workbook using the original trainer."""
+"""Train NorBERTo on all EP1 rows or its frozen development partition."""
 from __future__ import annotations
 
 import argparse
@@ -46,13 +46,28 @@ def prepare(args: argparse.Namespace) -> tuple[dict[str, Any], list]:
     trainer_source = args.ep1_root / "src/clarity/finetune.py"
     if not trainer_source.is_file():
         raise FileNotFoundError(f"The original EP1 trainer is required: {trainer_source}")
-    plan = {"mode": "full-training", "protocol": "fresh_base_all_ep1_training_rows_fixed_parameters",
+    partition_info = {"source_rows": len(records)}
+    development_only = args.partition == "development"
+    if development_only:
+        from norberto_classifier.partitions import development_partition
+        split_path = args.holdout_splits or args.ep1_root / "results/research/dataset-hypotheses-20260923/splits.csv"
+        records, partition_info = development_partition(
+            records, split_path, config["holdout_split_sha256"],
+            development_rows=original["training_rows"], holdout_rows=original["reserved_holdout_rows"])
+        partition_info["partition_implementation_sha256"] = checksum(ROOT / "src/norberto_classifier/partitions.py")
+    elif args.holdout_splits is not None:
+        raise ValueError("--holdout-splits applies only to --partition development.")
+    plan = {"mode": "development-training" if development_only else "full-training",
+            "protocol": "fresh_base_frozen_development_fixed_parameters" if development_only else
+                        "fresh_base_all_ep1_training_rows_fixed_parameters",
+            "data_partition": args.partition, **partition_info,
             "recipe_version": 2, "loss_normalization": "sample_count_across_accumulation",
             "training_wrapper_sha256": checksum(Path(__file__)),
             "loss_implementation_sha256": checksum(ROOT / "src/norberto_classifier/training_loss.py"),
             "training_rows": len(records), "labels": list(LABELS), "dataset_sha256": info["sha256"],
+            "training_class_counts": {label: sum(row.label == label for row in records) for label in LABELS},
             "config": config, "effective_batch_size": config["batch_size"] * config["gradient_accumulation"],
-            "validation_used": False, "holdout_excluded": False, "test_data_used": False,
+            "validation_used": False, "holdout_excluded": development_only, "test_data_used": False,
             "initialization": "fresh_pinned_base; original adapter is not loaded",
             "original_training_run_sha256": checksum(source / "run.json"),
             "ep1_trainer_sha256": checksum(trainer_source)}
@@ -89,8 +104,8 @@ def train(args: argparse.Namespace, plan: dict[str, Any], records: list) -> int:
         features, tokenization = original_trainer.tokenize_corpus(
             np.asarray([row.text for row in records]), tokenizer, config)
         labels = np.asarray([LABELS.index(row.label) for row in records])
-        print(f"FULL TRAINING: rows={len(records)}; epochs={config['epochs']}; "
-              "holdout_excluded=False; validation_used=False; initialization=fresh_base; "
+        print(f"TRAINING: partition={plan['data_partition']}; rows={len(records)}; epochs={config['epochs']}; "
+              f"holdout_excluded={plan['holdout_excluded']}; validation_used=False; initialization=fresh_base; "
               "recipe_version=2; loss_normalization=sample_count_across_accumulation", flush=True)
         with sample_normalized_trainer(original_trainer):
             trainer, training = original_trainer.train_one(
@@ -121,9 +136,14 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--ep1-root", type=Path, default=ROOT.parent / "EP1")
     parser.add_argument("--input", type=Path)
-    parser.add_argument("--output-dir", type=Path, default=ROOT / "results/norberto-full-training")
+    parser.add_argument("--partition", choices=("full", "development"), default="full")
+    parser.add_argument("--holdout-splits", type=Path, help="Pinned EP1 split CSV for development-only training")
+    parser.add_argument("--output-dir", type=Path)
     parser.add_argument("--dry-run", action="store_true", help="Validate all rows and fixed parameters without loading models")
     args = parser.parse_args()
+    if args.output_dir is None:
+        args.output_dir = ROOT / "results" / ("norberto-development-normalized" if args.partition == "development"
+                                             else "norberto-full-training")
     args.input = args.input if args.input is not None else args.ep1_root / "data/train.xlsx"
     try:
         plan, records = prepare(args)

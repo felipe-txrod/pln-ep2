@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Reuse the original EP1 training implementation with all original training rows.
+# Reuse the EP1 trainer with explicit full-corpus or frozen-development selection.
 set -euo pipefail
 project_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 ep1_root="${NORBERTO_EP1_ROOT:-$(dirname -- "$project_root")/EP1}"
