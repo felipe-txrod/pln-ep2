@@ -114,3 +114,19 @@ restoration instructions emitted by frozen model packages. The removed
 NorBERTo training wrappers are available only in the historical source snapshot.
 
 Choose a fresh output destination for every prediction or comparison run.
+
+## Weighted soft voting versus the EP1 delivery
+
+```bash
+PYTHONPATH=src .venv/bin/python scripts/ensemble/compare-ep1.py \
+  --run results/ensemble-soft-test1-20261105 \
+  --baseline ../EP1/deliveries/test1.xlsx \
+  --output-dir results/ensemble-soft-vs-ep1-new
+```
+
+This offline CPU comparison verifies the frozen artifact and saved predictions,
+aligns the actual EP1 workbook with all 900 gold rows, and reports accuracy,
+macro-F1, confusion matrices and paired McNemar. It performs no inference or
+parameter tuning. It is an isolated comparison; it does not certify the
+assignment's test2-before-test1 order. See the
+[results and protocol limitations](../docs/results/ensemble-soft.md#conferência-contra-a-entrega-efetiva-do-ep1).

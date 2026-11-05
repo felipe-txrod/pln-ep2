@@ -13,6 +13,10 @@ method: 2,027 holdout rows calibrate probabilities and 1,972 select weights by
 macro-F1 from 16 candidates. It scores 447/900 (49.67%) and 49.58% macro-F1,
 using SVM 0.75, LR 0.00 and NorBERTo 0.25. The report includes all individual
 confusion matrices, calibration effects and inherited cross-dataset text overlap.
+The [direct comparison with the actual EP1 delivery](ensemble-soft.md#conferência-contra-a-entrega-efetiva-do-ep1)
+confirms all 900 original labels match the saved NorBERTo predictions. Exact
+two-sided McNemar gives p=0.303327: the numerical gain is not statistically
+significant at 0.05. The official test2-before-test1 order was not established.
 
 The user subsequently excluded Qwen; active defaults are now NorBERTo + SVM +
 RL, strict majority, with RL arbitration. The [holdout isolation audit and

@@ -84,6 +84,60 @@ McNemar exato bilateral descritivo: p=0,9122, p=1,0000 e p=0,3033,
 respectivamente. São análises exploratórias; repetições limitam independência,
 e a entrega oficial de teste2 ainda não foi gerada por este método.
 
+### Conferência contra a entrega efetiva do EP1
+
+O [enunciado](../reference/assignment.md) pede McNemar nas mesmas 900 linhas,
+comparando com os rótulos **entregues no EP1**, e exige p<0,05 para o critério
+de superioridade significativa. A conferência em 05/11/2026 abriu diretamente
+`../EP1/deliveries/test1.xlsx`: textos e posições coincidem com o gabarito e
+os 900 rótulos coincidem integralmente com o NorBERTo original salvo nesta
+execução. O [agregado da comparação](data/ensemble-soft-vs-ep1.json) registra
+os hashes da entrega, do gabarito, das previsões e do ensemble congelado.
+
+| Resultado pareado | Quantidade |
+|---|---:|
+| Ambos acertam | 347 |
+| Apenas EP1 acerta | 85 |
+| Apenas ensemble acerta | 100 |
+| Ambos erram | 368 |
+
+McNemar exato bilateral: **p=0,303327**. A versão qui-quadrado com correção de
+continuidade dá estatística **1,059459** e **p=0,303339**, com a mesma conclusão.
+O teste avalia a diferença de acurácia pareada; não é um teste do F1-macro.
+A contagem pareada, as matrizes, o F1 e a soma binomial exata foram também
+recalculados sem as funções estatísticas usadas pelo avaliador.
+
+**Não há evidência de que o ensemble seja significativamente melhor que o
+NorBERTo entregue no EP1.** Os 15 acertos adicionais (+1,67 ponto percentual)
+e +1,72 ponto percentual de F1-macro são ganhos descritivos. Isso não prova
+igualdade entre métodos, mas não satisfaz o critério p<0,05 do enunciado.
+Não foram reajustados pesos, calibradores ou modelos com base nesse resultado.
+
+Há uma limitação adicional do protocolo: o enunciado pede gerar primeiro
+**teste2 (897 rótulos)** e só depois comparar **teste1 (900)**. Esta rodada
+reavalia previsões existentes de teste1, sem entrega de teste2 pelo ensemble;
+portanto, não demonstra cumprimento dessa ordem oficial. Gerar teste2 agora
+não tornaria a avaliação anterior retrospectivamente cega. O relatório deve
+declarar essa limitação e as exposições históricas, sem apresentar teste1 como
+entrega do EP2 nem escolher novos parâmetros usando seus rótulos.
+
+Para reproduzir a comparação em CPU, sem inferência ou chamadas remotas, a
+partir da raiz de EP2 (use um diretório de saída novo):
+
+```bash
+PYTHONPATH=src .venv/bin/python scripts/ensemble/compare-ep1.py \
+  --run results/ensemble-soft-test1-20261105 \
+  --baseline ../EP1/deliveries/test1.xlsx \
+  --output-dir results/ensemble-soft-vs-ep1-nova
+```
+
+O comando reutiliza a validação do artefato congelado e das sete sequências
+de previsões, além do comparador de McNemar existente. Ele grava `metrics.json`
+com a comparação real EP1/EP2 e `individuals/metrics.json` com as métricas
+de todos os modelos. A execução desta conferência está preservada em
+`results/ensemble-soft-vs-ep1-20261105/`. Os 11 testes específicos de avaliação,
+entrega e soft voting passaram.
+
 ## Vazamento evitado e limitações herdadas
 
 Nenhum rótulo do professor nas 900 linhas foi usado para calibrar, escolher
