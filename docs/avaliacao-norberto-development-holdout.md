@@ -101,6 +101,11 @@ does not establish that the normalization change alone caused the decrease.
 See the [earlier investigation](investigacao-norberto-full.md) for the inherited
 bug and the limits of causal attribution.
 
+The subsequent [optimizer and backend audit](norberto-instability-audit.md)
+checks the complete corrected Trainer loop in CPU and GPU execution, confirms
+large derivatives on CPU, and localizes the sensitivity to the first attention
+LoRA. It also explains why the changed loss scale alters the clipping regime.
+
 ## Execution and independent verification
 
 The [evaluation script](../scripts/evaluate-norberto-holdout.py) loaded the new

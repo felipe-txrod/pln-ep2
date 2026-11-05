@@ -37,6 +37,11 @@ compared with **45.31% accuracy** for the original EP1 adapter on the same rows.
 See the [holdout validation](avaliacao-norberto-development-holdout.md) for
 partition checks, class metrics, and the observed gradient instability.
 
+The follow-up [optimizer and backend audit](norberto-instability-audit.md)
+verified accumulation, clipping, and AdamW against manual updates. It localized
+the saved development adapter's high sensitivity to the first attention LoRA;
+the exact cause of the unstable training trajectory remains unresolved.
+
 ## Recipe version 2: corrected loss normalization
 
 The current command normalizes cross entropy by the total example count across

@@ -1,0 +1,457 @@
+{
+  "status": "completed",
+  "scope": {
+    "production_training_repeated": false,
+    "saved_weights_modified": false,
+    "test1_accessed": false,
+    "test2_accessed": false,
+    "ensemble_changed": false
+  },
+  "unit_tests": {
+    "passed": 18,
+    "seconds": 5.19,
+    "files": [
+      "tests/test_norberto_training_loss.py",
+      "tests/test_norberto_partitions.py"
+    ]
+  },
+  "optimizer_loop": {
+    "cpu": {
+      "status": "passed",
+      "model": "random tiny ModernBERT with PEFT",
+      "device": "cpu",
+      "manual_reference_device": "cpu",
+      "production_model_training_performed": false,
+      "production_weights_modified": false,
+      "tiny_frozen_parameters_unchanged": true,
+      "test_data_accessed": false,
+      "tiny_model_optimizer_updates": 4,
+      "accelerator_accumulation_steps": 1,
+      "model_accepts_loss_kwargs": false,
+      "compute_loss_func": "sample_normalized_loss",
+      "steps": [
+        {
+          "update": 1,
+          "microbatch_sizes": [
+            4,
+            4,
+            4,
+            4
+          ],
+          "reported_item_counts": [
+            16,
+            16,
+            16,
+            16
+          ],
+          "reference_loss": 1.2009941339492798,
+          "gradient_relative_error": 9.473081519217885e-08,
+          "preclipping_norm": 1.1721961498260498,
+          "postclipping_norm": 0.9999991655349731,
+          "learning_rate": 0.0,
+          "parameter_max_absolute_error": 0.0
+        },
+        {
+          "update": 2,
+          "microbatch_sizes": [
+            4,
+            4,
+            4,
+            1
+          ],
+          "reported_item_counts": [
+            13,
+            13,
+            13,
+            13
+          ],
+          "reference_loss": 1.394102692604065,
+          "gradient_relative_error": 8.739362300502762e-08,
+          "preclipping_norm": 1.547694206237793,
+          "postclipping_norm": 0.999999463558197,
+          "learning_rate": 0.001,
+          "parameter_max_absolute_error": 3.725290298461914e-09
+        },
+        {
+          "update": 3,
+          "microbatch_sizes": [
+            4,
+            4,
+            4,
+            4
+          ],
+          "reported_item_counts": [
+            16,
+            16,
+            16,
+            16
+          ],
+          "reference_loss": 1.261464238166809,
+          "gradient_relative_error": 8.06981290679687e-08,
+          "preclipping_norm": 1.3887803554534912,
+          "postclipping_norm": 0.9999992847442627,
+          "learning_rate": 0.0006666666666666666,
+          "parameter_max_absolute_error": 3.725290298461914e-09
+        },
+        {
+          "update": 4,
+          "microbatch_sizes": [
+            4,
+            4,
+            4,
+            1
+          ],
+          "reported_item_counts": [
+            13,
+            13,
+            13,
+            13
+          ],
+          "reference_loss": 1.3042978048324585,
+          "gradient_relative_error": 8.879317903165429e-08,
+          "preclipping_norm": 1.419358491897583,
+          "postclipping_norm": 0.9999993443489075,
+          "learning_rate": 0.0003333333333333333,
+          "parameter_max_absolute_error": 1.4901161193847656e-08
+        }
+      ],
+      "trainer_loss": 1.2902146577835083,
+      "script_sha256": "decb9d7c732394f26a49e2e10c090d518ef50e7b7a0e11345e0af55aae56012f"
+    },
+    "gpu": {
+      "status": "passed",
+      "model": "random tiny ModernBERT with PEFT",
+      "device": "gpu",
+      "manual_reference_device": "cpu",
+      "production_model_training_performed": false,
+      "production_weights_modified": false,
+      "tiny_frozen_parameters_unchanged": true,
+      "test_data_accessed": false,
+      "tiny_model_optimizer_updates": 4,
+      "accelerator_accumulation_steps": 1,
+      "model_accepts_loss_kwargs": false,
+      "compute_loss_func": "sample_normalized_loss",
+      "steps": [
+        {
+          "update": 1,
+          "microbatch_sizes": [
+            4,
+            4,
+            4,
+            4
+          ],
+          "reported_item_counts": [
+            16,
+            16,
+            16,
+            16
+          ],
+          "reference_loss": 1.2009941339492798,
+          "gradient_relative_error": 2.442079960474075e-07,
+          "preclipping_norm": 1.1721961498260498,
+          "postclipping_norm": 0.9999991059303284,
+          "learning_rate": 0.0,
+          "parameter_max_absolute_error": 0.0
+        },
+        {
+          "update": 2,
+          "microbatch_sizes": [
+            4,
+            4,
+            4,
+            1
+          ],
+          "reported_item_counts": [
+            13,
+            13,
+            13,
+            13
+          ],
+          "reference_loss": 1.394102692604065,
+          "gradient_relative_error": 2.423239777726849e-07,
+          "preclipping_norm": 1.5476943254470825,
+          "postclipping_norm": 0.9999993443489075,
+          "learning_rate": 0.001,
+          "parameter_max_absolute_error": 6.05359673500061e-09
+        },
+        {
+          "update": 3,
+          "microbatch_sizes": [
+            4,
+            4,
+            4,
+            4
+          ],
+          "reported_item_counts": [
+            16,
+            16,
+            16,
+            16
+          ],
+          "reference_loss": 1.261464238166809,
+          "gradient_relative_error": 1.9186988708952413e-07,
+          "preclipping_norm": 1.3887803554534912,
+          "postclipping_norm": 0.9999992847442627,
+          "learning_rate": 0.0006666666666666666,
+          "parameter_max_absolute_error": 7.566995918750763e-09
+        },
+        {
+          "update": 4,
+          "microbatch_sizes": [
+            4,
+            4,
+            4,
+            1
+          ],
+          "reported_item_counts": [
+            13,
+            13,
+            13,
+            13
+          ],
+          "reference_loss": 1.3042978048324585,
+          "gradient_relative_error": 2.5610395937292196e-07,
+          "preclipping_norm": 1.419358491897583,
+          "postclipping_norm": 0.9999993443489075,
+          "learning_rate": 0.0003333333333333333,
+          "parameter_max_absolute_error": 1.4901161193847656e-08
+        }
+      ],
+      "trainer_loss": 1.2902146875858307,
+      "script_sha256": "decb9d7c732394f26a49e2e10c090d518ef50e7b7a0e11345e0af55aae56012f"
+    }
+  },
+  "saved_adapter_backend_probe": {
+    "training_rows": 12,
+    "sample_shape": [
+      12,
+      56
+    ],
+    "observations": {
+      "original": {
+        "adapter_weights_sha256": "d693f6e2995d117ad04a5692817527764fcccee6bfb2dde99120baf9fdd2d385",
+        "weights_unchanged": true,
+        "backends": {
+          "cpu_sdpa": {
+            "loss": 0.8126266002655029,
+            "gradient_norm": 1.8443171977996826,
+            "max_logit_difference_from_cpu_sdpa": 0.0,
+            "relative_gradient_difference_from_cpu_sdpa": 0.0
+          },
+          "cpu_eager": {
+            "loss": 0.8126264214515686,
+            "gradient_norm": 1.8443174362182617,
+            "max_logit_difference_from_cpu_sdpa": 1.6391277313232422e-06,
+            "relative_gradient_difference_from_cpu_sdpa": 3.3330643418594263e-06
+          },
+          "cuda_sdpa": {
+            "loss": 0.8126263618469238,
+            "gradient_norm": 1.8443201780319214,
+            "max_logit_difference_from_cpu_sdpa": 5.0067901611328125e-06,
+            "relative_gradient_difference_from_cpu_sdpa": 1.1906559848284815e-05
+          }
+        }
+      },
+      "full_normalized": {
+        "adapter_weights_sha256": "f43ebe2b9cc1670057bdaa5c7d43b6235d002837bd8d68dbac50b243a1485d71",
+        "weights_unchanged": true,
+        "backends": {
+          "cpu_sdpa": {
+            "loss": 0.9813306927680969,
+            "gradient_norm": 1.7101261615753174,
+            "max_logit_difference_from_cpu_sdpa": 0.0,
+            "relative_gradient_difference_from_cpu_sdpa": 0.0
+          },
+          "cpu_eager": {
+            "loss": 0.9813305735588074,
+            "gradient_norm": 1.7101247310638428,
+            "max_logit_difference_from_cpu_sdpa": 6.854534149169922e-07,
+            "relative_gradient_difference_from_cpu_sdpa": 4.893714503850788e-06
+          },
+          "cuda_sdpa": {
+            "loss": 0.9813306927680969,
+            "gradient_norm": 1.7101144790649414,
+            "max_logit_difference_from_cpu_sdpa": 2.7865171432495117e-06,
+            "relative_gradient_difference_from_cpu_sdpa": 2.165611476812046e-05
+          }
+        }
+      },
+      "development_normalized": {
+        "adapter_weights_sha256": "2af7484a44ce6a09a9fec3d2ad36216b0749ffa7e95d03a76bddecccd70d0aec",
+        "weights_unchanged": true,
+        "backends": {
+          "cpu_sdpa": {
+            "loss": 1.0913738012313843,
+            "gradient_norm": 158.8294219970703,
+            "max_logit_difference_from_cpu_sdpa": 0.0,
+            "relative_gradient_difference_from_cpu_sdpa": 0.0
+          },
+          "cpu_eager": {
+            "loss": 1.0913740396499634,
+            "gradient_norm": 158.83560180664062,
+            "max_logit_difference_from_cpu_sdpa": 1.1444091796875e-05,
+            "relative_gradient_difference_from_cpu_sdpa": 4.3047282815678045e-05
+          },
+          "cuda_sdpa": {
+            "loss": 1.0913554430007935,
+            "gradient_norm": 158.9874725341797,
+            "max_logit_difference_from_cpu_sdpa": 0.0003554821014404297,
+            "relative_gradient_difference_from_cpu_sdpa": 0.0010578240035101771
+          }
+        }
+      }
+    },
+    "fresh_trainable_initialization_sha256": [
+      "6b4b9f93b92c7a2be2b49deff14e7d161863e96cc3807c25bb193928fb5a63ed",
+      "6b4b9f93b92c7a2be2b49deff14e7d161863e96cc3807c25bb193928fb5a63ed"
+    ],
+    "script_sha256": "6d294e50e26b4db30229ced1983080e3c32221fc4179c0bfab8ef0e940ac2bcc"
+  },
+  "local_sensitivity": {
+    "status": "passed",
+    "device": "cpu",
+    "training_data_only": true,
+    "optimizer_updates": 0,
+    "production_weights_unchanged": true,
+    "baseline_loss": 1.0913738012313843,
+    "baseline_gradient_norm": 158.83410930708177,
+    "first_attention_gradient_energy_fraction": 0.9991113054431324,
+    "finite_difference_parameter": "base_model.model.model.layers.0.attn.Wqkv.lora_B.default.weight",
+    "finite_differences": [
+      {
+        "epsilon": 0.001,
+        "central_derivative": 17.440673830398737,
+        "analytic_derivative": 18.150415420532227,
+        "relative_error": 0.039103324837987535
+      },
+      {
+        "epsilon": 0.0001,
+        "central_derivative": 18.180043585970534,
+        "analytic_derivative": 18.150415420532227,
+        "relative_error": 0.0016323684473244125
+      },
+      {
+        "epsilon": 1e-05,
+        "central_derivative": 18.249953436394115,
+        "analytic_derivative": 18.150415420532227,
+        "relative_error": 0.005484062681523453
+      }
+    ],
+    "first_attention_lora_disabled": {
+      "loss": 1.0625665187835693,
+      "gradient_norm": 2.420878977566676
+    },
+    "ablation_scope": "Diagnostic on 12 training rows only; no model selection or replacement.",
+    "script_sha256": "c236ecbe449d3eb124204c67cf70bfad49026ccc485dfc1037f734c394ed7752"
+  },
+  "historical_log_alignment": [
+    {
+      "step": 20,
+      "legacy_loss_divided_by_four": 1.37685,
+      "corrected_loss": 1.3768,
+      "legacy_gradient_norm_divided_by_four": 3.8596322536468506,
+      "corrected_gradient_norm": 3.8596320152282715
+    },
+    {
+      "step": 40,
+      "legacy_loss_divided_by_four": 1.14855,
+      "corrected_loss": 1.1486,
+      "legacy_gradient_norm_divided_by_four": 3.419926881790161,
+      "corrected_gradient_norm": 3.4199283123016357
+    },
+    {
+      "step": 60,
+      "legacy_loss_divided_by_four": 1.135925,
+      "corrected_loss": 1.1359,
+      "legacy_gradient_norm_divided_by_four": 2.4110522270202637,
+      "corrected_gradient_norm": 2.4110522270202637
+    },
+    {
+      "step": 80,
+      "legacy_loss_divided_by_four": 1.1341,
+      "corrected_loss": 1.1341,
+      "legacy_gradient_norm_divided_by_four": 4.644161224365234,
+      "corrected_gradient_norm": 4.644157409667969
+    },
+    {
+      "step": 100,
+      "legacy_loss_divided_by_four": 1.140425,
+      "corrected_loss": 1.1404,
+      "legacy_gradient_norm_divided_by_four": 2.95558500289917,
+      "corrected_gradient_norm": 2.9554824829101562
+    },
+    {
+      "step": 200,
+      "legacy_loss_divided_by_four": 1.092775,
+      "corrected_loss": 1.0928,
+      "legacy_gradient_norm_divided_by_four": 3.113518714904785,
+      "corrected_gradient_norm": 3.1118323802948
+    },
+    {
+      "step": 220,
+      "legacy_loss_divided_by_four": 1.13855,
+      "corrected_loss": 1.1386,
+      "legacy_gradient_norm_divided_by_four": 3.753310441970825,
+      "corrected_gradient_norm": 3.8603193759918213
+    },
+    {
+      "step": 440,
+      "legacy_loss_divided_by_four": 1.09505,
+      "corrected_loss": 1.0804,
+      "legacy_gradient_norm_divided_by_four": 5.083682537078857,
+      "corrected_gradient_norm": 1.4854809045791626
+    },
+    {
+      "step": 520,
+      "legacy_loss_divided_by_four": 1.112025,
+      "corrected_loss": 1.07,
+      "legacy_gradient_norm_divided_by_four": 4.476675510406494,
+      "corrected_gradient_norm": 2.233020305633545
+    },
+    {
+      "step": 540,
+      "legacy_loss_divided_by_four": 1.110425,
+      "corrected_loss": 1.497,
+      "legacy_gradient_norm_divided_by_four": 1.9461562633514404,
+      "corrected_gradient_norm": 253.14910888671875
+    }
+  ],
+  "first_logged_corrected_development_norm_over_25": {
+    "loss": 1.497,
+    "grad_norm": 253.14910888671875,
+    "learning_rate": 0.0008138121546961326,
+    "epoch": 0.536779324055666,
+    "step": 540
+  },
+  "clipping_scale_example": {
+    "mean_gradient": [
+      0.3,
+      0.4
+    ],
+    "mean_gradient_norm": 0.5,
+    "legacy_accumulated_gradient": [
+      1.2,
+      1.6
+    ],
+    "legacy_raw_norm": 2,
+    "max_grad_norm": 1,
+    "legacy_postclipping_gradient_approximately": [
+      0.6,
+      0.8
+    ],
+    "corrected_postclipping_gradient": [
+      0.3,
+      0.4
+    ],
+    "interpretation": "Keeping max_grad_norm=1 after changing the loss scale does not preserve the legacy clipping regime. This example does not establish the cause of the observed regression."
+  },
+  "limitations": [
+    "A tiny-model integration test does not prove every full-model update is correct.",
+    "Only twelve short training examples were used for the backend and derivative probes.",
+    "Finite differences check one sensitive coordinate, not the full Jacobian.",
+    "Repeatable initialization now does not establish historical bitwise reproducibility.",
+    "The first-attention ablation localizes the measured sensitivity but does not identify when or why training entered this region.",
+    "No new full-model optimizer updates or final evaluation were performed."
+  ],
+  "artifacts": "results/norberto-deep-audit-20261105"
+}
