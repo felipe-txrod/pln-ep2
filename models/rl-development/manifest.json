@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "model": "rl",
+  "format": "joblib",
+  "labels": [
+    "c1",
+    "c234",
+    "c5"
+  ],
+  "data_partition": "development",
+  "training_supported": false,
+  "files": {
+    "model.joblib": "05d69e147a10b7c49ebe3893f247e0f23e8d61005aaf4fd7b7eb45845d49a20f",
+    "config.json": "deb20cd858ec9fc195d85f57991965d0188fc89d201e6e5474735894a4196078",
+    "metadata.json": "891506d03044e61f8e689b1dcfb9dee457a04ce5c9f74b022aef6510ab171e7f",
+    "frozen_manifest.json": "823580763f0be9555f3365d59cf83055675a019d3807d874bf8f48200597d47f"
+  }
+}

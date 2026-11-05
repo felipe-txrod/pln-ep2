@@ -9,7 +9,8 @@ training corpus. It introduces test2 (897 rows) as the official prediction
 deliverable and provides test1 labels (900 rows) only for the final paired
 statistical comparison with the EP1 submission.
 
-The following training files are byte-identical, with the same SHA-256,
+The original audit inspected the following byte-identical training files,
+with the same SHA-256,
 20,092 rows, response texts, labels, and row order:
 
 - `EP1/data/train.xlsx`
@@ -18,8 +19,10 @@ The following training files are byte-identical, with the same SHA-256,
 
 The two unlabeled test1 workbooks are also byte-identical. The labeled test1
 workbook contains exactly the same 900 response texts in the same order.
-Training copies are alternative filenames for one corpus; concatenating them
-would repeat the same examples.
+The EP2 training copies have since been consolidated into `EP2/data/train.xlsx`:
+`train_ep1.xlsx` was renamed and the identical `train_ep2.xlsx` was removed.
+The canonical workbook retains the same bytes, labels, and row order. The saved
+audit JSON retains the original filenames as historical provenance.
 
 ## Text overlap across partitions
 
@@ -75,6 +78,8 @@ PYTHONPATH=src python3 scripts/diagnostics/audit-dataset-overlap.py \
   --output results/dataset-overlap-new/summary.json
 ```
 
-Seven workbooks and all 21 pairs were inspected. Matching is exact or normalized;
+The saved historical audit inspected seven workbooks and all 21 pairs.
+The command now inspects six workbooks and all 15 pairs, using the canonical
+EP2 training workbook. Matching is exact or normalized;
 near-duplicates and semantic similarity were not evaluated. Synthetic tests
 verify occurrence counts, normalization, conflicting labels, and ordered identity.

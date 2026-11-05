@@ -19,7 +19,7 @@ def main(argv: list[str] | None = None) -> int:
         if name != "download":
             command.add_argument("--output-dir", type=Path, required=True)
         if name in {"prepare", "train"}:
-            command.add_argument("--input", type=Path, default=Path("data/train_ep2.xlsx"))
+            command.add_argument("--input", type=Path, default=Path("data/train.xlsx"))
         if name != "prepare":
             command.add_argument("--cache-dir", type=Path, default=Path(".cache/qwen-model"))
         if name == "train":

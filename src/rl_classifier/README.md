@@ -1,56 +1,61 @@
-# Frozen EP1 logistic regression classifier
+# Development-only logistic regression
 
-`RLClassifier` exposes the trained logistic regression model; `rl` is its
-ensemble member ID. There is no retraining, parameter search, vocabulary
-reconstruction, or automatic calibration.
+`RLClassifier` is the ensemble member `rl`. Its default bundle is now
+`models/rl-development/`, trained on the fixed 16,093 EP1 development rows
+while reserving all 3,999 holdout rows. The local bundle has completed training and verification: 38 iterations,
+25.08 seconds, exact training-row coverage, and zero holdout group overlap.
+See the [trained model](../../models/rl-development/README.md). The earlier
+lexical comparison saved only its winning SVM pipeline; the preserved
+`models/rl/` artifact was fitted on all 20,092 rows and remains historical.
 
-## Configuration and artifact
+## Reproduce the selected model
 
-- `LogisticRegression`: `C=0.25`, `solver="lbfgs"`, `max_iter=1500`, seed 42.
-- Word TF-IDF: n-grams 1–2, `min_df=2`, `max_df=0.98`, up to 60,000 features.
-- Character TF-IDF: `char_wb`, n-grams 3–5, `min_df=3`, up to 50,000 features.
-- Sublinear frequency, L2 normalization, FP32 matrices, and text preprocessing
-  equivalent to the [SVM pipeline](../svm_classifier/README.md).
-- Final training: all 20,092 original responses; classes `c1/c234/c5`.
-
-The original artifact is `EP1/artifacts/final-logistic-20260928.joblib`.
-The versioned independent copy is [`models/rl/model.joblib`](../../models/rl/README.md),
-with configuration, metadata, and manifests. SHA-256 matches the EP1 audit:
-
-```text
-f7af61142f43e1c8a37f0cd5a8191dd6d83ba1222cd8ecf12281f9929ac827c9
-```
-
-The source [frozen manifest](frozen_manifest.json) pins parameters, versions,
-and hashes. The previous `artifacts/rl-ep1/` path remains a fallback when no
-published package exists. A missing or different artifact raises an error;
-it never starts training.
-
-## Usage
-
-Use `requirements-lexical.txt` in a separate environment, as described in the
-[SVM guide](../svm_classifier/README.md).
+From the EP2 root, using the existing offline CPU image and sibling EP1:
 
 ```bash
-PYTHONPATH=src python -m rl_classifier predict \
-  --input data/test2.xlsx --output-dir results/rl-test2
+bash scripts/rl/train.sh --dry-run
+bash scripts/rl/train.sh
 ```
 
-```python
-from rl_classifier import RLClassifier
+These commands are for a new output directory; the completed local bundle must
+not be overwritten. The first command validates dataset/split hashes, row counts, and disjoint
+similarity components without fitting or writing artifacts. The second fits
+only development, using EP1's original word/character TF-IDF builder and fixed
+`C=0.25`, L-BFGS, L2, 1,500 iterations, seed 42, and two CPU threads. There is
+no parameter search, holdout scoring, official-test access, or full-corpus fit.
+Nonconvergence fails. Training writes safe provenance, exact training row
+identities, checksummed joblib/metadata/configuration, and a manifest after
+reloading and validating the exported pipeline.
 
-classifier = RLClassifier()
-predictions = classifier.predict(["Example public response."])
-label = predictions[0].label
-probabilities = predictions[0].probabilities
+`RL_EP1_ROOT` and `RL_IMAGE` override the sibling checkout and local image.
+An existing output directory is rejected. `--output-dir` selects another new
+bundle; an alternate bundle must also be selected explicitly for inference
+and in the ensemble manifest. Training is not started by inference.
+
+## Inference
+
+Use the pinned dependencies in `requirements-lexical.txt`:
+
+```bash
+PYTHONPATH=src python3 -m rl_classifier predict \
+  --input data/test2.xlsx --output-dir results/rl-development-test2
 ```
 
-`predict` returns labels, probabilities, and named class scores. The CLI writes
-`predictions.jsonl` and `run.json` without modifying its input. `info` does not
-load the model. Alternate locations use `--artifact`, `RL_ARTIFACT_PATH`, or
-`RL_BUNDLE_DIR`, under the same integrity rules as SVM.
+For test1, use `data/test1.xlsx` and `results/rl-development-test1`. Prediction
+reads texts only and returns labels, probabilities, and named class scores.
+The ensemble checks the run's artifact hash against
+`models/rl-development/frozen_manifest.json`, so earlier full-corpus
+predictions cannot be reused as development predictions.
 
-Loading and inference are lazy and CPU-only. Previous inference on all 900
-test1 responses achieved **49.33% accuracy (444/900)**, with row IDs, texts,
-parameters, and hashes verified. See the
-[full evaluation](../../docs/results/lexical-test1.md).
+A missing development bundle produces an actionable error and never falls
+back to the historical full-corpus model. `RL_BUNDLE_DIR` selects an explicit
+alternate bundle; `--artifact`/`RL_ARTIFACT_PATH` select another copy under
+that bundle's integrity contract. Loading and prediction remain CPU-only.
+
+The historical full-corpus weights in `models/rl/` are preserved for
+traceability. Their earlier 49.33% test1 accuracy applies only to that model.
+The development-only model has now been evaluated separately: 1,803/3,999
+correct on holdout (45.09% accuracy, 44.78% macro-F1) and 447/900 on labeled
+test1 (49.67% accuracy, 49.32% macro-F1). All source rows and metrics were
+verified independently, with no refitting or parameter changes. See the
+[evaluation record](../../docs/results/data/rl-development-evaluation.json).

@@ -1,0 +1,246 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "model": "development_word_char_logistic",
+  "artifact_sha256": "05d69e147a10b7c49ebe3893f247e0f23e8d61005aaf4fd7b7eb45845d49a20f",
+  "model_files_sha256": {
+    "model.joblib": "05d69e147a10b7c49ebe3893f247e0f23e8d61005aaf4fd7b7eb45845d49a20f",
+    "metadata.json": "891506d03044e61f8e689b1dcfb9dee457a04ce5c9f74b022aef6510ab171e7f",
+    "config.json": "deb20cd858ec9fc195d85f57991965d0188fc89d201e6e5474735894a4196078",
+    "manifest.json": "48bcc782d2bc309efdb15c48c1dae48e57a00b7f13ad3c19dc2adc8412feaa96",
+    "frozen_manifest.json": "823580763f0be9555f3365d59cf83055675a019d3807d874bf8f48200597d47f",
+    "run.json": "976d301c55b74320f84fcdd604ab6dd7de1322d9ba424fd290a23548bcddabf1"
+  },
+  "training_rows": 16093,
+  "reserved_holdout_rows": 3999,
+  "holdout_group_overlap": 0,
+  "selected_C": 0.25,
+  "training_performed": false,
+  "parameter_search_performed": false,
+  "gold_read_after_all_predictions": true,
+  "model_files_unchanged": true,
+  "dataset_sha256": "0e9219233664ac675fc47982bbc822acd3bb15d67fb7bfc26b67bec047e46818",
+  "split_sha256": "0f78e7a809c7b7584db05b33cf03a73ff586d5de02ba824c16562d5070d41494",
+  "test1_gold_sha256": "c92658298f95b6325a49b017b58673ebda450fa54dc2280d74393cb093378406",
+  "evaluations": {
+    "holdout": {
+      "metrics": {
+        "rows": 3999,
+        "accuracy": 0.4508627156789197,
+        "f1_macro": 0.4478157039657455,
+        "label_order": [
+          "c1",
+          "c234",
+          "c5"
+        ],
+        "confusion_matrix": [
+          [
+            548,
+            332,
+            377
+          ],
+          [
+            383,
+            496,
+            538
+          ],
+          [
+            239,
+            327,
+            759
+          ]
+        ],
+        "classification_report": {
+          "c1": {
+            "precision": 0.4683760683760684,
+            "recall": 0.43595863166268894,
+            "f1-score": 0.4515863205603626,
+            "support": 1257.0
+          },
+          "c234": {
+            "precision": 0.42943722943722945,
+            "recall": 0.35003528581510235,
+            "f1-score": 0.3856920684292379,
+            "support": 1417.0
+          },
+          "c5": {
+            "precision": 0.45340501792114696,
+            "recall": 0.5728301886792453,
+            "f1-score": 0.5061687229076359,
+            "support": 1325.0
+          },
+          "accuracy": 0.4508627156789197,
+          "macro avg": {
+            "precision": 0.4504061052448149,
+            "recall": 0.4529413687190122,
+            "f1-score": 0.4478157039657455,
+            "support": 3999.0
+          },
+          "weighted avg": {
+            "precision": 0.44961813473538176,
+            "recall": 0.4508627156789197,
+            "f1-score": 0.4463223865369402,
+            "support": 3999.0
+          }
+        },
+        "prediction_counts": {
+          "c1": 1170,
+          "c234": 1155,
+          "c5": 1674
+        },
+        "correct": 1803,
+        "precision_macro": 0.4504061052448149,
+        "recall_macro": 0.4529413687190122
+      },
+      "predictions_sha256": "84de36000eb211379eed06acec8832ff88337b1e5aa545e330cc221ff18130b0"
+    },
+    "test1": {
+      "metrics": {
+        "rows": 900,
+        "accuracy": 0.49666666666666665,
+        "f1_macro": 0.4932238811449676,
+        "label_order": [
+          "c1",
+          "c234",
+          "c5"
+        ],
+        "confusion_matrix": [
+          [
+            135,
+            89,
+            76
+          ],
+          [
+            73,
+            125,
+            102
+          ],
+          [
+            49,
+            64,
+            187
+          ]
+        ],
+        "classification_report": {
+          "c1": {
+            "precision": 0.5252918287937743,
+            "recall": 0.45,
+            "f1-score": 0.48473967684021546,
+            "support": 300.0
+          },
+          "c234": {
+            "precision": 0.44964028776978415,
+            "recall": 0.4166666666666667,
+            "f1-score": 0.43252595155709345,
+            "support": 300.0
+          },
+          "c5": {
+            "precision": 0.5123287671232877,
+            "recall": 0.6233333333333333,
+            "f1-score": 0.562406015037594,
+            "support": 300.0
+          },
+          "accuracy": 0.49666666666666665,
+          "macro avg": {
+            "precision": 0.4957536278956154,
+            "recall": 0.49666666666666665,
+            "f1-score": 0.4932238811449676,
+            "support": 900.0
+          },
+          "weighted avg": {
+            "precision": 0.4957536278956154,
+            "recall": 0.49666666666666665,
+            "f1-score": 0.4932238811449676,
+            "support": 900.0
+          }
+        },
+        "prediction_counts": {
+          "c234": 278,
+          "c5": 365,
+          "c1": 257
+        },
+        "correct": 447,
+        "precision_macro": 0.4957536278956154,
+        "recall_macro": 0.49666666666666665
+      },
+      "predictions_sha256": "fffbded901501a0787d2bf63dc0ac001dd94afd16d34d77601761371e3ee1bd6"
+    }
+  },
+  "test2_accessed": false,
+  "device": "cpu",
+  "elapsed_seconds": 14.593556718999025,
+  "script_sha256": "d7b608547e2ae1de66c30956f5d337be596a65fa09c357fb54f0d852697ad5a5",
+  "caveat": "The EP1 holdout and test1 have been consulted historically; descriptive evaluation only.",
+  "date": "2026-11-05",
+  "source_run": "results/rl-development-evaluation-20261105",
+  "independent_verification": {
+    "status": "passed",
+    "source_reader": "Independent standard-library ZIP/XML workbook parser",
+    "evaluations": {
+      "holdout": {
+        "rows": 3999,
+        "correct": 1803,
+        "accuracy": 0.4508627156789197,
+        "f1_macro": 0.4478157039657455,
+        "confusion_matrix": [
+          [
+            548,
+            332,
+            377
+          ],
+          [
+            383,
+            496,
+            538
+          ],
+          [
+            239,
+            327,
+            759
+          ]
+        ],
+        "maximum_probability_reconstruction_error": 2.220446049250313e-16,
+        "all_row_ids_text_hashes_and_gold_verified": true,
+        "historical_ep1_logistic_prediction_matches": 3999
+      },
+      "test1": {
+        "rows": 900,
+        "correct": 447,
+        "accuracy": 0.49666666666666665,
+        "f1_macro": 0.4932238811449676,
+        "confusion_matrix": [
+          [
+            135,
+            89,
+            76
+          ],
+          [
+            73,
+            125,
+            102
+          ],
+          [
+            49,
+            64,
+            187
+          ]
+        ],
+        "maximum_probability_reconstruction_error": 1.1102230246251565e-16,
+        "all_row_ids_text_hashes_and_gold_verified": true
+      }
+    },
+    "rows_verified": 4899,
+    "training_performed": false,
+    "model_hashes_verified": true,
+    "script_sha256": "721d790679e35e2ac1b44c2631258d93d78a6300a8b3fbc709703157cb8552e5"
+  },
+  "scope": "Unchanged development-only logistic regression scored on EP1 holdout and official labeled test1; no new fitting or parameter selection.",
+  "raw_artifacts_sha256": {
+    "evaluation/run.json": "ef91e13f80ff037b61d1ab9dc4de58184d71f59ad5b7734c260f3e0456b4b97f",
+    "independent-verification.json": "d42d331e1e834fcb7d3d3e99ed967dc05092f410232469b965497d554722a87d",
+    "evaluate.py": "d7b608547e2ae1de66c30956f5d337be596a65fa09c357fb54f0d852697ad5a5",
+    "verify.py": "721d790679e35e2ac1b44c2631258d93d78a6300a8b3fbc709703157cb8552e5"
+  },
+  "selected_ensemble_test1_run": "results/rl-development-test1",
+  "ensemble_model_identity_verified": true
+}

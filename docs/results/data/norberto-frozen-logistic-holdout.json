@@ -1,0 +1,510 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "phase": "frozen_holdout_evaluation",
+  "training_run": "results/norberto-frozen-logistic-ep1-20261105",
+  "model_files_sha256": {
+    "manifest.json": "bc5f0725a45116dbf00934aee9bf1665f1c234cfd75b2c17087cb9b25ab918c8",
+    "classifier.npz": "2261d3f85df1b81062855c0fee076eca9914b3ca1066ace002c7c4dfcee99efe"
+  },
+  "dataset_sha256": "0e9219233664ac675fc47982bbc822acd3bb15d67fb7bfc26b67bec047e46818",
+  "split_sha256": "0f78e7a809c7b7584db05b33cf03a73ff586d5de02ba824c16562d5070d41494",
+  "training_rows": 16093,
+  "holdout_rows": 3999,
+  "training_groups": 12956,
+  "holdout_groups": 3281,
+  "holdout_row_overlap": 0,
+  "holdout_group_overlap": 0,
+  "selected_C": 10.0,
+  "classifier_refitted": false,
+  "parameters_selected_using_holdout": false,
+  "official_test_data_accessed": false,
+  "script_sha256": "8c039028bb0ddfb3b61c473ed2537f87671c28856e68f9b1d802d1ffb2379cd2",
+  "caveat": "Historically consulted holdout: exploratory comparison. Group bootstrap describes paired predictions, not training uncertainty.",
+  "metrics": {
+    "rows": 3999,
+    "correct": 1694,
+    "accuracy": 0.42360590147536886,
+    "f1_macro": 0.4207742952315092,
+    "balanced_accuracy": 0.42513624726374405,
+    "label_order": [
+      "c1",
+      "c234",
+      "c5"
+    ],
+    "confusion_matrix": [
+      [
+        497,
+        394,
+        366
+      ],
+      [
+        396,
+        477,
+        544
+      ],
+      [
+        253,
+        352,
+        720
+      ]
+    ],
+    "classification_report": {
+      "c1": {
+        "precision": 0.4336823734729494,
+        "recall": 0.39538583929992044,
+        "f1-score": 0.4136496046608406,
+        "support": 1257.0
+      },
+      "c234": {
+        "precision": 0.3900245298446443,
+        "recall": 0.3366266760762174,
+        "f1-score": 0.3613636363636364,
+        "support": 1417.0
+      },
+      "c5": {
+        "precision": 0.44171779141104295,
+        "recall": 0.5433962264150943,
+        "f1-score": 0.4873096446700508,
+        "support": 1325.0
+      },
+      "accuracy": 0.42360590147536886,
+      "macro avg": {
+        "precision": 0.4218082315762122,
+        "recall": 0.42513624726374405,
+        "f1-score": 0.4207742952315092,
+        "support": 3999.0
+      },
+      "weighted avg": {
+        "precision": 0.4208751127444337,
+        "recall": 0.42360590147536886,
+        "f1-score": 0.4195286584080437,
+        "support": 3999.0
+      }
+    }
+  },
+  "comparisons": {
+    "original_ep1_norberto_lora": {
+      "source": "/ep1/results/norberto/delivery/norberto-lora-final-holdout-20260928/holdout-predictions.csv",
+      "source_sha256": "6c9064f344ca3cb1adf70698467b8048b3289d80fa7f4544b20b13dfad17676a",
+      "metrics": {
+        "rows": 3999,
+        "correct": 1812,
+        "accuracy": 0.45311327831957987,
+        "f1_macro": 0.4530638860354334,
+        "balanced_accuracy": 0.45312575656314696,
+        "label_order": [
+          "c1",
+          "c234",
+          "c5"
+        ],
+        "confusion_matrix": [
+          [
+            526,
+            436,
+            295
+          ],
+          [
+            370,
+            605,
+            442
+          ],
+          [
+            233,
+            411,
+            681
+          ]
+        ],
+        "classification_report": {
+          "c1": {
+            "precision": 0.4658990256864482,
+            "recall": 0.4184566428003182,
+            "f1-score": 0.44090528080469404,
+            "support": 1257.0
+          },
+          "c234": {
+            "precision": 0.4166666666666667,
+            "recall": 0.4269583627381793,
+            "f1-score": 0.4217497385848728,
+            "support": 1417.0
+          },
+          "c5": {
+            "precision": 0.4802538787023977,
+            "recall": 0.5139622641509434,
+            "f1-score": 0.4965366387167335,
+            "support": 1325.0
+          },
+          "accuracy": 0.45311327831957987,
+          "macro avg": {
+            "precision": 0.45427319035183755,
+            "recall": 0.45312575656314696,
+            "f1-score": 0.4530638860354334,
+            "support": 3999.0
+          },
+          "weighted avg": {
+            "precision": 0.45321033539265043,
+            "recall": 0.45311327831957987,
+            "f1-score": 0.45255022851861393,
+            "support": 3999.0
+          }
+        }
+      },
+      "accuracy_delta_current_minus_baseline": -0.029507376844211054,
+      "only_current_correct": 373,
+      "only_baseline_correct": 491,
+      "descriptive_95pct_group_bootstrap": [
+        -0.0513560442031578,
+        -0.009988389986286168
+      ],
+      "bootstrap_repeats": 2000,
+      "bootstrap_seed": 42,
+      "resampling_unit": "frozen_similarity_component"
+    },
+    "lexical_logistic": {
+      "source": "/ep1/results/research/fixed-lexical-comparison-20260924/holdout-predictions.csv",
+      "source_sha256": "4fa26da774f810df0a9fe943ae3e67aa054503dcb60eeb3f11e0d58c316a2012",
+      "metrics": {
+        "rows": 3999,
+        "correct": 1803,
+        "accuracy": 0.4508627156789197,
+        "f1_macro": 0.4478157039657455,
+        "balanced_accuracy": 0.4529413687190122,
+        "label_order": [
+          "c1",
+          "c234",
+          "c5"
+        ],
+        "confusion_matrix": [
+          [
+            548,
+            332,
+            377
+          ],
+          [
+            383,
+            496,
+            538
+          ],
+          [
+            239,
+            327,
+            759
+          ]
+        ],
+        "classification_report": {
+          "c1": {
+            "precision": 0.4683760683760684,
+            "recall": 0.43595863166268894,
+            "f1-score": 0.4515863205603626,
+            "support": 1257.0
+          },
+          "c234": {
+            "precision": 0.42943722943722945,
+            "recall": 0.35003528581510235,
+            "f1-score": 0.3856920684292379,
+            "support": 1417.0
+          },
+          "c5": {
+            "precision": 0.45340501792114696,
+            "recall": 0.5728301886792453,
+            "f1-score": 0.5061687229076359,
+            "support": 1325.0
+          },
+          "accuracy": 0.4508627156789197,
+          "macro avg": {
+            "precision": 0.4504061052448149,
+            "recall": 0.4529413687190122,
+            "f1-score": 0.4478157039657455,
+            "support": 3999.0
+          },
+          "weighted avg": {
+            "precision": 0.44961813473538176,
+            "recall": 0.4508627156789197,
+            "f1-score": 0.4463223865369402,
+            "support": 3999.0
+          }
+        }
+      },
+      "accuracy_delta_current_minus_baseline": -0.02725681420355089,
+      "only_current_correct": 519,
+      "only_baseline_correct": 628,
+      "descriptive_95pct_group_bootstrap": [
+        -0.04907342730160731,
+        -0.007954706818346967
+      ],
+      "bootstrap_repeats": 2000,
+      "bootstrap_seed": 42,
+      "resampling_unit": "frozen_similarity_component"
+    },
+    "lexical_svm": {
+      "source": "/ep1/results/research/svm-fixed-holdout-20260923/holdout-predictions.csv",
+      "source_sha256": "cd7c2cb50ae56842cfd0c48bafaf1ef45d473efb3a6ade535ed2b4c882f0de53",
+      "metrics": {
+        "rows": 3999,
+        "correct": 1792,
+        "accuracy": 0.44811202800700173,
+        "f1_macro": 0.4447431774978208,
+        "balanced_accuracy": 0.4504299616020319,
+        "label_order": [
+          "c1",
+          "c234",
+          "c5"
+        ],
+        "confusion_matrix": [
+          [
+            550,
+            331,
+            376
+          ],
+          [
+            385,
+            482,
+            550
+          ],
+          [
+            245,
+            320,
+            760
+          ]
+        ],
+        "classification_report": {
+          "c1": {
+            "precision": 0.4661016949152542,
+            "recall": 0.4375497215592681,
+            "f1-score": 0.45137464095199015,
+            "support": 1257.0
+          },
+          "c234": {
+            "precision": 0.42541924095322153,
+            "recall": 0.34015525758645027,
+            "f1-score": 0.3780392156862745,
+            "support": 1417.0
+          },
+          "c5": {
+            "precision": 0.45077105575326215,
+            "recall": 0.5735849056603773,
+            "f1-score": 0.5048156758551976,
+            "support": 1325.0
+          },
+          "accuracy": 0.44811202800700173,
+          "macro avg": {
+            "precision": 0.44743066387391267,
+            "recall": 0.4504299616020319,
+            "f1-score": 0.4447431774978208,
+            "support": 3999.0
+          },
+          "weighted avg": {
+            "precision": 0.44660678764997797,
+            "recall": 0.44811202800700173,
+            "f1-score": 0.44309583966297555,
+            "support": 3999.0
+          }
+        }
+      },
+      "accuracy_delta_current_minus_baseline": -0.024506126531632907,
+      "only_current_correct": 536,
+      "only_baseline_correct": 634,
+      "descriptive_95pct_group_bootstrap": [
+        -0.04631267404045064,
+        -0.004743686183708892
+      ],
+      "bootstrap_repeats": 2000,
+      "bootstrap_seed": 42,
+      "resampling_unit": "frozen_similarity_component"
+    },
+    "recipe3_norberto_lora": {
+      "source": "results/norberto-recipe3-holdout-20261105/holdout/predictions.jsonl",
+      "source_sha256": "fe580b97249e7577fedb10d4623431209fd203da84456eeaf246d82b23f67343",
+      "metrics": {
+        "rows": 3999,
+        "correct": 1792,
+        "accuracy": 0.44811202800700173,
+        "f1_macro": 0.4481089857595624,
+        "balanced_accuracy": 0.4480807125640414,
+        "label_order": [
+          "c1",
+          "c234",
+          "c5"
+        ],
+        "confusion_matrix": [
+          [
+            519,
+            440,
+            298
+          ],
+          [
+            366,
+            600,
+            451
+          ],
+          [
+            232,
+            420,
+            673
+          ]
+        ],
+        "classification_report": {
+          "c1": {
+            "precision": 0.4646374216651746,
+            "recall": 0.4128878281622912,
+            "f1-score": 0.43723673125526535,
+            "support": 1257.0
+          },
+          "c234": {
+            "precision": 0.410958904109589,
+            "recall": 0.4234297812279464,
+            "f1-score": 0.4171011470281543,
+            "support": 1417.0
+          },
+          "c5": {
+            "precision": 0.4732770745428973,
+            "recall": 0.5079245283018868,
+            "f1-score": 0.48998907899526756,
+            "support": 1325.0
+          },
+          "accuracy": 0.44811202800700173,
+          "macro avg": {
+            "precision": 0.4496244667725537,
+            "recall": 0.4480807125640414,
+            "f1-score": 0.4481089857595624,
+            "support": 3999.0
+          },
+          "weighted avg": {
+            "precision": 0.4484796523945364,
+            "recall": 0.44811202800700173,
+            "f1-score": 0.4475805016742918,
+            "support": 3999.0
+          }
+        }
+      },
+      "accuracy_delta_current_minus_baseline": -0.024506126531632907,
+      "only_current_correct": 397,
+      "only_baseline_correct": 495,
+      "descriptive_95pct_group_bootstrap": [
+        -0.0462250852790544,
+        -0.004519964253998322
+      ],
+      "bootstrap_repeats": 2000,
+      "bootstrap_seed": 42,
+      "resampling_unit": "frozen_similarity_component"
+    }
+  },
+  "extraction": {
+    "tokenization": {
+      "rows": 3705,
+      "truncated_rows": 442,
+      "input_case_preserved": true,
+      "max_length": 512,
+      "truncation": "head_tail"
+    },
+    "peak_allocated_mib": 1300.61572265625,
+    "rows": 3999,
+    "unique_texts": 3705,
+    "newly_encoded": 3705,
+    "encoder_identity_sha256": "c26fb49bf683eb3d75c15cd3c9a9fd6233bdfb7a75971a56eed8d732d691087f",
+    "cache_identity_sha256": "c70d9b74af3b52916763b41579542057bed512f8f66e5b3ecaf70fa4f7c29328",
+    "base": {
+      "model_id": "Itau-Unibanco/NorBERTo-base",
+      "revision": "db73446f89c96044863ea05a39f680524b84bccb",
+      "files_sha256": {
+        "config.json": "698fe516bdf775a11b80bd69b82c01e440ef1b8c2d17b6aa0ff22b9c74a48df9",
+        "model.safetensors": "f632545c4a06a5d053af8ea726b0d0048420929f35d9aade1e3da77e0b057066",
+        "special_tokens_map.json": "14312eab40fcda429ecbe9b548bfdcf18b051c534e12970c6a8e86ae759cd885",
+        "tokenizer.json": "4d94eba9ab0a7d90459ab12fd8125f37ed111bdd4c6a71ebf91a694bcc2ba582",
+        "tokenizer_config.json": "f5488e40f66f1d59c89d9f2eb51392ebc978d4096e3f33c66d30b2cb4b22c2e8"
+      }
+    },
+    "versions": {
+      "torch": "2.8.0+rocm6.4",
+      "transformers": "4.57.1"
+    },
+    "device": "gpu",
+    "batch_size": 16,
+    "trainable_encoder_parameters": 0,
+    "optimizer_updates": 0,
+    "model_state_sha256_before_and_after": "d92c213554be7a4c79bc657b4c550092a526eb5b7ad38a611cd9f173fda14e8b",
+    "encoder_weights_unchanged": true,
+    "elapsed_seconds": 72.90351506499974
+  },
+  "gold_read_after_predictions": true,
+  "training_row_identities_verified": true,
+  "model_files_unchanged": true,
+  "features_sha256": "00e6ec8f3d3a58597c451e8a51861c59cdb14b7b39b7fc371069b68c726b159f",
+  "predictions_sha256": "90679d9c0891027521cf10416ebdd8d6a8ca818d94c42fd619e2d31eeab119ff",
+  "metrics_sha256": "bf448c0ae9f937cba9f827ed4d8d7e4be50cbb2fef1abb609afe3c96693df08f",
+  "elapsed_seconds": 75.00069403599991,
+  "date": "2026-11-05",
+  "model": "frozen_public_norberto_logistic",
+  "scope": "Evaluation of the unchanged development-trained head on the 3999-row EP1 holdout; no fitting or selection.",
+  "source_run": "results/norberto-frozen-logistic-holdout-20261105",
+  "independent_verification": {
+    "status": "passed",
+    "source_reader": "Independent standard-library ZIP/XML workbook parser",
+    "rows_verified": 3999,
+    "metrics": {
+      "rows": 3999,
+      "correct": 1694,
+      "accuracy": 0.42360590147536886,
+      "f1_macro": 0.4207742952315093,
+      "balanced_accuracy": 0.42513624726374405,
+      "confusion_matrix": [
+        [
+          497,
+          394,
+          366
+        ],
+        [
+          396,
+          477,
+          544
+        ],
+        [
+          253,
+          352,
+          720
+        ]
+      ]
+    },
+    "training_rows": 16093,
+    "training_holdout_group_overlap": 0,
+    "all_row_ids_text_hashes_groups_and_gold_verified": true,
+    "all_exported_probabilities_recomputed": true,
+    "maximum_probability_absolute_error": 0.0,
+    "model_and_prediction_checksums_verified": true,
+    "historical_controls_verified": [
+      "original_ep1_norberto_lora",
+      "lexical_logistic",
+      "lexical_svm",
+      "recipe3_norberto_lora"
+    ],
+    "no_refit_or_parameter_selection": true,
+    "official_test_data_accessed": false,
+    "script_sha256": "53ffbf85a33eff03ba586d1ebf121fc3860759348be6d4a39952f19672d44b77"
+  },
+  "raw_manifests_sha256": {
+    "holdout/run.json": "71a42fea1758d5a3e8bd3c431251a816aab320e787213f8391c90b19ded5ff16",
+    "independent-verification.json": "5e837088b2e7ebf484dc3d5451376f3ccaa0d17a7e8cbe65f7833e5827d6d230"
+  },
+  "implementation_sha256": {
+    "encoder.py": "a117ffde49f6e1457de5080bcec1fc8e6da107304b1e4bae341d43604f48f8ea",
+    "head.py": "6660e8aaed4f4a2afce6123e2728e73acc37fcbc627d66d672b12d96c8c62919",
+    "inference.py": "878652c5ed4ecb21e6a539c2f1c87a94b9bd18ad823aedc06ae4b01dfb955adc",
+    "training.py": "b91931affca34c2e9d108a647234cf3063183db2f587671d2a8720203a9c43f0"
+  },
+  "limitations": [
+    "The holdout has been consulted historically; this is an exploratory comparison.",
+    "Frozen encoder optimization removes adapter training instability but does not guarantee monotonic accuracy with more training data.",
+    "Similarity-group bootstrap intervals describe paired predictions, not full training uncertainty.",
+    "No official test1/test2 evaluation or full-corpus refit was performed for this candidate.",
+    "The candidate has not replaced the published model or joined the ensemble."
+  ],
+  "validation_checks": {
+    "targeted_tests_passed": 18,
+    "elapsed_seconds": 4.21,
+    "test_modules": [
+      "test_norberto_logistic.py",
+      "test_script_layout.py"
+    ],
+    "independent_saved_artifact_verification": "passed"
+  }
+}

@@ -36,14 +36,10 @@ alimentar análises de votação por rótulo após validação da procedência; 
 permite reconstruir a votação por probabilidades. Para esta última, é
 necessária uma inferência do adapter salvo sobre a partição elegível.
 
-O conjunto inicial é **Qwen + NorBERTo**, com **GPT exclusivamente como
-desempate**. GPT não recebe um peso na média de probabilidades nem participa
-das decisões que os classificadores locais resolvem sem desempate.
-
-A regra inicial usa os rótulos: **concordância mantém a classe; divergência
-usa a classe do árbitro selecionado como decisão final**. O padrão é GPT;
-outro modelo pode ser escolhido por configuração ou CLI. Não exige empate
-numérico entre probabilidades nem usa limiar de confiança.
+The active ensemble is **NorBERTo + SVM + RL**, with one hard vote per model.
+A strict majority decides; when all three labels differ, RL breaks the tie.
+Qwen is currently excluded from default membership. The earlier Qwen +
+NorBERTo consensus with GPT arbitration remains an optional historical setup.
 
 ## Seleção de membros
 
@@ -54,18 +50,83 @@ não exigem resultados disponíveis, exceto quando escolhidos como árbitro.
 Qualquer identificador
 adicional pode apontar para outra execução que siga o contrato de arquivos.
 
-O padrão continua `qwen norberto`, sem promoção automática dos modelos lexicais.
-Com `consensus`, qualquer discordância entre os membros escolhidos aciona
-o árbitro; com `majority`, opção explícita, uma maioria estrita decide e
-somente a ausência dessa maioria exige desempate. Mudanças de composição ou de
-estratégia geram outra identidade e precisam anteceder a entrega de teste2.
+The default is `norberto svm rl`, strategy `majority`, tiebreaker `rl`.
+The alternative `consensus` strategy routes every disagreement to its selected
+arbitrator. Changing composition or strategy creates a different identity and
+must precede an official test2 delivery.
+
+## Local majority configuration and exploratory comparison
+
+The dedicated `configs/ensemble-majority.json` selects NorBERTo, SVM, and RL
+with one hard vote each and RL as the fixed arbitrator for three-way ties.
+`configs/ensemble-majority-test1.json` points to their saved test1 predictions.
+Both pin development-only model manifests and require no GPT configuration.
+The regular `ensemble.json` and `ensemble-test1.json` now use the same local
+majority defaults following the user's explicit exclusion of Qwen.
+
+Run the explicitly exploratory comparison on existing predictions:
+
+```bash
+PYTHONPATH=src python3 -m ensemble_classifier compare-majority \
+  --config configs/ensemble-majority-test1.json \
+  --input data/test1.xlsx \
+  --gold data/test1-rotulado-para-teste-estatistico.xlsx \
+  --output-dir results/ensemble-majority-comparison-new
+```
+
+The command evaluates all nonempty subsets, with each local model as the
+fixed tiebreaker. Singletons appear once. The three-model preset produces
+15 configurations, including isolated-model baselines and two-member pairs.
+Predictions and configurations are persisted before reading gold, and every
+source/gold row must align. Accuracy determines the ranking, with macro-F1
+as a secondary ordering criterion; all maximum-accuracy ties are listed.
+
+This command writes exploratory evidence rather than an official delivery
+run; it does not require or generate test2 predictions. The official `combine`
+protocol still requires test2 first. No result is promoted automatically.
+The [measured comparison](../results/ensemble-majority.md) records 49.22% for
+the best trio and 49.67% for RL alone on the previously consulted test1 set.
+
+## Default training partitions and artifact selection
+
+| Member | Selected training rows | Reserved rows | Artifact |
+|---|---:|---:|---|
+| NorBERTo | 16,093 | 3,999 | Unchanged original EP1 delivery adapter |
+| SVM | 16,093 | 3,999 | Original fixed-holdout SVM |
+| RL | 16,093 | 3,999 | `models/rl-development/`, generated with `bash scripts/rl/train.sh` |
+| Qwen | 16,010 | 4,082 | Existing adapter with its own grouped validation split |
+
+Holdout rows are reserved for evaluation, not used as training data. RL's
+historical full-corpus package remains in `models/rl/`, but a missing
+`rl-development/` bundle stops inference instead of selecting that old model.
+
+Both ensemble configurations select `results/svm-development-test1` or
+`-test2`, and `results/rl-development-test1` or `-test2`. NorBERTo retains its
+`results/norberto-ep1-test1`/`-test2` paths. Each of these entries also declares
+`manifest`, which pins the selected artifact identity before importing saved
+predictions. Full-corpus predictions are rejected even if placed under the
+configured directory name. This check applies to selected members and local
+arbitrators. Default membership is NorBERTo + SVM + RL; Qwen is excluded.
+
+Prepare RL only when needed:
+
+```bash
+bash scripts/rl/train.sh --dry-run
+bash scripts/rl/train.sh
+```
+
+The first command is a read-only preflight; the second performs fixed-C
+training on development only. The [RL guide](../../src/rl_classifier/README.md)
+documents inference and generated artifacts. Training was not executed while changing these defaults. The user
+subsequently completed it, and the exported development model is now verified.
+Prediction outputs for each desired dataset are still a separate step.
 
 ## Seleção do responsável pelo desempate
 
-O parâmetro `tiebreaker`, ou `--tiebreaker` na CLI, define o modelo responsável
-pelos casos encaminhados. O valor padrão é `gpt`. Também são aceitos `qwen`,
-`norberto`, `svm`, `rl` e novos identificadores declarados em `members`.
-Essa seleção é independente da lista `models`.
+`tiebreaker`, or CLI `--tiebreaker`, selects the arbitrator for unresolved
+votes independently of `models`. The shipped configurations select `rl`;
+omitting the field retains the backward-compatible `gpt` fallback. Other
+configured members can be selected explicitly.
 
 Exemplo: `--models qwen norberto --tiebreaker svm` mantém Qwen e NorBERTo
 como membros e usa SVM para resolver suas discordâncias. `--tiebreaker-run`
@@ -244,9 +305,11 @@ excluindo um holdout de 3.999. O Qwen usa 16.010 respostas para treino e 4.082
 para validação. As partições diferentes não impedem a combinação nem exigem
 um novo treinamento. Não é necessário construir uma interseção dos holdouts
 para executar ou avaliar o ensemble fixo em teste1.
-O SVM salvo usa as 16.093 linhas de desenvolvimento; a regressão logística
-definitiva usa as 20.092 linhas originais. Ambos preservam os parâmetros do
-EP1, respectivamente `C=0.05` e `C=0.25`, sem novos ajustes.
+SVM and logistic regression now default to the same frozen 16,093 development
+rows, reserving 3,999 holdout rows. The fixed EP1 parameters remain `C=0.05`
+and `C=0.25`. The development-only RL artifact completed training and verification; its
+fixed recipe can be reproduced using `bash scripts/rl/train.sh` with a new
+output directory. The historical 20,092-row RL is not a fallback.
 
 O protocolo inicial é:
 

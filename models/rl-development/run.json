@@ -1,0 +1,32 @@
+{
+  "status": "completed",
+  "data_partition": "development",
+  "training_rows": 16093,
+  "reserved_holdout_rows": 3999,
+  "training_groups": 12956,
+  "holdout_groups": 3281,
+  "holdout_row_overlap": 0,
+  "holdout_group_overlap": 0,
+  "holdout_used_for_fit": false,
+  "holdout_evaluated": false,
+  "dataset_sha256": "0e9219233664ac675fc47982bbc822acd3bb15d67fb7bfc26b67bec047e46818",
+  "split_sha256": "0f78e7a809c7b7584db05b33cf03a73ff586d5de02ba824c16562d5070d41494",
+  "classifier": {
+    "C": 0.25,
+    "max_iter": 1500,
+    "solver": "lbfgs",
+    "random_state": 42,
+    "tol": 0.0001,
+    "penalty": "l2",
+    "class_weight": null,
+    "fit_intercept": true
+  },
+  "output_dir": "/workspace/models/rl-development",
+  "parameter_search_performed": false,
+  "test_data_accessed": false,
+  "training_performed": true,
+  "artifact_sha256": "05d69e147a10b7c49ebe3893f247e0f23e8d61005aaf4fd7b7eb45845d49a20f",
+  "converged": true,
+  "safe_reload_verified": true,
+  "elapsed_seconds": 25.07699540500107
+}

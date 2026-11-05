@@ -88,8 +88,7 @@ def compare(left: Dataset, right: Dataset) -> dict[str, Any]:
 def audit(ep1_root: Path, ep2_root: Path) -> dict[str, Any]:
     sources = [("ep1_train", ep1_root / "data/train.xlsx", True),
                ("ep1_test1", ep1_root / "data/test1.xlsx", False),
-               ("ep2_train_ep1", ep2_root / "data/train_ep1.xlsx", True),
-               ("ep2_train_ep2", ep2_root / "data/train_ep2.xlsx", True),
+               ("ep2_train", ep2_root / "data/train.xlsx", True),
                ("ep2_test1", ep2_root / "data/test1.xlsx", False),
                ("ep2_test1_gold", ep2_root / "data/test1-rotulado-para-teste-estatistico.xlsx", True),
                ("ep2_test2", ep2_root / "data/test2.xlsx", False)]

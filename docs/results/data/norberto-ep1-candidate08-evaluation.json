@@ -1,0 +1,442 @@
+{
+  "schema_version": 1,
+  "status": "completed",
+  "model": "ep1_cv_winner_final_adapter",
+  "candidate_id": "candidate-08",
+  "cv_mean_accuracy": 0.4373112751528046,
+  "cv_summary_sha256": "c2c46355fd50e0d69644bcbff1a8a5891fb4cb5aac035bb5c9185115cb07e97f",
+  "artifact": "/ep1/artifacts/norberto-lora-grid-final-20260930-130937",
+  "adapter_files_sha256": {
+    "README.md": "28887b85210face620af6b9aa3b6d9ac875fa24b1550e3d82cea0dc08dd06183",
+    "adapter_config.json": "e6820bf981a0637b3764efd57b0db1e9dc4dd36ef2f764737002361499939990",
+    "adapter_model.safetensors": "efdb8ede4ff587fdfd453ba12b2c524a3bf5a53f06170b1d47eea5ff98b53655",
+    "special_tokens_map.json": "ff04ad61d10cbcd7ada89158b41fb665d3c2982a33070da8bbe25c521f58c4c0",
+    "tokenizer.json": "4d94eba9ab0a7d90459ab12fd8125f37ed111bdd4c6a71ebf91a694bcc2ba582",
+    "tokenizer_config.json": "46574f524b36624c9550cbfff31f12a09016aef63af6908dcbf5af3492c25e81",
+    "training_args.bin": "72dd00de18d265074f9505b1c1e53c4c31a5b50a24563d8d9354851faedf1b87"
+  },
+  "source_training_manifest_sha256": "48f20311096c426d72a5c27ad377165ba3e191471ff5f5c959f100d27ba2450d",
+  "training_rows": 16093,
+  "holdout_row_overlap": 0,
+  "holdout_group_overlap": 0,
+  "config": {
+    "description": "Three-fold NorBERTo-512 evaluation on frozen development rows only; reserve the fixed holdout for a later decision and preserve all fold adapters.",
+    "model_name": "Itau-Unibanco/NorBERTo-base",
+    "revision": "db73446f89c96044863ea05a39f680524b84bccb",
+    "max_length": 512,
+    "truncation": "head_tail",
+    "lora_rank": 16,
+    "lora_alpha": 32,
+    "lora_dropout": 0.05,
+    "lora_layers": null,
+    "batch_size": 4,
+    "gradient_accumulation": 4,
+    "eval_batch_size": 8,
+    "learning_rate": 0.0003,
+    "epochs": 3,
+    "patience": 1,
+    "weight_decay": 0.01,
+    "warmup_ratio": 0.1,
+    "fp16": false,
+    "attention": "sdpa",
+    "outer_folds": 3,
+    "inner_folds": 5,
+    "seed": 42,
+    "threads": 2,
+    "train_subset_folds": 1,
+    "budget_minutes": 75,
+    "holdout_split_sha256": "0f78e7a809c7b7584db05b33cf03a73ff586d5de02ba824c16562d5070d41494"
+  },
+  "base": {
+    "model_id": "Itau-Unibanco/NorBERTo-base",
+    "revision": "db73446f89c96044863ea05a39f680524b84bccb",
+    "files_sha256": {
+      "config.json": "698fe516bdf775a11b80bd69b82c01e440ef1b8c2d17b6aa0ff22b9c74a48df9",
+      "model.safetensors": "f632545c4a06a5d053af8ea726b0d0048420929f35d9aade1e3da77e0b057066",
+      "special_tokens_map.json": "14312eab40fcda429ecbe9b548bfdcf18b051c534e12970c6a8e86ae759cd885",
+      "tokenizer.json": "4d94eba9ab0a7d90459ab12fd8125f37ed111bdd4c6a71ebf91a694bcc2ba582",
+      "tokenizer_config.json": "f5488e40f66f1d59c89d9f2eb51392ebc978d4096e3f33c66d30b2cb4b22c2e8"
+    }
+  },
+  "labels": [
+    "c1",
+    "c234",
+    "c5"
+  ],
+  "dataset_sha256": "0e9219233664ac675fc47982bbc822acd3bb15d67fb7bfc26b67bec047e46818",
+  "split_sha256": "0f78e7a809c7b7584db05b33cf03a73ff586d5de02ba824c16562d5070d41494",
+  "training_performed": false,
+  "parameters_selected_using_evaluation": false,
+  "test2_accessed": false,
+  "script_sha256": "0f2f78f3d396472fcc7c1cf89c7de38c34c3233520e1cb420d191e6a5c2d3b79",
+  "runtime_versions": {
+    "torch": "2.8.0+rocm6.4",
+    "transformers": "4.57.1",
+    "peft": "0.17.1",
+    "accelerate": "1.10.1",
+    "numpy": "2.3.3",
+    "scikit-learn": "1.7.2",
+    "openpyxl": "3.1.5"
+  },
+  "evaluations": {
+    "holdout": {
+      "rows": 3999,
+      "tokenization": {
+        "rows": 3999,
+        "truncated_rows": 448,
+        "truncated_fraction": 0.11202800700175043,
+        "median_raw_tokens": 175.0,
+        "p95_raw_tokens": 703.0999999999999,
+        "input_case_preserved": true,
+        "cache_fingerprint": "d33f4add7decf9670510980a5a5a1847b7d6eef982b7631c0f143bd9060e033f"
+      },
+      "inference_seconds": 152.11651458099914,
+      "predictions_sha256": "6d0c063df1ce024ecaa7cef1d218e608fc6babdb57f1797e88c83ea8d3d578d8",
+      "peak_allocated_mib": 954.90625,
+      "metrics": {
+        "rows": 3999,
+        "correct": 1439,
+        "accuracy": 0.3598399599899975,
+        "f1_macro": 0.35309215881791295,
+        "balanced_accuracy": 0.3591154375468438,
+        "label_order": [
+          "c1",
+          "c234",
+          "c5"
+        ],
+        "confusion_matrix": [
+          [
+            332,
+            391,
+            534
+          ],
+          [
+            327,
+            454,
+            636
+          ],
+          [
+            291,
+            381,
+            653
+          ]
+        ],
+        "classification_report": {
+          "c1": {
+            "precision": 0.3494736842105263,
+            "recall": 0.26412092283214,
+            "f1-score": 0.3008608971454463,
+            "support": 1257.0
+          },
+          "c234": {
+            "precision": 0.3703099510603589,
+            "recall": 0.3203952011291461,
+            "f1-score": 0.3435489973514945,
+            "support": 1417.0
+          },
+          "c5": {
+            "precision": 0.35820076796489303,
+            "recall": 0.4928301886792453,
+            "f1-score": 0.414866581956798,
+            "support": 1325.0
+          },
+          "accuracy": 0.3598399599899975,
+          "macro avg": {
+            "precision": 0.3593281344119261,
+            "recall": 0.3591154375468438,
+            "f1-score": 0.35309215881791295,
+            "support": 3999.0
+          },
+          "weighted avg": {
+            "precision": 0.3597483469013862,
+            "recall": 0.3598399599899975,
+            "f1-score": 0.35376076470408874,
+            "support": 3999.0
+          }
+        },
+        "prediction_counts": {
+          "c5": 1823,
+          "c234": 1226,
+          "c1": 950
+        }
+      }
+    },
+    "test1": {
+      "rows": 900,
+      "tokenization": {
+        "rows": 900,
+        "truncated_rows": 83,
+        "truncated_fraction": 0.09222222222222222,
+        "median_raw_tokens": 181.0,
+        "p95_raw_tokens": 628.4499999999996,
+        "input_case_preserved": true,
+        "cache_fingerprint": "622eea359c8565435e0fb89f1ab53e334628ba2910267a1b6bbd719c63478523"
+      },
+      "inference_seconds": 33.744399269000496,
+      "predictions_sha256": "9096cb661738ea19d5a5a878a1cc7260aa915d67a1ba867a85296ded3c9191ee",
+      "peak_allocated_mib": 954.90625,
+      "metrics": {
+        "rows": 900,
+        "correct": 313,
+        "accuracy": 0.3477777777777778,
+        "f1_macro": 0.3430340150733217,
+        "balanced_accuracy": 0.3477777777777778,
+        "label_order": [
+          "c1",
+          "c234",
+          "c5"
+        ],
+        "confusion_matrix": [
+          [
+            72,
+            93,
+            135
+          ],
+          [
+            69,
+            111,
+            120
+          ],
+          [
+            73,
+            97,
+            130
+          ]
+        ],
+        "classification_report": {
+          "c1": {
+            "precision": 0.3364485981308411,
+            "recall": 0.24,
+            "f1-score": 0.2801556420233463,
+            "support": 300.0
+          },
+          "c234": {
+            "precision": 0.3687707641196013,
+            "recall": 0.37,
+            "f1-score": 0.36938435940099834,
+            "support": 300.0
+          },
+          "c5": {
+            "precision": 0.33766233766233766,
+            "recall": 0.43333333333333335,
+            "f1-score": 0.3795620437956204,
+            "support": 300.0
+          },
+          "accuracy": 0.3477777777777778,
+          "macro avg": {
+            "precision": 0.34762723330426004,
+            "recall": 0.3477777777777778,
+            "f1-score": 0.3430340150733217,
+            "support": 900.0
+          },
+          "weighted avg": {
+            "precision": 0.34762723330426004,
+            "recall": 0.3477777777777778,
+            "f1-score": 0.3430340150733217,
+            "support": 900.0
+          }
+        },
+        "prediction_counts": {
+          "c5": 385,
+          "c234": 301,
+          "c1": 214
+        }
+      }
+    }
+  },
+  "device": {
+    "backend": "rocm",
+    "device_name": "AMD Radeon RX 6650 XT",
+    "architecture": "gfx1030",
+    "runtime_version": "6.4.43482-0f2d60242",
+    "torch_version": "2.8.0+rocm6.4",
+    "total_memory_mib": 8176.0
+  },
+  "test1_input_sha256": "e626f030d4bf2be889fc41dd1fe9b81fb31f1f50f3ace50530d658683260449f",
+  "test1_gold_sha256": "c92658298f95b6325a49b017b58673ebda450fa54dc2280d74393cb093378406",
+  "gold_read_after_all_predictions": true,
+  "adapter_unchanged": true,
+  "model_state_sha256_before_and_after": "103b88bbd1221450665b210b285ed38b62c52b81a66fc8676b4fccf489de3800",
+  "optimizer_updates": 0,
+  "elapsed_seconds": 200.63701366500027,
+  "date": "2026-11-05",
+  "source_run": "results/norberto-ep1-candidate08-evaluation-20261105",
+  "scope": "Fresh inference with the preserved candidate-08 final adapter on EP1 holdout and test1; no retraining or evaluation-based selection.",
+  "independent_verification": {
+    "status": "passed",
+    "source_reader": "Independent standard-library ZIP/XML workbook parser",
+    "candidate_id": "candidate-08",
+    "evaluations": {
+      "holdout": {
+        "metrics": {
+          "rows": 3999,
+          "correct": 1439,
+          "accuracy": 0.3598399599899975,
+          "f1_macro": 0.35309215881791295,
+          "balanced_accuracy": 0.3591154375468438,
+          "precision_macro": 0.35932813441192607,
+          "confusion_matrix": [
+            [
+              332,
+              391,
+              534
+            ],
+            [
+              327,
+              454,
+              636
+            ],
+            [
+              291,
+              381,
+              653
+            ]
+          ]
+        },
+        "original_ep1_reference": {
+          "rows": 3999,
+          "correct": 1812,
+          "accuracy": 0.45311327831957987,
+          "f1_macro": 0.45306388603543346,
+          "balanced_accuracy": 0.45312575656314696,
+          "precision_macro": 0.45427319035183755,
+          "confusion_matrix": [
+            [
+              526,
+              436,
+              295
+            ],
+            [
+              370,
+              605,
+              442
+            ],
+            [
+              233,
+              411,
+              681
+            ]
+          ]
+        },
+        "accuracy_delta_vs_original_ep1": -0.09327331832958236,
+        "only_candidate08_correct": 644,
+        "only_original_ep1_correct": 1017,
+        "all_source_texts_gold_row_ids_and_argmax_verified": true,
+        "max_probability_error_vs_float64_softmax": 6.093848359256526e-08,
+        "comparison_csv_sha256": "f36d644ea6fe08011acca71bf8b0aa2992d2bfe741cce23b479dde222350e620",
+        "historical_candidate08_prediction_matches": 3999,
+        "historical_candidate08_max_probability_difference": 2.9641723631179673e-08,
+        "historical_candidate08_metrics": {
+          "rows": 3999,
+          "correct": 1439,
+          "accuracy": 0.3598399599899975,
+          "f1_macro": 0.35309215881791295,
+          "balanced_accuracy": 0.3591154375468438,
+          "precision_macro": 0.35932813441192607,
+          "confusion_matrix": [
+            [
+              332,
+              391,
+              534
+            ],
+            [
+              327,
+              454,
+              636
+            ],
+            [
+              291,
+              381,
+              653
+            ]
+          ]
+        }
+      },
+      "test1": {
+        "metrics": {
+          "rows": 900,
+          "correct": 313,
+          "accuracy": 0.3477777777777778,
+          "f1_macro": 0.3430340150733217,
+          "balanced_accuracy": 0.3477777777777778,
+          "precision_macro": 0.34762723330426004,
+          "confusion_matrix": [
+            [
+              72,
+              93,
+              135
+            ],
+            [
+              69,
+              111,
+              120
+            ],
+            [
+              73,
+              97,
+              130
+            ]
+          ]
+        },
+        "original_ep1_reference": {
+          "rows": 900,
+          "correct": 432,
+          "accuracy": 0.48,
+          "f1_macro": 0.47864643816529084,
+          "balanced_accuracy": 0.48000000000000004,
+          "precision_macro": 0.48319928679545393,
+          "confusion_matrix": [
+            [
+              118,
+              113,
+              69
+            ],
+            [
+              68,
+              155,
+              77
+            ],
+            [
+              54,
+              87,
+              159
+            ]
+          ]
+        },
+        "accuracy_delta_vs_original_ep1": -0.13222222222222219,
+        "only_candidate08_correct": 128,
+        "only_original_ep1_correct": 247,
+        "all_source_texts_gold_row_ids_and_argmax_verified": true,
+        "max_probability_error_vs_float64_softmax": 6.586469802893902e-08,
+        "comparison_csv_sha256": "b228f5e343e66221bbf674f963ba6998989262f0a7a2c491188c7d2d842cb2ca"
+      }
+    },
+    "all_adapter_and_prediction_checksums_verified": true,
+    "training_holdout_group_overlap": 0,
+    "script_sha256": "55b26d8893db284eb513eea3e41a86fc8b79ae0d7ce208e34e540e9125db5735"
+  },
+  "validation_checks": {
+    "targeted_tests_passed": 6,
+    "elapsed_seconds": 1.06,
+    "coverage": "Saved-prediction integrity, label/text/row alignment, rejection of changed gold, paired counts, historical 432/900 reference."
+  },
+  "raw_manifests_sha256": {
+    "evaluation/run.json": "3930deaa337d1cf9808e9dbc903f0327fbcfe38362a64384bc4200388983ec4f",
+    "independent-verification.json": "b8c755ba71b7c45f0b5cd4de5e171dc0849fc2e77ae538953b0235fcae058ed4"
+  },
+  "limitations": [
+    "Winner is the final adapter trained on complete development, not a single fold checkpoint.",
+    "The historical holdout and development CV were consulted in previous research; results remain exploratory.",
+    "Higher mean CV accuracy did not generalize to this final adapter on holdout or test1.",
+    "No test2 evaluation or model promotion was performed."
+  ],
+  "inference_implementation_sha256": {
+    "../EP1/src/clarity/finetune.py": "0c8e4c04b3becc626c31a50e3827daef3cd708252905824dcd9e4c4fb439ee4a",
+    "../EP1/src/clarity/finetune_predict.py": "6d70e32f1240e0fb2df927fef56cdb88f781aec1c067f4519ea3deb8e64279f2",
+    "../EP1/src/clarity/finetune_final.py": "de43828047e610f52fb7a9024090ca2fb08eb8fa19b3bd2c5c92e2a74223fe4f",
+    "src/norberto_logistic/encoder.py": "a117ffde49f6e1457de5080bcec1fc8e6da107304b1e4bae341d43604f48f8ea",
+    "src/norberto_logistic/training.py": "b91931affca34c2e9d108a647234cf3063183db2f587671d2a8720203a9c43f0",
+    "src/gpt_classifier/data.py": "4e99c8c28bcc1062dd2b5259df48b4dc7d70b83c3e7e48e32a45129f6e1a9521",
+    "src/gpt_classifier/evaluation.py": "1cd92eb5e0a7cf2920ec7d75fd844adc21fc15edf861c93dccc9b64c76873783"
+  }
+}

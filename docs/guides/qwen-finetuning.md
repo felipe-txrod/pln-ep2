@@ -118,7 +118,7 @@ Prepare os pesos públicos, o diagnóstico numérico e a partição agrupada:
 bash scripts/qwen/container.sh download --config configs/qwen.json
 bash scripts/qwen/container.sh probe --output results/qwen-probe-new.json
 bash scripts/qwen/container.sh prepare --config configs/qwen.json \
-  --input data/train_ep2.xlsx --output-dir results/qwen-prepared-new
+  --input data/train.xlsx --output-dir results/qwen-prepared-new
 ```
 
 Antes de um treino completo, o teste do modelo executa duas atualizações,

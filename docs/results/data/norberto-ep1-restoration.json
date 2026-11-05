@@ -1,0 +1,174 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-05",
+  "status": "completed",
+  "decision": "Use the unchanged original EP1 delivery adapter; retire experimental NorBERTo loss corrections, refits and convex-head workflows.",
+  "selected_model": "models/norberto",
+  "adapter_sha256": "d693f6e2995d117ad04a5692817527764fcccee6bfb2dde99120baf9fdd2d385",
+  "artifact_manifest_sha256": "d5f7b0f8a18bc216c72fb0dc67e4de68ba89f343b99dc4b1e9546290431fd5fe",
+  "base_revision": "db73446f89c96044863ea05a39f680524b84bccb",
+  "training_rows": 16093,
+  "training_epochs": 2,
+  "inference_implementation_changed": false,
+  "model_weights_changed": false,
+  "training_performed": false,
+  "selected_test1_run": "results/norberto-ep1-test1",
+  "selected_test2_run": "results/norberto-ep1-test2",
+  "test2_prediction_performed": false,
+  "test2_delivery_performed": false,
+  "selection_identity_field": "artifact_manifest_sha256",
+  "independent_verification": {
+    "status": "passed",
+    "selected_model": "unchanged_ep1_delivery_adapter",
+    "source_reader": "Independent standard-library ZIP/XML workbook parser",
+    "rows_verified": 900,
+    "all_labels_identical_to_ep1_delivery": true,
+    "adapter_sha256": "d693f6e2995d117ad04a5692817527764fcccee6bfb2dde99120baf9fdd2d385",
+    "adapter_tokenizer_and_config_match_original_ep1": true,
+    "maximum_probability_difference_from_ep1": 8.593978884086084e-08,
+    "metrics": {
+      "correct": 432,
+      "accuracy": 0.48,
+      "f1_macro": 0.47864643816529084,
+      "confusion_matrix": [
+        [
+          118,
+          113,
+          69
+        ],
+        [
+          68,
+          155,
+          77
+        ],
+        [
+          54,
+          87,
+          159
+        ]
+      ]
+    },
+    "prediction_sha256": "46970eb4caf18474a686d38b50ecd1d5b35551b8768b2d4cc857b88eefe0d8f1",
+    "script_sha256": "2f553fd132052c3901f707724e9e5cce2e712b3fc076f90a81be67ac075a029f",
+    "training_performed": false,
+    "test2_accessed": false
+  },
+  "historical_holdout": {
+    "rows": 3999,
+    "correct": 1812,
+    "accuracy": 0.45311327831957987,
+    "new_inference_performed": false
+  },
+  "inference_seconds": 48.93567958800122,
+  "tests": {
+    "targeted_passed": 11,
+    "targeted_elapsed_seconds": 1.17,
+    "available_suite_passed": 115,
+    "available_suite_elapsed_seconds": 22.72,
+    "excluded_optional_modules": [
+      "test_backend_pipeline.py",
+      "test_study_cli.py"
+    ],
+    "excluded_dependency": "openai"
+  },
+  "retired_source_files_sha256": {
+    "src/norberto_classifier/training_loss.py": "1c35394b7b68dac274342370dd2989fb1161dbb356083f56af4251ca1e2070ea",
+    "src/norberto_classifier/training_recipe.py": "f50c8fa3686946fdf3bbeb72d14599185f7c543465d41de12e631cd6545479e6",
+    "src/norberto_classifier/partitions.py": "e5ba584754f894795dd7b8d130d3d960f323c9d8243b17325261872247e0d4d1",
+    "configs/norberto-frozen-logistic.json": "8db1dda43dd45e8d2fa925fdf79b5ea1e1af9a465aea2fff6094faf78e59b64d",
+    "scripts/train-norberto-full.py": "3f52656cc678d7fef738e0bfdb4580d20184ae7dc8d5f66a3a45a1d95f2238aa",
+    "scripts/train-norberto-full.sh": "7b441651c465e8df4b8ed8ec3ac15bf4f1eaa5e6f29dfe46a5eca35d510836f5",
+    "scripts/norberto/train.sh": "8f73ae7479145d30e5850c9e335474c9a989daaa3c384cdf18bc9db1ba2cf451",
+    "scripts/norberto/evaluate-holdout.py": "c1657cc8a02a57b04c46d3732cd746f022b28d16b04e889bbb9470007c8eef24",
+    "scripts/norberto/frozen-logistic.sh": "be2e29682525b87ca12c21f6a7661be5059772216a990d86add57decb2044d6d",
+    "scripts/norberto/evaluate-frozen-holdout.py": "8c039028bb0ddfb3b61c473ed2537f87671c28856e68f9b1d802d1ffb2379cd2",
+    "scripts/norberto/evaluate-ep1-winner.py": "0f2f78f3d396472fcc7c1cf89c7de38c34c3233520e1cb420d191e6a5c2d3b79",
+    "tests/test_norberto_training_loss.py": "63283fca6e2172071c627c090ef4211dbe39e067d5678db7a21be256a28d8b77",
+    "tests/test_norberto_training_recipe.py": "5966eaad8eb74e408bfd9cc84ed00a3f2a974acd8d27abe563661d400121c2a5",
+    "tests/test_norberto_partitions.py": "a9e32da36a1a582f344378927edfc84c39e04275f08b78f2b4967d067b801aa3",
+    "tests/test_norberto_training_scale.py": "9d1590619aadfe26a809cf5a2fc9fc95375bf490531711a09959b8f8bf84b8a1",
+    "tests/test_norberto_logistic.py": "b383d690ee814e796e4c7f0ba467711662915de06fef20412e7cda0dc07fb1af",
+    "src/norberto_logistic/README.md": "b5cbc081b7ef73a47f9f24418bf590b72a078a3b2f0899a69acdebbe5ff69322",
+    "src/norberto_logistic/__init__.py": "85c8ff76e9ba457a63824b742b242296e19da293729c8950aaf8c9c5879c27f3",
+    "src/norberto_logistic/__main__.py": "ed5f787f76c29feae031f4395350a7ddb1fd69df0fe83ac91203d8bea3a99d8e",
+    "src/norberto_logistic/cli.py": "cab100a3475d0ee5834374e9433080125aa10a8bc24c4faf56f1e7b4b25355a9",
+    "src/norberto_logistic/config.py": "089e53406af5c1aa22262bdff4ae01f720c021799f6c35fda7226eefd43bd010",
+    "src/norberto_logistic/encoder.py": "a117ffde49f6e1457de5080bcec1fc8e6da107304b1e4bae341d43604f48f8ea",
+    "src/norberto_logistic/head.py": "6660e8aaed4f4a2afce6123e2728e73acc37fcbc627d66d672b12d96c8c62919",
+    "src/norberto_logistic/inference.py": "878652c5ed4ecb21e6a539c2f1c87a94b9bd18ad823aedc06ae4b01dfb955adc",
+    "src/norberto_logistic/protocol.py": "56a5ee98a2615a128cfcae053db2b76d42e750877aa62fe1a7074890bf7e00bd",
+    "src/norberto_logistic/training.py": "b91931affca34c2e9d108a647234cf3063183db2f587671d2a8720203a9c43f0",
+    "scripts/diagnostics/norberto/audit-backends.py": "9589df542e3f9b57d8eccebffe3dcdef818f97f27580486a539aec750b428060",
+    "scripts/diagnostics/norberto/audit-optimizer.py": "09dfc3f70dea08c30ad68e542a90434b3b5913e58f136f391ca3ff2b62c6527e",
+    "scripts/diagnostics/norberto/audit-sensitivity.py": "5d47ec4597a6cb7c759191d14e137c3371963bebd3dccd7d6c3e3f4b05178a71",
+    "scripts/diagnostics/norberto/audit-training-scale.py": "63ff831f529f2aaf673da0622026ff0f996c9732d08e66c276337e77c5e535d4",
+    "scripts/diagnostics/norberto/diagnose-training.py": "98b8db01ca578957220df0005b82bc76832091a663e05cb46c5f65d442d28c12",
+    "scripts/diagnostics/norberto/probe-stability.py": "b47adf6323ae50d0650bfe9434e10c4f34c38f6dd5abe0f970dd0fa8aaada726",
+    "scripts/diagnostics/norberto/probe-training-prefix.py": "94c5e22230116d17b5ab57c7564baa03f9e3d145602726215388d6feac638053",
+    "scripts/diagnostics/norberto/trace-training-prefix.py": "b3cd35860773151f6ed648803e3c740f82962b927078863522b9db87115dac2a"
+  },
+  "local_source_backup": "results/norberto-rollback-20261105/sources-before-rollback.tar.gz",
+  "local_verification_run": "results/norberto-rollback-20261105",
+  "historical_results_adapters_and_caches_preserved": true,
+  "rollback_method": "Targeted source retirement and command/configuration updates; unrelated commits and classifiers preserved.",
+  "raw_artifacts_sha256": {
+    "retired-files.json": "db3c079a0a5482b2435ce43fb97e6a481ba99331b793a04b146e728c9c28ec92",
+    "sources-before-rollback.tar.gz": "6d96de3727151538b3c2c303e3818f04b1d4e6ce4f2f6340c86ac50df112aec5",
+    "independent-verification.json": "7e4f481205147532e30254bc57788816b1865334b6c91eee193173b710f7de0a",
+    "test1/run.json": "485a01168faa0a68e8975f71dfeb74796ba4e8d5fe4414657c5245a2f9d2e54b",
+    "test1/predictions.jsonl": "46970eb4caf18474a686d38b50ecd1d5b35551b8768b2d4cc857b88eefe0d8f1",
+    "test1-metrics/run.json": "032407ab036f2172fd42b8372c81347da9dc37cb9f7d96780f7c9285aeec8459",
+    "selection-verification.json": "ab19307fb5b4c4bc82db0c7254599fc9b06c5b6caaf076ac7e67318a97925a3e"
+  },
+  "unchanged_inference_sources_sha256": {
+    "src/norberto_classifier/inference.py": "67b56f425ab849d99c7bcfe9b6129984b41e5e0eb3b6a85204345556305acf3b",
+    "src/norberto_classifier/tokenization.py": "0763eb125d6075fed15927362c990d0d835013d885fc76ca59a2635a8494a0ae",
+    "src/norberto_classifier/frozen_manifest.json": "d5f7b0f8a18bc216c72fb0dc67e4de68ba89f343b99dc4b1e9546290431fd5fe"
+  },
+  "ensemble_selection_verification": {
+    "status": "passed",
+    "rows": 900,
+    "selected_run": "results/norberto-ep1-test1",
+    "original_model_identity_verified": true,
+    "torch_loaded": false,
+    "remote_calls_performed": false,
+    "provenance": {
+      "identity": {
+        "field": "artifact_manifest_sha256",
+        "sha256": "d5f7b0f8a18bc216c72fb0dc67e4de68ba89f343b99dc4b1e9546290431fd5fe",
+        "config": {
+          "description": "Three-fold NorBERTo-512 evaluation on frozen development rows only; reserve the fixed holdout for a later decision and preserve all fold adapters.",
+          "model_name": "Itau-Unibanco/NorBERTo-base",
+          "revision": "db73446f89c96044863ea05a39f680524b84bccb",
+          "max_length": 512,
+          "truncation": "head_tail",
+          "lora_rank": 4,
+          "lora_alpha": 8,
+          "lora_dropout": 0.05,
+          "lora_layers": null,
+          "batch_size": 4,
+          "gradient_accumulation": 4,
+          "eval_batch_size": 8,
+          "learning_rate": 0.001,
+          "epochs": 3,
+          "patience": 1,
+          "weight_decay": 0.01,
+          "warmup_ratio": 0.1,
+          "fp16": false,
+          "attention": "sdpa",
+          "outer_folds": 3,
+          "inner_folds": 5,
+          "seed": 42,
+          "threads": 2,
+          "train_subset_folds": 1,
+          "budget_minutes": 75,
+          "holdout_split_sha256": "0f78e7a809c7b7584db05b33cf03a73ff586d5de02ba824c16562d5070d41494"
+        },
+        "artifact_manifest_sha256": "d5f7b0f8a18bc216c72fb0dc67e4de68ba89f343b99dc4b1e9546290431fd5fe",
+        "implementation_sha256": null
+      },
+      "run_sha256": "485a01168faa0a68e8975f71dfeb74796ba4e8d5fe4414657c5245a2f9d2e54b",
+      "predictions_sha256": "46970eb4caf18474a686d38b50ecd1d5b35551b8768b2d4cc857b88eefe0d8f1"
+    }
+  }
+}

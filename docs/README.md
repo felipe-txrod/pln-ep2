@@ -12,9 +12,8 @@ Executable entry points are listed in the [script index](../scripts/README.md).
 
 | Subject | Document |
 |---|---|
-| Current NorBERTo training recipe, full corpus, and frozen development split | [Training](guides/norberto-training.md) |
+| Selected unchanged EP1 delivery adapter and offline inference | [Original NorBERTo](../src/norberto_classifier/README.md) |
 | NorBERTo prediction and separate CPU scoring on test1 | [Test1 workflow](guides/norberto-test1.md) |
-| Why recipe 3 preserves clipping and AdamW gradient units | [Optimizer compatibility](guides/norberto-optimizer-units.md) |
 | Qwen installation, ROCm compatibility, QLoRA, training, and inference | [Qwen fine-tuning](guides/qwen-finetuning.md) |
 | Classifier selection, prediction contracts, and tie-breaking | [Ensemble](guides/ensemble.md) |
 | Frozen SVM, logistic regression, NorBERTo, and GPT configuration | [Model artifacts](../models/README.md) |
@@ -42,6 +41,6 @@ public aggregates are under [`docs/results/data/`](results/data/).
 ## Archive
 
 The **[archive index](archive/README.md)** groups earlier GPT/Codex studies and
-NorBERTo recipes 1–2, regression investigations, and diagnostics. These records
+retired NorBERTo recipes, logistic variants, regression investigations, and diagnostics. These records
 retain their original results and limitations; their commands are historical
 references rather than the default workflow.

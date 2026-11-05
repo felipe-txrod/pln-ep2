@@ -26,7 +26,21 @@ Historical records are retained for traceability. Use the
 | [Regression investigation](norberto/regression-investigation.md) | Data, tokenizer, training arguments, and loss-normalization checks |
 | [Optimizer and backend audit](norberto/instability-audit.md) | CPU/GPU gradients, finite differences, and first-attention localization |
 
-The [recipe-3 correction](../guides/norberto-optimizer-units.md) and its
+The unchanged original EP1 delivery adapter was selected on 2026-11-05.
+Experimental training corrections, diagnostic implementations, the convex-head
+variant, and their launchers were removed from the active code. Historical
+results, adapters, and caches remain intact. A local source backup and removed
+file hashes are in `results/norberto-rollback-20261105/`.
+
+| Retired workflow | Record |
+|---|---|
+| Recipe-3 training | [Historical training guide](norberto/recipe3-training.md) |
+| Optimizer-unit correction | [Historical implementation](norberto/recipe3-optimizer-units.md) |
+| Shared-training-sample and prefix audits | [Measured diagnostic results](norberto/recipe3-scale-audit.md) |
+| Frozen encoder with logistic head | [Historical workflow and CV](norberto/frozen-logistic.md) |
+| Candidate-08 final-adapter evaluation | [Historical evaluation](norberto/candidate08-evaluation.md) |
+
+The [recipe-3 correction](norberto/recipe3-optimizer-units.md) and its
 [holdout evaluation](../results/norberto-recipe3-holdout.md) describe the
 subsequent optimizer-compatible implementation. Public aggregates for both
 current and archived experiments remain in [`results/data/`](../results/data/).

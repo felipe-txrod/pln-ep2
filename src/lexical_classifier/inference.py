@@ -58,7 +58,8 @@ class Prediction:
 class FrozenLexicalClassifier:
     """CPU-only, lazy inference for one hash-pinned classical artifact."""
 
-    def __init__(self, manifest_path: Path, artifact: Path | None = None, *, threads: int = 2):
+    def __init__(self, manifest_path: Path, artifact: Path | None = None, *, threads: int = 2,
+                 bundle_dir: Path | None = None):
         if type(threads) is not int or threads < 1:
             raise ValueError("threads must be a positive integer.")
         self.manifest_path = manifest_path
@@ -66,10 +67,11 @@ class FrozenLexicalClassifier:
         kind = self.manifest["model_type"]
         if kind not in {"svm", "rl"} or self.manifest["labels"] != list(LABELS):
             raise ValueError("Unsupported frozen lexical contract.")
-        bundle_dir = os.environ.get(f"{kind.upper()}_BUNDLE_DIR")
+        configured_bundle = os.environ.get(f"{kind.upper()}_BUNDLE_DIR")
         project = Path(__file__).resolve().parents[2]
         published = project / "models" / kind
-        root = (Path(bundle_dir).expanduser() if bundle_dir else
+        root = (Path(bundle_dir).expanduser() if bundle_dir is not None else
+                Path(configured_bundle).expanduser() if configured_bundle else
                 published if (published / "manifest.json").is_file() else
                 project / "artifacts" / f"{kind}-ep1")
         configured = os.environ.get(f"{kind.upper()}_ARTIFACT_PATH")

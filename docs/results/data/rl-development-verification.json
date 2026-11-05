@@ -1,0 +1,36 @@
+{
+  "status": "passed",
+  "training_completed": true,
+  "training_rows_verified": 16093,
+  "reserved_holdout_rows": 3999,
+  "training_groups": 12956,
+  "holdout_groups": 3281,
+  "group_overlap": 0,
+  "all_training_row_text_hashes_and_labels_verified": true,
+  "model_and_metadata_hashes_verified": true,
+  "default_rl_loader_verified": true,
+  "ensemble_manifest_selection_verified": true,
+  "synthetic_inference_rows": 3,
+  "iterations": [
+    38
+  ],
+  "training_seconds": 25.07699540500107,
+  "artifact_sha256": "05d69e147a10b7c49ebe3893f247e0f23e8d61005aaf4fd7b7eb45845d49a20f",
+  "real_data_scoring_performed": false,
+  "new_training_performed": false,
+  "test1_or_test2_accessed": false,
+  "schema_version": 1,
+  "date": "2026-11-05",
+  "model_bundle": "models/rl-development",
+  "source_run": "results/rl-development-verification-20261105",
+  "runtime_versions": {
+    "numpy": "2.3.3",
+    "scipy": "1.16.2",
+    "scikit-learn": "1.7.2",
+    "joblib": "1.5.2"
+  },
+  "training_row_identities_sha256": "86f66aa6572e11f173c24a0b3b00c5489c044c8d1cce4763c2a0224e65baeee5",
+  "raw_verification_sha256": "657fe27df1843221ff9fd19260b12783691db9b26098b0ebd454935bd55ee642",
+  "training_manifest_sha256": "976d301c55b74320f84fcdd604ab6dd7de1322d9ba424fd290a23548bcddabf1",
+  "real_evaluation_status": "Not scored on holdout, test1, or test2; synthetic inference only."
+}

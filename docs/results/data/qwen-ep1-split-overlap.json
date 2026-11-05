@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-05",
+  "status": "verified",
+  "source_rows": 20092,
+  "source_dataset_sha256": "0e9219233664ac675fc47982bbc822acd3bb15d67fb7bfc26b67bec047e46818",
+  "ep1": {
+    "development_rows": 16093,
+    "holdout_rows": 3999,
+    "grouping": "Frozen similarity components"
+  },
+  "qwen": {
+    "training_rows": 16010,
+    "validation_rows": 4082,
+    "grouping": "StratifiedGroupKFold over HTML-unescaped, whitespace-normalized lowercase text",
+    "seed": 42,
+    "fold": 0,
+    "folds": 5
+  },
+  "overlap": {
+    "reserved_by_both": 771,
+    "ep1_holdout_used_for_qwen_training": 3228,
+    "qwen_validation_used_for_ep1_training": 3311,
+    "trained_by_both": 12782,
+    "reserved_union": 7310,
+    "ep1_holdout_fraction_also_qwen_validation": 0.19279819954988747,
+    "qwen_validation_fraction_also_ep1_holdout": 0.1888780009799118,
+    "holdout_jaccard": 0.10547195622435021,
+    "matrix_ep1_development_holdout_by_qwen_training_validation": [
+      [
+        12782,
+        3311
+      ],
+      [
+        3228,
+        771
+      ]
+    ]
+  },
+  "grouping_difference": {
+    "qwen_normalized_exact_text_group_overlap": 0,
+    "ep1_similarity_components_crossing_qwen_training_validation": 301,
+    "qwen_validation_rows_in_crossing_ep1_components": 798,
+    "interpretation": "Qwen enforces exact normalized-text separation, not the broader EP1 similarity-component separation."
+  },
+  "implication": "EP1 holdout is not fully unseen by the current Qwen or ensemble; test1 remains the common external evaluation. Aligned training partitions would require a new Qwen training run.",
+  "source_sha256": {
+    "results/qwen-fast-training/data/split.json": "d0cdead64e43e11b8603abcda6c089aea5c3702ac23911a0bd0f5a4bc39b14a2",
+    "results/qwen-fast-training/data/train.jsonl": "9b44f459ddfc4ebb366dafd979e3272aebc49b89410ccb230185c991d3165b3c",
+    "results/qwen-fast-training/data/validation.jsonl": "147d82da058832896759cec24a49013b091d4b256d3ab7d75701d43320a563ba",
+    "../EP1/results/research/dataset-hypotheses-20260923/splits.csv": "0f78e7a809c7b7584db05b33cf03a73ff586d5de02ba824c16562d5070d41494"
+  },
+  "training_performed": false,
+  "model_inference_performed": false,
+  "models_or_defaults_changed": false,
+  "test1_or_test2_accessed": false
+}

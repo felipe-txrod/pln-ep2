@@ -52,8 +52,7 @@ As 900 previsões realmente entregues em `../EP1/deliveries/test1.xlsx` acertam
 
 | Base | Linhas | Distribuição |
 |---|---:|---|
-| train_ep1.xlsx | 20.092 | c1=6.347; c234=6.853; c5=6.892 |
-| train_ep2.xlsx | 20.092 | mesmos valores e mesma ordem de train_ep1 |
+| train.xlsx | 20.092 | c1=6.347; c234=6.853; c5=6.892 |
 | teste1 rotulado | 900 | 300 por classe |
 | teste2 | 897 | clarity vazia |
 

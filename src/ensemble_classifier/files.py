@@ -99,6 +99,19 @@ def member_run(specification: dict[str, str], records: list[Text], source_sha256
     artifact = metadata.get(identity_field) if identity_field else None
     if not isinstance(artifact, str) or not re.fullmatch(r"[0-9a-f]{64}", artifact):
         raise ValueError(f"Member run lacks a usable immutable model identity: {root}")
+    selected_manifest_digest = None
+    if "manifest" in specification:
+        selected_manifest = Path(specification["manifest"])
+        selected_manifest_digest = file_digest(selected_manifest)
+        contract = read_json(selected_manifest)
+        if identity_field == "artifact_manifest_sha256":
+            expected = selected_manifest_digest
+        elif identity_field == "artifact_sha256":
+            expected = contract.get("artifact_sha256")
+        else:
+            raise ValueError("A selected manifest requires an artifact or artifact-manifest identity.")
+        if artifact != expected:
+            raise ValueError(f"Member predictions differ from the selected model manifest: {root}")
     rows = read_predictions(predictions_path)
     if labels is None and any(isinstance(row.get(field), list) for row in rows
                               for field in ("probabilities", "logits")):
@@ -123,7 +136,9 @@ def member_run(specification: dict[str, str], records: list[Text], source_sha256
     align(records, rows)
     for row in rows:
         validate_scores(row, labels or list(LABELS))
-    if file_digest(metadata_path) != metadata_digest or file_digest(predictions_path) != predictions_digest:
+    if (file_digest(metadata_path) != metadata_digest or file_digest(predictions_path) != predictions_digest
+            or (selected_manifest_digest is not None
+                and file_digest(Path(specification["manifest"])) != selected_manifest_digest)):
         raise ValueError(f"Member files changed during import: {root}")
     provenance = {"identity": {"field": identity_field, "sha256": artifact,
                                "config": metadata.get("config"),
@@ -131,4 +146,6 @@ def member_run(specification: dict[str, str], records: list[Text], source_sha256
                                "implementation_sha256": metadata.get("implementation_sha256")},
                   "run_sha256": metadata_digest,
                   "predictions_sha256": predictions_digest}
+    if selected_manifest_digest is not None:
+        provenance["identity"]["selected_manifest_sha256"] = selected_manifest_digest
     return rows, provenance

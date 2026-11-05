@@ -1,0 +1,468 @@
+{
+  "status": "completed",
+  "training_data_only": true,
+  "test_data_accessed": false,
+  "optimizer_updates": 0,
+  "model_promotion_performed": false,
+  "accelerator": {
+    "backend": "rocm",
+    "device_name": "AMD Radeon RX 6650 XT",
+    "architecture": "gfx1030",
+    "runtime_version": "6.4.43482-0f2d60242",
+    "torch_version": "2.8.0+rocm6.4",
+    "total_memory_mib": 8176.0
+  },
+  "dataset_sha256": "0e9219233664ac675fc47982bbc822acd3bb15d67fb7bfc26b67bec047e46818",
+  "script_sha256": "3f30ea6d65bbc8c601942d5b8b50aa3ba455f8e809ccf32ea1e0a2c2e1cb964f",
+  "training_manifest_sha256": {
+    "development": "331c172a8b909bbfbe41d09c2678bd4331af66ae7a801c57ae211f550a5f9000",
+    "full": "42d562b530ccba9107d309719876cc3f6ed783d460e047a87669952f51fe874c"
+  },
+  "selection_sha256": "e30559ee6e94e96159266e9bad773d5ad69699230e80e48f4a63d4b77a250b49",
+  "coverage": {
+    "shared_rows": 16093,
+    "added_rows": 3999,
+    "cached_tokens_identical_on_all_shared_rows": true,
+    "fresh_tokenization_matches_all_full_rows": true,
+    "fresh_tokenization": {
+      "rows": 20092,
+      "truncated_rows": 2192,
+      "input_case_preserved": true,
+      "max_length": 512,
+      "truncation": "head_tail"
+    },
+    "cache_sha256": {
+      "development": "dda7d4422d1a8a799629647317c190f079a8cf2b7a269438e64dd2ec54666821",
+      "full": "7a718f0b47682f0b18786bc0a5ef9f26b800a04e62959969ddf2773f62e24dfc"
+    }
+  },
+  "history": {
+    "development": {
+      "updates": 2012,
+      "warmup_updates": 202,
+      "peak_logged_optimizer_gradient": {
+        "loss": 1.151,
+        "grad_norm": 22.58406639099121,
+        "learning_rate": 0.0008469613259668509,
+        "epoch": 0.47713717693836977,
+        "step": 480
+      },
+      "first_logged_sample_norm_over_25": null,
+      "half_epoch_intervals": [
+        {
+          "epoch_start": 0,
+          "epoch_end": 0.5,
+          "logged_samples": 25,
+          "mean_loss": 1.124204,
+          "mean_sample_gradient_norm": 2.877024393081665,
+          "max_sample_gradient_norm": 5.646016597747803
+        },
+        {
+          "epoch_start": 0.5,
+          "epoch_end": 1,
+          "logged_samples": 25,
+          "mean_loss": 1.084968,
+          "mean_sample_gradient_norm": 2.023505153656006,
+          "max_sample_gradient_norm": 4.476675510406494
+        },
+        {
+          "epoch_start": 1,
+          "epoch_end": 1.5,
+          "logged_samples": 25,
+          "mean_loss": 1.048428,
+          "mean_sample_gradient_norm": 1.859240674972534,
+          "max_sample_gradient_norm": 3.2343525886535645
+        },
+        {
+          "epoch_start": 1.5,
+          "epoch_end": 2,
+          "logged_samples": 25,
+          "mean_loss": 1.028752,
+          "mean_sample_gradient_norm": 2.0318306398391726,
+          "max_sample_gradient_norm": 2.919264078140259
+        }
+      ],
+      "log_scope": "Every 20 updates; norms precede clipping."
+    },
+    "full": {
+      "updates": 2512,
+      "warmup_updates": 252,
+      "peak_logged_optimizer_gradient": {
+        "loss": 1.2581,
+        "grad_norm": 1196.8634033203125,
+        "learning_rate": 0.0006163716814159292,
+        "epoch": 0.891897272546287,
+        "step": 1120
+      },
+      "first_logged_sample_norm_over_25": {
+        "loss": 1.1693,
+        "grad_norm": 1090.9871826171875,
+        "learning_rate": 0.0006252212389380532,
+        "epoch": 0.8759705355365319,
+        "step": 1100
+      },
+      "half_epoch_intervals": [
+        {
+          "epoch_start": 0,
+          "epoch_end": 0.5,
+          "logged_samples": 31,
+          "mean_loss": 1.1162387096774193,
+          "mean_sample_gradient_norm": 3.897906464915122,
+          "max_sample_gradient_norm": 15.64263916015625
+        },
+        {
+          "epoch_start": 0.5,
+          "epoch_end": 1,
+          "logged_samples": 31,
+          "mean_loss": 1.1009967741935485,
+          "mean_sample_gradient_norm": 26.53910953767838,
+          "max_sample_gradient_norm": 299.2158508300781
+        },
+        {
+          "epoch_start": 1,
+          "epoch_end": 1.5,
+          "logged_samples": 32,
+          "mean_loss": 1.122346875,
+          "mean_sample_gradient_norm": 7.954521909356117,
+          "max_sample_gradient_norm": 56.80607604980469
+        },
+        {
+          "epoch_start": 1.5,
+          "epoch_end": 2,
+          "logged_samples": 31,
+          "mean_loss": 1.1004967741935483,
+          "mean_sample_gradient_norm": 4.332840896421863,
+          "max_sample_gradient_norm": 9.699346542358398
+        }
+      ],
+      "log_scope": "Every 20 updates; norms precede clipping."
+    }
+  },
+  "results": {
+    "development": {
+      "adapter_weights_sha256": "641760227c2d5862f56fa3251d7e8722422a37d4de30a76d0623dbe52325e04c",
+      "weights_unchanged": true,
+      "backends": {
+        "cpu_sdpa": {
+          "loss": 0.8098053336143494,
+          "gradient_norm": 1.6041808974757208,
+          "first_attention_gradient_energy_fraction": 0.1273853489812774,
+          "relative_gradient_difference_from_cpu_sdpa": 0.0,
+          "max_logit_difference_from_cpu_sdpa": 0.0
+        },
+        "cpu_eager": {
+          "loss": 0.8098052144050598,
+          "gradient_norm": 1.6041804795646333,
+          "first_attention_gradient_energy_fraction": 0.1273854251012268,
+          "relative_gradient_difference_from_cpu_sdpa": 3.1827055408939486e-06,
+          "max_logit_difference_from_cpu_sdpa": 1.7136335372924805e-06
+        },
+        "cuda_sdpa": {
+          "loss": 0.8098050951957703,
+          "gradient_norm": 1.604181280302268,
+          "first_attention_gradient_energy_fraction": 0.12738519977920745,
+          "relative_gradient_difference_from_cpu_sdpa": 1.002872159006074e-05,
+          "max_logit_difference_from_cpu_sdpa": 4.1425228118896484e-06
+        }
+      },
+      "temporary_attention_lora_ablations": {
+        "0": {
+          "loss": 0.8638280034065247,
+          "gradient_norm": 1.785380397227184
+        },
+        "21": {
+          "loss": 0.8169078230857849,
+          "gradient_norm": 1.701926824358375
+        }
+      },
+      "shared_training_sample": {
+        "rows": 300,
+        "correct": 156,
+        "accuracy": 0.52,
+        "cross_entropy": 0.9862439815203349,
+        "prediction_counts": {
+          "c234": 111,
+          "c5": 93,
+          "c1": 96
+        },
+        "confusion_matrix": [
+          [
+            56,
+            26,
+            18
+          ],
+          [
+            27,
+            49,
+            24
+          ],
+          [
+            13,
+            36,
+            51
+          ]
+        ]
+      }
+    },
+    "full": {
+      "adapter_weights_sha256": "f73a255a225ded43d7dba8d1ecb8d0774b88dc59d823a4f966f3b2c43416bf7c",
+      "weights_unchanged": true,
+      "backends": {
+        "cpu_sdpa": {
+          "loss": 1.1043063402175903,
+          "gradient_norm": 1.6387838809254207,
+          "first_attention_gradient_energy_fraction": 0.052927575337945516,
+          "relative_gradient_difference_from_cpu_sdpa": 0.0,
+          "max_logit_difference_from_cpu_sdpa": 0.0
+        },
+        "cpu_eager": {
+          "loss": 1.1043065786361694,
+          "gradient_norm": 1.638783657890518,
+          "first_attention_gradient_energy_fraction": 0.05292758741810383,
+          "relative_gradient_difference_from_cpu_sdpa": 1.1091309488620027e-06,
+          "max_logit_difference_from_cpu_sdpa": 5.364418029785156e-07
+        },
+        "cuda_sdpa": {
+          "loss": 1.1043063402175903,
+          "gradient_norm": 1.6387850020923458,
+          "first_attention_gradient_energy_fraction": 0.05292744025160596,
+          "relative_gradient_difference_from_cpu_sdpa": 3.953814029955538e-06,
+          "max_logit_difference_from_cpu_sdpa": 1.3709068298339844e-06
+        }
+      },
+      "temporary_attention_lora_ablations": {
+        "0": {
+          "loss": 0.9982526302337646,
+          "gradient_norm": 1.4035981910461721
+        },
+        "21": {
+          "loss": 1.1043304204940796,
+          "gradient_norm": 1.6471514959118274
+        }
+      },
+      "shared_training_sample": {
+        "rows": 300,
+        "correct": 113,
+        "accuracy": 0.37666666666666665,
+        "cross_entropy": 1.0896003564198813,
+        "prediction_counts": {
+          "c5": 223,
+          "c1": 62,
+          "c234": 15
+        },
+        "confusion_matrix": [
+          [
+            25,
+            9,
+            66
+          ],
+          [
+            21,
+            5,
+            74
+          ],
+          [
+            16,
+            1,
+            83
+          ]
+        ]
+      }
+    }
+  },
+  "limitations": [
+    "Training-sample accuracy is not held-out generalization.",
+    "Derivatives use 12 short examples in evaluation mode with dropout disabled.",
+    "Ablations localize endpoint sensitivity; they do not identify the first unstable update.",
+    "Additional rows, ordering, schedule, and optimizer updates change together.",
+    "No causal training intervention or corrected full run was performed."
+  ],
+  "elapsed_seconds": 74.40115391000018,
+  "date": "2026-11-05",
+  "raw_summary_sha256": "ad5673b5c3149697f47a3976afbf27a46f70611a470528213b9b79021a40f86d",
+  "source_runs": {
+    "development": "results/norberto-development-recipe3",
+    "full": "results/norberto-full-recipe3"
+  },
+  "training_composition": {
+    "development": {
+      "training_rows": 16093,
+      "class_counts": {
+        "c1": 5090,
+        "c234": 5436,
+        "c5": 5567
+      },
+      "class_fractions": {
+        "c1": 0.31628658422916794,
+        "c234": 0.337786615298577,
+        "c5": 0.345926800472255
+      },
+      "training_loss": 1.0714111693099764,
+      "training_seconds": 1879.4120314870015
+    },
+    "full": {
+      "training_rows": 20092,
+      "class_counts": {
+        "c1": 6347,
+        "c234": 6853,
+        "c5": 6892
+      },
+      "class_fractions": {
+        "c1": 0.31589687437786185,
+        "c234": 0.34108102727453715,
+        "c5": 0.34302209834760106
+      },
+      "training_loss": 1.1100679051344562,
+      "training_seconds": 2412.073383956
+    }
+  },
+  "verification": {
+    "adapter_hashes_rechecked_after_audit": true,
+    "audit_script_hash_matches": true,
+    "synthetic_cpu_tests": {
+      "passed": 34,
+      "elapsed_seconds": 6.58,
+      "files": [
+        "test_norberto_training_scale.py",
+        "test_norberto_training_recipe.py",
+        "test_norberto_training_loss.py",
+        "test_norberto_partitions.py",
+        "test_script_layout.py"
+      ]
+    },
+    "container_image_id": "sha256:1e951e93b719211c8e367f5dfa8d2f4338fd86e530895532495bc38a23f2f66c",
+    "confusion_matrix_totals_and_accuracies_verified": true
+  },
+  "interpretation": {
+    "established": [
+      "The full adapter fits the same sampled shared training rows worse than the development adapter.",
+      "All 16093 shared cached features agree; fresh tokenization matches all 20092 full training rows.",
+      "The full training c5 fraction decreases; a larger c5 training prior does not explain the observed prediction bias.",
+      "The first sampled mean-unit gradient above 25 is at step 1100, before the first epoch tail at update 1256.",
+      "The measured final full-adapter derivatives are normal-sized and agree across CPU SDPA/eager and GPU SDPA.",
+      "Transient training gradient spikes coexist with a poorly fitting final state."
+    ],
+    "not_established": [
+      "A unique causal trigger or a verified corrective hyperparameter.",
+      "First-attention endpoint gradient concentration in the current full recipe-3 adapter.",
+      "Exact onset or effective clipping at every real training update; logs sample every 20 updates.",
+      "Monotonic learning curves or statistical significance of the six additional SVM correct predictions."
+    ],
+    "next_control": "Use training-only internal grouped validation and fixed example IDs; isolate update/schedule changes from row inclusion, trace every update around the first spike, and test one optimizer change at a time without consulting test1/test2 gold."
+  },
+  "original_audit_source_snapshot": "results/norberto-scale-audit-20261105/audit-script.py",
+  "forensic_followup": {
+    "commit_introducing_compatibility": "f947d883d90ab43cb68342c5e896f10eadadf200",
+    "history_regression": {
+      "status": "completed",
+      "model_loading_performed": false,
+      "optimizer_updates": 0,
+      "test_data_accessed": false,
+      "script_sha256": "63ff831f529f2aaf673da0622026ff0f996c9732d08e66c276337e77c5e535d4",
+      "legacy_regression_comparison": {
+        "first_epoch_tail_update": 1256,
+        "shared_prefix_log_samples": 62,
+        "exact_gradient_matches": 62,
+        "all_prefix_gradients_identical": true,
+        "all_prefix_learning_rates_identical": true,
+        "matching_spike_updates": [
+          1100,
+          1120,
+          1140,
+          1200,
+          1220
+        ],
+        "known_unstable_prefix_reproduced": true,
+        "first_logged_gradient_difference": 1260,
+        "scope": "Exact equality of sampled norms and rates; not equality of every intermediate tensor."
+      },
+      "legacy_manifest_sha256": "bef2132189caffdc464fe29f896759f560fe8bf045ee3526e5143d1881f37256",
+      "full_manifest_sha256": "42d562b530ccba9107d309719876cc3f6ed783d460e047a87669952f51fe874c",
+      "elapsed_seconds": 0.0011080429994763108
+    },
+    "controlled_training_window": {
+      "status": "passed",
+      "scope": "Training-only controlled window, not a completed model or accuracy validation.",
+      "baseline_diagnostic_updates": 320,
+      "early_trace_stopped_at_update": 376,
+      "compared_window": [
+        201,
+        320
+      ],
+      "full_schedule_updates": 2512,
+      "warmup_updates": 252,
+      "replay_batch_gradient_and_update_norms_identical_all_120": true,
+      "replay_final_adapter_binary_identical": true,
+      "baseline_reproduces_all_16_historical_logged_norms": true,
+      "independent_prefix_reproduces_all_320_per_update_norms_and_batches": true,
+      "intervention_batches_and_initial_gradient_identical": true,
+      "intervention": "Multiply each scheduled optimizer learning rate by 0.1 after restoring update-200 weights, AdamW, scheduler, and RNG states.",
+      "actual_optimizer_rates_verified_on_all_120_updates": true,
+      "first_intervention_parameter_update_norm_ratio": 0.10000013486851571,
+      "all_clipping_checks_passed": true,
+      "checkpoint_files_unchanged": true,
+      "baseline_window": {
+        "updates": 120,
+        "mean_loss": 1.113072776173552,
+        "mean_preclipping_norm": 37.45604267517726,
+        "max_preclipping_norm": 576.49658203125,
+        "peak_step": 276,
+        "peak_first_attention_gradient_energy_fraction": 0.9976320628638766,
+        "updates_with_optimizer_gradient_norm_over_100": 10,
+        "max_postclipping_norm": 1.000000090608999,
+        "mean_parameter_update_norm": 0.12862580709091395
+      },
+      "lr_tenth_window": {
+        "updates": 120,
+        "mean_loss": 1.0833944617460172,
+        "mean_preclipping_norm": 9.891855621337891,
+        "max_preclipping_norm": 29.24075698852539,
+        "peak_step": 210,
+        "peak_first_attention_gradient_energy_fraction": 0.4979829594019626,
+        "updates_with_optimizer_gradient_norm_over_100": 0,
+        "max_postclipping_norm": 1.0000000380898992,
+        "mean_parameter_update_norm": 0.013963822448985811
+      },
+      "logging_note": "Use updates.jsonl optimizer-group learning rates and mean per-update losses; inherited Trainer history logs base scheduler rates and its resumed aggregate loss is divided by global_step.",
+      "test_data_accessed": false,
+      "production_model_promotion_performed": false,
+      "trace_script_sha256": "b3cd35860773151f6ed648803e3c740f82962b927078863522b9db87115dac2a",
+      "artifacts": {
+        "window-baseline": {
+          "run_sha256": "6fcb1a0d5bff7c08aaab80c0d74a37411c60defa5c2cbcbbcdf8489c38b216ec",
+          "trace_sha256": "636eb1840b6b0a35e1169d3a04d6056149d51c49362d44d1f6456c1c6c4173ff",
+          "adapter_sha256": "5bd993395478bea6a56d46bd041f6e91ca1bf6a0c63be0ccb247f277a471a743"
+        },
+        "window-replay": {
+          "run_sha256": "85b33404308c5f32b8b454398138ac9f6b43741889216863313ce1499efb8ba2",
+          "trace_sha256": "024377cef89da35549617eda51c763a62600cb1441d17cb29e2df81618b31d8f",
+          "adapter_sha256": "5bd993395478bea6a56d46bd041f6e91ca1bf6a0c63be0ccb247f277a471a743"
+        },
+        "window-lr-tenth": {
+          "run_sha256": "24a79caeeebd950b727b57088c773c6191945bd1461a526b80833496ec8fcfc0",
+          "trace_sha256": "e2b72712fe83dcb16b1a27b1a074d1b570d9dc5af44d72577863d34391ddedd7",
+          "adapter_sha256": "b83f2148457203efe8afc6fec22a555c5789498c75479e44251c55bdfa54b331"
+        }
+      },
+      "limitations": [
+        "Only the 120-update continuation was causally controlled; no independent end-to-end stable recipe or accuracy gain has been established.",
+        "The learning-rate intervention retains legacy gradient units; it does not isolate compatibility scaling independently.",
+        "First-attention concentration is measured during these transient peaks; it differs from final-adapter probes."
+      ]
+    },
+    "diagnostic_scope_bug_fixed": "The old prefix probe hardcoded development. It now accepts full/development and calculates the partition-specific schedule.",
+    "production_training_recipe_changed": false,
+    "tests": {
+      "synthetic_cpu_suite_passed": 35,
+      "elapsed_seconds": 5.46,
+      "final_targeted_suite_passed": 11,
+      "final_elapsed_seconds": 0.24,
+      "partition_cli_limits_verified": {
+        "full": 2512,
+        "development": 2012
+      }
+    },
+    "total_real_optimizer_updates": 936
+  },
+  "scope": "Initial saved-adapter audit; forensic_followup separately records bounded real optimizer updates."
+}

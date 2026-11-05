@@ -1,0 +1,26 @@
+{
+  "models": [
+    "norberto",
+    "svm",
+    "rl"
+  ],
+  "strategy": "majority",
+  "tiebreaker": "rl",
+  "members": {
+    "norberto": {
+      "run": "results/norberto-ep1-test2",
+      "identity_field": "artifact_manifest_sha256",
+      "manifest": "src/norberto_classifier/frozen_manifest.json"
+    },
+    "svm": {
+      "run": "results/svm-development-test2",
+      "identity_field": "artifact_sha256",
+      "manifest": "src/svm_classifier/frozen_manifest.json"
+    },
+    "rl": {
+      "run": "results/rl-development-test2",
+      "identity_field": "artifact_sha256",
+      "manifest": "models/rl-development/frozen_manifest.json"
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "model": "word_char_logistic",
+  "classifier__C": 0.25,
+  "seed": 42,
+  "data_partition": "development",
+  "dataset_sha256": "0e9219233664ac675fc47982bbc822acd3bb15d67fb7bfc26b67bec047e46818",
+  "split_sha256": "0f78e7a809c7b7584db05b33cf03a73ff586d5de02ba824c16562d5070d41494"
+}

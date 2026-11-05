@@ -37,10 +37,10 @@ class EnsembleConfig:
             raise ValueError("Every selected model and non-GPT tiebreaker requires a members entry.")
         for name in required:
             value = members[name]
-            if (not isinstance(value, dict) or set(value) - {"run", "identity_field", "adapter"}
+            if (not isinstance(value, dict) or set(value) - {"run", "identity_field", "adapter", "manifest"}
                     or not isinstance(value.get("run"), str) or not value["run"]
                     or any(key in value and (not isinstance(value[key], str) or not value[key])
-                           for key in ("identity_field", "adapter"))):
+                           for key in ("identity_field", "adapter", "manifest"))):
                 raise ValueError(f"Invalid run specification for {name}.")
         selected_strategy = strategy if strategy is not None else data.get("strategy", "consensus")
         if not isinstance(selected_strategy, str):

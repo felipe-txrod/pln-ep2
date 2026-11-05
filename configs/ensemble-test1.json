@@ -1,12 +1,31 @@
 {
-  "models": ["qwen", "norberto"],
-  "strategy": "consensus",
-  "tiebreaker": "gpt",
+  "models": [
+    "norberto",
+    "svm",
+    "rl"
+  ],
+  "strategy": "majority",
+  "tiebreaker": "rl",
   "gpt_config": "configs/gpt.json",
   "members": {
-    "qwen": {"run": "results/qwen-test1", "adapter": "results/qwen-fast-training/adapter"},
-    "norberto": {"run": "results/norberto-test1"},
-    "svm": {"run": "results/svm-test1"},
-    "rl": {"run": "results/rl-test1"}
+    "qwen": {
+      "run": "results/qwen-test1",
+      "adapter": "results/qwen-fast-training/adapter"
+    },
+    "norberto": {
+      "run": "results/norberto-ep1-test1",
+      "identity_field": "artifact_manifest_sha256",
+      "manifest": "src/norberto_classifier/frozen_manifest.json"
+    },
+    "svm": {
+      "run": "results/svm-development-test1",
+      "identity_field": "artifact_sha256",
+      "manifest": "src/svm_classifier/frozen_manifest.json"
+    },
+    "rl": {
+      "run": "results/rl-development-test1",
+      "identity_field": "artifact_sha256",
+      "manifest": "models/rl-development/frozen_manifest.json"
+    }
   }
 }

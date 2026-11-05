@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "model_type": "rl",
+  "classifier": "LogisticRegression",
+  "labels": [
+    "c1",
+    "c234",
+    "c5"
+  ],
+  "artifact_sha256": "05d69e147a10b7c49ebe3893f247e0f23e8d61005aaf4fd7b7eb45845d49a20f",
+  "source_artifact": "/workspace/models/rl-development/model.joblib",
+  "source_config": "config.json",
+  "source_metadata": "metadata.json",
+  "files": {
+    "metadata.json": "891506d03044e61f8e689b1dcfb9dee457a04ce5c9f74b022aef6510ab171e7f",
+    "config.json": "deb20cd858ec9fc195d85f57991965d0188fc89d201e6e5474735894a4196078"
+  },
+  "selected": "development_word_char_logistic",
+  "threads": 2,
+  "normalization": "html_unescape_whitespace_lowercase",
+  "word": {
+    "ngram_range": [
+      1,
+      2
+    ],
+    "min_df": 2,
+    "max_df": 0.98,
+    "sublinear_tf": true,
+    "max_features": 60000,
+    "analyzer": "word",
+    "norm": "l2",
+    "use_idf": true,
+    "smooth_idf": true,
+    "binary": false,
+    "strip_accents": null,
+    "token_pattern": "(?u)\\b\\w\\w+\\b",
+    "lowercase": true
+  },
+  "char": {
+    "ngram_range": [
+      3,
+      5
+    ],
+    "min_df": 3,
+    "max_df": 1.0,
+    "sublinear_tf": true,
+    "max_features": 50000,
+    "analyzer": "char_wb",
+    "norm": "l2",
+    "use_idf": true,
+    "smooth_idf": true,
+    "binary": false,
+    "strip_accents": null,
+    "lowercase": true
+  },
+  "feature_dtype": "float32",
+  "classifier_parameters": {
+    "C": 0.25,
+    "max_iter": 1500,
+    "solver": "lbfgs",
+    "random_state": 42,
+    "tol": 0.0001,
+    "penalty": "l2",
+    "class_weight": null,
+    "fit_intercept": true
+  },
+  "runtime_versions": {
+    "numpy": "2.3.3",
+    "scipy": "1.16.2",
+    "scikit-learn": "1.7.2",
+    "joblib": "1.5.2"
+  },
+  "data_partition": "development",
+  "training_rows": 16093,
+  "reserved_holdout_rows": 3999,
+  "split_sha256": "0f78e7a809c7b7584db05b33cf03a73ff586d5de02ba824c16562d5070d41494"
+}

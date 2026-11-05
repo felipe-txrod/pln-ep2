@@ -2,6 +2,11 @@
 
 [Documentation index](../README.md)
 
+Historical evaluation: the RL result below uses the former full-corpus model
+(20,092 training rows). The ensemble default now requires development-only
+RL in `models/rl-development/`; these scores do not apply to that new model.
+See the [current RL workflow](../../src/rl_classifier/README.md).
+
 Avaliação dos artefatos já treinados do EP1 nas **900 respostas de teste1**,
 usando `test1-rotulado-para-teste-estatistico.xlsx` como gabarito. Os modelos
 receberam somente os textos de `test1.xlsx`; os rótulos foram lidos após a

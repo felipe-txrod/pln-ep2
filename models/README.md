@@ -8,7 +8,8 @@ its inference files to SHA-256 checksums.
 | Directory | Versioned files | External dependency |
 |---|---|---|
 | [svm/](svm/README.md) | Trained TF-IDF + LinearSVC pipeline, `C=0.05`, in `model.joblib` | None |
-| [rl/](rl/README.md) | Trained TF-IDF + logistic regression pipeline, `C=0.25`, in `model.joblib` | None |
+| [rl-development/](rl-development/README.md) | Verified development-only logistic pipeline, `C=0.25`, trained on 16,093 rows | None for inference |
+| [rl/](rl/README.md) | Historical full-corpus logistic pipeline; not the default | None |
 | [norberto/](norberto/README.md) | LoRA adapter, classification head, tokenizer, configuration | Public NorBERTo base, pinned revision and checksums |
 | [gpt/](gpt/README.md) | Configuration and prompt snapshots | Remote service; weights unavailable locally |
 
@@ -23,7 +24,9 @@ classification head. No training, GGUF conversion, or adapter merging is needed.
 
 The copies preserve the original artifact bytes. Loaders check hashes, classes,
 and configuration before loading weights. SVM, logistic regression, and NorBERTo
-prefer `models/`, while supporting their previous paths and environment overrides.
+use their selected bundles under `models/`. RL defaults to `rl-development/`
+and fails if that development-only bundle has not yet been trained. It does
+not fall back to the historical full-corpus `rl/` package.
 
 ## Restore the public base
 
@@ -58,6 +61,8 @@ python3 scripts/models/freeze.py --model norberto
 python3 scripts/models/freeze.py --model gpt
 ```
 
+The `--model rl` exporter preserves the historical full-corpus model in
+`models/rl/`; it does not select or generate the development-only RL model.
 Exports use the preserved local EP1 artifacts. A fresh clone receives the
 versioned inference files and does not need to export them again. Identical
 files are accepted; different existing files are never overwritten. Use a new

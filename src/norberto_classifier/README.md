@@ -1,6 +1,8 @@
 # Frozen EP1 NorBERTo inference package
 
-This package exposes the final model already trained in EP1. It has no
+This is the selected NorBERTo for EP2. It exposes the unchanged final model
+already delivered in EP1. Experimental training/loss corrections and the
+logistic-head variant were retired on 2026-11-05. It has no
 training, hyperparameter selection, or evaluation command.
 
 ## Preserved model
@@ -92,7 +94,7 @@ From the EP2 root with dependencies installed:
 ```bash
 PYTHONPATH=src python -m norberto_classifier predict \
   --input data/test2.xlsx \
-  --output-dir results/norberto-test2 \
+  --output-dir results/norberto-ep1-test2 \
   --device cpu
 ```
 
@@ -117,10 +119,15 @@ Parameters remain frozen; inference uses `torch.inference_mode()`.
 
 ## Limitations
 
-Normalization, truncation, and adapter loading were ported from the EP1
-inference modules identified in the manifest. Numerical equivalence with that
-original path has not yet been validated. File hashes establish artifact
-identity; historical validation refers to the original EP1 model.
+Normalization, truncation, and adapter loading preserve the EP1 inference
+modules identified in the manifest. Restoration was verified on all 900 test1
+rows: every label matches the original EP1 delivery (432/900 correct, 48.00%),
+and maximum probability difference from the historical CSV is 8.60e-8.
+The original adapter, tokenizer, and configurations match EP1. Verification
+artifacts are in `results/norberto-rollback-20261105/`; see the
+[restoration record](../../docs/results/data/norberto-ep1-restoration.json).
+The original inference/tokenization implementations and model weights were
+not modified during cleanup.
 
 New inference does not replace the official EP1 predictions in statistical
 comparisons. Follow the EP2 protocol: freeze the method, submit test2, then

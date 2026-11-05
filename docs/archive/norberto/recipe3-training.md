@@ -1,12 +1,26 @@
 # NorBERTo training
 
-[Documentation index](../README.md)
+Historical workflow retired on 2026-11-05. The unchanged original EP1 delivery
+adapter is the selected model. Commands below describe the former experiment;
+its active training/evaluation implementation has been removed. Local source
+snapshots are preserved in `results/norberto-rollback-20261105/sources-before-rollback.tar.gz`.
 
-Use recipe 3 for new adapters. It preserves the original EP1 optimizer units
-for clipping and AdamW while normalizing example weights across accumulated
-microbatches. The [optimizer guide](norberto-optimizer-units.md) documents the
-implementation and verification; older recipes are in the
-[experiment archive](../archive/README.md#norberto-training-investigations).
+[Documentation index](../../README.md)
+
+Recipe 3 reproduces the original EP1 optimizer units for clipping and AdamW
+while normalizing example weights across accumulated microbatches. The commands
+below reproduce that recipe; a stable full-corpus replacement has not been
+validated. The [optimizer guide](recipe3-optimizer-units.md) documents the
+implementation, the regression reintroduced by compatibility, and verification;
+older recipes are in the
+[experiment archive](../README.md#norberto-training-investigations).
+
+The latest full-corpus recipe-3 run showed transient gradient escalation and
+worse fitting on shared training rows. Recipe 3 corrects accumulation and
+optimizer units; its development-run recovery does not establish stability
+on more data. See the [training-scale audit](../../results/README.md#training-scale-audit-recipe-3)
+before planning another unchanged full run. No corrective hyperparameter has
+been validated by that audit.
 
 ## Environment
 
@@ -49,7 +63,7 @@ The default split is
 can select another copy with the same checksum.
 
 The completed recipe-3 development run took 31.32 minutes. Its quality is
-reported separately in the [results section](../results/README.md), where
+reported separately in the [results section](../../results/README.md), where
 holdout validation and test1 comparison have distinct tables.
 
 ## Validate the plan before training
@@ -104,8 +118,8 @@ Each selected output directory contains:
 A new adapter is distinct from the frozen EP1 model and is not automatically
 installed in its inference package or selected by the ensemble.
 
-Use the [two-stage test1 workflow](norberto-test1.md) to predict and then score
+Use the [two-stage test1 workflow](../../guides/norberto-test1.md) to predict and then score
 saved predictions. For a completed development-only run, the separate
-[`evaluate-holdout.py`](../../scripts/norberto/evaluate-holdout.py)
+``evaluate-holdout.py``
 script can validate the frozen holdout. Holdout results and the recorded
-training audits are in the [recipe-3 report](../results/norberto-recipe3-holdout.md).
+training audits are in the [recipe-3 report](../../results/norberto-recipe3-holdout.md).

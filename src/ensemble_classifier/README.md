@@ -5,11 +5,48 @@ ou realizar chamadas remotas. A avaliação final usa teste1 rotulado após a
 entrega de teste2. O [protocolo completo](../../docs/guides/ensemble.md) descreve as
 regras e as extensões planejadas.
 
+## Local majority ensemble
+
+`configs/ensemble-majority.json` selects the original EP1 NorBERTo,
+development-only SVM, and development-only RL. Each model has one vote; two
+matching votes decide. When all three labels differ, RL resolves the tie.
+The configuration uses only saved local predictions and pinned manifests:
+
+```bash
+PYTHONPATH=src python3 -m ensemble_classifier combine \
+  --config configs/ensemble-majority.json \
+  --input data/test2.xlsx --output-dir results/ensemble-majority-test2-new
+```
+
+The corresponding member test2 runs must already exist. To compare the saved
+test1 runs without new model inference, use the explicit exploratory command:
+
+```bash
+PYTHONPATH=src python3 -m ensemble_classifier compare-majority \
+  --config configs/ensemble-majority-test1.json \
+  --input data/test1.xlsx \
+  --gold data/test1-rotulado-para-teste-estatistico.xlsx \
+  --output-dir results/ensemble-majority-comparison-new
+```
+
+This compares all nonempty model subsets, trying each configured local model
+as tiebreaker, including models outside a selected pair. Singletons are scored
+once. All candidate predictions are written before gold is loaded. Row/text
+alignment and selected artifact identities are mandatory. Results include
+accuracy, macro-F1, confusion matrices, tie counts, pairwise agreement, and
+all configurations tied for maximum accuracy.
+
+The comparison writes an exploratory report and never changes delivery
+defaults. Official `combine` test1 execution still requires a matching completed
+test2 run. Existing results are preserved. The measured best trio achieved
+49.22%, versus 49.67% for RL alone; see the [full comparison](../../docs/results/ensemble-majority.md).
+
 ## Escolher os membros
 
-`configs/ensemble.json` declara os membros disponíveis e a lista `models`
-seleciona quais entram na decisão. O padrão é `qwen` e `norberto`; `svm` e `rl`
-também estão configurados. `--models` substitui essa lista para uma execução:
+`configs/ensemble.json` declares available members, while `models` selects
+the active voters. The default is `norberto`, `svm`, and `rl`, using majority
+voting and RL arbitration. Qwen is currently excluded from the active members.
+`--models` overrides the list for an explicitly selected alternative run:
 
 ```bash
 PYTHONPATH=src python -m ensemble_classifier combine \
@@ -40,6 +77,21 @@ siga esse contrato, sem alterar o combinador. `identity_field` permite indicar
 o nome do campo SHA-256 do modelo no manifesto, caso não seja um dos padrões
 `artifact_sha256`, `adapter_sha256` ou `artifact_manifest_sha256`.
 
+## Selected model variants
+
+NorBERTo and SVM use their original 16,093-row development models. RL defaults
+to `models/rl-development/`, fitted on the same partition with all 3,999
+holdout rows reserved. Create it once with `bash scripts/rl/train.sh`; a
+missing bundle never falls back to the historical full-corpus RL model.
+Qwen retains its existing 16,010/4,082 grouped split.
+
+The optional `manifest` member field pins an external model contract. For
+`identity_field=artifact_sha256`, the run must match that contract's artifact
+hash. For `identity_field=artifact_manifest_sha256`, it must match the selected
+manifest file hash. In both cases the selected manifest identity is also
+recorded in the ensemble fingerprint. The default configurations use these
+checks to reject full-corpus or otherwise different models before combining.
+
 ## Escolher o árbitro
 
 `tiebreaker` na configuração define o responsável pelo desempate e assume
@@ -52,7 +104,7 @@ Por exemplo, Qwen e NorBERTo decidem os consensos e o SVM resolve as divergênci
 ```bash
 PYTHONPATH=src python -m ensemble_classifier combine \
   --config configs/ensemble.json --models qwen norberto \
-  --tiebreaker svm --tiebreaker-run results/svm-test2 \
+  --tiebreaker svm --tiebreaker-run results/svm-development-test2 \
   --input data/test2.xlsx --output-dir results/ensemble-test2-svm
 ```
 
@@ -75,9 +127,9 @@ inicia chamadas remotas.
 
 ## Estratégias e respostas pendentes
 
-- `consensus`, padrão: todos os membros selecionados precisam concordar.
+- `consensus`: todos os membros selecionados precisam concordar.
   Qualquer divergência exige decisão do árbitro, mesmo com três ou mais membros.
-- `majority`, opcional: aceita somente maioria estrita, acima de metade
+- `majority`, default: aceita somente maioria estrita, acima de metade
   dos votos; sem essa maioria, exige decisão do árbitro.
 
 Os nomes anteriores `consensus_gpt` e `majority_gpt` continuam aceitos como
@@ -126,11 +178,13 @@ artefatos, modelo de desempate, configuração GPT quando aplicável e código,
 mas não os caminhos de saída de cada fase. Trocar os membros ou o árbitro em
 teste1 invalida o vínculo à entrega de teste2.
 
-Execuções concluídas gravam `predictions.jsonl`, `routing.jsonl` e `run.json`.
-Cada previsão final contém classe, origem da decisão e rótulos locais, no
-formato compatível com avaliação e exportação do EP2. O pacote não gera XLSX
-nem calcula métricas automaticamente. Não publica uma execução concluída com
-desempates faltantes. Saídas existentes são preservadas; use outro diretório.
+Completed `combine` runs write `predictions.jsonl`, `routing.jsonl`, and
+`run.json`. Each prediction records its label, decision source, and member
+labels in the existing evaluation/export format. The `combine` command does
+not generate XLSX or calculate metrics; `compare-majority` provides separate
+exploratory scoring. Missing arbitration responses prevent completion.
+Existing outputs are preserved; use a new directory.
 
-A integração ainda requer validação em execução. A conferência estática do
-código não comprova equivalência numérica dos adapters ou do ensemble.
+The majority integration was verified with real saved predictions and an
+independent vote/metric checker. New adapters or arbitration configurations
+still require their own runtime verification.

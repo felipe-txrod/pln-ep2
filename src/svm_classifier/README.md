@@ -33,7 +33,7 @@ From the EP2 root with these dependencies installed:
 
 ```bash
 PYTHONPATH=src python -m svm_classifier predict \
-  --input data/test2.xlsx --output-dir results/svm-test2
+  --input data/test2.xlsx --output-dir results/svm-development-test2
 ```
 
 ```python

@@ -32,6 +32,20 @@ The base revision is `70d244cc86ccca08cf5af4e1e306ecf908b1ad5e` of
 `Qwen/Qwen3-1.7B`. Training used 16,010 responses and reserved 4,082 for grouped
 internal validation. It did not refit on all 20,092 training responses.
 
+This is a different partition from EP1's fixed holdout. Of EP1's 3,999 holdout
+rows, only 771 (19.28%) are also in Qwen's validation set; the other 3,228 were
+used to train Qwen. Conversely, 3,311 Qwen validation rows belong to EP1's
+development set. Both models trained on 12,782 common rows. Similar reserved
+set sizes therefore do not imply the same held-out observations.
+
+Qwen groups identical HTML-unescaped, whitespace-normalized lowercase texts;
+EP1 uses frozen similarity components. Under the latter grouping, 301
+components cross Qwen's training/validation boundary, covering 798 Qwen
+validation rows. Exact normalized-text groups remain disjoint in Qwen.
+Consequently, the EP1 holdout is not wholly unseen by the current ensemble.
+The [split-overlap audit](data/qwen-ep1-split-overlap.json) records source hashes
+and exact counts; no training, inference, or model/default change was performed.
+
 ## Test1 metrics
 
 | Metric | Result |

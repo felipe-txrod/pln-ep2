@@ -1,0 +1,635 @@
+{
+  "status": "passed",
+  "phase": "exploratory_holdout_validation",
+  "rows": 3999,
+  "dataset_sha256": "0e9219233664ac675fc47982bbc822acd3bb15d67fb7bfc26b67bec047e46818",
+  "split_sha256": "0f78e7a809c7b7584db05b33cf03a73ff586d5de02ba824c16562d5070d41494",
+  "isolation": {
+    "norberto": {
+      "training_rows": 16093,
+      "holdout_rows": 3999,
+      "training_groups": 12956,
+      "holdout_groups": 3281,
+      "holdout_row_overlap": 0,
+      "holdout_group_overlap": 0,
+      "normalized_holdout_texts_seen_in_training": 0,
+      "weights_sha256": "d693f6e2995d117ad04a5692817527764fcccee6bfb2dde99120baf9fdd2d385",
+      "training_rows_file_sha256": "9267d982ebc43d1f0b2150ab0d9437476e74098a4c2fda5991b5cc29b424d1b7",
+      "evidence": "Saved training row/group list, immutable original adapter, training and evaluation manifests."
+    },
+    "svm": {
+      "training_rows": 16093,
+      "holdout_rows": 3999,
+      "training_groups": 12956,
+      "holdout_groups": 3281,
+      "holdout_row_overlap": 0,
+      "holdout_group_overlap": 0,
+      "normalized_holdout_texts_seen_in_training": 0,
+      "weights_sha256": "9a30abb664d5023d70f444641c4095cf800acba0c98fd8658087e7adad78ee12",
+      "evidence": "Original artifact and metadata hashes, pinned split, original training pipeline fits only development.",
+      "limitation": "No separate SVM training-row list was saved; membership is reconstructed from the pinned split and recorded fit protocol."
+    },
+    "rl": {
+      "training_rows": 16093,
+      "holdout_rows": 3999,
+      "training_groups": 12956,
+      "holdout_groups": 3281,
+      "holdout_row_overlap": 0,
+      "holdout_group_overlap": 0,
+      "normalized_holdout_texts_seen_in_training": 0,
+      "weights_sha256": "05d69e147a10b7c49ebe3893f247e0f23e8d61005aaf4fd7b7eb45845d49a20f",
+      "training_rows_file_sha256": "03f06731880dd5d51dea87069aca0c456df3bce52914451145b456fff9d7b770",
+      "evidence": "All saved training row IDs, labels and text hashes; immutable artifact and recorded training script."
+    }
+  },
+  "qwen_included": false,
+  "training_performed": false,
+  "model_inference_performed": false,
+  "source_reader": "Independent standard-library ZIP/XML workbook parser",
+  "source_ids_preserved": true,
+  "candidate_rows_verified": 59985,
+  "candidates": [
+    {
+      "id": "norberto-rl__tie-norberto",
+      "models": [
+        "norberto",
+        "rl"
+      ],
+      "tiebreaker": "norberto",
+      "routed_rows": 1378,
+      "predictions_sha256": "db2fccdbf980e07dcff9c9af3f2f18ac0d292e7269580b7ce66e49ba3439c473",
+      "rows": 3999,
+      "correct": 1812,
+      "accuracy": 0.45311327831957987,
+      "f1_macro": 0.45306388603543346,
+      "label_order": [
+        "c1",
+        "c234",
+        "c5"
+      ],
+      "confusion_matrix": [
+        [
+          526,
+          436,
+          295
+        ],
+        [
+          370,
+          605,
+          442
+        ],
+        [
+          233,
+          411,
+          681
+        ]
+      ]
+    },
+    {
+      "id": "norberto-svm__tie-norberto",
+      "models": [
+        "norberto",
+        "svm"
+      ],
+      "tiebreaker": "norberto",
+      "routed_rows": 1433,
+      "predictions_sha256": "ad05e2d769721bfd6faca437afacfd1feff98025e20f6ca36e0ed4fb19126281",
+      "rows": 3999,
+      "correct": 1812,
+      "accuracy": 0.45311327831957987,
+      "f1_macro": 0.45306388603543346,
+      "label_order": [
+        "c1",
+        "c234",
+        "c5"
+      ],
+      "confusion_matrix": [
+        [
+          526,
+          436,
+          295
+        ],
+        [
+          370,
+          605,
+          442
+        ],
+        [
+          233,
+          411,
+          681
+        ]
+      ]
+    },
+    {
+      "id": "norberto__tie-norberto",
+      "models": [
+        "norberto"
+      ],
+      "tiebreaker": "norberto",
+      "routed_rows": 0,
+      "predictions_sha256": "ed48de9556e5db363868e3c0f2f55d4252c40c2e84ebb194a68464831195ca48",
+      "rows": 3999,
+      "correct": 1812,
+      "accuracy": 0.45311327831957987,
+      "f1_macro": 0.45306388603543346,
+      "label_order": [
+        "c1",
+        "c234",
+        "c5"
+      ],
+      "confusion_matrix": [
+        [
+          526,
+          436,
+          295
+        ],
+        [
+          370,
+          605,
+          442
+        ],
+        [
+          233,
+          411,
+          681
+        ]
+      ]
+    },
+    {
+      "id": "norberto-svm-rl__tie-rl",
+      "models": [
+        "norberto",
+        "svm",
+        "rl"
+      ],
+      "tiebreaker": "rl",
+      "routed_rows": 28,
+      "predictions_sha256": "be3e9aa19da37fc4f4070a4c325d2e59b8c748f762e82aa9a9d0b81a4e0b08d1",
+      "rows": 3999,
+      "correct": 1803,
+      "accuracy": 0.4508627156789197,
+      "f1_macro": 0.44784689530341115,
+      "label_order": [
+        "c1",
+        "c234",
+        "c5"
+      ],
+      "confusion_matrix": [
+        [
+          550,
+          329,
+          378
+        ],
+        [
+          384,
+          495,
+          538
+        ],
+        [
+          239,
+          328,
+          758
+        ]
+      ]
+    },
+    {
+      "id": "norberto-svm__tie-rl",
+      "models": [
+        "norberto",
+        "svm"
+      ],
+      "tiebreaker": "rl",
+      "routed_rows": 1433,
+      "predictions_sha256": "7599edc22ea2351cc8029c5f10806ed72328901ed0c55174790acb98cc5af2ad",
+      "rows": 3999,
+      "correct": 1803,
+      "accuracy": 0.4508627156789197,
+      "f1_macro": 0.44784689530341115,
+      "label_order": [
+        "c1",
+        "c234",
+        "c5"
+      ],
+      "confusion_matrix": [
+        [
+          550,
+          329,
+          378
+        ],
+        [
+          384,
+          495,
+          538
+        ],
+        [
+          239,
+          328,
+          758
+        ]
+      ]
+    },
+    {
+      "id": "norberto-rl__tie-rl",
+      "models": [
+        "norberto",
+        "rl"
+      ],
+      "tiebreaker": "rl",
+      "routed_rows": 1378,
+      "predictions_sha256": "e0c881d1e469d5598b3455c64d1dd469f0c14b305a794eae6ba22577bc6bf766",
+      "rows": 3999,
+      "correct": 1803,
+      "accuracy": 0.4508627156789197,
+      "f1_macro": 0.4478157039657455,
+      "label_order": [
+        "c1",
+        "c234",
+        "c5"
+      ],
+      "confusion_matrix": [
+        [
+          548,
+          332,
+          377
+        ],
+        [
+          383,
+          496,
+          538
+        ],
+        [
+          239,
+          327,
+          759
+        ]
+      ]
+    },
+    {
+      "id": "rl__tie-rl",
+      "models": [
+        "rl"
+      ],
+      "tiebreaker": "rl",
+      "routed_rows": 0,
+      "predictions_sha256": "d13fb1408971d0ee7f5dcb2aff6619f8f9627e7b22a91cb60aebd8545365bc3d",
+      "rows": 3999,
+      "correct": 1803,
+      "accuracy": 0.4508627156789197,
+      "f1_macro": 0.4478157039657455,
+      "label_order": [
+        "c1",
+        "c234",
+        "c5"
+      ],
+      "confusion_matrix": [
+        [
+          548,
+          332,
+          377
+        ],
+        [
+          383,
+          496,
+          538
+        ],
+        [
+          239,
+          327,
+          759
+        ]
+      ]
+    },
+    {
+      "id": "svm-rl__tie-rl",
+      "models": [
+        "svm",
+        "rl"
+      ],
+      "tiebreaker": "rl",
+      "routed_rows": 147,
+      "predictions_sha256": "b5c76597ee5251da0bc0702ace09a9a2a42c67d18d7aa861810576b1b55fedb7",
+      "rows": 3999,
+      "correct": 1803,
+      "accuracy": 0.4508627156789197,
+      "f1_macro": 0.4478157039657455,
+      "label_order": [
+        "c1",
+        "c234",
+        "c5"
+      ],
+      "confusion_matrix": [
+        [
+          548,
+          332,
+          377
+        ],
+        [
+          383,
+          496,
+          538
+        ],
+        [
+          239,
+          327,
+          759
+        ]
+      ]
+    },
+    {
+      "id": "norberto-rl__tie-svm",
+      "models": [
+        "norberto",
+        "rl"
+      ],
+      "tiebreaker": "svm",
+      "routed_rows": 1378,
+      "predictions_sha256": "ea7d51e7b34fabe97ee9ef9394e0698dc03a250404dafda0b6d7b56c17b2b243",
+      "rows": 3999,
+      "correct": 1802,
+      "accuracy": 0.4506126531632908,
+      "f1_macro": 0.4476275092764796,
+      "label_order": [
+        "c1",
+        "c234",
+        "c5"
+      ],
+      "confusion_matrix": [
+        [
+          554,
+          326,
+          377
+        ],
+        [
+          387,
+          492,
+          538
+        ],
+        [
+          241,
+          328,
+          756
+        ]
+      ]
+    },
+    {
+      "id": "norberto-svm-rl__tie-svm",
+      "models": [
+        "norberto",
+        "svm",
+        "rl"
+      ],
+      "tiebreaker": "svm",
+      "routed_rows": 28,
+      "predictions_sha256": "9751a3f82c50d0ee3985a3bfff2e142b1bc2950cc6e5058ad8633ce5a5abd18e",
+      "rows": 3999,
+      "correct": 1802,
+      "accuracy": 0.4506126531632908,
+      "f1_macro": 0.4476275092764796,
+      "label_order": [
+        "c1",
+        "c234",
+        "c5"
+      ],
+      "confusion_matrix": [
+        [
+          554,
+          326,
+          377
+        ],
+        [
+          387,
+          492,
+          538
+        ],
+        [
+          241,
+          328,
+          756
+        ]
+      ]
+    },
+    {
+      "id": "norberto-svm-rl__tie-norberto",
+      "models": [
+        "norberto",
+        "svm",
+        "rl"
+      ],
+      "tiebreaker": "norberto",
+      "routed_rows": 28,
+      "predictions_sha256": "7a7ddc796018939c0abcb79e65d11ad605a6fe421e14b6d9a1d89a336174df40",
+      "rows": 3999,
+      "correct": 1799,
+      "accuracy": 0.4498624656164041,
+      "f1_macro": 0.44680104346648036,
+      "label_order": [
+        "c1",
+        "c234",
+        "c5"
+      ],
+      "confusion_matrix": [
+        [
+          552,
+          329,
+          376
+        ],
+        [
+          388,
+          490,
+          539
+        ],
+        [
+          240,
+          328,
+          757
+        ]
+      ]
+    },
+    {
+      "id": "svm-rl__tie-norberto",
+      "models": [
+        "svm",
+        "rl"
+      ],
+      "tiebreaker": "norberto",
+      "routed_rows": 147,
+      "predictions_sha256": "71a1b51c05a8fd729a4a7d11300b0f71c14ae7808e841877d2ba85024c4d56b0",
+      "rows": 3999,
+      "correct": 1799,
+      "accuracy": 0.4498624656164041,
+      "f1_macro": 0.44680104346648036,
+      "label_order": [
+        "c1",
+        "c234",
+        "c5"
+      ],
+      "confusion_matrix": [
+        [
+          552,
+          329,
+          376
+        ],
+        [
+          388,
+          490,
+          539
+        ],
+        [
+          240,
+          328,
+          757
+        ]
+      ]
+    },
+    {
+      "id": "norberto-svm__tie-svm",
+      "models": [
+        "norberto",
+        "svm"
+      ],
+      "tiebreaker": "svm",
+      "routed_rows": 1433,
+      "predictions_sha256": "8361fa2b08d8a05f0756cfae690d0fed56d33bee610a694f7adad9339f45eb7a",
+      "rows": 3999,
+      "correct": 1792,
+      "accuracy": 0.44811202800700173,
+      "f1_macro": 0.4447431774978208,
+      "label_order": [
+        "c1",
+        "c234",
+        "c5"
+      ],
+      "confusion_matrix": [
+        [
+          550,
+          331,
+          376
+        ],
+        [
+          385,
+          482,
+          550
+        ],
+        [
+          245,
+          320,
+          760
+        ]
+      ]
+    },
+    {
+      "id": "svm-rl__tie-svm",
+      "models": [
+        "svm",
+        "rl"
+      ],
+      "tiebreaker": "svm",
+      "routed_rows": 147,
+      "predictions_sha256": "67eba20c32724f07fbe89ff84e641f21523790f9a5f8853ba1907a4c9c690651",
+      "rows": 3999,
+      "correct": 1792,
+      "accuracy": 0.44811202800700173,
+      "f1_macro": 0.4447431774978208,
+      "label_order": [
+        "c1",
+        "c234",
+        "c5"
+      ],
+      "confusion_matrix": [
+        [
+          550,
+          331,
+          376
+        ],
+        [
+          385,
+          482,
+          550
+        ],
+        [
+          245,
+          320,
+          760
+        ]
+      ]
+    },
+    {
+      "id": "svm__tie-svm",
+      "models": [
+        "svm"
+      ],
+      "tiebreaker": "svm",
+      "routed_rows": 0,
+      "predictions_sha256": "c02f5829ce0b8868c6f302aec83ebc98bd83481fc8823265e51e56f3cfd5831d",
+      "rows": 3999,
+      "correct": 1792,
+      "accuracy": 0.44811202800700173,
+      "f1_macro": 0.4447431774978208,
+      "label_order": [
+        "c1",
+        "c234",
+        "c5"
+      ],
+      "confusion_matrix": [
+        [
+          550,
+          331,
+          376
+        ],
+        [
+          385,
+          482,
+          550
+        ],
+        [
+          245,
+          320,
+          760
+        ]
+      ]
+    }
+  ],
+  "best_by_accuracy": [
+    "norberto-rl__tie-norberto",
+    "norberto-svm__tie-norberto",
+    "norberto__tie-norberto"
+  ],
+  "best_full_ensemble_by_accuracy": [
+    "norberto-svm-rl__tie-rl"
+  ],
+  "caveat": "Rows and groups excluded from fitting; holdout already consulted in historical model research, so this is fixed validation rather than an untouched final test.",
+  "evidence_sha256": {
+    "/EP1/results/research/dataset-hypotheses-20260923/splits.csv": "0f78e7a809c7b7584db05b33cf03a73ff586d5de02ba824c16562d5070d41494",
+    "/EP1/artifacts/norberto-lora-final-ctx512-20260928/training-rows.csv": "9267d982ebc43d1f0b2150ab0d9437476e74098a4c2fda5991b5cc29b424d1b7",
+    "models/rl-development/training-rows.jsonl": "03f06731880dd5d51dea87069aca0c456df3bce52914451145b456fff9d7b770",
+    "/EP1/results/norberto/delivery/norberto-lora-final-holdout-20260928/holdout-predictions.csv": "6c9064f344ca3cb1adf70698467b8048b3289d80fa7f4544b20b13dfad17676a",
+    "/EP1/results/norberto/delivery/norberto-lora-final-holdout-20260928/results.json": "5b73e30582f3a9dc134cd61b2203d2f0f649e49aa32fc726c1091c4ac48c682e",
+    "/EP1/results/research/svm-fixed-holdout-20260923/holdout-predictions.csv": "cd7c2cb50ae56842cfd0c48bafaf1ef45d473efb3a6ade535ed2b4c882f0de53",
+    "/EP1/src/model_research/holdout_train.py": "42812504ea9b55e7771f6b0edd4ba8cbad05da9ef77eebcbaed1f9045f664485",
+    "results/rl-development-evaluation-20261105/evaluation/holdout/predictions.jsonl": "84de36000eb211379eed06acec8832ff88337b1e5aa545e330cc221ff18130b0",
+    "/workspace/results/ensemble-holdout-audit-20261105/audit.py": "d757948cbabe334b987e3e9f4c083f5bde284c38e8ce1cee05917079e2a78d01"
+  },
+  "raw_results_directory": "results/ensemble-holdout-audit-20261105",
+  "active_defaults": {
+    "models": [
+      "norberto",
+      "svm",
+      "rl"
+    ],
+    "strategy": "majority",
+    "tiebreaker": "rl",
+    "qwen_included": false
+  },
+  "audit_sources_sha256": {
+    "results/ensemble-holdout-audit-20261105/audit.py": "d757948cbabe334b987e3e9f4c083f5bde284c38e8ce1cee05917079e2a78d01",
+    "results/ensemble-holdout-audit-20261105/workbook_reader.py": "75bde3386027ea65f75a20dd192c465a5188b3e4947b28595ecab13365083a66",
+    "src/ensemble_classifier/comparison.py": "7d00a6110e72c17f4796eb7256db246ea77d162c2d2cefb5d9e1b88e2b190437",
+    "src/ensemble_classifier/strategies.py": "bd62d9fac23f3f7fc7ec160c9233735ee5cdda5ea4052be1cdd3f8f00a26c380"
+  },
+  "validation": {
+    "relevant_tests_passed": 14,
+    "test_seconds": 1.37,
+    "diff_check_passed": true
+  }
+}

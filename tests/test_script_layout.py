@@ -32,18 +32,13 @@ class ScriptLayoutTests(unittest.TestCase):
                                        env=env, text=True, capture_output=True, check=True)
             return json.loads(completed.stdout)
 
-    def test_norberto_training_delegates_to_original_entrypoint(self):
-        args = self.capture_launcher("scripts/norberto/train.sh", ["--partition", "full", "--dry-run"])
-        self.assertIn(f"{ROOT}:/workspace", args)
-        self.assertIn("scripts/train-norberto-full.py", args)
-        self.assertEqual(args[-3:], ["--partition", "full", "--dry-run"])
-
     def test_prediction_exposes_gpu_and_uses_relocated_script(self):
         args = self.capture_launcher("scripts/norberto/test1.sh", ["predict", "--help"])
         self.assertIn(f"{ROOT}:/workspace", args)
         self.assertIn("--device=/dev/kfd", args)
         self.assertIn("scripts/norberto/evaluate-test1.py", args)
         self.assertEqual(args[args.index("--stage") + 1], "predict")
+        self.assertFalse(any(":/ep1" in arg for arg in args))
 
     def test_comparison_has_no_gpu_device_exposure(self):
         args = self.capture_launcher("scripts/norberto/test1.sh", ["compare", "--help"])
@@ -66,6 +61,13 @@ class ScriptLayoutTests(unittest.TestCase):
         self.assertIn("scripts/svm/evaluate-test1.py", args)
         self.assertEqual(args[-1], "--help")
 
+    def test_rl_training_is_cpu_only_and_offline(self):
+        args = self.capture_launcher("scripts/rl/train.sh", ["--dry-run"])
+        self.assertFalse(any(arg.startswith("--device=") for arg in args))
+        self.assertIn("--network=none", args)
+        self.assertIn("scripts/rl/train-development.py", args)
+        self.assertEqual(args[-1], "--dry-run")
+
     def test_python_root_expressions_resolve_to_repository(self):
         checked = 0
         for path in (ROOT / "scripts").rglob("*.py"):
@@ -80,7 +82,7 @@ class ScriptLayoutTests(unittest.TestCase):
                     actual = path.resolve().parents[node.value.slice.value]
                     self.assertEqual(actual, ROOT, str(path.relative_to(ROOT)))
                     checked += 1
-        self.assertGreaterEqual(checked, 9)
+        self.assertGreaterEqual(checked, 6)
 
     def test_base_restore_compatibility_command_preserves_help(self):
         completed = subprocess.run([sys.executable, str(ROOT / "scripts/prepare-model-base.py"), "--help"],

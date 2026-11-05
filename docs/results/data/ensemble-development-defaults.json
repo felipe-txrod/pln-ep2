@@ -1,0 +1,135 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-05",
+  "status": "configured_rl_training_pending",
+  "default_members": [
+    "qwen",
+    "norberto"
+  ],
+  "composition_changed": false,
+  "models": {
+    "norberto": {
+      "training_rows": 16093,
+      "reserved_rows": 3999,
+      "variant": "unchanged_ep1_delivery",
+      "weights_changed": false
+    },
+    "svm": {
+      "training_rows": 16093,
+      "reserved_rows": 3999,
+      "variant": "original_fixed_holdout",
+      "weights_changed": false,
+      "selected_test1_run": "results/svm-development-test1",
+      "runtime_refreshed": true,
+      "all_900_labels_match_historical": true
+    },
+    "rl": {
+      "target_training_rows": 16093,
+      "reserved_rows": 3999,
+      "bundle": "models/rl-development",
+      "status": "requires_training",
+      "train_command": "bash scripts/rl/train.sh",
+      "real_training_performed": false,
+      "historical_full_corpus_bundle_preserved": "models/rl",
+      "full_corpus_fallback": false,
+      "C": 0.25,
+      "parameter_search_performed": false
+    },
+    "qwen": {
+      "training_rows": 16010,
+      "reserved_rows": 4082,
+      "own_grouped_split_preserved": true,
+      "weights_changed": false
+    }
+  },
+  "selection_contract": "Manifest-pinned model identities for NorBERTo/SVM/RL; reject saved predictions from different artifacts.",
+  "rl_preflight": {
+    "status": "passed",
+    "training_rows": 16093,
+    "holdout_rows": 3999,
+    "training_groups": 12956,
+    "holdout_groups": 3281,
+    "row_overlap": 0,
+    "group_overlap": 0,
+    "training_performed": false
+  },
+  "tests": {
+    "targeted_passed": 17,
+    "targeted_elapsed_seconds": 1.39,
+    "available_suite_passed": 121,
+    "available_suite_elapsed_seconds": 22.85,
+    "synthetic_training_only": true,
+    "optional_modules_excluded": [
+      "test_backend_pipeline.py",
+      "test_study_cli.py"
+    ],
+    "missing_optional_sdk": "openai"
+  },
+  "source_run": "results/ensemble-development-defaults-20261105",
+  "test2_inference_performed": false,
+  "remote_calls_performed": false,
+  "configuration_sha256": {
+    "configs/ensemble.json": "df6b7921688a482ce5ce5ed84ae586a33e1d2eb42f7604fc4f3c5b11e34017f8",
+    "configs/ensemble-test1.json": "ca94a93c8325b86d79a49730d5be1c4f47dd3229e88d9ef60f840f2dd4d333c0"
+  },
+  "selection_verification": {
+    "status": "passed",
+    "checks": {
+      "norberto": {
+        "rows": 900,
+        "identity": {
+          "field": "artifact_manifest_sha256",
+          "sha256": "d5f7b0f8a18bc216c72fb0dc67e4de68ba89f343b99dc4b1e9546290431fd5fe",
+          "config": {
+            "description": "Three-fold NorBERTo-512 evaluation on frozen development rows only; reserve the fixed holdout for a later decision and preserve all fold adapters.",
+            "model_name": "Itau-Unibanco/NorBERTo-base",
+            "revision": "db73446f89c96044863ea05a39f680524b84bccb",
+            "max_length": 512,
+            "truncation": "head_tail",
+            "lora_rank": 4,
+            "lora_alpha": 8,
+            "lora_dropout": 0.05,
+            "lora_layers": null,
+            "batch_size": 4,
+            "gradient_accumulation": 4,
+            "eval_batch_size": 8,
+            "learning_rate": 0.001,
+            "epochs": 3,
+            "patience": 1,
+            "weight_decay": 0.01,
+            "warmup_ratio": 0.1,
+            "fp16": false,
+            "attention": "sdpa",
+            "outer_folds": 3,
+            "inner_folds": 5,
+            "seed": 42,
+            "threads": 2,
+            "train_subset_folds": 1,
+            "budget_minutes": 75,
+            "holdout_split_sha256": "0f78e7a809c7b7584db05b33cf03a73ff586d5de02ba824c16562d5070d41494"
+          },
+          "artifact_manifest_sha256": "d5f7b0f8a18bc216c72fb0dc67e4de68ba89f343b99dc4b1e9546290431fd5fe",
+          "implementation_sha256": null,
+          "selected_manifest_sha256": "d5f7b0f8a18bc216c72fb0dc67e4de68ba89f343b99dc4b1e9546290431fd5fe"
+        }
+      },
+      "svm": {
+        "rows": 900,
+        "identity": {
+          "field": "artifact_sha256",
+          "sha256": "9a30abb664d5023d70f444641c4095cf800acba0c98fd8658087e7adad78ee12",
+          "config": null,
+          "artifact_manifest_sha256": "a0688c7f08e2ea74323e62d72b15cf930041fabf847d43102eaf024aeb7e764f",
+          "implementation_sha256": "81d04f8e63d8531292c974e6b849abd86a3a5fac8f16cf2677307d7b44a5a741",
+          "selected_manifest_sha256": "a0688c7f08e2ea74323e62d72b15cf930041fabf847d43102eaf024aeb7e764f"
+        }
+      },
+      "rl": {
+        "status": "requires_development_training",
+        "full_corpus_fallback": false
+      }
+    },
+    "real_training_performed": false,
+    "torch_loaded": false
+  }
+}

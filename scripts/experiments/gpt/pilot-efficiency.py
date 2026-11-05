@@ -27,7 +27,7 @@ def main():
     parser.add_argument("--execute", action="store_true")
     parser.add_argument("--output-dir", type=Path, default=ROOT / "results/pilot-efficiency")
     args = parser.parse_args()
-    train_path = ROOT / "data/train_ep1.xlsx"
+    train_path = ROOT / "data/train.xlsx"
     records, _ = read_xlsx(train_path, labeled=True)
     base = Config.load(ROOT / "configs/codex.json")
     bank, validation = development_split(records, seed=base.seed, limit=6)

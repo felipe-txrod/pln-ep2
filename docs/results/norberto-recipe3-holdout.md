@@ -20,7 +20,7 @@ The recorded implementation hashes match the current sources.
 Recipe 3 retains example-normalized loss reporting and explicitly scales
 backpropagated gradients by accumulation count 4, preserving EP1's optimizer
 units for clipping and AdamW. The numerical hyperparameters and fixed split
-remain unchanged. The [correction](../guides/norberto-optimizer-units.md) explains
+remain unchanged. The [correction](../archive/norberto/recipe3-optimizer-units.md) explains
 the difference from recipe 2 and the handling of unequal final microbatches.
 
 | Epoch interval | Mean logged loss | Mean optimizer gradient norm | Mean sample gradient norm | Maximum optimizer norm |

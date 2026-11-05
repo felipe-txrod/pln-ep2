@@ -23,8 +23,20 @@ def main(argv: list[str] | None = None) -> int:
     combine_parser.add_argument("--gpt-run", type=Path, help="Legacy GPT-only alias for --tiebreaker-run")
     combine_parser.add_argument("--phase", choices=("inference", "statistical"), default="inference")
     combine_parser.add_argument("--test2-run", type=Path)
+    comparison_parser = commands.add_parser(
+        "compare-majority", help="Exploratory local majority comparison; never changes delivery defaults")
+    comparison_parser.add_argument("--config", type=Path, default=Path("configs/ensemble-majority-test1.json"))
+    comparison_parser.add_argument("--input", type=Path, default=Path("data/test1.xlsx"))
+    comparison_parser.add_argument("--gold", type=Path,
+                                   default=Path("data/test1-rotulado-para-teste-estatistico.xlsx"))
+    comparison_parser.add_argument("--output-dir", type=Path, required=True)
     args = parser.parse_args(argv)
     try:
+        if args.command == "compare-majority":
+            from .comparison import compare_majority
+            report = compare_majority(EnsembleConfig.load(args.config), args.input, args.gold, args.output_dir)
+            print(json.dumps(report, ensure_ascii=False, indent=2))
+            return 0
         from .pipeline import combine
         config = EnsembleConfig.load(args.config, models=args.models, strategy=args.strategy,
                                      tiebreaker=args.tiebreaker)

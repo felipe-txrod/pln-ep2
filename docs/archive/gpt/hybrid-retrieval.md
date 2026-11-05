@@ -9,7 +9,7 @@ O método anterior já recupera exemplos por TF-IDF; esta variante acrescenta
 similaridade semântica. É aprendizado em contexto com recuperação de exemplos
 rotulados do treino, sem fine-tuning e sem consulta à internet durante a predição.
 
-O estudo usa somente `train_ep1.xlsx`. Teste1 permanece reservado à comparação
+O estudo usa somente `train.xlsx`. Teste1 permanece reservado à comparação
 com EP1 e teste2 à entrega oficial, conforme o enunciado. O gabarito do teste1
 já foi analisado anteriormente: isso deve ser declarado no relatório; não se
 reivindica independência de uma futura comparação nesse mesmo teste.

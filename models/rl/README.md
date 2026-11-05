@@ -1,4 +1,9 @@
-# Frozen logistic regression
+# Historical full-corpus logistic regression
+
+This 20,092-row artifact is preserved for traceability and is no longer the
+default ensemble RL model. The default is the development-only bundle
+`models/rl-development/`, created with `bash scripts/rl/train.sh`; see the
+[development-only workflow](../../src/rl_classifier/README.md).
 
 `model.joblib` contains the trained word/character TF-IDF + logistic regression
 pipeline with `C=0.25`, including vocabularies, IDF values, coefficients, and

@@ -115,7 +115,7 @@ Further causal experiments should isolate normalization, data inclusion, and
 update budget using development-only controls and internal validation. Test1
 must not choose hyperparameters or ensemble rules while being called untouched.
 
-Scripts: [CPU audit](../../../scripts/diagnostics/norberto/diagnose-training.py) and
-[training-only stability probe](../../../scripts/diagnostics/norberto/probe-stability.py).
+Scripts: `CPU audit` and
+`training-only stability probe`.
 The [public aggregate](../../results/data/norberto-training-investigation-results.json) contains
 measurements; raw reports are in `results/norberto-full-investigation-20261105/`.

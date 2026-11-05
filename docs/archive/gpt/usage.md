@@ -286,7 +286,7 @@ use `--config configs/gpt.json` e declare que não houve otimização):
   --run results/test2 --output deliveries/test2.xlsx
 ```
 
-`predict` usa `data/train_ep1.xlsx` e `data/test2.xlsx` por padrão. A exportação
+`predict` usa `data/train.xlsx` e `data/test2.xlsx` por padrão. A exportação
 exige todas as 897 previsões, rótulos válidos, hashes de texto e ordem das linhas
 corretos. Preenche apenas `clarity` em uma cópia do arquivo original: mesmas
 abas/linhas/colunas, estilos e demais entradas do arquivo XLSX. Nunca sobrescreve
@@ -296,13 +296,13 @@ aceita teste1 como entrega. Metadados ficam em JSON, fora da planilha oficial.
 ## Comparar teste1 separadamente e salvar outra planilha
 
 Com `data/test1.xlsx` sem rótulos, use o modo explícito `comparison`. Os exemplos
-vêm de `train_ep1.xlsx`; a configuração Codex padrão seleciona um exemplo
+vêm de `train.xlsx`; a configuração Codex padrão seleciona um exemplo
 semelhante por classe (três no total) para cada resposta. O gabarito só é lido
 na etapa local de avaliação:
 
 ```bash
 .venv/bin/python -m gpt_classifier predict --backend codex --phase comparison \
-  --config configs/codex.json --train data/train_ep1.xlsx \
+  --config configs/codex.json --train data/train.xlsx \
   --input data/test1.xlsx --output-dir results/test1-codex-comparison
 
 .venv/bin/python -m gpt_classifier export --purpose comparison \
@@ -312,7 +312,7 @@ na etapa local de avaliação:
 .venv/bin/python -m gpt_classifier evaluate \
   --run results/test1-codex-comparison \
   --gold data/test1-rotulado-para-teste-estatistico.xlsx \
-  --train data/train_ep1.xlsx --output-dir results/comparison-test1-codex
+  --train data/train.xlsx --output-dir results/comparison-test1-codex
 ```
 
 `test1-predito.xlsx` é uma cópia para comparação, com 900 rótulos; não é a

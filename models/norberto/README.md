@@ -4,6 +4,10 @@
 trained classification head. Tokenizers and configurations are also versioned.
 The public base weights remain separate and outside Git.
 
+This is the selected NorBERTo for EP2. The original EP1 adapter, classification
+head, tokenizer, and inference settings are retained without loss corrections
+or retraining. Experimental adapters remain historical results.
+
 - Base: `Itau-Unibanco/NorBERTo-base`.
 - Revision: `db73446f89c96044863ea05a39f680524b84bccb`.
 - LoRA: rank 4, alpha 8, dropout 0.05, `Wqkv` target modules.

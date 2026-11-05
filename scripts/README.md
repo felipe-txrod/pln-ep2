@@ -7,29 +7,31 @@ Dataset, model, cache, and result locations remain relative to the project root.
 
 ## NorBERTo
 
+The active model is the unchanged original EP1 delivery adapter in
+`models/norberto/`. Prediction verifies its pinned adapter/base and uses the
+original FP32/SDPA, 512-token head/tail representation.
+
 | Entry point | Purpose |
 |---|---|
-| `norberto/train.sh` | Train using the pinned full-corpus or development recipe |
-| `norberto/test1.sh predict` | Predict with a selected completed adapter on GPU |
-| `norberto/test1.sh compare` | Score saved predictions against test1 labels on CPU |
-| `norberto/evaluate-test1.py` | Python implementation of the test1 stages |
-| `norberto/evaluate-holdout.py` | Validate a completed development-only adapter |
+| `norberto/test1.sh predict` | Predict with the original EP1 adapter on GPU |
+| `norberto/test1.sh compare` | Score saved original-model predictions on CPU |
+| `norberto/evaluate-test1.py` | Python implementation of these two stages |
 
 ```bash
-bash scripts/norberto/train.sh --partition full \
-  --output-dir /workspace/results/norberto-full-recipe3-new
-
 bash scripts/norberto/test1.sh predict \
-  --training-run results/norberto-development-recipe3 \
-  --output-dir results/norberto-test1-new
+  --output-dir results/norberto-ep1-test1-new
 
 bash scripts/norberto/test1.sh compare \
-  --prediction-dir results/norberto-test1-new \
-  --output-dir results/norberto-test1-metrics-new
+  --prediction-dir results/norberto-ep1-test1-new \
+  --output-dir results/norberto-ep1-test1-metrics-new
 ```
 
-See the [training guide](../docs/guides/norberto-training.md) and
-[test1 guide](../docs/guides/norberto-test1.md) for environment and data details.
+Use the [test1 guide](../docs/guides/norberto-test1.md) and
+[original inference package](../src/norberto_classifier/README.md).
+The active package exposes inference only. Experimental loss corrections,
+training launchers, diagnostics, candidate-08 evaluators, and the frozen
+logistic variant were retired on 2026-11-05. Their measurements remain in the
+[archive](../docs/archive/README.md#norberto-training-investigations).
 
 ## SVM
 
@@ -47,6 +49,19 @@ This offline CPU-only command validates the saved recipe and adjacent metadata,
 persists text-only predictions, then reads gold labels to produce `metrics.json`.
 The output includes accuracy, macro-F1, precision, recall, and the confusion
 matrix. Use a new output directory. `SVM_IMAGE` overrides the existing image.
+
+## Logistic regression
+
+```bash
+bash scripts/rl/train.sh --dry-run
+bash scripts/rl/train.sh
+```
+
+The CPU-only offline launcher fits the fixed EP1 logistic recipe on 16,093
+frozen development rows and excludes all 3,999 holdout rows. It creates
+`models/rl-development/` for the selected RL default. The historical full-corpus
+RL model is preserved and never selected as a fallback. See the
+[RL guide](../src/rl_classifier/README.md).
 
 ## Qwen
 
@@ -73,15 +88,14 @@ python3 scripts/models/freeze.py --help
 
 ## Diagnostics and experiments
 
-`diagnostics/audit-dataset-overlap.py` compares the seven provided EP1/EP2
+`diagnostics/audit-dataset-overlap.py` compares the six current EP1/EP2
 workbooks on CPU, without model loading. It reports file/content identity,
 exact and normalized text overlap, and conflicting labels. See the
 [dataset audit](../docs/results/dataset-overlap.md) for results and reproduction.
 
-`diagnostics/norberto/` contains optimizer, backend, sensitivity, and training
-regression audits. `probe-training-prefix.py` runs bounded real training when
-explicitly invoked; the other probes may perform forward/backward passes.
-These are diagnostic tools rather than the normal training workflow.
+Former NorBERTo training diagnostics are historical records, with local
+source snapshots in
+`results/norberto-rollback-20261105/sources-before-rollback.tar.gz`.
 
 `experiments/gpt/pilot-efficiency.py` contains the earlier paired GPT/Codex
 pilot. It prepares a dry run by default; `--execute` enables remote requests.
@@ -89,13 +103,8 @@ See the [historical GPT study](../docs/archive/gpt/first-result.md).
 
 ## Compatibility commands
 
-Three commands remain at the scripts root:
+`prepare-model-base.py` forwards to `models/prepare-base.py`, preserving
+restoration instructions emitted by frozen model packages. The removed
+NorBERTo training wrappers are available only in the historical source snapshot.
 
-- `train-norberto-full.py` and `train-norberto-full.sh` retain the original
-  implementation and exact bytes. Existing jobs and training manifests continue
-  to reference them; `norberto/train.sh` delegates to this launcher.
-- `prepare-model-base.py` forwards to `models/prepare-base.py` so restoration
-  instructions emitted by frozen model packages remain valid.
-
-The reorganized entry points do not change model recipes, output paths,
-existing adapters, or training state. Choose a fresh destination for every run.
+Choose a fresh output destination for every prediction or comparison run.

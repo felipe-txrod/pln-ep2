@@ -1,0 +1,45 @@
+{
+  "selected": "development_word_char_logistic",
+  "data_partition": "development",
+  "training_rows": 16093,
+  "reserved_holdout_rows": 3999,
+  "training_groups": 12956,
+  "holdout_groups": 3281,
+  "holdout_row_overlap": 0,
+  "holdout_group_overlap": 0,
+  "holdout_used_for_fit": false,
+  "holdout_evaluated": false,
+  "dataset": {
+    "rows": 16093,
+    "class_counts": {
+      "c5": 5567,
+      "c1": 5090,
+      "c234": 5436
+    }
+  },
+  "dataset_sha256": "0e9219233664ac675fc47982bbc822acd3bb15d67fb7bfc26b67bec047e46818",
+  "split_sha256": "0f78e7a809c7b7584db05b33cf03a73ff586d5de02ba824c16562d5070d41494",
+  "training_rows_identity_sha256": "86f66aa6572e11f173c24a0b3b00c5489c044c8d1cce4763c2a0224e65baeee5",
+  "config": {
+    "model": "word_char_logistic",
+    "classifier__C": 0.25,
+    "seed": 42,
+    "data_partition": "development",
+    "dataset_sha256": "0e9219233664ac675fc47982bbc822acd3bb15d67fb7bfc26b67bec047e46818",
+    "split_sha256": "0f78e7a809c7b7584db05b33cf03a73ff586d5de02ba824c16562d5070d41494"
+  },
+  "runtime_versions": {
+    "numpy": "2.3.3",
+    "scipy": "1.16.2",
+    "scikit-learn": "1.7.2",
+    "joblib": "1.5.2"
+  },
+  "iterations": [
+    38
+  ],
+  "converged": true,
+  "parameter_search_performed": false,
+  "test_data_accessed": false,
+  "training_script_sha256": "e51bc439b4c189d7fadc7aec03bd2b4b69a994304ad17179aa0fe1347c2faf81",
+  "ep1_model_builder_sha256": "3bb67167675f103a2d26c21aa1c830790fc858ae61ac92f994cad6ada4010206"
+}
