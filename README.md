@@ -15,6 +15,9 @@ completed training on all 20,092 EP1 responses and achieved **37.89% accuracy
 (341/900)** in its isolated test1 comparison. The original EP1 adapter remains
 the frozen reference.
 
+The [training-only regression investigation](docs/investigacao-norberto-full.md)
+records the evidence and the corrected loss normalization for future refits.
+
 O modelo definitivo já treinado do EP1 também está disponível no pacote
 [`src/norberto_classifier`](src/norberto_classifier/README.md), exclusivamente
 para inferência, com cópia local da base e do adapter oficial.

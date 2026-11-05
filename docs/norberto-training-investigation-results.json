@@ -1,0 +1,269 @@
+{
+  "scope": "Training-data-only investigation of the historical full-corpus NorBERTo regression",
+  "full_model_training_performed": false,
+  "optimizer_updates_performed": 0,
+  "test1_accessed_by_diagnostics": false,
+  "data_audit": {
+    "reader_mismatches": 0,
+    "shared_tokenized_rows": 16093,
+    "feature_mismatches": 0,
+    "label_distributions": {
+      "development": {
+        "c5": 5567,
+        "c1": 5090,
+        "c234": 5436
+      },
+      "added_holdout": {
+        "c234": 1417,
+        "c1": 1257,
+        "c5": 1325
+      },
+      "full": {
+        "c5": 6892,
+        "c1": 6347,
+        "c234": 6853
+      }
+    }
+  },
+  "run_comparison": {
+    "optimizer_updates": {
+      "original": 2012,
+      "full": 2512,
+      "increase": 500,
+      "relative_increase": 0.24850894632206755
+    },
+    "warmup_updates": {
+      "original": 202,
+      "full": 252
+    },
+    "configs_identical": true,
+    "old_source_sha256": "4002ea498bce90dafb921124c2594f21284b8fd1c69316866c5bea0b0eea2095",
+    "new_source_sha256": "0c8e4c04b3becc626c31a50e3827daef3cd708252905824dcd9e4c4fb439ee4a",
+    "original_source_git_commit": "fcae20328b49ef312b39babbe41a67acfd6acb1c",
+    "source_difference_summary": "Device selection, logging, module reorganization and inference support; optimizer, training arguments, model initialization and supervised tokenization remain equivalent on GPU.",
+    "first_full_recorded_gradient_norm_over_100": {
+      "loss": 4.6772,
+      "grad_norm": 1090.9871826171875,
+      "learning_rate": 0.0006252212389380532,
+      "epoch": 0.8759705355365319,
+      "step": 1100
+    },
+    "original_max_recorded_gradient_norm": 22.58406639099121,
+    "full_max_recorded_gradient_norm": 1221.635986328125
+  },
+  "training_argument_difference_names": [
+    "logging_dir",
+    "output_dir"
+  ],
+  "gradient_history": {
+    "original": [
+      {
+        "epoch_start": 0,
+        "epoch_end": 0.5,
+        "logged_steps": 25,
+        "mean_loss": 4.496828,
+        "mean_grad_norm": 11.50809757232666,
+        "max_grad_norm": 22.58406639099121
+      },
+      {
+        "epoch_start": 0.5,
+        "epoch_end": 1,
+        "logged_steps": 25,
+        "mean_loss": 4.3398840000000005,
+        "mean_grad_norm": 8.094020614624023,
+        "max_grad_norm": 17.906702041625977
+      },
+      {
+        "epoch_start": 1,
+        "epoch_end": 1.5,
+        "logged_steps": 25,
+        "mean_loss": 4.194124,
+        "mean_grad_norm": 7.581863842010498,
+        "max_grad_norm": 13.233445167541504
+      },
+      {
+        "epoch_start": 1.5,
+        "epoch_end": 2,
+        "logged_steps": 25,
+        "mean_loss": 4.12142,
+        "mean_grad_norm": 8.137781314849853,
+        "max_grad_norm": 12.300700187683105
+      }
+    ],
+    "full": [
+      {
+        "epoch_start": 0,
+        "epoch_end": 0.5,
+        "logged_steps": 31,
+        "mean_loss": 4.464941935483871,
+        "mean_grad_norm": 15.591625859660487,
+        "max_grad_norm": 62.570556640625
+      },
+      {
+        "epoch_start": 0.5,
+        "epoch_end": 1,
+        "logged_steps": 31,
+        "mean_loss": 4.404006451612903,
+        "mean_grad_norm": 106.15643815071353,
+        "max_grad_norm": 1196.8634033203125
+      },
+      {
+        "epoch_start": 1,
+        "epoch_end": 1.5,
+        "logged_steps": 32,
+        "mean_loss": 4.496125,
+        "mean_grad_norm": 368.82365077733994,
+        "max_grad_norm": 848.16845703125
+      },
+      {
+        "epoch_start": 1.5,
+        "epoch_end": 2,
+        "logged_steps": 31,
+        "mean_loss": 4.4352322580645165,
+        "mean_grad_norm": 319.61230370306197,
+        "max_grad_norm": 1221.635986328125
+      }
+    ]
+  },
+  "synthetic_loss_probe": [
+    {
+      "microbatch_sizes": [
+        4,
+        4,
+        4,
+        4
+      ],
+      "reference_loss": 1.4575748443603516,
+      "legacy": {
+        "model_accepts_loss_kwargs": true,
+        "accelerator_accumulation_steps": 1,
+        "accumulated_loss": 5.8302987813949585,
+        "loss_ratio": 3.9999995910697486,
+        "gradient_norm_ratio": 4.000000476837158,
+        "gradient_relative_error": 3.000000476837158,
+        "normalized_gradient_direction_error": 1.0718080289962018e-07
+      },
+      "sample_normalized": {
+        "model_accepts_loss_kwargs": false,
+        "accelerator_accumulation_steps": 1,
+        "accumulated_loss": 1.4575746953487396,
+        "loss_ratio": 0.9999998977674371,
+        "gradient_norm_ratio": 1.0000001192092896,
+        "gradient_relative_error": 8.513333682458324e-08,
+        "normalized_gradient_direction_error": 1.0718080289962018e-07
+      }
+    },
+    {
+      "microbatch_sizes": [
+        4,
+        4,
+        4,
+        1
+      ],
+      "reference_loss": 1.4960185289382935,
+      "legacy": {
+        "model_accepts_loss_kwargs": true,
+        "accelerator_accumulation_steps": 1,
+        "accumulated_loss": 6.1940964460372925,
+        "loss_ratio": 4.140387519420076,
+        "gradient_norm_ratio": 5.371135711669922,
+        "gradient_relative_error": 4.480431079864502,
+        "normalized_gradient_direction_error": 0.4244025945663452
+      },
+      "sample_normalized": {
+        "model_accepts_loss_kwargs": false,
+        "accelerator_accumulation_steps": 1,
+        "accumulated_loss": 1.496018335223198,
+        "loss_ratio": 0.9999998705129036,
+        "gradient_norm_ratio": 1.0,
+        "gradient_relative_error": 7.286041636689333e-08,
+        "normalized_gradient_direction_error": 7.581572702974881e-08
+      }
+    }
+  ],
+  "training_only_stability_probe": {
+    "status": "completed",
+    "training_data_only": true,
+    "test1_accessed": false,
+    "optimizer_updates": 0,
+    "sample_seed": 42,
+    "rows_per_class": 100,
+    "selection_sha256": "bef87508a9e7d4830cd4514d61e29dcf61ad56411d52682fe29d72165aa9aaa1",
+    "results": {
+      "original": {
+        "short_training_rows": 12,
+        "cpu_loss": 0.8126266002655029,
+        "gpu_loss": 0.8126263618469238,
+        "cpu_gradient_norm": 1.8443171977996826,
+        "gpu_gradient_norm": 1.8443201780319214,
+        "cpu_gpu_max_logit_difference": 5.0067901611328125e-06,
+        "cpu_gpu_relative_gradient_difference": 1.1906559848284815e-05,
+        "shared_training_rows": 300,
+        "shared_training_correct": 151,
+        "shared_training_accuracy": 0.5033333333333333,
+        "shared_training_cross_entropy": 0.9892551231384278,
+        "shared_training_prediction_counts": {
+          "c1": 95,
+          "c234": 109,
+          "c5": 96
+        },
+        "weights_unchanged": true
+      },
+      "full": {
+        "short_training_rows": 12,
+        "cpu_loss": 1.0965152978897095,
+        "gpu_loss": 1.0965256690979004,
+        "cpu_gradient_norm": 189.74691772460938,
+        "gpu_gradient_norm": 190.12257385253906,
+        "cpu_gpu_max_logit_difference": 0.00034493207931518555,
+        "cpu_gpu_relative_gradient_difference": 0.004085613880306482,
+        "shared_training_rows": 300,
+        "shared_training_correct": 111,
+        "shared_training_accuracy": 0.37,
+        "shared_training_cross_entropy": 1.1031771532694499,
+        "shared_training_prediction_counts": {
+          "c1": 60,
+          "c234": 122,
+          "c5": 118
+        },
+        "weights_unchanged": true
+      }
+    }
+  },
+  "adapter_norm_summary": {
+    "original": {
+      "mean_scaled_lora_update_norm": 6.837580052289096,
+      "classifier_weight_norm": 1.4890192747116089,
+      "classifier_bias_norm": 0.001099920249544084
+    },
+    "full": {
+      "mean_scaled_lora_update_norm": 6.8395609638907695,
+      "classifier_weight_norm": 1.407826542854309,
+      "classifier_bias_norm": 0.0033907401375472546
+    }
+  },
+  "confirmed_findings": [
+    "Optimization instability is present in training logs and in CPU/GPU gradients on a fixed training batch.",
+    "The full refit performs worse on a preselected shared training sample.",
+    "Native ModernBERT loss is not normalized correctly across accumulated microbatches in the legacy runner.",
+    "The loss defect affects both historical runs; global clipping cancels a constant scaling when both gradients exceed the clipping threshold.",
+    "Numerical hyperparameters and supervised input features match; update counts and data order necessarily change with the corpus."
+  ],
+  "causal_limit": "No controlled full retraining or data/update-count ablation was performed; no unique trigger or recovery in test1 accuracy is established.",
+  "correction": {
+    "recipe_version": 2,
+    "loss_normalization": "sample_count_across_accumulation",
+    "hyperparameters_changed": false,
+    "historical_artifacts_changed": false,
+    "new_full_training_performed": false,
+    "targeted_cpu_tests_passed": 9,
+    "implementation_sha256": "1c35394b7b68dac274342370dd2989fb1161dbb356083f56af4251ca1e2070ea"
+  },
+  "primary_sources": [
+    "https://github.com/huggingface/transformers/blob/v4.57.1/src/transformers/trainer.py",
+    "https://github.com/huggingface/transformers/blob/v4.57.1/src/transformers/models/modernbert/modeling_modernbert.py"
+  ],
+  "artifacts": {
+    "investigation_run": "results/norberto-full-investigation-20261105"
+  }
+}

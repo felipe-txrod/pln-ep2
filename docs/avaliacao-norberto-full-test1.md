@@ -1,5 +1,9 @@
 # Full-corpus NorBERTo evaluation on labeled test1
 
+The subsequent [training-only investigation](investigacao-norberto-full.md)
+documents optimization instability, a reproduced loss-normalization bug,
+and the tested correction for future training. Historical results below remain unchanged.
+
 The NorBERTo adapter refitted on all **20,092 EP1 training responses** achieved
 **37.89% accuracy (341/900)** and **36.47% macro-F1** on test1. The original EP1
 submission achieved 48.00% (432/900). Full-corpus refitting completed technically,

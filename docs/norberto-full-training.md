@@ -1,5 +1,25 @@
 # NorBERTo refitting on the full EP1 training corpus
 
+## Recipe version 2: corrected loss normalization
+
+The current command normalizes cross entropy by the total example count across
+gradient accumulation, fixing a confirmed legacy ModernBERT/Trainer bug.
+Optimizer hyperparameters remain unchanged, but this is a new loss computation,
+recorded as recipe version 2. The historical 341/900 refit used the legacy loss.
+Nine CPU tests and a dry-run passed; no full training or test1 result exists for
+version 2. See the [investigation](investigacao-norberto-full.md) for evidence
+and causal limits.
+
+The historical output directory already exists. Inspect a new version-2 plan
+without starting training:
+
+```bash
+bash scripts/train-norberto-full.sh \
+  --output-dir /workspace/results/norberto-full-normalized --dry-run
+```
+
+## Training command and original parameters
+
 From the EP2 root, start a fresh adapter using all 20,092 original EP1 training
 responses, including the 3,999 rows previously reserved as the internal holdout:
 
