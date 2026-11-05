@@ -21,3 +21,7 @@ Depende de `models/ensemble-soft/` e dos modelos-base intactos. Os arquivos
 anteriores permanecem preservados. O [guia](../../docs/guides/ensemble-stacking.md)
 descreve os comandos e as limitações do experimento. Este pacote não promove
 automaticamente o stacking aos presets de entrega.
+
+A [avaliação final](../../docs/results/ensemble-stacking.md) registra 442/900
+acertos (49,11%), abaixo dos 447/900 do soft voting. O artefato foi preservado
+sem ajuste a partir desse resultado.

@@ -6,6 +6,18 @@ Compare results only on the same dataset and preserve the training recipe
 and partition recorded by each report. The original EP1 NorBERTo reference
 has 48.00% accuracy on test1 and 45.31% on its frozen holdout.
 
+## Stacking versus weighted soft voting
+
+The [stacking comparison](ensemble-stacking.md) reuses the same frozen models,
+calibrators and 1,972 development rows as soft-weight selection. Five grouped
+stratified folds selected meta-LR C=0.1 from four fixed candidates using a
+one-standard-error rule. It scored **442/900 (49.11%)**, macro-F1 **49.03%**,
+below weighted soft voting at 447/900 (49.67%), macro-F1 49.58%. It corrected
+40 soft errors and harmed 45 correct cases; exact McNemar p=0.664645.
+The report includes per-class F1, confusion matrices and affected Excel rows.
+No base model was refitted, no test-label tuning occurred and earlier artifacts
+were preserved. This remains an exploratory comparison with historical exposure.
+
 ## Local majority ensemble: test1 comparison
 
 The [weighted soft-voting comparison](ensemble-soft.md) is a separate frozen

@@ -5,7 +5,7 @@ ou realizar chamadas remotas. A avaliação final usa teste1 rotulado após a
 entrega de teste2. O [protocolo completo](../../docs/guides/ensemble.md) descreve as
 regras e as extensões planejadas.
 
-## Weighted soft voting
+## Stacking
 
 Os comandos separados `fit-stacking`, `predict-stacking` e `evaluate-stacking`
 treinam somente uma meta-LR nas linhas que não calibraram os modelos,
@@ -13,6 +13,8 @@ selecionando regularização por CV estratificada por grupos. Reutilizam os mesm
 calibradores, modelos-base e previsões do soft voting. Consulte o
 [guia de stacking](../../docs/guides/ensemble-stacking.md) e o
 [artefato congelado](../../models/ensemble-stacking/README.md).
+
+## Weighted soft voting
 
 Os comandos `fit-soft`, `predict-soft` e `evaluate-soft` reutilizam os modelos
 congelados com probabilidades alinhadas. O antigo holdout é dividido por grupos

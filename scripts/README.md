@@ -130,3 +130,9 @@ macro-F1, confusion matrices and paired McNemar. It performs no inference or
 parameter tuning. It is an isolated comparison; it does not certify the
 assignment's test2-before-test1 order. See the
 [results and protocol limitations](../docs/results/ensemble-soft.md#conferência-contra-a-entrega-efetiva-do-ep1).
+
+For stacking, use `python -m ensemble_classifier fit-stacking`,
+`predict-stacking` and `evaluate-stacking`. No additional launcher is required.
+The [guide](../docs/guides/ensemble-stacking.md) gives the exact commands and
+cached-score workflow; the [results](../docs/results/ensemble-stacking.md)
+include per-class F1, confusion matrices and corrected/harmed Excel rows.

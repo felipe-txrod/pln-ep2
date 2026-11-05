@@ -33,6 +33,7 @@ measured results, assignment references, and historical experiments are separate
 | Compare measured classifier results | [Results index](docs/results/README.md) |
 | Reproduce NorBERTo + SVM + RL majority voting and its test1 comparison | [Majority ensemble](docs/results/ensemble-majority.md) |
 | Compare calibrated weighted soft voting with each frozen classifier | [Soft-voting results and confusion matrices](docs/results/ensemble-soft.md) |
+| Compare stacking with soft voting, including affected instances | [Stacking results](docs/results/ensemble-stacking.md) |
 | Consult earlier GPT/Codex and training investigations | [Experiment archive](docs/archive/README.md) |
 
 ## Repository layout
