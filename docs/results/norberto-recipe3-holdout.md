@@ -1,5 +1,7 @@
 # NorBERTo recipe 3: completed training and holdout evaluation
 
+[Documentation index](../README.md)
+
 The optimizer-compatible adapter achieved **44.81% accuracy (1,792/3,999)**
 and **44.81% macro-F1** on the frozen EP1 holdout. This recovers 366 correct
 predictions over recipe 2 and remains 20 below the original EP1 adapter on
@@ -18,7 +20,7 @@ The recorded implementation hashes match the current sources.
 Recipe 3 retains example-normalized loss reporting and explicitly scales
 backpropagated gradients by accumulation count 4, preserving EP1's optimizer
 units for clipping and AdamW. The numerical hyperparameters and fixed split
-remain unchanged. The [correction](norberto-optimizer-units-fix.md) explains
+remain unchanged. The [correction](../guides/norberto-optimizer-units.md) explains
 the difference from recipe 2 and the handling of unequal final microbatches.
 
 | Epoch interval | Mean logged loss | Mean optimizer gradient norm | Mean sample gradient norm | Maximum optimizer norm |
@@ -131,5 +133,5 @@ python3 scripts/evaluate-norberto-holdout.py \
 ```
 
 Raw results are in `results/norberto-recipe3-holdout-20261105/`.
-The [public aggregate](norberto-recipe3-holdout-results.json) includes full
+The [public aggregate](data/norberto-recipe3-holdout-results.json) includes full
 metrics, fingerprints, training audits, regression tests, and paired comparisons.

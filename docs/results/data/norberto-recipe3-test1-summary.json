@@ -1,0 +1,82 @@
+{
+  "status": "completed",
+  "recipe_version": 3,
+  "training_rows": 16093,
+  "data_partition": "development",
+  "adapter_weights_sha256": "641760227c2d5862f56fa3251d7e8722422a37d4de30a76d0623dbe52325e04c",
+  "gold_sha256": "c92658298f95b6325a49b017b58673ebda450fa54dc2280d74393cb093378406",
+  "predictions_sha256": "254f64c20644e0683d40711fb9cbe50f22de5848b2dd35296fa79233d359ab8f",
+  "metrics": {
+    "rows": 900,
+    "accuracy": 0.4688888888888889,
+    "f1_macro": 0.4685410018773016,
+    "label_order": [
+      "c1",
+      "c234",
+      "c5"
+    ],
+    "confusion_matrix": [
+      [
+        120,
+        114,
+        66
+      ],
+      [
+        71,
+        151,
+        78
+      ],
+      [
+        53,
+        96,
+        151
+      ]
+    ],
+    "classification_report": {
+      "c1": {
+        "precision": 0.4918032786885246,
+        "recall": 0.4,
+        "f1-score": 0.4411764705882353,
+        "support": 300.0
+      },
+      "c234": {
+        "precision": 0.4182825484764543,
+        "recall": 0.5033333333333333,
+        "f1-score": 0.4568835098335855,
+        "support": 300.0
+      },
+      "c5": {
+        "precision": 0.511864406779661,
+        "recall": 0.5033333333333333,
+        "f1-score": 0.507563025210084,
+        "support": 300.0
+      },
+      "accuracy": 0.4688888888888889,
+      "macro avg": {
+        "precision": 0.47398341131488,
+        "recall": 0.4688888888888889,
+        "f1-score": 0.4685410018773016,
+        "support": 900.0
+      },
+      "weighted avg": {
+        "precision": 0.47398341131488,
+        "recall": 0.4688888888888889,
+        "f1-score": 0.4685410018773016,
+        "support": 900.0
+      }
+    },
+    "prediction_counts": {
+      "c234": 361,
+      "c1": 244,
+      "c5": 295
+    },
+    "precision_macro": 0.47398341131488,
+    "recall_macro": 0.4688888888888889,
+    "correct": 422,
+    "incorrect": 478
+  },
+  "source_metrics": "results/norberto-recipe3-test1-metrics/metrics.json",
+  "source_metrics_sha256": "afc4908e81e5af8dd4010fe01fe51b9061be234ac9feeca1a84cb28e2b1329bf",
+  "source_run_sha256": "8a3960a0db9bc83a8abd4a043efe06e46c8cf968fa81a7a97ec235a739829777",
+  "verification_scope": "Inspection of existing completed metrics; no new inference or metric recomputation."
+}

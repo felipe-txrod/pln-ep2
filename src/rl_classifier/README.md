@@ -53,4 +53,4 @@ load the model. Alternate locations use `--artifact`, `RL_ARTIFACT_PATH`, or
 Loading and inference are lazy and CPU-only. Previous inference on all 900
 test1 responses achieved **49.33% accuracy (444/900)**, with row IDs, texts,
 parameters, and hashes verified. See the
-[full evaluation](../../docs/avaliacao-lexicais-test1.md).
+[full evaluation](../../docs/results/lexical-test1.md).

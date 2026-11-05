@@ -1,5 +1,7 @@
 # NorBERTo optimizer-unit compatibility correction
 
+[Documentation index](../README.md)
+
 The initial normalization fix corrected example weighting but changed the units
 of gradients consumed by the inherited clipping threshold and AdamW optimizer.
 Recipe version 3 makes the unit conversion explicit. This addresses a recipe
@@ -23,7 +25,7 @@ The compatibility scaling is deliberately distinct from objective averaging;
 it is recorded explicitly rather than relying on Transformers' kwargs heuristic.
 
 The implementation is isolated in
-[`training_recipe.py`](../src/norberto_classifier/training_recipe.py).
+[`training_recipe.py`](../../src/norberto_classifier/training_recipe.py).
 The existing sample-loss helper remains unchanged so historical manifests and
 validation remain usable. The production wrapper selects recipe version 3;
 the holdout evaluator accepts versions 2 and 3 and verifies the new recipe hash
@@ -70,7 +72,7 @@ NORBERTO_IMAGE=pln-rocm:6.4.1 bash scripts/train-norberto-full.sh \
 ```
 
 The subsequent full run completed two epochs and 2,012 updates. Its
-[holdout evaluation](avaliacao-norberto-recipe3-holdout.md) records final quality
+[holdout evaluation](../results/norberto-recipe3-holdout.md) records final quality
 and full-run gradient summaries. A short prefix alone does not establish
 long-run stability or quality. No test1/test2 labels were used for this
 correction, and no saved original adapter was replaced.

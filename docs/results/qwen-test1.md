@@ -1,5 +1,7 @@
 # Qwen3-1.7B evaluation on labeled test1
 
+[Documentation index](../README.md)
+
 The completed QLoRA NF4 adapter achieved **46.67% accuracy (420/900)** and
 **46.44% macro-F1** on all original test1 rows. The workbook, row IDs, and text
 hashes were preserved. Inference consumed only texts from `data/test1.xlsx`;
@@ -73,7 +75,7 @@ Repeated texts limit independence assumptions in this paired comparison.
 The original NorBERTo predictions were reused; NorBERTo was not executed again.
 The later full-corpus NorBERTo refit is a different model and is not represented
 by this baseline. SVM and logistic regression results come from the
-[saved CPU evaluation](avaliacao-lexicais-test1.md).
+[saved CPU evaluation](lexical-test1.md).
 
 This evaluation is an isolated comparison. No test2 run or delivery preceded
 it for this adapter, so it does not establish completion of the prescribed
@@ -96,7 +98,7 @@ argmax predictions, and source/prediction hashes matched the saved report.
 The original training run and adapter were unchanged.
 
 The reusable comparison entry point is
-[`scripts/evaluate-qwen-test1.py`](../scripts/evaluate-qwen-test1.py). Inside the
+[`scripts/evaluate-qwen-test1.py`](../../scripts/evaluate-qwen-test1.py). Inside the
 validated ROCm environment, with the original base cache available:
 
 ```bash
@@ -112,5 +114,5 @@ are sufficient for further analysis without executing a model again.
 
 Complete public aggregate metrics, configuration, runtime versions, provenance
 hashes, and the paired comparison are in
-[`qwen-test1-results.json`](qwen-test1-results.json). Raw predictions and reports
+[`qwen-test1-results.json`](data/qwen-test1-results.json). Raw predictions and reports
 remain in `results/qwen-test1-evaluation-20261104-225455-verified/qwen/`.

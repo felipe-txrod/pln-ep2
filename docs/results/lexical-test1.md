@@ -1,5 +1,7 @@
 # Avaliação de SVM e regressão logística em teste1
 
+[Documentation index](../README.md)
+
 Avaliação dos artefatos já treinados do EP1 nas **900 respostas de teste1**,
 usando `test1-rotulado-para-teste-estatistico.xlsx` como gabarito. Os modelos
 receberam somente os textos de `test1.xlsx`; os rótulos foram lidos após a
@@ -66,7 +68,7 @@ inicialização do contêiner; não é um benchmark comparativo controlado.
 
 Os hashes dos artefatos, metadados, código, entradas e previsões, além das
 métricas completas por classe, estão no
-[agregado de resultados](lexical-test1-results.json). As previsões, os relatórios
+[agregado de resultados](data/lexical-test1-results.json). As previsões, os relatórios
 e o script de avaliação foram preservados em
 `results/lexical-test1-cpu-20261104-182046/`, nos subdiretórios `svm` e `rl`.
 As 900 linhas foram mantidas, com IDs, ordem e textos conferidos contra o gabarito.

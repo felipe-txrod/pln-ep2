@@ -1,5 +1,7 @@
 # NorBERTo development-only refit: frozen holdout validation
 
+[Documentation index](../../README.md) · Historical experiment record; use the guides for current commands.
+
 The corrected-loss adapter trained on **16,093 development responses** achieved
 **35.66% accuracy (1,426/3,999)** and **35.59% macro-F1** on the original EP1
 holdout. The original EP1 adapter achieved **45.31% (1,812/3,999)** on these
@@ -98,17 +100,17 @@ addresses the confirmed accumulation bug; it does not guarantee stable
 optimization or recover the original classification quality for every run.
 The precise trigger of this regression remains unisolated. This validation
 does not establish that the normalization change alone caused the decrease.
-See the [earlier investigation](investigacao-norberto-full.md) for the inherited
+See the [earlier investigation](regression-investigation.md) for the inherited
 bug and the limits of causal attribution.
 
-The subsequent [optimizer and backend audit](norberto-instability-audit.md)
+The subsequent [optimizer and backend audit](instability-audit.md)
 checks the complete corrected Trainer loop in CPU and GPU execution, confirms
 large derivatives on CPU, and localizes the sensitivity to the first attention
 LoRA. It also explains why the changed loss scale alters the clipping regime.
 
 ## Execution and independent verification
 
-The [evaluation script](../scripts/evaluate-norberto-holdout.py) loaded the new
+The [evaluation script](../../../scripts/evaluate-norberto-holdout.py) loaded the new
 adapter and predicted all 3,999 held-out texts once in FP32, batch 8, on the
 RX 6650 XT with ROCm override `10.3.0`. Loading, tokenization, and inference
 took **163.31 seconds**. Peak allocated/reserved VRAM was **951.81/1,270 MiB**.
@@ -135,6 +137,6 @@ python3 scripts/evaluate-norberto-holdout.py \
 ```
 
 Raw results are under `results/norberto-development-holdout-20261105/`.
-The [public result aggregate](norberto-development-holdout-results.json)
+The [public result aggregate](../../results/data/norberto-development-holdout-results.json)
 contains full metrics, provenance, training audits, gradient summaries, and
 the paired comparison.

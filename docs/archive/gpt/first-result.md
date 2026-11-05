@@ -1,5 +1,7 @@
 # Análise do primeiro resultado GPT — 04/11/2026
 
+[Documentation index](../../README.md) · Historical experiment record; use the guides for current commands.
+
 ## Resultado observado e decisão
 
 O primeiro método GPT ainda não melhora o EP1. Não promover outra configuração

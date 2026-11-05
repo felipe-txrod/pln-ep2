@@ -1,5 +1,7 @@
 # NorBERTo instability: optimizer and backend audit
 
+[Documentation index](../../README.md) · Historical experiment record; use the guides for current commands.
+
 The corrected development-only adapter is unstable, but the new checks do
 **not identify an incorrect sample-normalized loss or an extra accumulation
 division**. The complete tiny-model Trainer loop agrees with an independent
@@ -12,7 +14,7 @@ checks does not certify the entire training pipeline or recover model quality.
 
 ## Complete optimizer-loop verification
 
-[`audit-norberto-optimizer.py`](../scripts/audit-norberto-optimizer.py) uses a
+[`audit-norberto-optimizer.py`](../../../scripts/audit-norberto-optimizer.py) uses a
 random two-layer ModernBERT with PEFT, 29 synthetic examples, and zero dropout.
 It executes four updates over two epochs, alternately accumulating batches of
 `4+4+4+4` and `4+4+4+1`. The production loss-injection context is used unchanged.
@@ -41,7 +43,7 @@ in a full-size training run.
 
 ## Real saved-adapter gradients on CPU and GPU
 
-[`audit-norberto-backends.py`](../scripts/audit-norberto-backends.py) selected
+[`audit-norberto-backends.py`](../../../scripts/audit-norberto-backends.py) selected
 the first four responses per class with at most 64 tokens from the shared
 development training rows. This fixed batch has 12 examples, padded to 64
 tokens. Dropout was disabled to isolate numerical differences. No optimizer
@@ -67,7 +69,7 @@ the current environment. This does not prove historical bitwise identity.
 
 ## Local derivative verification and first-layer localization
 
-[`audit-norberto-sensitivity.py`](../scripts/audit-norberto-sensitivity.py)
+[`audit-norberto-sensitivity.py`](../../../scripts/audit-norberto-sensitivity.py)
 reloaded the development-only adapter on CPU and used the same 12 training
 responses. The measured norm was approximately **158.83**, with **99.911% of
 the squared gradient norm** in the first attention layer's LoRA parameters.
@@ -147,8 +149,8 @@ sensitivity, data order, and other implementation issues. The current evidence
 does not justify claiming either a new confirmed loss bug or a fully explained
 regression. Another full training run is not a substitute for that isolation.
 
-The subsequent [optimizer-unit correction](norberto-optimizer-units-fix.md)
-and its [completed holdout evaluation](avaliacao-norberto-recipe3-holdout.md)
+The subsequent [optimizer-unit correction](../../guides/norberto-optimizer-units.md)
+and its [completed holdout evaluation](../../results/norberto-recipe3-holdout.md)
 document a controlled prefix and full-run follow-up. Recipe 3 reproduced the
 original logged gradient norms through update 1,000, avoided the preceding
 escalation, and recovered 44.81% holdout accuracy. The audit above describes
@@ -174,6 +176,6 @@ PYTHONPATH=src python3 scripts/audit-norberto-sensitivity.py --ep1-root /ep1 \
 
 The backend and sensitivity commands require an existing parent output directory.
 Raw outputs are in `results/norberto-deep-audit-20261105/`.
-The [public aggregate](norberto-deep-audit-results.json) records measured values,
+The [public aggregate](../../results/data/norberto-deep-audit-results.json) records measured values,
 hashes, test scope, and limitations. The preceding
-[holdout validation](avaliacao-norberto-development-holdout.md) remains unchanged.
+[holdout validation](recipe2-development-holdout.md) remains unchanged.

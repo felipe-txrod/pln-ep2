@@ -1,6 +1,8 @@
 # Fine-tuning do Qwen3 na RX 6650 XT
 
-See the [completed training audit and test1 evaluation](avaliacao-qwen-test1.md)
+[Documentation index](../README.md)
+
+See the [completed training audit and test1 evaluation](../results/qwen-test1.md)
 for the frozen adapter results, per-class metrics, and provenance hashes.
 
 ## Visão geral
@@ -230,7 +232,7 @@ Artefatos: `results/qwen-smoke-verified/`,
 `results/qwen-smoke-fp16-verified/`, `results/qwen-pilot-verified/` e
 `results/qwen-pilot-inference/`. Na inferência separada, três textos sem rótulos
 reproduziram as previsões salvas. Os agregados históricos estão em
-[qwen-compatibility-results.json](qwen-compatibility-results.json).
+[qwen-compatibility-results.json](../results/data/qwen-compatibility-results.json).
 
 ## Otimização de memória e velocidade
 
@@ -284,7 +286,7 @@ FP16 batch 4 foi 21% mais rápido que esse QLoRA, mas deixou somente 676 MiB
 livres no teste e muda o requisito original de quantização. Não se troca a
 precisão do experimento principal sem registrar essa decisão. Os resultados
 completos, incluindo falhas e tempos individuais, estão em
-[qwen-performance-results.json](qwen-performance-results.json).
+[qwen-performance-results.json](../results/data/qwen-performance-results.json).
 
 Esses números medem kernels e atualizações. A duração integral depende também
 dos comprimentos reais, da avaliação, do carregamento e do comportamento térmico.

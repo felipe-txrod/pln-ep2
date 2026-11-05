@@ -1,5 +1,7 @@
 # NorBERTo evaluation after correcting loss normalization
 
+[Documentation index](../../README.md) · Historical experiment record; use the guides for current commands.
+
 The recipe-version-2 adapter achieved **45.33% accuracy (408/900)** and
 **43.83% macro-F1** on labeled test1. This is 67 more correct predictions than
 the legacy full-corpus refit, but 24 fewer than the original EP1 submission.
@@ -101,14 +103,14 @@ proof. The observed stability and recovered predictions are consistent with
 the correction helping this execution. A single run does not isolate all causes
 or establish a general guarantee of improved accuracy.
 
-The [investigation](investigacao-norberto-full.md) predates this follow-up and
+The [investigation](regression-investigation.md) predates this follow-up and
 documents the bug, original instability, tests, and causal limits.
 
 ## Execution, independent verification, and scope
 
 The exported adapter was evaluated once on the RX 6650 XT, in FP32 with batch
 8 and ROCm override `10.3.0`, using the existing
-[`evaluate-norberto-test1.py`](../scripts/evaluate-norberto-test1.py) script.
+[`evaluate-norberto-test1.py`](../../../scripts/evaluate-norberto-test1.py) script.
 The container had no network access; project files, original sources, and base
 cache were read-only. Loading, tokenization, and inference took **34.59 seconds**.
 
@@ -132,5 +134,5 @@ python3 scripts/evaluate-norberto-test1.py \
 ```
 
 Raw outputs are in `results/norberto-normalized-test1-20261105/`.
-The [public result aggregate](norberto-normalized-test1-results.json) contains
+The [public result aggregate](../../results/data/norberto-normalized-test1-results.json) contains
 full metrics, provenance, training checks, and paired comparisons.

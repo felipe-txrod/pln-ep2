@@ -1,5 +1,7 @@
 # Verificação da implementação — 03/11/2026
 
+[Documentation index](../../README.md) · Historical experiment record; use the guides for current commands.
+
 Ambiente isolado `EP2/.venv`, Python 3.14.8, OpenAI SDK 2.54.0; dependências
 registradas em `requirements-lock.txt`. `pip check`: nenhuma incompatibilidade.
 Compilação dos módulos: sem erros.
@@ -102,7 +104,7 @@ para experimentos seguintes.
   2/12 acertos lexical e 3/12 híbrido. Total informado pelo CLI: 68.594 tokens
   de entrada e 746 de saída. Nenhum gabarito de teste1/teste2 foi utilizado.
 - Artefatos em `results/retrieval-hibrida-v2-20261104/`; detalhes e limitações
-  em [recuperacao-hibrida.md](recuperacao-hibrida.md). O piloto não selecionou
+  em [recuperacao-hibrida.md](hybrid-retrieval.md). O piloto não selecionou
   automaticamente um método nem alterou os padrões anteriores.
 - A primeira prévia local foi interrompida para eliminar normalizações
   repetidas; não fez chamadas GPT. Seus artefatos foram preservados em

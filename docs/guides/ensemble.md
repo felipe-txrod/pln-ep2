@@ -1,5 +1,7 @@
 # Ensemble extensível
 
+[Documentation index](../README.md)
+
 ## Objetivo e escopo
 
 `src/ensemble_classifier/` combina classificadores das classes
@@ -14,7 +16,7 @@ o holdout do EP1 não participa dessa avaliação.
 
 A primeira implementação fornece seleção de membros, combinação offline,
 roteamento de divergências e importação das decisões do árbitro selecionado. O
-[guia do pacote](../src/ensemble_classifier/README.md) apresenta os comandos.
+[guia do pacote](../../src/ensemble_classifier/README.md) apresenta os comandos.
 Execução automática dos modelos e estratégias adicionais permanecem extensões.
 
 ## Compatibilidade com os classificadores existentes

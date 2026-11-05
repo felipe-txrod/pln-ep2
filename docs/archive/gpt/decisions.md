@@ -1,5 +1,7 @@
 # Requisitos e decisões do experimento GPT
 
+[Documentation index](../../README.md) · Historical experiment record; use the guides for current commands.
+
 Leitura prévia: `ep2-enunciado.md` e `ep2-modelo-relatorio-com-analise.md`
 (integralmente), enunciado transcrito do EP1, README, decisão do NorBERTo,
 auditoria da entrega e implementação de leitura, normalização, treino e inferência.

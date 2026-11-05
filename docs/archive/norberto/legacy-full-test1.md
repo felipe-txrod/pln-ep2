@@ -1,6 +1,8 @@
 # Full-corpus NorBERTo evaluation on labeled test1
 
-The subsequent [training-only investigation](investigacao-norberto-full.md)
+[Documentation index](../../README.md) · Historical experiment record; use the guides for current commands.
+
+The subsequent [training-only investigation](regression-investigation.md)
 documents optimization instability, a reproduced loss-normalization bug,
 and the tested correction for future training. Historical results below remain unchanged.
 
@@ -116,7 +118,7 @@ cache were mounted read-only. Loading, tokenization, and inference took
 **951.81 / 1,136 MiB**.
 
 The reusable entry point is
-[`scripts/evaluate-norberto-test1.py`](../scripts/evaluate-norberto-test1.py).
+[`scripts/evaluate-norberto-test1.py`](../../../scripts/evaluate-norberto-test1.py).
 It requires the original EP1 source and pinned base cache. Inside the validated
 ROCm container, with EP1 mounted at `/ep1` and its Hugging Face cache mounted
 at `/workspace/.cache/huggingface`:
@@ -133,4 +135,4 @@ An independent standard-library ZIP/XML reader reconciled all gold labels,
 confusion counts, per-class scores, probability sums, logits/argmax predictions,
 and source/prediction hashes. Raw reports remain in
 `results/norberto-full-test1-20261105-003353/`; the full public aggregate is
-[`norberto-full-test1-results.json`](norberto-full-test1-results.json).
+[`norberto-full-test1-results.json`](../../results/data/norberto-full-test1-results.json).

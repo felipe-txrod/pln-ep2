@@ -15,4 +15,4 @@ provenance and parameters. `manifest.json` identifies the distributed copies.
 Inference runs on CPU without retraining or artificial probabilities.
 
 See the [usage guide](../../src/svm_classifier/README.md) and
-[test1 evaluation](../../docs/avaliacao-lexicais-test1.md).
+[test1 evaluation](../../docs/results/lexical-test1.md).

@@ -67,4 +67,4 @@ Vocabularies, IDF, and coefficients are loaded from the trained artifact.
 
 The package previously completed CPU inference on all 900 test1 responses,
 with **49.44% accuracy (445/900)**. Row IDs, texts, parameters, and hashes were
-verified; see the [full evaluation](../../docs/avaliacao-lexicais-test1.md).
+verified; see the [full evaluation](../../docs/results/lexical-test1.md).

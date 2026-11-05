@@ -1,5 +1,7 @@
 # Recuperação híbrida de demonstrações — 04/11/2026
 
+[Documentation index](../../README.md) · Historical experiment record; use the guides for current commands.
+
 ## Hipótese e escopo
 
 Melhorar os exemplos enviados ao GPT, mantendo o orçamento de três demonstrações.
@@ -235,7 +237,7 @@ promovida automaticamente uma configuração nem iniciada outra rodada remota.
 Os padrões anteriores permanecem; o híbrido continua como variante experimental.
 
 As métricas agregadas foram versionadas em
-[resultados-validacao-300.json](resultados-validacao-300.json). Previsões por
+[resultados-validacao-300.json](../../results/data/resultados-validacao-300.json). Previsões por
 registro, planos, consumo e conferência pareada estão em
 `results/retrieval-hibrida-300-20261104/`, preservados localmente e ignorados
 pelo Git conforme a política existente do projeto.

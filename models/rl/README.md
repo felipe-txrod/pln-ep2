@@ -15,4 +15,4 @@ Configuration, metadata, and manifests accompany the weights. CPU inference
 returns labels and probabilities without fitting the classifier again.
 
 See the [usage guide](../../src/rl_classifier/README.md) and
-[test1 evaluation](../../docs/avaliacao-lexicais-test1.md).
+[test1 evaluation](../../docs/results/lexical-test1.md).

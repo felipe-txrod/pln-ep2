@@ -2,7 +2,7 @@
 
 Combinação offline de previsões já produzidas, sem carregar modelos, retreinar
 ou realizar chamadas remotas. A avaliação final usa teste1 rotulado após a
-entrega de teste2. O [protocolo completo](../../docs/ensemble.md) descreve as
+entrega de teste2. O [protocolo completo](../../docs/guides/ensemble.md) descreve as
 regras e as extensões planejadas.
 
 ## Escolher os membros

@@ -1,5 +1,7 @@
 # Predict test1 with a trained NorBERTo adapter and score saved predictions
 
+[Documentation index](../README.md)
+
 Run these commands from the EP2 root. They use the existing `pln-rocm:6.4.1`
 image, sibling EP1 sources/cache, and the completed recipe-3 development adapter.
 `NORBERTO_IMAGE` and `NORBERTO_EP1_ROOT` can override the local image and EP1 root.

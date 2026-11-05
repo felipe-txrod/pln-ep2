@@ -1,6 +1,8 @@
 # Investigation of the full-corpus NorBERTo regression
 
-Follow-up: the [completed normalized refit](avaliacao-norberto-normalized-test1.md)
+[Documentation index](../../README.md) · Historical experiment record; use the guides for current commands.
+
+Follow-up: the [completed normalized refit](recipe2-full-test1.md)
 achieved 408/900 (45.33%), compared with 341/900 for the legacy full refit and
 432/900 for the original EP1 submission. The initial investigation below
 remains a training-only diagnostic; the follow-up is a separate test1 comparison.
@@ -101,7 +103,7 @@ trigger among data composition, ordering, update budget, backend sensitivity,
 and their interactions was not isolated by controlled retraining.
 
 The training wrapper now records recipe version 2 and uses explicit
-sample-normalized loss from [training_loss.py](../src/norberto_classifier/training_loss.py).
+sample-normalized loss from [training_loss.py](../../../src/norberto_classifier/training_loss.py).
 Numerical hyperparameters and EP1 sources remain unchanged; the legacy Trainer
 constructor is restored after the call. Historical artifacts were preserved.
 Nine targeted CPU tests passed, including actual ModernBERT/PEFT/Trainer
@@ -113,7 +115,7 @@ Further causal experiments should isolate normalization, data inclusion, and
 update budget using development-only controls and internal validation. Test1
 must not choose hyperparameters or ensemble rules while being called untouched.
 
-Scripts: [CPU audit](../scripts/diagnose-norberto-training.py) and
-[training-only stability probe](../scripts/probe-norberto-stability.py).
-The [public aggregate](norberto-training-investigation-results.json) contains
+Scripts: [CPU audit](../../../scripts/diagnose-norberto-training.py) and
+[training-only stability probe](../../../scripts/probe-norberto-stability.py).
+The [public aggregate](../../results/data/norberto-training-investigation-results.json) contains
 measurements; raw reports are in `results/norberto-full-investigation-20261105/`.
