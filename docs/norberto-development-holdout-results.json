@@ -1,0 +1,340 @@
+{
+  "evaluation": {
+    "status": "completed",
+    "phase": "holdout-validation",
+    "dataset": "ep1-frozen-holdout",
+    "rows": 3999,
+    "labels": [
+      "c1",
+      "c234",
+      "c5"
+    ],
+    "input": {
+      "rows": 20092,
+      "sheet": "train",
+      "columns": [
+        "resp_text",
+        "clarity"
+      ],
+      "coerced_text_excel_rows": [
+        5028
+      ],
+      "sha256": "0e9219233664ac675fc47982bbc822acd3bb15d67fb7bfc26b67bec047e46818"
+    },
+    "split_sha256": "0f78e7a809c7b7584db05b33cf03a73ff586d5de02ba824c16562d5070d41494",
+    "config": {
+      "description": "Three-fold NorBERTo-512 evaluation on frozen development rows only; reserve the fixed holdout for a later decision and preserve all fold adapters.",
+      "model_name": "Itau-Unibanco/NorBERTo-base",
+      "revision": "db73446f89c96044863ea05a39f680524b84bccb",
+      "max_length": 512,
+      "truncation": "head_tail",
+      "lora_rank": 4,
+      "lora_alpha": 8,
+      "lora_dropout": 0.05,
+      "lora_layers": null,
+      "batch_size": 4,
+      "gradient_accumulation": 4,
+      "eval_batch_size": 8,
+      "learning_rate": 0.001,
+      "epochs": 2,
+      "patience": 1,
+      "weight_decay": 0.01,
+      "warmup_ratio": 0.1,
+      "fp16": false,
+      "attention": "sdpa",
+      "outer_folds": 3,
+      "inner_folds": 5,
+      "seed": 42,
+      "threads": 2,
+      "train_subset_folds": 1,
+      "budget_minutes": 75,
+      "holdout_split_sha256": "0f78e7a809c7b7584db05b33cf03a73ff586d5de02ba824c16562d5070d41494"
+    },
+    "recipe_version": 2,
+    "loss_normalization": "sample_count_across_accumulation",
+    "adapter_sha256": "02ae674779fd4c0194bafdeb179ffd9ed180b458b1c3e78403e76724819d65e3",
+    "adapter_weights_sha256": "2af7484a44ce6a09a9fec3d2ad36216b0749ffa7e95d03a76bddecccd70d0aec",
+    "training_run_sha256": "ec712a4b9d6c68ee8954698aacf551c3e5f3aa16b3eb6a9dfdc2e31f381e6ab7",
+    "training_rows_verified": true,
+    "partition": {
+      "split_sha256": "0f78e7a809c7b7584db05b33cf03a73ff586d5de02ba824c16562d5070d41494",
+      "source_rows": 20092,
+      "training_rows": 16093,
+      "reserved_holdout_rows": 3999,
+      "training_groups": 12956,
+      "holdout_groups": 3281,
+      "holdout_row_overlap": 0,
+      "holdout_group_overlap": 0
+    },
+    "evaluation_script_sha256": "b1dfb34fb0d3497f631484ac4e58ce84ba7e8d2ddc50e782e0ac4b26200b30b3",
+    "predictions_sha256": "a76b7cfb9b3053184ee2d8be80d7c4f35b7bf51a869d44151e529cfef637bb21",
+    "training_performed": false,
+    "evaluation_performed": true,
+    "gold_read_after_predictions": true,
+    "test1_accessed": false,
+    "device": {
+      "backend": "rocm",
+      "device_name": "AMD Radeon RX 6650 XT",
+      "architecture": "gfx1030",
+      "runtime_version": "6.4.43482-0f2d60242",
+      "torch_version": "2.8.0+rocm6.4",
+      "total_memory_mib": 8176.0
+    },
+    "inference_seconds": 163.31062346800172,
+    "tokenization": {
+      "rows": 3999,
+      "truncated_rows": 448,
+      "truncated_fraction": 0.11202800700175043,
+      "median_raw_tokens": 175.0,
+      "p95_raw_tokens": 703.0999999999999,
+      "input_case_preserved": true,
+      "cache_fingerprint": "d33f4add7decf9670510980a5a5a1847b7d6eef982b7631c0f143bd9060e033f"
+    },
+    "memory": {
+      "peak_allocated_mib": 951.8125,
+      "peak_reserved_mib": 1270.0
+    },
+    "metrics": {
+      "rows": 3999,
+      "accuracy": 0.35658914728682173,
+      "f1_macro": 0.35585245018916695,
+      "label_order": [
+        "c1",
+        "c234",
+        "c5"
+      ],
+      "confusion_matrix": [
+        [
+          433,
+          450,
+          374
+        ],
+        [
+          500,
+          543,
+          374
+        ],
+        [
+          416,
+          459,
+          450
+        ]
+      ],
+      "classification_report": {
+        "c1": {
+          "precision": 0.32097850259451444,
+          "recall": 0.3444709626093874,
+          "f1-score": 0.3323100537221796,
+          "support": 1257.0
+        },
+        "c234": {
+          "precision": 0.3739669421487603,
+          "recall": 0.3832039520112915,
+          "f1-score": 0.37852910421749736,
+          "support": 1417.0
+        },
+        "c5": {
+          "precision": 0.3756260434056761,
+          "recall": 0.33962264150943394,
+          "f1-score": 0.356718192627824,
+          "support": 1325.0
+        },
+        "accuracy": 0.35658914728682173,
+        "macro avg": {
+          "precision": 0.356857162716317,
+          "recall": 0.3557658520433709,
+          "f1-score": 0.35585245018916695,
+          "support": 3999.0
+        },
+        "weighted avg": {
+          "precision": 0.35786087579360315,
+          "recall": 0.35658914728682173,
+          "f1-score": 0.35677446447532896,
+          "support": 3999.0
+        }
+      },
+      "prediction_counts": {
+        "c1": 1349,
+        "c234": 1452,
+        "c5": 1198
+      },
+      "precision_macro": 0.356857162716317,
+      "recall_macro": 0.3557658520433709,
+      "correct": 1426,
+      "incorrect": 2573
+    },
+    "caveat": "Historically reused EP1 holdout; disjoint from this model's training, not historically untouched."
+  },
+  "training_audit": {
+    "status": "passed",
+    "training_status": "completed",
+    "data_partition": "development",
+    "recipe_version": 2,
+    "training_rows": 16093,
+    "reserved_holdout_rows": 3999,
+    "holdout_row_overlap": 0,
+    "holdout_group_overlap": 0,
+    "split_sha256": "0f78e7a809c7b7584db05b33cf03a73ff586d5de02ba824c16562d5070d41494",
+    "epochs": 2.0,
+    "optimizer_steps": 2012,
+    "max_steps": 2012,
+    "training_seconds": 1916.6687251219992,
+    "stopped_by_budget": false,
+    "finite_trainable_parameters": 272643,
+    "nonzero_lora_b_tensors": 22,
+    "recorded_source_implementation_hashes_match": true,
+    "exported_file_hashes_verified": true,
+    "weights_sha256": "2af7484a44ce6a09a9fec3d2ad36216b0749ffa7e95d03a76bddecccd70d0aec",
+    "training_run_sha256": "ec712a4b9d6c68ee8954698aacf551c3e5f3aa16b3eb6a9dfdc2e31f381e6ab7",
+    "training_rows_sha256": "03f06731880dd5d51dea87069aca0c456df3bce52914451145b456fff9d7b770",
+    "training_performed_by_audit": false
+  },
+  "training_behavior": {
+    "mean_training_loss": 1.140127263059673,
+    "epoch_intervals": [
+      {
+        "epoch_start": 0,
+        "epoch_end": 0.5,
+        "logged_updates": 25,
+        "mean_logged_loss": 1.1195680000000001,
+        "mean_preclipping_gradient_norm": 2.468403844833374,
+        "max_preclipping_gradient_norm": 4.644157409667969
+      },
+      {
+        "epoch_start": 0.5,
+        "epoch_end": 1,
+        "logged_updates": 25,
+        "mean_logged_loss": 1.175756,
+        "mean_preclipping_gradient_norm": 52.90237458705902,
+        "max_preclipping_gradient_norm": 275.3065185546875
+      },
+      {
+        "epoch_start": 1,
+        "epoch_end": 1.5,
+        "logged_updates": 25,
+        "mean_logged_loss": 1.130912,
+        "mean_preclipping_gradient_norm": 90.69720703125,
+        "max_preclipping_gradient_norm": 186.92047119140625
+      },
+      {
+        "epoch_start": 1.5,
+        "epoch_end": 2,
+        "logged_updates": 25,
+        "mean_logged_loss": 1.134624,
+        "mean_preclipping_gradient_norm": 114.22054290771484,
+        "max_preclipping_gradient_norm": 191.3606414794922
+      }
+    ]
+  },
+  "independent_verification": {
+    "status": "passed",
+    "rows": 3999,
+    "gold_reader": "Independent standard-library ZIP/XML parser",
+    "original_row_ids_verified": true,
+    "holdout_training_row_overlap": 0,
+    "source_and_split_hashes_verified": true,
+    "probabilities_logits_and_argmax_verified": true,
+    "metrics_recomputed": true,
+    "confusion_matrix": [
+      [
+        433,
+        450,
+        374
+      ],
+      [
+        500,
+        543,
+        374
+      ],
+      [
+        416,
+        459,
+        450
+      ]
+    ],
+    "training_performed": false,
+    "inference_performed": false,
+    "test1_accessed": false,
+    "comparison": {
+      "baseline": "Original EP1 development-trained NorBERTo on the same frozen holdout",
+      "baseline_correct": 1812,
+      "new_correct": 1426,
+      "rows": 3999,
+      "both_correct": 756,
+      "only_baseline_correct": 1056,
+      "only_new_correct": 670,
+      "both_incorrect": 1517,
+      "accuracy_delta": -0.09652413103275818,
+      "mcnemar_exact_two_sided_p": 1.3311423590235883e-20,
+      "baseline_predictions_sha256": "6c9064f344ca3cb1adf70698467b8048b3289d80fa7f4544b20b13dfad17676a",
+      "caveat": "Historically reused grouped holdout; repeated or related responses limit independent-pair interpretation."
+    }
+  },
+  "baseline": {
+    "accuracy": 0.45311327831957987,
+    "f1_macro": 0.4530638860354334,
+    "confusion_matrix": [
+      [
+        526,
+        436,
+        295
+      ],
+      [
+        370,
+        605,
+        442
+      ],
+      [
+        233,
+        411,
+        681
+      ]
+    ],
+    "classification_report": {
+      "c1": {
+        "precision": 0.4658990256864482,
+        "recall": 0.4184566428003182,
+        "f1-score": 0.44090528080469404,
+        "support": 1257.0
+      },
+      "c234": {
+        "precision": 0.4166666666666667,
+        "recall": 0.4269583627381793,
+        "f1-score": 0.4217497385848728,
+        "support": 1417.0
+      },
+      "c5": {
+        "precision": 0.4802538787023977,
+        "recall": 0.5139622641509434,
+        "f1-score": 0.4965366387167335,
+        "support": 1325.0
+      },
+      "accuracy": 0.45311327831957987,
+      "macro avg": {
+        "precision": 0.45427319035183755,
+        "recall": 0.45312575656314696,
+        "f1-score": 0.4530638860354334,
+        "support": 3999.0
+      },
+      "weighted avg": {
+        "precision": 0.45321033539265043,
+        "recall": 0.45311327831957987,
+        "f1-score": 0.45255022851861393,
+        "support": 3999.0
+      }
+    },
+    "dataset_sha256": "0e9219233664ac675fc47982bbc822acd3bb15d67fb7bfc26b67bec047e46818",
+    "split_sha256": "0f78e7a809c7b7584db05b33cf03a73ff586d5de02ba824c16562d5070d41494"
+  },
+  "baseline_adapter_weights_sha256": "d693f6e2995d117ad04a5692817527764fcccee6bfb2dde99120baf9fdd2d385",
+  "artifacts": {
+    "training": "results/norberto-development-normalized",
+    "evaluation": "results/norberto-development-holdout-20261105/holdout"
+  },
+  "scope": {
+    "training_repeated": false,
+    "test1_accessed": false,
+    "ensemble_changed": false,
+    "frozen_model_replaced": false
+  }
+}

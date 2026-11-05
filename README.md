@@ -22,6 +22,11 @@ The [completed loss-normalized refit](docs/avaliacao-norberto-normalized-test1.m
 achieved **45.33% accuracy (408/900)** and **43.83% macro-F1**. This recovered
 67 correct predictions over the legacy full refit and remained 24 below EP1.
 
+The [development-only refit](docs/avaliacao-norberto-development-holdout.md)
+completed two epochs on 16,093 responses. On the separate frozen holdout of
+3,999 rows it achieved **35.66% accuracy**, versus **45.31%** for the original
+EP1 adapter on the same holdout. These are validation metrics, not test1 scores.
+
 O modelo definitivo já treinado do EP1 também está disponível no pacote
 [`src/norberto_classifier`](src/norberto_classifier/README.md), exclusivamente
 para inferência, com cópia local da base e do adapter oficial.

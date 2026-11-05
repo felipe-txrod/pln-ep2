@@ -31,6 +31,12 @@ row/group overlap and class counts 5,090/5,436/5,567 in `c1/c234/c5` order.
 Nine partition tests passed. The default `--partition full` still selects all
 20,092 rows and was checked separately by dry-run.
 
+The completed development-only run took **31.94 minutes** and achieved
+**35.66% accuracy (1,426/3,999)** and **35.59% macro-F1** on the frozen holdout,
+compared with **45.31% accuracy** for the original EP1 adapter on the same rows.
+See the [holdout validation](avaliacao-norberto-development-holdout.md) for
+partition checks, class metrics, and the observed gradient instability.
+
 ## Recipe version 2: corrected loss normalization
 
 The current command normalizes cross entropy by the total example count across
