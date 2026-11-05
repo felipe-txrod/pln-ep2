@@ -31,6 +31,7 @@ measured results, assignment references, and historical experiments are separate
 | Restore frozen models and their pinned public bases | [Model artifacts](models/README.md) |
 | Compare measured classifier results | [Results index](docs/results/README.md) |
 | Reproduce NorBERTo + SVM + RL majority voting and its test1 comparison | [Majority ensemble](docs/results/ensemble-majority.md) |
+| Compare calibrated weighted soft voting with each frozen classifier | [Soft-voting results and confusion matrices](docs/results/ensemble-soft.md) |
 | Consult earlier GPT/Codex and training investigations | [Experiment archive](docs/archive/README.md) |
 
 ## Repository layout

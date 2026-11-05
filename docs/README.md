@@ -16,6 +16,7 @@ Executable entry points are listed in the [script index](../scripts/README.md).
 | NorBERTo prediction and separate CPU scoring on test1 | [Test1 workflow](guides/norberto-test1.md) |
 | Qwen installation, ROCm compatibility, QLoRA, training, and inference | [Qwen fine-tuning](guides/qwen-finetuning.md) |
 | Classifier selection, prediction contracts, and tie-breaking | [Ensemble](guides/ensemble.md) |
+| Disjoint calibration/weight selection and frozen soft voting | [Weighted soft voting](guides/ensemble-soft.md) |
 | Frozen SVM, logistic regression, NorBERTo, and GPT configuration | [Model artifacts](../models/README.md) |
 
 Package-specific inference interfaces remain next to their source:

@@ -8,6 +8,12 @@ has 48.00% accuracy on test1 and 45.31% on its frozen holdout.
 
 ## Local majority ensemble: test1 comparison
 
+The [weighted soft-voting comparison](ensemble-soft.md) is a separate frozen
+method: 2,027 holdout rows calibrate probabilities and 1,972 select weights by
+macro-F1 from 16 candidates. It scores 447/900 (49.67%) and 49.58% macro-F1,
+using SVM 0.75, LR 0.00 and NorBERTo 0.25. The report includes all individual
+confusion matrices, calibration effects and inherited cross-dataset text overlap.
+
 The user subsequently excluded Qwen; active defaults are now NorBERTo + SVM +
 RL, strict majority, with RL arbitration. The [holdout isolation audit and
 results](ensemble-holdout.md) confirm all 3,999 holdout rows and their groups

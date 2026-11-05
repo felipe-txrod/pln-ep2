@@ -5,6 +5,16 @@ ou realizar chamadas remotas. A avaliação final usa teste1 rotulado após a
 entrega de teste2. O [protocolo completo](../../docs/guides/ensemble.md) descreve as
 regras e as extensões planejadas.
 
+## Weighted soft voting
+
+Os comandos `fit-soft`, `predict-soft` e `evaluate-soft` reutilizam os modelos
+congelados com probabilidades alinhadas. O antigo holdout é dividido por grupos
+em calibração e seleção de pesos por F1-macro, antes da avaliação nas 900 linhas.
+Não alteram os comandos `combine`/`compare-majority` nem seus presets.
+Consulte o [guia](../../docs/guides/ensemble-soft.md), o
+[modelo congelado](../../models/ensemble-soft/README.md) e os
+[resultados com matrizes de confusão](../../docs/results/ensemble-soft.md).
+
 ## Local majority ensemble
 
 `configs/ensemble-majority.json` selects the original EP1 NorBERTo,
