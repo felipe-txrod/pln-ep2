@@ -98,10 +98,24 @@ def _guard_callback():
     return FiniteGradientGuard()
 
 
+def ordered_trainer_class():
+    """Group training batches by length while preserving evaluation row order."""
+    from torch.utils.data import SequentialSampler
+    from transformers import Trainer
+
+    class OrderedEvaluationTrainer(Trainer):
+        def _get_eval_sampler(self, eval_dataset):
+            if self.args.world_size != 1:
+                raise ValueError("Ordered Qwen evaluation requires a single process.")
+            return SequentialSampler(eval_dataset)
+
+    return OrderedEvaluationTrainer
+
+
 def fit(config: Config, output: Path, cache_dir: Path, *, source: Path | None = None,
         smoke: bool = False, pilot: bool = False, ep1_split: Path | None = None) -> dict:
     import torch
-    from transformers import DataCollatorWithPadding, Trainer, TrainingArguments, set_seed
+    from transformers import DataCollatorWithPadding, TrainingArguments, set_seed
 
     if output.exists():
         raise FileExistsError(f"Refusing to overwrite experiment directory: {output}")
@@ -166,7 +180,7 @@ def fit(config: Config, output: Path, cache_dir: Path, *, source: Path | None = 
         eval_accumulation_steps=1, save_safetensors=True, save_only_model=False,
         remove_unused_columns=True, logging_nan_inf_filter=False)
     arguments.group_by_length = config.group_by_length
-    trainer = Trainer(
+    trainer = ordered_trainer_class()(
         model=model, args=arguments, train_dataset=train_data, eval_dataset=validation_data,
         processing_class=tokenizer, data_collator=DataCollatorWithPadding(tokenizer, pad_to_multiple_of=8),
         compute_metrics=trainer_metrics, compute_loss_func=classification_loss, callbacks=[guard])
@@ -183,6 +197,9 @@ def fit(config: Config, output: Path, cache_dir: Path, *, source: Path | None = 
     logits = np.asarray(evaluation.predictions)
     if not np.isfinite(logits).all():
         raise FloatingPointError("Validation produced nonfinite logits.")
+    expected_labels = np.asarray([LABELS.index(record.label) for record in validation_records])
+    if not np.array_equal(evaluation.label_ids, expected_labels):
+        raise RuntimeError("Validation output order differs from the source records; refusing to mislabel predictions.")
     scores = classification_metrics(evaluation.label_ids, logits.argmax(axis=-1))
     adapter = output / "adapter"
     model.save_pretrained(adapter, safe_serialization=True)

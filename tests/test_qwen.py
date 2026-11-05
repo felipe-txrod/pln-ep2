@@ -215,3 +215,32 @@ def test_trainer_accumulation_matches_large_batches_with_an_incomplete_tail(tmp_
         weights.append(model.linear.weight.detach().clone())
     for actual in weights[1:]:
         torch.testing.assert_close(actual, weights[0], atol=1e-7, rtol=1e-6)
+
+
+def test_length_grouping_preserves_prediction_row_order(tmp_path):
+    torch = pytest.importorskip("torch")
+    from transformers import TrainingArguments
+    from transformers.modeling_outputs import SequenceClassifierOutput
+    from qwen_classifier.training import classification_loss, ordered_trainer_class
+
+    class TinyClassifier(torch.nn.Module):
+        def forward(self, input_ids, labels=None, **kwargs):
+            return SequenceClassifierOutput(logits=torch.stack(
+                [input_ids[:, 0].float(), torch.zeros(len(input_ids)), torch.ones(len(input_ids))], dim=-1))
+
+    records = [{"input_ids": [index] * (index + 1), "labels": index % 3} for index in range(12)]
+
+    def collate(rows):
+        # Preserve an observable row marker while accepting variable-length records.
+        return {"input_ids": torch.tensor([[row["input_ids"][0]] for row in rows]),
+                "labels": torch.tensor([row["labels"] for row in rows])}
+
+    args = TrainingArguments(output_dir=str(tmp_path), use_cpu=True, group_by_length=True,
+                             per_device_eval_batch_size=4, report_to="none", disable_tqdm=True,
+                             dataloader_pin_memory=False)
+    trainer = ordered_trainer_class()(model=TinyClassifier(), args=args, data_collator=collate,
+                                     compute_loss_func=classification_loss)
+    trainer.model_accepts_loss_kwargs = False
+    output = trainer.predict(records)
+    assert output.predictions[:, 0].tolist() == list(range(12))
+    assert output.label_ids.tolist() == [index % 3 for index in range(12)]
