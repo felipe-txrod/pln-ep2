@@ -17,6 +17,7 @@ Executable entry points are listed in the [script index](../scripts/README.md).
 | Qwen installation, ROCm compatibility, QLoRA, training, and inference | [Qwen fine-tuning](guides/qwen-finetuning.md) |
 | Classifier selection, prediction contracts, and tie-breaking | [Ensemble](guides/ensemble.md) |
 | Disjoint calibration/weight selection and frozen soft voting | [Weighted soft voting](guides/ensemble-soft.md) |
+| Frozen classifiers, disjoint meta-training and grouped CV for stacking | [Stacking](guides/ensemble-stacking.md) |
 | Frozen SVM, logistic regression, NorBERTo, and GPT configuration | [Model artifacts](../models/README.md) |
 
 Package-specific inference interfaces remain next to their source:

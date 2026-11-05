@@ -1,0 +1,119 @@
+{
+  "version": 1,
+  "model_type": "frozen_probability_stacking",
+  "labels": [
+    "c1",
+    "c234",
+    "c5"
+  ],
+  "models": [
+    "svm",
+    "rl",
+    "norberto"
+  ],
+  "features": [
+    "svm:c1",
+    "svm:c234",
+    "svm:c5",
+    "rl:c1",
+    "rl:c234",
+    "rl:c5",
+    "norberto:c1",
+    "norberto:c234",
+    "norberto:c5"
+  ],
+  "meta_model": {
+    "classes": [
+      "c1",
+      "c234",
+      "c5"
+    ],
+    "features": [
+      "svm:c1",
+      "svm:c234",
+      "svm:c5",
+      "rl:c1",
+      "rl:c234",
+      "rl:c5",
+      "norberto:c1",
+      "norberto:c234",
+      "norberto:c5"
+    ],
+    "coef": [
+      [
+        0.6289783549695187,
+        -0.17703250672703083,
+        -0.45194520668102145,
+        0.5947072345199719,
+        -0.21196755469984338,
+        -0.3827390382586624,
+        0.4051476697632832,
+        -0.11380316835752606,
+        -0.2913438598442908
+      ],
+      [
+        -0.06286935332838262,
+        0.26733284241368405,
+        -0.20446412735050065,
+        -0.09229396547155024,
+        0.3551640068427119,
+        -0.2628706796363608,
+        0.01907215897659598,
+        0.2571997732420677,
+        -0.2762725704838627
+      ],
+      [
+        -0.566109001641136,
+        -0.09030033568665348,
+        0.6564093340315225,
+        -0.5024132690484215,
+        -0.14319645214286852,
+        0.6456097178950232,
+        -0.4242198287398788,
+        -0.14339660488454162,
+        0.5676164303281533
+      ]
+    ],
+    "intercept": [
+      -0.0084980454005488,
+      0.0993184576393618,
+      -0.09082041223881371
+    ],
+    "C": 0.1,
+    "solver": "lbfgs",
+    "penalty": "l2",
+    "max_iter": 2000,
+    "tol": 1e-08,
+    "class_weight": null,
+    "n_iter": [
+      52
+    ]
+  },
+  "soft_model": "models/ensemble-soft/model.json",
+  "soft_artifact_sha256": "f39a2200ecbaf124b95c78e249087f2f12302aa4f46768db756d828863301bec",
+  "partition_sha256": "943e88ce2b823b3581f963f6df8f3aab84ddc28c62681fb8b4fc9e8e65827d6b",
+  "source_partition_sha256": "fcbd64ea192fe3706f51edf4038b796cac28842494febd21220cb2883f68a7d8",
+  "fit_code": {
+    "ensemble_classifier/files.py": "4d1903fdaf3210edf69e57ae9d79c6467d4ca4b9dec155805931c79783e7f45c",
+    "ensemble_classifier/soft_pipeline.py": "a5d1d288f5c41718f4f96ad3149f9b4d33fe9d046b177e49f086892ec7deffb3",
+    "ensemble_classifier/soft_sources.py": "23659d490f9cc1c707fa367019a9b9df6388b24f872aed85b1bdfdc5b68ac351",
+    "ensemble_classifier/soft_voting.py": "d10ad4b4e9af9a27a3d6c233dc77e0f5e918043464d89a9b9d6c94980d2ddf88",
+    "gpt_classifier/data.py": "4e99c8c28bcc1062dd2b5259df48b4dc7d70b83c3e7e48e32a45129f6e1a9521",
+    "lexical_classifier/__init__.py": "ce765fb1eb7a3f5e983cac2f984adb87477da66785dfd5ca43d4bff71480115d",
+    "lexical_classifier/cli.py": "3b95ed01c1c9f4bc8de53ef520ebb58f6810e793e566b30436991317caa283cb",
+    "lexical_classifier/inference.py": "3127b32ef519407ad7a60c459b1b864e5f7ba4634ca21b0baf9e8a1c2542d065",
+    "norberto_classifier/__init__.py": "4a7e46b0c59e9bbfb7a775bd6daaf338dd6536d67ebfea4cfc95836a64140eab",
+    "norberto_classifier/__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+    "norberto_classifier/artifacts.py": "daae38b6b712ab7e8bd7ac253c4f18e8ebced180b22d8dc030320d74d5fd694f",
+    "norberto_classifier/cli.py": "e42babe3e373748cc309cb43b7ca691328b5cf74ec781a3511bf3ace77c50f2c",
+    "norberto_classifier/inference.py": "67b56f425ab849d99c7bcfe9b6129984b41e5e0eb3b6a85204345556305acf3b",
+    "norberto_classifier/tokenization.py": "0763eb125d6075fed15927362c990d0d835013d885fc76ca59a2635a8494a0ae",
+    "ensemble_classifier/stacking.py": "13dc7493fa3894909273908e6a958ae76c1460ac035b89ddb50765719a7a87c5",
+    "ensemble_classifier/stacking_pipeline.py": "8e62272c000531fbe9f3e96c630d8813baf25effe68fb32634005030ee2b59d2"
+  },
+  "runtime": {
+    "numpy": "2.3.3",
+    "scipy": "1.16.2",
+    "scikit-learn": "1.7.2"
+  }
+}

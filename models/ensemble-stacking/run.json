@@ -1,0 +1,366 @@
+{
+  "status": "completed",
+  "base_training_performed": false,
+  "calibration_fitted": false,
+  "meta_training_performed": true,
+  "test1_accessed": false,
+  "test2_accessed": false,
+  "artifact_sha256": "08b8433ce6407c5f08b4d0a3e94ad31f4dd68eb580dcc8abdf1d0ad500608e97",
+  "soft_artifact_sha256": "f39a2200ecbaf124b95c78e249087f2f12302aa4f46768db756d828863301bec",
+  "selected_C": 0.1,
+  "search": {
+    "candidates": [
+      0.01,
+      0.1,
+      1.0,
+      10.0
+    ],
+    "folds": [
+      {
+        "fold": 0,
+        "training_rows": 1604,
+        "validation_rows": 368,
+        "shared_groups": 0,
+        "validation_class_counts": {
+          "c1": 106,
+          "c234": 138,
+          "c5": 124
+        }
+      },
+      {
+        "fold": 1,
+        "training_rows": 1593,
+        "validation_rows": 379,
+        "shared_groups": 0,
+        "validation_class_counts": {
+          "c1": 113,
+          "c234": 132,
+          "c5": 134
+        }
+      },
+      {
+        "fold": 2,
+        "training_rows": 1576,
+        "validation_rows": 396,
+        "shared_groups": 0,
+        "validation_class_counts": {
+          "c1": 115,
+          "c234": 139,
+          "c5": 142
+        }
+      },
+      {
+        "fold": 3,
+        "training_rows": 1580,
+        "validation_rows": 392,
+        "shared_groups": 0,
+        "validation_class_counts": {
+          "c1": 138,
+          "c234": 145,
+          "c5": 109
+        }
+      },
+      {
+        "fold": 4,
+        "training_rows": 1535,
+        "validation_rows": 437,
+        "shared_groups": 0,
+        "validation_class_counts": {
+          "c1": 150,
+          "c234": 153,
+          "c5": 134
+        }
+      }
+    ],
+    "seed": 42,
+    "trials": [
+      {
+        "C": 0.01,
+        "fold_f1_macro": [
+          0.426353396600258,
+          0.42834118214655886,
+          0.3663695186802851,
+          0.3541333405978715,
+          0.3977676366098712
+        ],
+        "fold_accuracy": [
+          0.4673913043478261,
+          0.47229551451187335,
+          0.4090909090909091,
+          0.40816326530612246,
+          0.41647597254004576
+        ],
+        "mean_f1_macro": 0.39459301492696897,
+        "standard_error_f1_macro": 0.015151385819038394,
+        "mean_accuracy": 0.43468339315935534
+      },
+      {
+        "C": 0.1,
+        "fold_f1_macro": [
+          0.49032968290067686,
+          0.4715286096089031,
+          0.4775022956841139,
+          0.4168176189902772,
+          0.4478868959626819
+        ],
+        "fold_accuracy": [
+          0.4945652173913043,
+          0.47757255936675463,
+          0.4772727272727273,
+          0.42346938775510207,
+          0.4462242562929062
+        ],
+        "mean_f1_macro": 0.4608130206293306,
+        "standard_error_f1_macro": 0.012975494528058323,
+        "mean_accuracy": 0.463820829615759
+      },
+      {
+        "C": 1.0,
+        "fold_f1_macro": [
+          0.48597871158440425,
+          0.48628040455516003,
+          0.48300749429781686,
+          0.4329552172005989,
+          0.4411817853417248
+        ],
+        "fold_accuracy": [
+          0.48641304347826086,
+          0.49076517150395776,
+          0.4823232323232323,
+          0.4362244897959184,
+          0.4416475972540046
+        ],
+        "mean_f1_macro": 0.4658807225959409,
+        "standard_error_f1_macro": 0.011848056594590237,
+        "mean_accuracy": 0.46747470687107473
+      },
+      {
+        "C": 10.0,
+        "fold_f1_macro": [
+          0.48728852483036905,
+          0.4874521023083302,
+          0.47805514915460595,
+          0.4205987082750536,
+          0.4365401096279929
+        ],
+        "fold_accuracy": [
+          0.4891304347826087,
+          0.49076517150395776,
+          0.4772727272727273,
+          0.42346938775510207,
+          0.43707093821510296
+        ],
+        "mean_f1_macro": 0.46198691883927034,
+        "standard_error_f1_macro": 0.013977408438354103,
+        "mean_accuracy": 0.46354173190589976
+      }
+    ],
+    "selection": "mean macro-F1; one-standard-error rule selects smallest eligible C",
+    "one_standard_error_threshold": 0.4540326660013506,
+    "selected_C": 0.1,
+    "diagnostic_only": "CV was used for selection, not an independent performance estimate."
+  },
+  "score_provenance": {
+    "svm": {
+      "status": "completed",
+      "labels": [
+        "c1",
+        "c234",
+        "c5"
+      ],
+      "input": {
+        "rows": 20092,
+        "sheet": "train",
+        "columns": [
+          "resp_text",
+          "clarity"
+        ],
+        "coerced_text_excel_rows": [
+          5028
+        ],
+        "sha256": "0e9219233664ac675fc47982bbc822acd3bb15d67fb7bfc26b67bec047e46818"
+      },
+      "artifact_sha256": "9a30abb664d5023d70f444641c4095cf800acba0c98fd8658087e7adad78ee12",
+      "score_identity": {
+        "member": "svm",
+        "model_identity": {
+          "artifact_sha256": "9a30abb664d5023d70f444641c4095cf800acba0c98fd8658087e7adad78ee12",
+          "manifest_sha256": "a0688c7f08e2ea74323e62d72b15cf930041fabf847d43102eaf024aeb7e764f",
+          "bundle": "models/svm"
+        },
+        "source_sha256": "0e9219233664ac675fc47982bbc822acd3bb15d67fb7bfc26b67bec047e46818",
+        "targets_sha256": "e0c6ad52348c52ae43541ede1e885f630b8eddeac9922225a21ceea73631c9e9"
+      },
+      "recorded_score_provenance": null,
+      "training_performed": false,
+      "native_predict_proba": false,
+      "gold_accessed": false,
+      "predictions_sha256": "2764f26d0f95ff57f65a7c95c1a0b48af465a0ca8c7e2806503a30641861c67b"
+    },
+    "rl": {
+      "status": "completed",
+      "labels": [
+        "c1",
+        "c234",
+        "c5"
+      ],
+      "input": {
+        "rows": 20092,
+        "sheet": "train",
+        "columns": [
+          "resp_text",
+          "clarity"
+        ],
+        "coerced_text_excel_rows": [
+          5028
+        ],
+        "sha256": "0e9219233664ac675fc47982bbc822acd3bb15d67fb7bfc26b67bec047e46818"
+      },
+      "artifact_sha256": "05d69e147a10b7c49ebe3893f247e0f23e8d61005aaf4fd7b7eb45845d49a20f",
+      "score_identity": {
+        "member": "rl",
+        "model_identity": {
+          "artifact_sha256": "05d69e147a10b7c49ebe3893f247e0f23e8d61005aaf4fd7b7eb45845d49a20f",
+          "manifest_sha256": "823580763f0be9555f3365d59cf83055675a019d3807d874bf8f48200597d47f",
+          "bundle": "models/rl-development"
+        },
+        "source_sha256": "0e9219233664ac675fc47982bbc822acd3bb15d67fb7bfc26b67bec047e46818",
+        "targets_sha256": "e0c6ad52348c52ae43541ede1e885f630b8eddeac9922225a21ceea73631c9e9"
+      },
+      "recorded_score_provenance": null,
+      "training_performed": false,
+      "native_predict_proba": true,
+      "gold_accessed": false,
+      "predictions_sha256": "96c6e012cb47384891e26b464abaaac930a1d65222bd09345e1bf23280d77865"
+    },
+    "norberto": {
+      "status": "completed",
+      "labels": [
+        "c1",
+        "c234",
+        "c5"
+      ],
+      "input": {
+        "rows": 20092,
+        "sheet": "train",
+        "columns": [
+          "resp_text",
+          "clarity"
+        ],
+        "coerced_text_excel_rows": [
+          5028
+        ],
+        "sha256": "0e9219233664ac675fc47982bbc822acd3bb15d67fb7bfc26b67bec047e46818"
+      },
+      "artifact_sha256": "d693f6e2995d117ad04a5692817527764fcccee6bfb2dde99120baf9fdd2d385",
+      "score_identity": {
+        "member": "norberto",
+        "model_identity": {
+          "artifact_sha256": "d693f6e2995d117ad04a5692817527764fcccee6bfb2dde99120baf9fdd2d385",
+          "manifest_sha256": "d5f7b0f8a18bc216c72fb0dc67e4de68ba89f343b99dc4b1e9546290431fd5fe",
+          "training_manifest_sha256": "26a7a4bdf41ddd36481ca767a9cdf1331f2375301fc946f262f04503d086b37d",
+          "bundle": "models/norberto"
+        },
+        "source_sha256": "0e9219233664ac675fc47982bbc822acd3bb15d67fb7bfc26b67bec047e46818",
+        "targets_sha256": "e0c6ad52348c52ae43541ede1e885f630b8eddeac9922225a21ceea73631c9e9"
+      },
+      "recorded_score_provenance": {
+        "csv_sha256": "6c9064f344ca3cb1adf70698467b8048b3289d80fa7f4544b20b13dfad17676a",
+        "metadata_sha256": "5b73e30582f3a9dc134cd61b2203d2f0f649e49aa32fc726c1091c4ac48c682e"
+      },
+      "training_performed": false,
+      "native_predict_proba": null,
+      "gold_accessed": false,
+      "predictions_sha256": "cf8ae0a293b7705cb25e0fa3fdb195ffd6a1bcaee52ec7f0ed97b9c7bfa0c999"
+    }
+  },
+  "partition": {
+    "development_rows": 16093,
+    "holdout_rows": 3999,
+    "calibration_rows": 2027,
+    "meta_training_rows": 1972,
+    "calibration_groups": 1627,
+    "meta_training_groups": 1654,
+    "shared_rows": 0,
+    "shared_groups": 0,
+    "meta_cv_folds": 5,
+    "class_counts": {
+      "calibration": {
+        "c1": 635,
+        "c234": 710,
+        "c5": 682
+      },
+      "meta_training": {
+        "c1": 622,
+        "c234": 707,
+        "c5": 643
+      }
+    }
+  },
+  "meta_selection_oof_metrics": {
+    "rows": 1972,
+    "accuracy": 0.4629817444219067,
+    "f1_macro": 0.46204029749310127,
+    "label_order": [
+      "c1",
+      "c234",
+      "c5"
+    ],
+    "confusion_matrix": [
+      [
+        244,
+        235,
+        143
+      ],
+      [
+        168,
+        318,
+        221
+      ],
+      [
+        90,
+        202,
+        351
+      ]
+    ],
+    "classification_report": {
+      "c1": {
+        "precision": 0.4860557768924303,
+        "recall": 0.39228295819935693,
+        "f1-score": 0.43416370106761565,
+        "support": 622.0
+      },
+      "c234": {
+        "precision": 0.42119205298013246,
+        "recall": 0.4497878359264498,
+        "f1-score": 0.43502051983584133,
+        "support": 707.0
+      },
+      "c5": {
+        "precision": 0.4909090909090909,
+        "recall": 0.5458786936236392,
+        "f1-score": 0.5169366715758469,
+        "support": 643.0
+      },
+      "accuracy": 0.4629817444219067,
+      "macro avg": {
+        "precision": 0.46605230692721794,
+        "recall": 0.46264982924981535,
+        "f1-score": 0.46204029749310127,
+        "support": 1972.0
+      },
+      "weighted avg": {
+        "precision": 0.46438337735222657,
+        "recall": 0.4629817444219067,
+        "f1-score": 0.46146024818015535,
+        "support": 1972.0
+      }
+    },
+    "prediction_counts": {
+      "c1": 502,
+      "c5": 715,
+      "c234": 755
+    }
+  },
+  "caveat": "OOF scores selected C; not an independent test. Holdout/test1 have historical exposure. No test1 labels enter training."
+}

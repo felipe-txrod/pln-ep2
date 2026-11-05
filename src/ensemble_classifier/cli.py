@@ -12,6 +12,20 @@ from .config import EnsembleConfig
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Offline ensemble with selectable classifiers")
     commands = parser.add_subparsers(dest="command", required=True)
+    fit_stack_parser = commands.add_parser("fit-stacking", help="Fit a meta-LR on the disjoint frozen holdout role only")
+    fit_stack_parser.add_argument("--config", type=Path, default=Path("configs/ensemble-stacking.json"))
+    fit_stack_parser.add_argument("--output-dir", type=Path, required=True)
+    predict_stack_parser = commands.add_parser("predict-stacking", help="Apply frozen meta-LR to calibrated member probabilities")
+    predict_stack_parser.add_argument("--model", type=Path, required=True)
+    predict_stack_parser.add_argument("--input", type=Path, required=True)
+    predict_stack_parser.add_argument("--output-dir", type=Path, required=True)
+    predict_stack_parser.add_argument("--soft-run", type=Path, help="Reuse an existing soft prediction run, without inference")
+    predict_stack_parser.add_argument("--device", choices=("cpu", "gpu"), default="cpu")
+    predict_stack_parser.add_argument("--live-norberto", action="store_true")
+    evaluate_stack_parser = commands.add_parser("evaluate-stacking", help="Final stacking/soft/member comparison; no tuning")
+    evaluate_stack_parser.add_argument("--run", type=Path, required=True)
+    evaluate_stack_parser.add_argument("--gold", type=Path, default=Path("data/test1-rotulado-para-teste-estatistico.xlsx"))
+    evaluate_stack_parser.add_argument("--output-dir", type=Path, required=True)
     fit_soft_parser = commands.add_parser("fit-soft", help="Calibrate frozen scores and choose soft weights on disjoint holdout roles")
     fit_soft_parser.add_argument("--config", type=Path, default=Path("configs/ensemble-soft.json"))
     fit_soft_parser.add_argument("--output-dir", type=Path, required=True)
@@ -46,6 +60,17 @@ def main(argv: list[str] | None = None) -> int:
     comparison_parser.add_argument("--output-dir", type=Path, required=True)
     args = parser.parse_args(argv)
     try:
+        if args.command in {"fit-stacking", "predict-stacking", "evaluate-stacking"}:
+            from .stacking_pipeline import evaluate_stacking, fit_stacking, predict_stacking
+            if args.command == "fit-stacking":
+                report = fit_stacking(args.config, args.output_dir)
+            elif args.command == "predict-stacking":
+                report = predict_stacking(args.model, args.input, args.output_dir, soft_run=args.soft_run,
+                                          device=args.device, live_norberto=args.live_norberto)
+            else:
+                report = evaluate_stacking(args.run, args.gold, args.output_dir)
+            print(json.dumps(report, ensure_ascii=False, indent=2))
+            return 0
         if args.command in {"fit-soft", "predict-soft", "evaluate-soft"}:
             from .soft_pipeline import evaluate_soft, fit_soft, predict_soft
             if args.command == "fit-soft":

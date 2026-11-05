@@ -1,0 +1,14 @@
+{
+  "model_type": "frozen_probability_stacking",
+  "labels": [
+    "c1",
+    "c234",
+    "c5"
+  ],
+  "artifact_sha256": "08b8433ce6407c5f08b4d0a3e94ad31f4dd68eb580dcc8abdf1d0ad500608e97",
+  "files": {
+    "partition.jsonl": "943e88ce2b823b3581f963f6df8f3aab84ddc28c62681fb8b4fc9e8e65827d6b",
+    "cv-search.json": "c31fae71f16eed4c42dd9ab721f6869c8288472fa88a5eadca709bd4857a5835",
+    "meta-oof-predictions.jsonl": "98e3b7f69ffc6e1185e5d5a015e8c418368e9d650eb845941bb77969acf1c4aa"
+  }
+}

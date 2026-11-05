@@ -27,6 +27,7 @@ measured results, assignment references, and historical experiments are separate
 | Train development-only lexical logistic regression with holdout reserved | [RL workflow](src/rl_classifier/README.md) |
 | Select ensemble members and the tie-breaking model | [Ensemble](docs/guides/ensemble.md) |
 | Calibrate frozen models and select weighted soft votes without test-label tuning | [Weighted soft voting](docs/guides/ensemble-soft.md) |
+| Fit a regularized meta-LR on disjoint calibrated probabilities | [Stacking](docs/guides/ensemble-stacking.md) |
 | Browse runnable scripts by model and purpose | [Script index](scripts/README.md) |
 | Restore frozen models and their pinned public bases | [Model artifacts](models/README.md) |
 | Compare measured classifier results | [Results index](docs/results/README.md) |

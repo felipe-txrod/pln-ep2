@@ -1,0 +1,5 @@
+{
+  "soft_model": "models/ensemble-soft/model.json",
+  "soft_partition": "models/ensemble-soft/partition.jsonl",
+  "holdout_scores": "results/ensemble-soft-v2-20261105/scores"
+}
