@@ -74,3 +74,8 @@ The subsequent full run completed two epochs and 2,012 updates. Its
 and full-run gradient summaries. A short prefix alone does not establish
 long-run stability or quality. No test1/test2 labels were used for this
 correction, and no saved original adapter was replaced.
+
+For separate prediction and scoring on test1, see the
+[two-stage test1 commands](norberto-test1.md). The prediction stage accepts
+this development-only adapter and records its identity; scoring uses only
+the persisted predictions on CPU.

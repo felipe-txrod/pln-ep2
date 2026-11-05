@@ -1,4 +1,4 @@
-"""Evaluate a completed full-corpus NorBERTo adapter on the original test1 rows."""
+"""Predict and evaluate a completed NorBERTo adapter on the original test1 rows."""
 from __future__ import annotations
 
 import argparse
@@ -16,28 +16,85 @@ from gpt_classifier.evaluation import align, metrics
 ROOT = Path(__file__).resolve().parents[1]
 
 
+def compare_saved(args: argparse.Namespace) -> dict[str, Any]:
+    """Score persisted predictions on CPU without importing model libraries."""
+    metadata_path = args.prediction_dir / "run.json"
+    metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+    if (metadata.get("status") != "completed" or metadata.get("phase") != "prediction"
+            or metadata.get("rows") != 900 or metadata.get("gold_accessed") is not False
+            or metadata.get("labels") != list(LABELS)):
+        raise ValueError("A completed text-only 900-row prediction run is required.")
+    prediction_path = args.prediction_dir / "predictions.jsonl"
+    if file_digest(prediction_path) != metadata["predictions_sha256"]:
+        raise ValueError("The saved predictions changed after inference.")
+    records, info = read_xlsx(args.input)
+    if len(records) != 900 or info["sha256"] != metadata["input"]["sha256"]:
+        raise ValueError("The test1 source differs from the prediction input.")
+    predictions = read_jsonl(prediction_path)
+    align(records, predictions)
+    gold, gold_info = read_xlsx(args.gold, labeled=True)
+    if len(gold) != 900 or any((a.excel_row, a.text) != (b.excel_row, b.text) for a, b in zip(records, gold)):
+        raise ValueError("Gold row IDs or texts differ from the inference source.")
+    scores = metrics(gold, predictions)
+    scores["precision_macro"] = scores["classification_report"]["macro avg"]["precision"]
+    scores["recall_macro"] = scores["classification_report"]["macro avg"]["recall"]
+    scores["correct"] = sum(row["label"] == truth.label for row, truth in zip(predictions, gold))
+    scores["incorrect"] = 900 - scores["correct"]
+    result = {**metadata, "phase": "comparison", "training_performed": False,
+              "evaluation_performed": True, "inference_performed": False, "gold_accessed": True,
+              "comparison_device": "cpu",
+              "gold_read_after_predictions": True, "gold_sha256": gold_info["sha256"],
+              "prediction_run_sha256": file_digest(metadata_path),
+              "comparison_script_sha256": file_digest(Path(__file__)), "metrics": scores}
+    if (file_digest(args.input) != info["sha256"] or file_digest(args.gold) != gold_info["sha256"]
+            or file_digest(prediction_path) != metadata["predictions_sha256"]):
+        raise ValueError("An evaluation input changed during scoring.")
+    args.output_dir.mkdir(parents=True, exist_ok=False)
+    write_json(args.output_dir / "metrics.json", scores)
+    write_json(args.output_dir / "run.json", result)
+    return result
+
+
 def verify_training(root: Path, ep1: Path) -> dict[str, Any]:
     report = json.loads((root / "run.json").read_text(encoding="utf-8"))
     original = json.loads((ROOT / "models/norberto/run.json").read_text(encoding="utf-8"))
     training = report["training"]
-    if (report.get("status") != "completed" or report.get("mode") != "full-training"
-            or report.get("training_rows") != 20092 or report.get("labels") != list(LABELS)
-            or report.get("holdout_excluded") is not False or report.get("test_data_used") is not False
+    development = report.get("mode") == "development-training"
+    expected_rows = 16093 if development else 20092
+    if (report.get("status") != "completed" or report.get("mode") not in ("full-training", "development-training")
+            or report.get("training_rows") != expected_rows or report.get("labels") != list(LABELS)
+            or report.get("holdout_excluded") is not development or report.get("test_data_used") is not False
             or report.get("validation_used") is not False):
-        raise ValueError("A completed full-corpus NorBERTo training run is required.")
+        raise ValueError("A completed full-corpus or frozen-development NorBERTo training run is required.")
     if (report["config"] != original["config"] or report["dataset_sha256"] != original["dataset_sha256"]
             or not math.isclose(training["epochs_executed"], 2) or training["training_stopped_by_budget"]
-            or training["training_rows"] != 20092 or not math.isfinite(training["training_loss"])):
+            or training["training_rows"] != expected_rows or not math.isfinite(training["training_loss"])):
         raise ValueError("Training data, parameters, epochs, or completion checks differ from the fixed recipe.")
     if file_digest(ep1 / "src/clarity/finetune.py") != report["ep1_trainer_sha256"]:
         raise ValueError("The original trainer implementation changed since full training.")
     records, info = read_xlsx(ep1 / "data/train.xlsx", labeled=True)
+    if development:
+        from norberto_classifier.partitions import development_partition
+        if (report.get("data_partition") != "development" or report.get("reserved_holdout_rows") != 3999
+                or report.get("split_sha256") != report["config"]["holdout_split_sha256"]):
+            raise ValueError("The frozen development partition contract differs.")
+        records, _ = development_partition(
+            records, ep1 / "results/research/dataset-hypotheses-20260923/splits.csv",
+            report["split_sha256"], development_rows=16093, holdout_rows=3999)
+    if report.get("recipe_version") == 3:
+        for filename, field in (("training_loss.py", "loss_implementation_sha256"),
+                                ("training_recipe.py", "recipe_implementation_sha256")):
+            if file_digest(ROOT / "src/norberto_classifier" / filename) != report.get(field):
+                raise ValueError("The recorded training implementation changed.")
+        if (report.get("optimizer_gradient_units") != "legacy_accumulation_units"
+                or report.get("optimizer_gradient_scale") != report["config"]["gradient_accumulation"]):
+            raise ValueError("Optimizer gradient units differ from recipe 3.")
     saved = read_jsonl(root / "training-rows.jsonl")
-    if info["sha256"] != report["dataset_sha256"] or len(records) != len(saved) or len(saved) != 20092:
-        raise ValueError("Full training-row coverage cannot be verified.")
+    if info["sha256"] != report["dataset_sha256"] or len(records) != len(saved) or len(saved) != expected_rows:
+        raise ValueError("Training-row coverage cannot be verified.")
     for record, row in zip(records, saved):
         if row != {"excel_row": record.excel_row, "text_sha256": digest(record.text), "label": record.label}:
-            raise ValueError(f"The full training row differs at Excel row {record.excel_row}.")
+            raise ValueError(f"The training row differs at Excel row {record.excel_row}.")
     for name, expected in report["adapter_files_sha256"].items():
         path = root / "final_model" / name
         if not path.resolve().is_relative_to((root / "final_model").resolve()) or file_digest(path) != expected:
@@ -50,6 +107,8 @@ def verify_training(root: Path, ep1: Path) -> dict[str, Any]:
 
 
 def evaluate(args: argparse.Namespace) -> dict[str, Any]:
+    if args.stage == "compare":
+        return compare_saved(args)
     training = verify_training(args.training_run, args.ep1_root)
     adapter = args.training_run / "final_model"
     source_digest = file_digest(args.training_run / "run.json")
@@ -71,7 +130,7 @@ def evaluate(args: argparse.Namespace) -> dict[str, Any]:
         config = training["config"]
         use_cpu, device = original.select_execution_device("gpu")
         torch.set_num_threads(config["threads"])
-        print("Verified all 20,092 training rows and exported adapter hashes. Loading the new adapter.", flush=True)
+        print(f"Verified {training['training_rows']:,} training rows and exported adapter hashes. Loading adapter.", flush=True)
         started = time.monotonic()
         tokenizer = original.AutoTokenizer.from_pretrained(adapter, local_files_only=True)
         features, statistics = original.tokenize_corpus(
@@ -101,6 +160,21 @@ def evaluate(args: argparse.Namespace) -> dict[str, Any]:
         elapsed = time.monotonic() - started
         align(records, predictions)
         write_jsonl(args.output_dir / "predictions.jsonl", predictions)
+        if args.stage == "predict":
+            result = {"status": "completed", "phase": "prediction", "model_type": "norberto-trained",
+                      "rows": 900, "labels": list(LABELS), "input": info, "config": config,
+                      "recipe_version": training.get("recipe_version"),
+                      "data_partition": training.get("data_partition", "full"),
+                      "adapter_sha256": identity,
+                      "adapter_weights_sha256": training["adapter_files_sha256"]["adapter_model.safetensors"],
+                      "training_run_sha256": source_digest, "training_rows": training["training_rows"],
+                      "training_rows_verified": True, "training_performed": False,
+                      "evaluation_performed": False, "gold_accessed": False, "device": device,
+                      "evaluation_script_sha256": file_digest(Path(__file__)),
+                      "predictions_sha256": file_digest(args.output_dir / "predictions.jsonl"),
+                      "inference_seconds": elapsed, "tokenization": statistics}
+            write_json(args.output_dir / "run.json", result)
+            return result
         # Gold labels enter only after text-only predictions have been persisted.
         gold, gold_info = read_xlsx(args.gold, labeled=True)
         if len(gold) != 900 or any((a.excel_row, a.text) != (b.excel_row, b.text) for a, b in zip(records, gold)):
@@ -114,8 +188,8 @@ def evaluate(args: argparse.Namespace) -> dict[str, Any]:
                 or file_digest(args.training_run / "run.json") != source_digest
                 or file_digest(adapter / "adapter_model.safetensors") != training["adapter_files_sha256"]["adapter_model.safetensors"]):
             raise ValueError("A model or evaluation input changed during inference.")
-        result = {"status": "completed", "phase": "comparison", "model_type": "norberto-full",
-                  "scope": "Isolated test1 comparison of the full-corpus refit; no test2 delivery performed.",
+        result = {"status": "completed", "phase": "comparison", "model_type": "norberto-trained",
+                  "scope": "Isolated test1 comparison of a trained adapter; no test2 delivery performed.",
                   "rows": 900, "labels": list(LABELS), "input": info, "gold_sha256": gold_info["sha256"],
                   "config": config, "adapter_sha256": identity,
                   "adapter_weights_sha256": training["adapter_files_sha256"]["adapter_model.safetensors"],
@@ -141,18 +215,22 @@ def evaluate(args: argparse.Namespace) -> dict[str, Any]:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--stage", choices=("predict", "compare", "all"), default="all")
+    parser.add_argument("--prediction-dir", type=Path)
     parser.add_argument("--training-run", type=Path, default=ROOT / "results/norberto-full-training")
     parser.add_argument("--ep1-root", type=Path, default=ROOT.parent / "EP1")
     parser.add_argument("--input", type=Path, default=ROOT / "data/test1.xlsx")
     parser.add_argument("--gold", type=Path, default=ROOT / "data/test1-rotulado-para-teste-estatistico.xlsx")
     parser.add_argument("--output-dir", type=Path, required=True)
     args = parser.parse_args()
+    if args.stage == "compare" and args.prediction_dir is None:
+        parser.error("--prediction-dir is required for comparison.")
     try:
         report = evaluate(args)
     except (ValueError, RuntimeError, OSError, ImportError, KeyError) as error:
         parser.exit(1, f"ERROR: {error}\n")
-    print(json.dumps({"status": report["status"], "metrics": report["metrics"],
-                      "inference_seconds": report["inference_seconds"]}, indent=2))
+    print(json.dumps({"status": report["status"], "metrics": report.get("metrics"),
+                      "inference_seconds": report.get("inference_seconds")}, indent=2))
     return 0
 
 
