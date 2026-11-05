@@ -10,6 +10,11 @@ The completed Qwen adapter achieved **46.67% accuracy (420/900)** and
 The report includes training verification, per-class metrics, and comparison
 with the original EP1 NorBERTo submission.
 
+The separate [NorBERTo full-corpus refit](docs/avaliacao-norberto-full-test1.md)
+completed training on all 20,092 EP1 responses and achieved **37.89% accuracy
+(341/900)** in its isolated test1 comparison. The original EP1 adapter remains
+the frozen reference.
+
 O modelo definitivo já treinado do EP1 também está disponível no pacote
 [`src/norberto_classifier`](src/norberto_classifier/README.md), exclusivamente
 para inferência, com cópia local da base e do adapter oficial.

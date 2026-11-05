@@ -47,3 +47,7 @@ serve as an unseen evaluation set for the new model.
 
 Preparation was validated on all 20,092 rows with matching dataset and parameter
 hashes. This validation did not import model libraries or execute training.
+
+The completed run and its separate test1 evaluation are documented in
+[the full-refit evaluation](avaliacao-norberto-full-test1.md), including artifact
+verification, class metrics, and comparison with the original EP1 submission.

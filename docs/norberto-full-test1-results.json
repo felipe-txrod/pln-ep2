@@ -1,0 +1,241 @@
+{
+  "dataset": "test1",
+  "rows": 900,
+  "labels": [
+    "c1",
+    "c234",
+    "c5"
+  ],
+  "phase": "comparison",
+  "scope": "Isolated test1 comparison of the full-corpus refit; no test2 delivery performed.",
+  "model_type": "norberto-full",
+  "model_id": "Itau-Unibanco/NorBERTo-base",
+  "base_revision": "db73446f89c96044863ea05a39f680524b84bccb",
+  "input_sha256": "e626f030d4bf2be889fc41dd1fe9b81fb31f1f50f3ace50530d658683260449f",
+  "gold_sha256": "c92658298f95b6325a49b017b58673ebda450fa54dc2280d74393cb093378406",
+  "config": {
+    "description": "Three-fold NorBERTo-512 evaluation on frozen development rows only; reserve the fixed holdout for a later decision and preserve all fold adapters.",
+    "model_name": "Itau-Unibanco/NorBERTo-base",
+    "revision": "db73446f89c96044863ea05a39f680524b84bccb",
+    "max_length": 512,
+    "truncation": "head_tail",
+    "lora_rank": 4,
+    "lora_alpha": 8,
+    "lora_dropout": 0.05,
+    "lora_layers": null,
+    "batch_size": 4,
+    "gradient_accumulation": 4,
+    "eval_batch_size": 8,
+    "learning_rate": 0.001,
+    "epochs": 2,
+    "patience": 1,
+    "weight_decay": 0.01,
+    "warmup_ratio": 0.1,
+    "fp16": false,
+    "attention": "sdpa",
+    "outer_folds": 3,
+    "inner_folds": 5,
+    "seed": 42,
+    "threads": 2,
+    "train_subset_folds": 1,
+    "budget_minutes": 75,
+    "holdout_split_sha256": "0f78e7a809c7b7584db05b33cf03a73ff586d5de02ba824c16562d5070d41494"
+  },
+  "adapter_sha256": "507078936d8755f6710ee708d680dc427f85c3176a74cbf72c517d78855d1d52",
+  "adapter_weights_sha256": "ea0bd1ef02516e0de768dfb8d76313c3a8cacd25d43d9f4431c5c35a4b2c86be",
+  "training_run_sha256": "bef2132189caffdc464fe29f896759f560fe8bf045ee3526e5143d1881f37256",
+  "ep1_trainer_sha256": "0c8e4c04b3becc626c31a50e3827daef3cd708252905824dcd9e4c4fb439ee4a",
+  "evaluation_script_sha256": "9245ec7c4a3cbe007ff9d55ccdd487beea04ec8dd8d31168d01854b53a0c2765",
+  "predictions_sha256": "3db2e907e9097b5fee375dac19a404333c93b2d3a9533adc22256bded504f3cb",
+  "training_audit": {
+    "status": "passed",
+    "training_status": "completed",
+    "rows": 20092,
+    "epochs": 2.0,
+    "optimizer_steps": 2512,
+    "max_steps": 2512,
+    "training_seconds": 2389.487411979,
+    "stopped_by_budget": false,
+    "original_parameters_preserved": true,
+    "holdout_excluded": false,
+    "test_data_used": false,
+    "finite_trainable_parameters": 272643,
+    "nonzero_lora_b_tensors": 22,
+    "classification_head_present": true,
+    "exported_file_hashes_verified": true,
+    "training_run_sha256": "bef2132189caffdc464fe29f896759f560fe8bf045ee3526e5143d1881f37256",
+    "training_rows_sha256": "6ad83e7812a75b45f782ef6b2b12e676e08817e32e1550ef5dd2bbb995befa36",
+    "adapter_weights_sha256": "ea0bd1ef02516e0de768dfb8d76313c3a8cacd25d43d9f4431c5c35a4b2c86be",
+    "base_weights_sha256": "f632545c4a06a5d053af8ea726b0d0048420929f35d9aade1e3da77e0b057066",
+    "base_revision": "db73446f89c96044863ea05a39f680524b84bccb",
+    "base_weights_match_pinned_reference": true
+  },
+  "training_rows_verified": true,
+  "loaded_adapter_verification": {
+    "status": "passed",
+    "device": "cpu",
+    "gpu_available": false,
+    "matched_tensors": 46,
+    "matched_parameters": 272643,
+    "classification_head_matches": true,
+    "label_mapping_matches": true,
+    "inference_performed": false,
+    "training_performed": false,
+    "method": "Exact torch.equal comparison of get_peft_model_state_dict with saved safetensors for every tensor."
+  },
+  "runtime_versions": {
+    "torch": "2.8.0+rocm6.4",
+    "transformers": "4.57.1",
+    "peft": "0.17.1",
+    "accelerate": "1.10.1",
+    "numpy": "2.3.3",
+    "scikit-learn": "1.7.2",
+    "openpyxl": "3.1.5"
+  },
+  "device": {
+    "backend": "rocm",
+    "device_name": "AMD Radeon RX 6650 XT",
+    "architecture": "gfx1030",
+    "runtime_version": "6.4.43482-0f2d60242",
+    "torch_version": "2.8.0+rocm6.4",
+    "total_memory_mib": 8176.0
+  },
+  "execution": {
+    "training_performed": false,
+    "evaluation_performed": true,
+    "gold_read_after_predictions": true,
+    "network_access": false,
+    "inputs_and_weights_read_only": true,
+    "inference_seconds": 34.46742701000039,
+    "inference_memory": {
+      "peak_allocated_mib": 951.8125,
+      "peak_reserved_mib": 1136.0
+    },
+    "tokenization": {
+      "rows": 900,
+      "truncated_rows": 83,
+      "truncated_fraction": 0.09222222222222222,
+      "median_raw_tokens": 181.0,
+      "p95_raw_tokens": 628.4499999999996,
+      "input_case_preserved": true,
+      "cache_fingerprint": "622eea359c8565435e0fb89f1ab53e334628ba2910267a1b6bbd719c63478523"
+    }
+  },
+  "metrics": {
+    "rows": 900,
+    "accuracy": 0.3788888888888889,
+    "f1_macro": 0.3647469979098618,
+    "label_order": [
+      "c1",
+      "c234",
+      "c5"
+    ],
+    "confusion_matrix": [
+      [
+        56,
+        129,
+        115
+      ],
+      [
+        50,
+        147,
+        103
+      ],
+      [
+        56,
+        106,
+        138
+      ]
+    ],
+    "classification_report": {
+      "c1": {
+        "precision": 0.345679012345679,
+        "recall": 0.18666666666666668,
+        "f1-score": 0.24242424242424243,
+        "support": 300.0
+      },
+      "c234": {
+        "precision": 0.38481675392670156,
+        "recall": 0.49,
+        "f1-score": 0.4310850439882698,
+        "support": 300.0
+      },
+      "c5": {
+        "precision": 0.38764044943820225,
+        "recall": 0.46,
+        "f1-score": 0.42073170731707316,
+        "support": 300.0
+      },
+      "accuracy": 0.3788888888888889,
+      "macro avg": {
+        "precision": 0.37271207190352756,
+        "recall": 0.3788888888888889,
+        "f1-score": 0.3647469979098618,
+        "support": 900.0
+      },
+      "weighted avg": {
+        "precision": 0.3727120719035276,
+        "recall": 0.3788888888888889,
+        "f1-score": 0.36474699790986176,
+        "support": 900.0
+      }
+    },
+    "prediction_counts": {
+      "c5": 356,
+      "c234": 382,
+      "c1": 162
+    },
+    "precision_macro": 0.37271207190352756,
+    "recall_macro": 0.3788888888888889,
+    "correct": 341,
+    "incorrect": 559
+  },
+  "independent_verification": {
+    "status": "passed",
+    "rows": 900,
+    "gold_reader": "Independent standard-library ZIP/XML parser",
+    "row_ids_verified": true,
+    "source_and_prediction_hashes_verified": true,
+    "probability_distributions_verified": true,
+    "argmax_labels_verified": true,
+    "confusion_matrix": [
+      [
+        56,
+        129,
+        115
+      ],
+      [
+        50,
+        147,
+        103
+      ],
+      [
+        56,
+        106,
+        138
+      ]
+    ],
+    "metrics_recomputed": true,
+    "inference_performed": false,
+    "training_performed": false
+  },
+  "comparison_with_ep1": {
+    "baseline": "Original EP1 NorBERTo submission",
+    "baseline_correct": 432,
+    "new_correct": 341,
+    "both_correct": 192,
+    "only_baseline_correct": 240,
+    "only_new_correct": 149,
+    "both_incorrect": 319,
+    "accuracy_delta": -0.10111111111111111,
+    "mcnemar_exact_two_sided_p": 4.584751290541848e-06,
+    "mcnemar_chi2_continuity_corrected": 20.822622107969153,
+    "baseline_predictions_sha256": "6d82ec85b7ad16a91331f89494667c5752c2e9e78fe6b4857430b89bed579963",
+    "caveat": "Descriptive paired comparison on previously inspected test1; repeated texts limit independence."
+  },
+  "artifacts": {
+    "training_run": "results/norberto-full-training",
+    "evaluation_run": "results/norberto-full-test1-20261105-003353/norberto-full"
+  },
+  "interpretation": "The full-corpus refit completed, but test1 accuracy decreased relative to the original EP1 submission. No model replacement or ensemble tuning performed."
+}
