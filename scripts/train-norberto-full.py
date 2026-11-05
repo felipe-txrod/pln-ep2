@@ -61,7 +61,10 @@ def prepare(args: argparse.Namespace) -> tuple[dict[str, Any], list]:
             "protocol": "fresh_base_frozen_development_fixed_parameters" if development_only else
                         "fresh_base_all_ep1_training_rows_fixed_parameters",
             "data_partition": args.partition, **partition_info,
-            "recipe_version": 2, "loss_normalization": "sample_count_across_accumulation",
+            "recipe_version": 3, "loss_normalization": "sample_count_across_accumulation",
+            "optimizer_gradient_scale": config["gradient_accumulation"],
+            "optimizer_gradient_units": "legacy_accumulation_units",
+            "recipe_implementation_sha256": checksum(ROOT / "src/norberto_classifier/training_recipe.py"),
             "training_wrapper_sha256": checksum(Path(__file__)),
             "loss_implementation_sha256": checksum(ROOT / "src/norberto_classifier/training_loss.py"),
             "training_rows": len(records), "labels": list(LABELS), "dataset_sha256": info["sha256"],
@@ -78,7 +81,7 @@ def train(args: argparse.Namespace, plan: dict[str, Any], records: list) -> int:
     sys.path.insert(0, str(args.ep1_root / "src"))
     from clarity import finetune as original_trainer
     from gpt_classifier.data import LABELS, digest, write_jsonl
-    from norberto_classifier.training_loss import sample_normalized_trainer
+    from norberto_classifier.training_recipe import compatible_normalized_trainer
     import numpy as np
     import torch
 
@@ -106,8 +109,9 @@ def train(args: argparse.Namespace, plan: dict[str, Any], records: list) -> int:
         labels = np.asarray([LABELS.index(row.label) for row in records])
         print(f"TRAINING: partition={plan['data_partition']}; rows={len(records)}; epochs={config['epochs']}; "
               f"holdout_excluded={plan['holdout_excluded']}; validation_used=False; initialization=fresh_base; "
-              "recipe_version=2; loss_normalization=sample_count_across_accumulation", flush=True)
-        with sample_normalized_trainer(original_trainer):
+              "recipe_version=3; loss_normalization=sample_count_across_accumulation; "
+              f"optimizer_gradient_scale={config['gradient_accumulation']}", flush=True)
+        with compatible_normalized_trainer(original_trainer):
             trainer, training = original_trainer.train_one(
                 config, tokenizer, features, labels, np.arange(len(records)), None,
                 args.output_dir, config["seed"], final=True, allow_download=False, use_cpu=use_cpu)

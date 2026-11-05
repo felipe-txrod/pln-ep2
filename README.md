@@ -27,6 +27,11 @@ completed two epochs on 16,093 responses. On the separate frozen holdout of
 3,999 rows it achieved **35.66% accuracy**, versus **45.31%** for the original
 EP1 adapter on the same holdout. These are validation metrics, not test1 scores.
 
+The [optimizer-compatible recipe 3](docs/avaliacao-norberto-recipe3-holdout.md)
+recovered **44.81% accuracy (1,792/3,999)** and **44.81% macro-F1** on that same
+holdout. The prior gradient escalation did not recur in the completed two-epoch
+run; the original adapter's accuracy remains **45.31%** on these held-out rows.
+
 O modelo definitivo já treinado do EP1 também está disponível no pacote
 [`src/norberto_classifier`](src/norberto_classifier/README.md), exclusivamente
 para inferência, com cópia local da base e do adapter oficial.

@@ -1,5 +1,20 @@
 # NorBERTo refitting on the full EP1 training corpus
 
+## Recipe version 3: explicit optimizer gradient units
+
+The current runner uses the sample-normalized loss with an explicit gradient
+scale equal to configured accumulation (4). This preserves the gradient units
+used by EP1's clipping threshold and AdamW state while weighting every example
+equally, including partial final microbatches. Reported training loss and
+validation loss remain example means. Version 2 changed optimizer units without
+adjusting their interpretation; version 3 repairs that compatibility mismatch.
+This does not guarantee recovery of historical validation accuracy.
+
+New runs record `recipe_version=3`, `optimizer_gradient_scale`,
+`optimizer_gradient_units`, and the recipe implementation checksum. Previous
+runs and adapters retain their original manifests. See the
+[compatibility correction](norberto-optimizer-units-fix.md) for verification.
+
 ## Controlled development-only comparison
 
 To train with the same corrected loss and numerical parameters on the original
@@ -9,7 +24,7 @@ EP1 development partition, excluding its frozen holdout:
 NORBERTO_IMAGE=pln-rocm:6.4.1 \
 bash scripts/train-norberto-full.sh \
   --partition development \
-  --output-dir /workspace/results/norberto-development-normalized
+  --output-dir /workspace/results/norberto-development-compatible-v3
 ```
 
 This uses exactly **16,093 development rows** and reserves **3,999 holdout rows**.
@@ -31,7 +46,7 @@ row/group overlap and class counts 5,090/5,436/5,567 in `c1/c234/c5` order.
 Nine partition tests passed. The default `--partition full` still selects all
 20,092 rows and was checked separately by dry-run.
 
-The completed development-only run took **31.94 minutes** and achieved
+The historical recipe-2 development-only run took **31.94 minutes** and achieved
 **35.66% accuracy (1,426/3,999)** and **35.59% macro-F1** on the frozen holdout,
 compared with **45.31% accuracy** for the original EP1 adapter on the same rows.
 See the [holdout validation](avaliacao-norberto-development-holdout.md) for
@@ -42,9 +57,15 @@ verified accumulation, clipping, and AdamW against manual updates. It localized
 the saved development adapter's high sensitivity to the first attention LoRA;
 the exact cause of the unstable training trajectory remains unresolved.
 
-## Recipe version 2: corrected loss normalization
+The completed recipe-3 run took **31.32 minutes** and recovered **44.81%
+accuracy (1,792/3,999)** and **44.81% macro-F1** on the same holdout. Its maximum
+logged sample-unit gradient norm was **5.64602**, compared with **275.30652**
+in recipe 2. The [recipe-3 evaluation](avaliacao-norberto-recipe3-holdout.md)
+records stability, class metrics, and comparison with the original adapter.
 
-The current command normalizes cross entropy by the total example count across
+## Historical recipe version 2: corrected loss normalization
+
+Recipe version 2 normalized cross entropy by the total example count across
 gradient accumulation, fixing a confirmed legacy ModernBERT/Trainer bug.
 Optimizer hyperparameters remain unchanged, but this is a new loss computation,
 recorded as recipe version 2. The historical 341/900 refit used the legacy loss.

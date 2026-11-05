@@ -24,7 +24,7 @@ def evaluate(args: argparse.Namespace) -> dict:
     if (training.get("status") != "completed" or training.get("mode") != "development-training"
             or training.get("data_partition") != "development" or not training.get("holdout_excluded")
             or training.get("training_rows") != 16093 or training.get("reserved_holdout_rows") != 3999
-            or training.get("recipe_version") != 2 or config != original["config"]
+            or training.get("recipe_version") not in (2, 3) or config != original["config"]
             or not math.isclose(training["training"]["epochs_executed"], 2)
             or training["training"]["training_stopped_by_budget"]):
         raise ValueError("A completed corrected-loss development-only training run is required.")
@@ -35,6 +35,11 @@ def evaluate(args: argparse.Namespace) -> dict:
                         (ROOT / "src/norberto_classifier/training_loss.py", "loss_implementation_sha256")):
         if file_digest(path) != training[field]:
             raise ValueError(f"The recorded implementation changed: {path.name}")
+    if training["recipe_version"] == 3:
+        if (training.get("optimizer_gradient_units") != "legacy_accumulation_units"
+                or training.get("optimizer_gradient_scale") != config["gradient_accumulation"]
+                or file_digest(ROOT / "src/norberto_classifier/training_recipe.py") != training.get("recipe_implementation_sha256")):
+            raise ValueError("The recorded optimizer-unit recipe changed.")
     adapter = args.training_run / "final_model"
     for name, expected in training["adapter_files_sha256"].items():
         path = adapter / name
@@ -133,7 +138,7 @@ def evaluate(args: argparse.Namespace) -> dict:
             raise ValueError("A model or evaluation input changed during inference.")
         report = {"status": "completed", "phase": "holdout-validation", "dataset": "ep1-frozen-holdout",
                   "rows": 3999, "labels": list(LABELS), "input": info, "split_sha256": training["split_sha256"],
-                  "config": config, "recipe_version": 2, "loss_normalization": training["loss_normalization"],
+                  "config": config, "recipe_version": training["recipe_version"], "loss_normalization": training["loss_normalization"],
                   "adapter_sha256": digest(canonical({"files": training["adapter_files_sha256"], "config": config})),
                   "adapter_weights_sha256": training["adapter_files_sha256"]["adapter_model.safetensors"],
                   "training_run_sha256": source_digest, "training_rows_verified": True, "partition": partition_info,

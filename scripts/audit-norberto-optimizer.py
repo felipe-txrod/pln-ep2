@@ -10,7 +10,7 @@ from pathlib import Path
 from types import SimpleNamespace
 
 
-def run(output: Path, device: str = "cpu") -> dict:
+def run(output: Path, device: str = "cpu", recipe: str = "sample") -> dict:
     import torch
     from peft import LoraConfig, get_peft_model
     from transformers import (ModernBertConfig, ModernBertForSequenceClassification,
@@ -39,7 +39,10 @@ def run(output: Path, device: str = "cpu") -> dict:
                 "labels": labels[i]} for i in range(29)]
     module = SimpleNamespace(Trainer=Trainer)
     output.parent.mkdir(parents=True, exist_ok=True)
-    with sample_normalized_trainer(module):
+    from norberto_classifier.training_recipe import compatible_normalized_trainer
+    context = compatible_normalized_trainer if recipe == "compatible" else sample_normalized_trainer
+    gradient_scale = 4 if recipe == "compatible" else 1
+    with context(module):
         trainer = module.Trainer(model=model, train_dataset=dataset, args=TrainingArguments(
             output_dir=str(output.parent / f"tiny-loop-{device}"), use_cpu=device == "cpu",
             per_device_train_batch_size=4, gradient_accumulation_steps=4,
@@ -80,7 +83,7 @@ def run(output: Path, device: str = "cpu") -> dict:
         gold = combined.pop("labels")
         reference.train()
         loss = torch.nn.functional.cross_entropy(reference(**combined).logits, gold)
-        loss.backward()
+        (loss * gradient_scale).backward()
         expected = gradients(reference)
         observed = gradients(model)
         relative = ((observed - expected).norm() / expected.norm()).item()
@@ -122,7 +125,7 @@ def run(output: Path, device: str = "cpu") -> dict:
     assert all(torch.equal(named[name].detach().cpu(), value) for name, value in frozen.items())
     assert abs(result.training_loss - sum(step["reference_loss"] for step in steps) / 4) < 1e-6
     report = {"status": "passed", "model": "random tiny ModernBERT with PEFT", "device": device,
-              "manual_reference_device": "cpu",
+              "manual_reference_device": "cpu", "recipe": recipe, "optimizer_gradient_scale": gradient_scale,
               "production_model_training_performed": False, "production_weights_modified": False,
               "tiny_frozen_parameters_unchanged": True,
               "test_data_accessed": False, "tiny_model_optimizer_updates": 4,
@@ -139,8 +142,9 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--device", choices=("cpu", "gpu"), default="cpu")
+    parser.add_argument("--recipe", choices=("sample", "compatible"), default="sample")
     args = parser.parse_args()
-    print(json.dumps(run(args.output, args.device), indent=2))
+    print(json.dumps(run(args.output, args.device, args.recipe), indent=2))
 
 
 if __name__ == "__main__":

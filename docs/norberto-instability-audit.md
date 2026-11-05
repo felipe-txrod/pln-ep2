@@ -147,6 +147,13 @@ sensitivity, data order, and other implementation issues. The current evidence
 does not justify claiming either a new confirmed loss bug or a fully explained
 regression. Another full training run is not a substitute for that isolation.
 
+The subsequent [optimizer-unit correction](norberto-optimizer-units-fix.md)
+and its [completed holdout evaluation](avaliacao-norberto-recipe3-holdout.md)
+document a controlled prefix and full-run follow-up. Recipe 3 reproduced the
+original logged gradient norms through update 1,000, avoided the preceding
+escalation, and recovered 44.81% holdout accuracy. The audit above describes
+the evidence available before that correction.
+
 Inside the validated image with the project, EP1, and cache mounts available,
 the diagnostics can be reproduced with new output paths:
 

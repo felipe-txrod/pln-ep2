@@ -1,0 +1,436 @@
+{
+  "evaluation": {
+    "status": "completed",
+    "phase": "holdout-validation",
+    "dataset": "ep1-frozen-holdout",
+    "rows": 3999,
+    "labels": [
+      "c1",
+      "c234",
+      "c5"
+    ],
+    "input": {
+      "rows": 20092,
+      "sheet": "train",
+      "columns": [
+        "resp_text",
+        "clarity"
+      ],
+      "coerced_text_excel_rows": [
+        5028
+      ],
+      "sha256": "0e9219233664ac675fc47982bbc822acd3bb15d67fb7bfc26b67bec047e46818"
+    },
+    "split_sha256": "0f78e7a809c7b7584db05b33cf03a73ff586d5de02ba824c16562d5070d41494",
+    "config": {
+      "description": "Three-fold NorBERTo-512 evaluation on frozen development rows only; reserve the fixed holdout for a later decision and preserve all fold adapters.",
+      "model_name": "Itau-Unibanco/NorBERTo-base",
+      "revision": "db73446f89c96044863ea05a39f680524b84bccb",
+      "max_length": 512,
+      "truncation": "head_tail",
+      "lora_rank": 4,
+      "lora_alpha": 8,
+      "lora_dropout": 0.05,
+      "lora_layers": null,
+      "batch_size": 4,
+      "gradient_accumulation": 4,
+      "eval_batch_size": 8,
+      "learning_rate": 0.001,
+      "epochs": 2,
+      "patience": 1,
+      "weight_decay": 0.01,
+      "warmup_ratio": 0.1,
+      "fp16": false,
+      "attention": "sdpa",
+      "outer_folds": 3,
+      "inner_folds": 5,
+      "seed": 42,
+      "threads": 2,
+      "train_subset_folds": 1,
+      "budget_minutes": 75,
+      "holdout_split_sha256": "0f78e7a809c7b7584db05b33cf03a73ff586d5de02ba824c16562d5070d41494"
+    },
+    "recipe_version": 3,
+    "loss_normalization": "sample_count_across_accumulation",
+    "adapter_sha256": "866327ee366cba90b87215c36ea502d483fd9b4e7c2fa969b5f797e0fa426c44",
+    "adapter_weights_sha256": "641760227c2d5862f56fa3251d7e8722422a37d4de30a76d0623dbe52325e04c",
+    "training_run_sha256": "331c172a8b909bbfbe41d09c2678bd4331af66ae7a801c57ae211f550a5f9000",
+    "training_rows_verified": true,
+    "partition": {
+      "split_sha256": "0f78e7a809c7b7584db05b33cf03a73ff586d5de02ba824c16562d5070d41494",
+      "source_rows": 20092,
+      "training_rows": 16093,
+      "reserved_holdout_rows": 3999,
+      "training_groups": 12956,
+      "holdout_groups": 3281,
+      "holdout_row_overlap": 0,
+      "holdout_group_overlap": 0
+    },
+    "evaluation_script_sha256": "e96c98c92972bfe1810bc66c7afa094834711dd98b9c7eec8741247ce2e4f782",
+    "predictions_sha256": "fe580b97249e7577fedb10d4623431209fd203da84456eeaf246d82b23f67343",
+    "training_performed": false,
+    "evaluation_performed": true,
+    "gold_read_after_predictions": true,
+    "test1_accessed": false,
+    "device": {
+      "backend": "rocm",
+      "device_name": "AMD Radeon RX 6650 XT",
+      "architecture": "gfx1030",
+      "runtime_version": "6.4.43482-0f2d60242",
+      "torch_version": "2.8.0+rocm6.4",
+      "total_memory_mib": 8176.0
+    },
+    "inference_seconds": 156.13069007400003,
+    "tokenization": {
+      "rows": 3999,
+      "truncated_rows": 448,
+      "truncated_fraction": 0.11202800700175043,
+      "median_raw_tokens": 175.0,
+      "p95_raw_tokens": 703.0999999999999,
+      "input_case_preserved": true,
+      "cache_fingerprint": "d33f4add7decf9670510980a5a5a1847b7d6eef982b7631c0f143bd9060e033f"
+    },
+    "memory": {
+      "peak_allocated_mib": 951.8125,
+      "peak_reserved_mib": 1270.0
+    },
+    "metrics": {
+      "rows": 3999,
+      "accuracy": 0.44811202800700173,
+      "f1_macro": 0.4481089857595624,
+      "label_order": [
+        "c1",
+        "c234",
+        "c5"
+      ],
+      "confusion_matrix": [
+        [
+          519,
+          440,
+          298
+        ],
+        [
+          366,
+          600,
+          451
+        ],
+        [
+          232,
+          420,
+          673
+        ]
+      ],
+      "classification_report": {
+        "c1": {
+          "precision": 0.4646374216651746,
+          "recall": 0.4128878281622912,
+          "f1-score": 0.43723673125526535,
+          "support": 1257.0
+        },
+        "c234": {
+          "precision": 0.410958904109589,
+          "recall": 0.4234297812279464,
+          "f1-score": 0.4171011470281543,
+          "support": 1417.0
+        },
+        "c5": {
+          "precision": 0.4732770745428973,
+          "recall": 0.5079245283018868,
+          "f1-score": 0.48998907899526756,
+          "support": 1325.0
+        },
+        "accuracy": 0.44811202800700173,
+        "macro avg": {
+          "precision": 0.4496244667725537,
+          "recall": 0.4480807125640414,
+          "f1-score": 0.4481089857595624,
+          "support": 3999.0
+        },
+        "weighted avg": {
+          "precision": 0.4484796523945364,
+          "recall": 0.44811202800700173,
+          "f1-score": 0.4475805016742918,
+          "support": 3999.0
+        }
+      },
+      "prediction_counts": {
+        "c1": 1117,
+        "c234": 1460,
+        "c5": 1422
+      },
+      "precision_macro": 0.4496244667725537,
+      "recall_macro": 0.4480807125640414,
+      "correct": 1792,
+      "incorrect": 2207
+    },
+    "caveat": "Historically reused EP1 holdout; disjoint from this model's training, not historically untouched."
+  },
+  "training_audit": {
+    "status": "passed",
+    "finite_trainable_parameters": 272643,
+    "nonzero_lora_b_tensors": 22,
+    "weights_sha256": "641760227c2d5862f56fa3251d7e8722422a37d4de30a76d0623dbe52325e04c",
+    "training_run_sha256": "331c172a8b909bbfbe41d09c2678bd4331af66ae7a801c57ae211f550a5f9000",
+    "epochs": 2,
+    "optimizer_steps": 2012,
+    "training_performed": false,
+    "training_rows": 16093,
+    "reserved_holdout_rows": 3999,
+    "holdout_row_overlap": 0,
+    "holdout_group_overlap": 0,
+    "recipe_version": 3,
+    "optimizer_gradient_scale": 4,
+    "optimizer_gradient_units": "legacy_accumulation_units",
+    "training_seconds": 1879.4120314870015,
+    "source_implementation_hashes_verified": true,
+    "exported_file_hashes_verified": true,
+    "training_stopped_by_budget": false
+  },
+  "optimizer_recipe": {
+    "recipe_version": 3,
+    "loss_normalization": "sample_count_across_accumulation",
+    "optimizer_gradient_scale": 4,
+    "optimizer_gradient_units": "legacy_accumulation_units",
+    "recipe_implementation_sha256": "f50c8fa3686946fdf3bbeb72d14599185f7c543465d41de12e631cd6545479e6",
+    "training_wrapper_sha256": "3f52656cc678d7fef738e0bfdb4580d20184ae7dc8d5f66a3a45a1d95f2238aa",
+    "loss_implementation_sha256": "1c35394b7b68dac274342370dd2989fb1161dbb356083f56af4251ca1e2070ea",
+    "partition_implementation_sha256": "e5ba584754f894795dd7b8d130d3d960f323c9d8243b17325261872247e0d4d1",
+    "ep1_trainer_sha256": "0c8e4c04b3becc626c31a50e3827daef3cd708252905824dcd9e4c4fb439ee4a"
+  },
+  "training_behavior": {
+    "training_loss": 1.0714111693099764,
+    "intervals": [
+      {
+        "epoch_start": 0,
+        "epoch_end": 0.5,
+        "logged_samples": 25,
+        "mean_logged_loss": 1.124204,
+        "mean_optimizer_gradient_norm": 11.50809757232666,
+        "mean_sample_gradient_norm": 2.877024393081665,
+        "maximum_optimizer_gradient_norm": 22.58406639099121
+      },
+      {
+        "epoch_start": 0.5,
+        "epoch_end": 1,
+        "logged_samples": 25,
+        "mean_logged_loss": 1.084968,
+        "mean_optimizer_gradient_norm": 8.094020614624023,
+        "mean_sample_gradient_norm": 2.023505153656006,
+        "maximum_optimizer_gradient_norm": 17.906702041625977
+      },
+      {
+        "epoch_start": 1,
+        "epoch_end": 1.5,
+        "logged_samples": 25,
+        "mean_logged_loss": 1.048428,
+        "mean_optimizer_gradient_norm": 7.436962699890136,
+        "mean_sample_gradient_norm": 1.859240674972534,
+        "maximum_optimizer_gradient_norm": 12.937410354614258
+      },
+      {
+        "epoch_start": 1.5,
+        "epoch_end": 2,
+        "logged_samples": 25,
+        "mean_logged_loss": 1.028752,
+        "mean_optimizer_gradient_norm": 8.12732255935669,
+        "mean_sample_gradient_norm": 2.0318306398391726,
+        "maximum_optimizer_gradient_norm": 11.677056312561035
+      }
+    ],
+    "maximum_optimizer_gradient_norm": 22.58406639099121,
+    "maximum_sample_gradient_norm": 5.646016597747803,
+    "first_epoch_logged_norms_equal_original": 50
+  },
+  "prefix_probe": {
+    "updates": 600,
+    "training_seconds": 559.682084688,
+    "logged_norms_and_learning_rates_exactly_match_original": 30,
+    "status": "intentionally_incomplete",
+    "artifact": "results/norberto-recipe3-prefix-600"
+  },
+  "gpu_optimizer_regression": {
+    "status": "passed",
+    "model": "random tiny ModernBERT with PEFT",
+    "device": "gpu",
+    "manual_reference_device": "cpu",
+    "recipe": "compatible",
+    "optimizer_gradient_scale": 4,
+    "production_model_training_performed": false,
+    "production_weights_modified": false,
+    "tiny_frozen_parameters_unchanged": true,
+    "test_data_accessed": false,
+    "tiny_model_optimizer_updates": 4,
+    "accelerator_accumulation_steps": 1,
+    "model_accepts_loss_kwargs": false,
+    "compute_loss_func": "sample_normalized_loss",
+    "steps": [
+      {
+        "update": 1,
+        "microbatch_sizes": [
+          4,
+          4,
+          4,
+          4
+        ],
+        "reported_item_counts": [
+          16,
+          16,
+          16,
+          16
+        ],
+        "reference_loss": 1.2009941339492798,
+        "gradient_relative_error": 2.442079960474075e-07,
+        "preclipping_norm": 4.688784599304199,
+        "postclipping_norm": 0.9999997019767761,
+        "learning_rate": 0.0,
+        "parameter_max_absolute_error": 0.0
+      },
+      {
+        "update": 2,
+        "microbatch_sizes": [
+          4,
+          4,
+          4,
+          1
+        ],
+        "reported_item_counts": [
+          13,
+          13,
+          13,
+          13
+        ],
+        "reference_loss": 1.394102692604065,
+        "gradient_relative_error": 2.423239777726849e-07,
+        "preclipping_norm": 6.19077730178833,
+        "postclipping_norm": 0.9999998211860657,
+        "learning_rate": 0.001,
+        "parameter_max_absolute_error": 5.995389074087143e-09
+      },
+      {
+        "update": 3,
+        "microbatch_sizes": [
+          4,
+          4,
+          4,
+          4
+        ],
+        "reported_item_counts": [
+          16,
+          16,
+          16,
+          16
+        ],
+        "reference_loss": 1.261464238166809,
+        "gradient_relative_error": 1.8938190748940542e-07,
+        "preclipping_norm": 5.555121421813965,
+        "postclipping_norm": 0.9999997615814209,
+        "learning_rate": 0.0006666666666666666,
+        "parameter_max_absolute_error": 1.4901161193847656e-08
+      },
+      {
+        "update": 4,
+        "microbatch_sizes": [
+          4,
+          4,
+          4,
+          1
+        ],
+        "reported_item_counts": [
+          13,
+          13,
+          13,
+          13
+        ],
+        "reference_loss": 1.3042978048324585,
+        "gradient_relative_error": 2.6724836743596825e-07,
+        "preclipping_norm": 5.677433967590332,
+        "postclipping_norm": 0.9999998211860657,
+        "learning_rate": 0.0003333333333333333,
+        "parameter_max_absolute_error": 1.4901161193847656e-08
+      }
+    ],
+    "trainer_loss": 1.2902146875858307,
+    "script_sha256": "09dfc3f70dea08c30ad68e542a90434b3b5913e58f136f391ca3ff2b62c6527e"
+  },
+  "unit_tests": {
+    "passed": 24,
+    "seconds": 5.23
+  },
+  "independent_verification": {
+    "status": "passed",
+    "rows": 3999,
+    "gold_reader": "Independent standard-library ZIP/XML parser",
+    "gold_and_text_hashes_verified": true,
+    "metrics_and_probabilities_recomputed": true,
+    "source_and_prediction_hashes_verified": true,
+    "holdout_training_overlap": 0,
+    "confusion_matrix": [
+      [
+        519,
+        440,
+        298
+      ],
+      [
+        366,
+        600,
+        451
+      ],
+      [
+        232,
+        420,
+        673
+      ]
+    ],
+    "comparisons": {
+      "original_ep1": {
+        "baseline_correct": 1812,
+        "new_correct": 1792,
+        "both_correct": 1723,
+        "only_baseline_correct": 89,
+        "only_recipe3_correct": 69,
+        "both_incorrect": 2118,
+        "accuracy_delta": -0.005001250312578144,
+        "mcnemar_exact_two_sided_p": 0.130385703847906,
+        "baseline_predictions_sha256": "6c9064f344ca3cb1adf70698467b8048b3289d80fa7f4544b20b13dfad17676a"
+      },
+      "recipe2": {
+        "baseline_correct": 1426,
+        "new_correct": 1792,
+        "both_correct": 753,
+        "only_baseline_correct": 673,
+        "only_recipe3_correct": 1039,
+        "both_incorrect": 1534,
+        "accuracy_delta": 0.09152288072018004,
+        "mcnemar_exact_two_sided_p": 8.367771871672287e-19,
+        "baseline_predictions_sha256": "a76b7cfb9b3053184ee2d8be80d7c4f35b7bf51a869d44151e529cfef637bb21"
+      }
+    },
+    "training_performed": false,
+    "inference_performed": false,
+    "test1_accessed": false,
+    "caveat": "Historically reused grouped holdout; related or repeated texts limit independent-pair interpretation."
+  },
+  "baseline_metrics": {
+    "original_ep1": {
+      "accuracy": 0.45311327831957987,
+      "f1_macro": 0.4530638860354334,
+      "correct": 1812
+    },
+    "recipe2": {
+      "accuracy": 0.35658914728682173,
+      "f1_macro": 0.35585245018916695,
+      "correct": 1426
+    }
+  },
+  "artifacts": {
+    "training": "results/norberto-development-recipe3",
+    "evaluation": "results/norberto-recipe3-holdout-20261105/holdout"
+  },
+  "scope": {
+    "training_repeated_for_this_evaluation": false,
+    "test1_accessed": false,
+    "test2_accessed": false,
+    "frozen_model_replaced": false,
+    "ensemble_changed": false
+  }
+}
