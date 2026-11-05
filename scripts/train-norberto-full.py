@@ -47,6 +47,9 @@ def prepare(args: argparse.Namespace) -> tuple[dict[str, Any], list]:
     if not trainer_source.is_file():
         raise FileNotFoundError(f"The original EP1 trainer is required: {trainer_source}")
     plan = {"mode": "full-training", "protocol": "fresh_base_all_ep1_training_rows_fixed_parameters",
+            "recipe_version": 2, "loss_normalization": "sample_count_across_accumulation",
+            "training_wrapper_sha256": checksum(Path(__file__)),
+            "loss_implementation_sha256": checksum(ROOT / "src/norberto_classifier/training_loss.py"),
             "training_rows": len(records), "labels": list(LABELS), "dataset_sha256": info["sha256"],
             "config": config, "effective_batch_size": config["batch_size"] * config["gradient_accumulation"],
             "validation_used": False, "holdout_excluded": False, "test_data_used": False,
@@ -60,6 +63,7 @@ def train(args: argparse.Namespace, plan: dict[str, Any], records: list) -> int:
     sys.path.insert(0, str(args.ep1_root / "src"))
     from clarity import finetune as original_trainer
     from gpt_classifier.data import LABELS, digest, write_jsonl
+    from norberto_classifier.training_loss import sample_normalized_trainer
     import numpy as np
     import torch
 
@@ -86,10 +90,12 @@ def train(args: argparse.Namespace, plan: dict[str, Any], records: list) -> int:
             np.asarray([row.text for row in records]), tokenizer, config)
         labels = np.asarray([LABELS.index(row.label) for row in records])
         print(f"FULL TRAINING: rows={len(records)}; epochs={config['epochs']}; "
-              "holdout_excluded=False; validation_used=False; initialization=fresh_base", flush=True)
-        trainer, training = original_trainer.train_one(
-            config, tokenizer, features, labels, np.arange(len(records)), None,
-            args.output_dir, config["seed"], final=True, allow_download=False, use_cpu=use_cpu)
+              "holdout_excluded=False; validation_used=False; initialization=fresh_base; "
+              "recipe_version=2; loss_normalization=sample_count_across_accumulation", flush=True)
+        with sample_normalized_trainer(original_trainer):
+            trainer, training = original_trainer.train_one(
+                config, tokenizer, features, labels, np.arange(len(records)), None,
+                args.output_dir, config["seed"], final=True, allow_download=False, use_cpu=use_cpu)
         if checksum(args.input) != plan["dataset_sha256"]:
             raise ValueError("The EP1 training workbook changed during training.")
         complete = (not training["training_stopped_by_budget"]
