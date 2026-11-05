@@ -118,6 +118,11 @@ Choose a fresh output destination for every prediction or comparison run.
 
 ## Weighted soft voting versus the EP1 delivery
 
+Selective stacking + GPT uses `python -m cascade_classifier`; no additional
+wrapper is required. The [cascade guide](../docs/guides/stacking-gpt-cascade.md)
+documents preparation, initial 10% prompt ablation, cached extension, frozen
+budget selection, prediction and separate final evaluation.
+
 ```bash
 PYTHONPATH=src .venv/bin/python scripts/ensemble/compare-ep1.py \
   --run results/ensemble-soft-test1-20261105 \

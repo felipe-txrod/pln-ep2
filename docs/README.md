@@ -17,6 +17,7 @@ Executable entry points are listed in the [script index](../scripts/README.md).
 | Qwen installation, ROCm compatibility, QLoRA, training, and inference | [Qwen fine-tuning](guides/qwen-finetuning.md) |
 | Classifier selection, prediction contracts, and tie-breaking | [Ensemble](guides/ensemble.md) |
 | Current four-model soft voting and stacking with the selected Qwen | [Qwen ensembles](guides/ensemble-qwen.md) |
+| Nested OOF routing, budget selection and selective GPT decisions | [Stacking + GPT cascade](guides/stacking-gpt-cascade.md) |
 | Original three-model calibration, weights and grouped meta-LR CV | [Soft voting](guides/ensemble-soft.md) and [stacking](guides/ensemble-stacking.md) |
 | Frozen SVM, logistic regression, NorBERTo, and GPT configuration | [Model artifacts](../models/README.md) |
 

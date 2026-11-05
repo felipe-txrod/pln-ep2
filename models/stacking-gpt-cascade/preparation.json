@@ -1,0 +1,116 @@
+{
+  "status": "completed",
+  "config": {
+    "stacking_model": "models/ensemble-stacking-qwen/model.json",
+    "holdout_scores": "results/ensemble-soft-qwen-20261105/scores",
+    "model": "gpt-6.1-sol",
+    "reasoning_effort": "low",
+    "budgets": [
+      0.05,
+      0.1,
+      0.2
+    ],
+    "initial_budget": 0.1,
+    "batch_size": 8,
+    "workers": 2,
+    "retries": 1,
+    "timeout": 180,
+    "max_request_bytes": 1000000,
+    "input_price_per_million": 2,
+    "cached_input_price_per_million": 0.1,
+    "output_price_per_million": 10
+  },
+  "routing_rule": {
+    "confidence_weight": 0.9,
+    "maximum_confidence": 0.5,
+    "maximum_margin": 0.05
+  },
+  "files": {
+    "targets.jsonl": "fddfe0b9d0fb0c68d7d4263dc467cb81d36d67249e6596f77a9e0e3c663f269e",
+    "validation-gold.jsonl": "b06895366432d78402c30985bc2bba3c5ed2ce4a441ddc59298e2b74f67e8795",
+    "oof-routing.jsonl": "490f79803bac47d4c239b4dec06286da5f1acc3bf82eec27a028002b8c94f3fc",
+    "nested-cv.json": "df95a50f7abf8f170f709afacbc5a231f42e738644deaa477696b20cf322b9c3",
+    "routing-search.json": "72dd43f1cbfb76141d77a540510dde38da8461135bb4c368b00131ff62dcbbcf"
+  },
+  "evidence": {
+    "source_sha256": "0e9219233664ac675fc47982bbc822acd3bb15d67fb7bfc26b67bec047e46818",
+    "stacking_artifact_sha256": "840bb780be7f396aed5f87514f3ca3446423e7cf305c50ed1f5caedfea3ee722",
+    "soft_artifact_sha256": "4d57a91185861b970eb42a2c2a11a25e069952f21ac15914147fc562c8be6d3d",
+    "partition_sha256": "943e88ce2b823b3581f963f6df8f3aab84ddc28c62681fb8b4fc9e8e65827d6b",
+    "base_models_retrained": false,
+    "development_rows": 16093,
+    "calibration_rows": 2027,
+    "routing_validation_rows": 1972,
+    "shared_calibration_meta_groups": 0,
+    "inherited_exposure": "Qwen checkpoint selection and historical research used the holdout; it is not untouched full-process validation."
+  },
+  "probability_source": "Nested 5x5 grouped OOF meta-model predictions",
+  "outer_target_excluded_from_C_selection": true,
+  "test1_accessed": false,
+  "test2_accessed": false,
+  "oof_baseline_metrics": {
+    "rows": 1972,
+    "accuracy": 0.4746450304259635,
+    "f1_macro": 0.4729770559822655,
+    "label_order": [
+      "c1",
+      "c234",
+      "c5"
+    ],
+    "confusion_matrix": [
+      [
+        245,
+        233,
+        144
+      ],
+      [
+        169,
+        327,
+        211
+      ],
+      [
+        89,
+        190,
+        364
+      ]
+    ],
+    "classification_report": {
+      "c1": {
+        "precision": 0.4870775347912525,
+        "recall": 0.39389067524115756,
+        "f1-score": 0.43555555555555553,
+        "support": 622.0
+      },
+      "c234": {
+        "precision": 0.436,
+        "recall": 0.4625176803394625,
+        "f1-score": 0.4488675360329444,
+        "support": 707.0
+      },
+      "c5": {
+        "precision": 0.5062586926286509,
+        "recall": 0.5660964230171073,
+        "f1-score": 0.5345080763582967,
+        "support": 643.0
+      },
+      "accuracy": 0.4746450304259635,
+      "macro avg": {
+        "precision": 0.47644540913996786,
+        "recall": 0.4741682595325758,
+        "f1-score": 0.4729770559822655,
+        "support": 1972.0
+      },
+      "weighted avg": {
+        "precision": 0.4750195567953253,
+        "recall": 0.4746450304259635,
+        "f1-score": 0.47259310173896146,
+        "support": 1972.0
+      }
+    },
+    "prediction_counts": {
+      "c1": 503,
+      "c5": 719,
+      "c234": 750
+    }
+  }
+}

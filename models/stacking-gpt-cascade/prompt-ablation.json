@@ -1,0 +1,296 @@
+{
+  "status": "completed",
+  "budget": 0.1,
+  "scores": {
+    "text_only": {
+      "metrics": {
+        "rows": 1972,
+        "accuracy": 0.46906693711967545,
+        "f1_macro": 0.4657512745855638,
+        "label_order": [
+          "c1",
+          "c234",
+          "c5"
+        ],
+        "confusion_matrix": [
+          [
+            237,
+            216,
+            169
+          ],
+          [
+            166,
+            306,
+            235
+          ],
+          [
+            85,
+            176,
+            382
+          ]
+        ],
+        "classification_report": {
+          "c1": {
+            "precision": 0.48565573770491804,
+            "recall": 0.38102893890675243,
+            "f1-score": 0.42702702702702705,
+            "support": 622.0
+          },
+          "c234": {
+            "precision": 0.4383954154727794,
+            "recall": 0.4328147100424328,
+            "f1-score": 0.43558718861209966,
+            "support": 707.0
+          },
+          "c5": {
+            "precision": 0.4860050890585242,
+            "recall": 0.5940902021772939,
+            "f1-score": 0.5346396081175647,
+            "support": 643.0
+          },
+          "accuracy": 0.46906693711967545,
+          "macro avg": {
+            "precision": 0.47001874741207383,
+            "recall": 0.4693112837088264,
+            "f1-score": 0.4657512745855638,
+            "support": 1972.0
+          },
+          "weighted avg": {
+            "precision": 0.46882591270605734,
+            "recall": 0.46906693711967545,
+            "f1-score": 0.4651846963383161,
+            "support": 1972.0
+          }
+        },
+        "prediction_counts": {
+          "c1": 488,
+          "c5": 786,
+          "c234": 698
+        }
+      },
+      "routed_instances": 197,
+      "successful_gpt_instances": 197,
+      "fallback_instances": 0,
+      "changes": {
+        "corrected": 31,
+        "harmed": 42,
+        "both_wrong_changed_label": 38
+      },
+      "amortized_usage": {
+        "input_tokens": 177280.0,
+        "output_tokens": 4436.0,
+        "cached_input_tokens": 12672.0
+      },
+      "estimated_api_equivalent_usd": 0.3748432,
+      "allocated_request_latency_seconds": 186.9640141720156,
+      "distinct_batch_receipts": 24,
+      "accounting_note": "Per-instance shares of shared batches; actual experiment attempts/cost/latency are recorded separately."
+    },
+    "with_local": {
+      "metrics": {
+        "rows": 1972,
+        "accuracy": 0.4710953346855984,
+        "f1_macro": 0.4684071612434066,
+        "label_order": [
+          "c1",
+          "c234",
+          "c5"
+        ],
+        "confusion_matrix": [
+          [
+            238,
+            230,
+            154
+          ],
+          [
+            166,
+            315,
+            226
+          ],
+          [
+            86,
+            181,
+            376
+          ]
+        ],
+        "classification_report": {
+          "c1": {
+            "precision": 0.4857142857142857,
+            "recall": 0.38263665594855306,
+            "f1-score": 0.42805755395683454,
+            "support": 622.0
+          },
+          "c234": {
+            "precision": 0.43388429752066116,
+            "recall": 0.44554455445544555,
+            "f1-score": 0.4396371249127704,
+            "support": 707.0
+          },
+          "c5": {
+            "precision": 0.4973544973544973,
+            "recall": 0.5847589424572317,
+            "f1-score": 0.5375268048606148,
+            "support": 643.0
+          },
+          "accuracy": 0.4710953346855984,
+          "macro avg": {
+            "precision": 0.4723176935298148,
+            "recall": 0.4709800509537434,
+            "f1-score": 0.4684071612434066,
+            "support": 1972.0
+          },
+          "weighted avg": {
+            "precision": 0.47092770074053497,
+            "recall": 0.4710953346855984,
+            "f1-score": 0.46790313458410504,
+            "support": 1972.0
+          }
+        },
+        "prediction_counts": {
+          "c1": 490,
+          "c5": 756,
+          "c234": 726
+        }
+      },
+      "routed_instances": 197,
+      "successful_gpt_instances": 197,
+      "fallback_instances": 0,
+      "changes": {
+        "corrected": 22,
+        "harmed": 29,
+        "both_wrong_changed_label": 25
+      },
+      "amortized_usage": {
+        "input_tokens": 237177.0,
+        "output_tokens": 4834.0,
+        "cached_input_tokens": 38016.0
+      },
+      "estimated_api_equivalent_usd": 0.45046359999999996,
+      "allocated_request_latency_seconds": 184.03454864802188,
+      "distinct_batch_receipts": 25,
+      "accounting_note": "Per-instance shares of shared batches; actual experiment attempts/cost/latency are recorded separately."
+    }
+  },
+  "calls": {
+    "text_only": {
+      "status": "completed",
+      "targets": 197,
+      "initial_item_cache_hits": 0,
+      "attempts": 24,
+      "failed_attempts": 0,
+      "unknown_usage_attempts": 0,
+      "usage": {
+        "input_tokens": 177280,
+        "output_tokens": 4436,
+        "cached_input_tokens": 12672
+      },
+      "estimated_api_equivalent_usd": 0.3748432,
+      "cost_basis": "Standard API-equivalent estimate, not a subscription invoice; unknown failed usage is excluded.",
+      "wall_seconds": 96.02331496199622,
+      "summed_request_latency_seconds": 186.9640141720156,
+      "runtime": {
+        "kind": "codex",
+        "endpoint": "codex.exec",
+        "cli_version": "codex-cli 0.166.0",
+        "executable": "/home/felipe/.codex/packages/standalone/releases/0.166.0-x86_64-unknown-linux-musl/bin/codex",
+        "executable_sha256": "b8a11fedf24b2dfb59a70c9e52b030f9a508dcd49cd2dd0d41956f4c785156b8",
+        "adapter_sha256": "d60f3051e97d9289ec111742c06f2d33f241f270866f053970013beaf45e6d15",
+        "policy": {
+          "version": 1,
+          "sandbox": "read-only",
+          "ignore_user_config": true,
+          "ephemeral": true,
+          "disabled_features": [
+            "shell_tool",
+            "apps",
+            "plugins",
+            "hooks",
+            "multi_agent",
+            "memories",
+            "code_mode",
+            "browser_use",
+            "computer_use",
+            "image_generation",
+            "view_image",
+            "tool_suggest"
+          ],
+          "overrides": {
+            "approval_policy": "never",
+            "web_search": "disabled",
+            "project_doc_max_bytes": 0,
+            "skills.include_instructions": false,
+            "skills.bundled.enabled": false
+          }
+        }
+      },
+      "temperature": null,
+      "temperature_note": "The Codex CLI exposes no temperature control; reasoning effort is explicit."
+    },
+    "with_local": {
+      "status": "completed",
+      "targets": 197,
+      "initial_item_cache_hits": 0,
+      "attempts": 25,
+      "failed_attempts": 0,
+      "unknown_usage_attempts": 0,
+      "usage": {
+        "input_tokens": 237177,
+        "output_tokens": 4834,
+        "cached_input_tokens": 38016
+      },
+      "estimated_api_equivalent_usd": 0.45046359999999996,
+      "cost_basis": "Standard API-equivalent estimate, not a subscription invoice; unknown failed usage is excluded.",
+      "wall_seconds": 94.07360804600467,
+      "summed_request_latency_seconds": 184.03454864802188,
+      "runtime": {
+        "kind": "codex",
+        "endpoint": "codex.exec",
+        "cli_version": "codex-cli 0.166.0",
+        "executable": "/home/felipe/.codex/packages/standalone/releases/0.166.0-x86_64-unknown-linux-musl/bin/codex",
+        "executable_sha256": "b8a11fedf24b2dfb59a70c9e52b030f9a508dcd49cd2dd0d41956f4c785156b8",
+        "adapter_sha256": "d60f3051e97d9289ec111742c06f2d33f241f270866f053970013beaf45e6d15",
+        "policy": {
+          "version": 1,
+          "sandbox": "read-only",
+          "ignore_user_config": true,
+          "ephemeral": true,
+          "disabled_features": [
+            "shell_tool",
+            "apps",
+            "plugins",
+            "hooks",
+            "multi_agent",
+            "memories",
+            "code_mode",
+            "browser_use",
+            "computer_use",
+            "image_generation",
+            "view_image",
+            "tool_suggest"
+          ],
+          "overrides": {
+            "approval_policy": "never",
+            "web_search": "disabled",
+            "project_doc_max_bytes": 0,
+            "skills.include_instructions": false,
+            "skills.bundled.enabled": false
+          }
+        }
+      },
+      "temperature": null,
+      "temperature_note": "The Codex CLI exposes no temperature control; reasoning effort is explicit."
+    }
+  },
+  "selected_prompt": "with_local",
+  "test1_accessed": false,
+  "selection_data": "Nested OOF validation only",
+  "files": {
+    "text_only/predictions.jsonl": "d7d2daef32c4cfc8ff00c4bf5e8b302f6c673c14e84be9f0ec08db15f212b4b6",
+    "text_only/decisions.json": "a1d992d4224a97b0d208581ffbfd7a722fedc001e8c973486073f0e048c99ccb",
+    "text_only/run.json": "c61dab93515dd62c42e13b55b16180fc4764555d5ff9933e9bc405b3a29a9a2d",
+    "with_local/predictions.jsonl": "4bae67a735d2685086c02925d927d715b5f59a3dbb9eef4c165a753c15b950c4",
+    "with_local/decisions.json": "1ee579fddfc2fecc353b4f396475d8f28bea8f20949656a39bce51553e34a79c",
+    "with_local/run.json": "ddb2e9ee795e0f41acb8e755022be26aadf18c485129b2fe8f7c5c1cc33fca10"
+  },
+  "preparation_sha256": "0e44d9458f25d798433af05f026d7eb8d507a9ad6c13aba2af19066fda4fd0c4"
+}

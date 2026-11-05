@@ -1,0 +1,1794 @@
+{
+  "status": "completed",
+  "date": "2026-11-05",
+  "config": {
+    "stacking_model": "models/ensemble-stacking-qwen/model.json",
+    "holdout_scores": "results/ensemble-soft-qwen-20261105/scores",
+    "model": "gpt-6.1-sol",
+    "reasoning_effort": "low",
+    "budgets": [
+      0.05,
+      0.1,
+      0.2
+    ],
+    "initial_budget": 0.1,
+    "batch_size": 8,
+    "workers": 2,
+    "retries": 1,
+    "timeout": 180,
+    "max_request_bytes": 1000000,
+    "input_price_per_million": 2,
+    "cached_input_price_per_million": 0.1,
+    "output_price_per_million": 10
+  },
+  "preparation": {
+    "status": "completed",
+    "config": {
+      "stacking_model": "models/ensemble-stacking-qwen/model.json",
+      "holdout_scores": "results/ensemble-soft-qwen-20261105/scores",
+      "model": "gpt-6.1-sol",
+      "reasoning_effort": "low",
+      "budgets": [
+        0.05,
+        0.1,
+        0.2
+      ],
+      "initial_budget": 0.1,
+      "batch_size": 8,
+      "workers": 2,
+      "retries": 1,
+      "timeout": 180,
+      "max_request_bytes": 1000000,
+      "input_price_per_million": 2,
+      "cached_input_price_per_million": 0.1,
+      "output_price_per_million": 10
+    },
+    "routing_rule": {
+      "confidence_weight": 0.9,
+      "maximum_confidence": 0.5,
+      "maximum_margin": 0.05
+    },
+    "files": {
+      "targets.jsonl": "fddfe0b9d0fb0c68d7d4263dc467cb81d36d67249e6596f77a9e0e3c663f269e",
+      "validation-gold.jsonl": "b06895366432d78402c30985bc2bba3c5ed2ce4a441ddc59298e2b74f67e8795",
+      "oof-routing.jsonl": "490f79803bac47d4c239b4dec06286da5f1acc3bf82eec27a028002b8c94f3fc",
+      "nested-cv.json": "df95a50f7abf8f170f709afacbc5a231f42e738644deaa477696b20cf322b9c3",
+      "routing-search.json": "72dd43f1cbfb76141d77a540510dde38da8461135bb4c368b00131ff62dcbbcf"
+    },
+    "evidence": {
+      "source_sha256": "0e9219233664ac675fc47982bbc822acd3bb15d67fb7bfc26b67bec047e46818",
+      "stacking_artifact_sha256": "840bb780be7f396aed5f87514f3ca3446423e7cf305c50ed1f5caedfea3ee722",
+      "soft_artifact_sha256": "4d57a91185861b970eb42a2c2a11a25e069952f21ac15914147fc562c8be6d3d",
+      "partition_sha256": "943e88ce2b823b3581f963f6df8f3aab84ddc28c62681fb8b4fc9e8e65827d6b",
+      "base_models_retrained": false,
+      "development_rows": 16093,
+      "calibration_rows": 2027,
+      "routing_validation_rows": 1972,
+      "shared_calibration_meta_groups": 0,
+      "inherited_exposure": "Qwen checkpoint selection and historical research used the holdout; it is not untouched full-process validation."
+    },
+    "probability_source": "Nested 5x5 grouped OOF meta-model predictions",
+    "outer_target_excluded_from_C_selection": true,
+    "test1_accessed": false,
+    "test2_accessed": false,
+    "oof_baseline_metrics": {
+      "rows": 1972,
+      "accuracy": 0.4746450304259635,
+      "f1_macro": 0.4729770559822655,
+      "label_order": [
+        "c1",
+        "c234",
+        "c5"
+      ],
+      "confusion_matrix": [
+        [
+          245,
+          233,
+          144
+        ],
+        [
+          169,
+          327,
+          211
+        ],
+        [
+          89,
+          190,
+          364
+        ]
+      ],
+      "classification_report": {
+        "c1": {
+          "precision": 0.4870775347912525,
+          "recall": 0.39389067524115756,
+          "f1-score": 0.43555555555555553,
+          "support": 622.0
+        },
+        "c234": {
+          "precision": 0.436,
+          "recall": 0.4625176803394625,
+          "f1-score": 0.4488675360329444,
+          "support": 707.0
+        },
+        "c5": {
+          "precision": 0.5062586926286509,
+          "recall": 0.5660964230171073,
+          "f1-score": 0.5345080763582967,
+          "support": 643.0
+        },
+        "accuracy": 0.4746450304259635,
+        "macro avg": {
+          "precision": 0.47644540913996786,
+          "recall": 0.4741682595325758,
+          "f1-score": 0.4729770559822655,
+          "support": 1972.0
+        },
+        "weighted avg": {
+          "precision": 0.4750195567953253,
+          "recall": 0.4746450304259635,
+          "f1-score": 0.47259310173896146,
+          "support": 1972.0
+        }
+      },
+      "prediction_counts": {
+        "c1": 503,
+        "c5": 719,
+        "c234": 750
+      }
+    }
+  },
+  "initial_prompt_ablation": {
+    "status": "completed",
+    "budget": 0.1,
+    "scores": {
+      "text_only": {
+        "metrics": {
+          "rows": 1972,
+          "accuracy": 0.46906693711967545,
+          "f1_macro": 0.4657512745855638,
+          "label_order": [
+            "c1",
+            "c234",
+            "c5"
+          ],
+          "confusion_matrix": [
+            [
+              237,
+              216,
+              169
+            ],
+            [
+              166,
+              306,
+              235
+            ],
+            [
+              85,
+              176,
+              382
+            ]
+          ],
+          "classification_report": {
+            "c1": {
+              "precision": 0.48565573770491804,
+              "recall": 0.38102893890675243,
+              "f1-score": 0.42702702702702705,
+              "support": 622.0
+            },
+            "c234": {
+              "precision": 0.4383954154727794,
+              "recall": 0.4328147100424328,
+              "f1-score": 0.43558718861209966,
+              "support": 707.0
+            },
+            "c5": {
+              "precision": 0.4860050890585242,
+              "recall": 0.5940902021772939,
+              "f1-score": 0.5346396081175647,
+              "support": 643.0
+            },
+            "accuracy": 0.46906693711967545,
+            "macro avg": {
+              "precision": 0.47001874741207383,
+              "recall": 0.4693112837088264,
+              "f1-score": 0.4657512745855638,
+              "support": 1972.0
+            },
+            "weighted avg": {
+              "precision": 0.46882591270605734,
+              "recall": 0.46906693711967545,
+              "f1-score": 0.4651846963383161,
+              "support": 1972.0
+            }
+          },
+          "prediction_counts": {
+            "c1": 488,
+            "c5": 786,
+            "c234": 698
+          }
+        },
+        "routed_instances": 197,
+        "successful_gpt_instances": 197,
+        "fallback_instances": 0,
+        "changes": {
+          "corrected": 31,
+          "harmed": 42,
+          "both_wrong_changed_label": 38
+        },
+        "amortized_usage": {
+          "input_tokens": 177280.0,
+          "output_tokens": 4436.0,
+          "cached_input_tokens": 12672.0
+        },
+        "estimated_api_equivalent_usd": 0.3748432,
+        "allocated_request_latency_seconds": 186.9640141720156,
+        "distinct_batch_receipts": 24,
+        "accounting_note": "Per-instance shares of shared batches; actual experiment attempts/cost/latency are recorded separately."
+      },
+      "with_local": {
+        "metrics": {
+          "rows": 1972,
+          "accuracy": 0.4710953346855984,
+          "f1_macro": 0.4684071612434066,
+          "label_order": [
+            "c1",
+            "c234",
+            "c5"
+          ],
+          "confusion_matrix": [
+            [
+              238,
+              230,
+              154
+            ],
+            [
+              166,
+              315,
+              226
+            ],
+            [
+              86,
+              181,
+              376
+            ]
+          ],
+          "classification_report": {
+            "c1": {
+              "precision": 0.4857142857142857,
+              "recall": 0.38263665594855306,
+              "f1-score": 0.42805755395683454,
+              "support": 622.0
+            },
+            "c234": {
+              "precision": 0.43388429752066116,
+              "recall": 0.44554455445544555,
+              "f1-score": 0.4396371249127704,
+              "support": 707.0
+            },
+            "c5": {
+              "precision": 0.4973544973544973,
+              "recall": 0.5847589424572317,
+              "f1-score": 0.5375268048606148,
+              "support": 643.0
+            },
+            "accuracy": 0.4710953346855984,
+            "macro avg": {
+              "precision": 0.4723176935298148,
+              "recall": 0.4709800509537434,
+              "f1-score": 0.4684071612434066,
+              "support": 1972.0
+            },
+            "weighted avg": {
+              "precision": 0.47092770074053497,
+              "recall": 0.4710953346855984,
+              "f1-score": 0.46790313458410504,
+              "support": 1972.0
+            }
+          },
+          "prediction_counts": {
+            "c1": 490,
+            "c5": 756,
+            "c234": 726
+          }
+        },
+        "routed_instances": 197,
+        "successful_gpt_instances": 197,
+        "fallback_instances": 0,
+        "changes": {
+          "corrected": 22,
+          "harmed": 29,
+          "both_wrong_changed_label": 25
+        },
+        "amortized_usage": {
+          "input_tokens": 237177.0,
+          "output_tokens": 4834.0,
+          "cached_input_tokens": 38016.0
+        },
+        "estimated_api_equivalent_usd": 0.45046359999999996,
+        "allocated_request_latency_seconds": 184.03454864802188,
+        "distinct_batch_receipts": 25,
+        "accounting_note": "Per-instance shares of shared batches; actual experiment attempts/cost/latency are recorded separately."
+      }
+    },
+    "calls": {
+      "text_only": {
+        "status": "completed",
+        "targets": 197,
+        "initial_item_cache_hits": 0,
+        "attempts": 24,
+        "failed_attempts": 0,
+        "unknown_usage_attempts": 0,
+        "usage": {
+          "input_tokens": 177280,
+          "output_tokens": 4436,
+          "cached_input_tokens": 12672
+        },
+        "estimated_api_equivalent_usd": 0.3748432,
+        "cost_basis": "Standard API-equivalent estimate, not a subscription invoice; unknown failed usage is excluded.",
+        "wall_seconds": 96.02331496199622,
+        "summed_request_latency_seconds": 186.9640141720156,
+        "runtime": {
+          "kind": "codex",
+          "endpoint": "codex.exec",
+          "cli_version": "codex-cli 0.166.0",
+          "executable": "/home/felipe/.codex/packages/standalone/releases/0.166.0-x86_64-unknown-linux-musl/bin/codex",
+          "executable_sha256": "b8a11fedf24b2dfb59a70c9e52b030f9a508dcd49cd2dd0d41956f4c785156b8",
+          "adapter_sha256": "d60f3051e97d9289ec111742c06f2d33f241f270866f053970013beaf45e6d15",
+          "policy": {
+            "version": 1,
+            "sandbox": "read-only",
+            "ignore_user_config": true,
+            "ephemeral": true,
+            "disabled_features": [
+              "shell_tool",
+              "apps",
+              "plugins",
+              "hooks",
+              "multi_agent",
+              "memories",
+              "code_mode",
+              "browser_use",
+              "computer_use",
+              "image_generation",
+              "view_image",
+              "tool_suggest"
+            ],
+            "overrides": {
+              "approval_policy": "never",
+              "web_search": "disabled",
+              "project_doc_max_bytes": 0,
+              "skills.include_instructions": false,
+              "skills.bundled.enabled": false
+            }
+          }
+        },
+        "temperature": null,
+        "temperature_note": "The Codex CLI exposes no temperature control; reasoning effort is explicit."
+      },
+      "with_local": {
+        "status": "completed",
+        "targets": 197,
+        "initial_item_cache_hits": 0,
+        "attempts": 25,
+        "failed_attempts": 0,
+        "unknown_usage_attempts": 0,
+        "usage": {
+          "input_tokens": 237177,
+          "output_tokens": 4834,
+          "cached_input_tokens": 38016
+        },
+        "estimated_api_equivalent_usd": 0.45046359999999996,
+        "cost_basis": "Standard API-equivalent estimate, not a subscription invoice; unknown failed usage is excluded.",
+        "wall_seconds": 94.07360804600467,
+        "summed_request_latency_seconds": 184.03454864802188,
+        "runtime": {
+          "kind": "codex",
+          "endpoint": "codex.exec",
+          "cli_version": "codex-cli 0.166.0",
+          "executable": "/home/felipe/.codex/packages/standalone/releases/0.166.0-x86_64-unknown-linux-musl/bin/codex",
+          "executable_sha256": "b8a11fedf24b2dfb59a70c9e52b030f9a508dcd49cd2dd0d41956f4c785156b8",
+          "adapter_sha256": "d60f3051e97d9289ec111742c06f2d33f241f270866f053970013beaf45e6d15",
+          "policy": {
+            "version": 1,
+            "sandbox": "read-only",
+            "ignore_user_config": true,
+            "ephemeral": true,
+            "disabled_features": [
+              "shell_tool",
+              "apps",
+              "plugins",
+              "hooks",
+              "multi_agent",
+              "memories",
+              "code_mode",
+              "browser_use",
+              "computer_use",
+              "image_generation",
+              "view_image",
+              "tool_suggest"
+            ],
+            "overrides": {
+              "approval_policy": "never",
+              "web_search": "disabled",
+              "project_doc_max_bytes": 0,
+              "skills.include_instructions": false,
+              "skills.bundled.enabled": false
+            }
+          }
+        },
+        "temperature": null,
+        "temperature_note": "The Codex CLI exposes no temperature control; reasoning effort is explicit."
+      }
+    },
+    "selected_prompt": "with_local",
+    "test1_accessed": false,
+    "selection_data": "Nested OOF validation only",
+    "files": {
+      "text_only/predictions.jsonl": "d7d2daef32c4cfc8ff00c4bf5e8b302f6c673c14e84be9f0ec08db15f212b4b6",
+      "text_only/decisions.json": "a1d992d4224a97b0d208581ffbfd7a722fedc001e8c973486073f0e048c99ccb",
+      "text_only/run.json": "c61dab93515dd62c42e13b55b16180fc4764555d5ff9933e9bc405b3a29a9a2d",
+      "with_local/predictions.jsonl": "4bae67a735d2685086c02925d927d715b5f59a3dbb9eef4c165a753c15b950c4",
+      "with_local/decisions.json": "1ee579fddfc2fecc353b4f396475d8f28bea8f20949656a39bce51553e34a79c",
+      "with_local/run.json": "ddb2e9ee795e0f41acb8e755022be26aadf18c485129b2fe8f7c5c1cc33fca10"
+    },
+    "preparation_sha256": "0e44d9458f25d798433af05f026d7eb8d507a9ad6c13aba2af19066fda4fd0c4"
+  },
+  "validation_budget_selection": {
+    "status": "completed",
+    "scores": {
+      "0.0": {
+        "metrics": {
+          "rows": 1972,
+          "accuracy": 0.4746450304259635,
+          "f1_macro": 0.4729770559822655,
+          "label_order": [
+            "c1",
+            "c234",
+            "c5"
+          ],
+          "confusion_matrix": [
+            [
+              245,
+              233,
+              144
+            ],
+            [
+              169,
+              327,
+              211
+            ],
+            [
+              89,
+              190,
+              364
+            ]
+          ],
+          "classification_report": {
+            "c1": {
+              "precision": 0.4870775347912525,
+              "recall": 0.39389067524115756,
+              "f1-score": 0.43555555555555553,
+              "support": 622.0
+            },
+            "c234": {
+              "precision": 0.436,
+              "recall": 0.4625176803394625,
+              "f1-score": 0.4488675360329444,
+              "support": 707.0
+            },
+            "c5": {
+              "precision": 0.5062586926286509,
+              "recall": 0.5660964230171073,
+              "f1-score": 0.5345080763582967,
+              "support": 643.0
+            },
+            "accuracy": 0.4746450304259635,
+            "macro avg": {
+              "precision": 0.47644540913996786,
+              "recall": 0.4741682595325758,
+              "f1-score": 0.4729770559822655,
+              "support": 1972.0
+            },
+            "weighted avg": {
+              "precision": 0.4750195567953253,
+              "recall": 0.4746450304259635,
+              "f1-score": 0.47259310173896146,
+              "support": 1972.0
+            }
+          },
+          "prediction_counts": {
+            "c1": 503,
+            "c5": 719,
+            "c234": 750
+          }
+        },
+        "routed_instances": 0,
+        "successful_gpt_instances": 0,
+        "fallback_instances": 0,
+        "changes": {
+          "corrected": 0,
+          "harmed": 0,
+          "both_wrong_changed_label": 0
+        },
+        "amortized_usage": {
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "cached_input_tokens": 0
+        },
+        "estimated_api_equivalent_usd": 0.0,
+        "allocated_request_latency_seconds": 0,
+        "distinct_batch_receipts": 0,
+        "accounting_note": "Per-instance shares of shared batches; actual experiment attempts/cost/latency are recorded separately."
+      },
+      "0.05": {
+        "metrics": {
+          "rows": 1972,
+          "accuracy": 0.4751521298174442,
+          "f1_macro": 0.47276180122338496,
+          "label_order": [
+            "c1",
+            "c234",
+            "c5"
+          ],
+          "confusion_matrix": [
+            [
+              241,
+              230,
+              151
+            ],
+            [
+              167,
+              323,
+              217
+            ],
+            [
+              86,
+              184,
+              373
+            ]
+          ],
+          "classification_report": {
+            "c1": {
+              "precision": 0.48785425101214575,
+              "recall": 0.387459807073955,
+              "f1-score": 0.43189964157706096,
+              "support": 622.0
+            },
+            "c234": {
+              "precision": 0.43826322930800543,
+              "recall": 0.45685997171145687,
+              "f1-score": 0.4473684210526316,
+              "support": 707.0
+            },
+            "c5": {
+              "precision": 0.5033738191632928,
+              "recall": 0.5800933125972006,
+              "f1-score": 0.5390173410404624,
+              "support": 643.0
+            },
+            "accuracy": 0.4751521298174442,
+            "macro avg": {
+              "precision": 0.47649709982781463,
+              "recall": 0.47480436379420415,
+              "f1-score": 0.47276180122338496,
+              "support": 1972.0
+            },
+            "weighted avg": {
+              "precision": 0.4751353006958985,
+              "recall": 0.4751521298174442,
+              "f1-score": 0.47237281999703845,
+              "support": 1972.0
+            }
+          },
+          "prediction_counts": {
+            "c1": 494,
+            "c5": 741,
+            "c234": 737
+          }
+        },
+        "routed_instances": 98,
+        "successful_gpt_instances": 98,
+        "fallback_instances": 0,
+        "changes": {
+          "corrected": 16,
+          "harmed": 15,
+          "both_wrong_changed_label": 12
+        },
+        "amortized_usage": {
+          "input_tokens": 118587.75,
+          "output_tokens": 2422.25,
+          "cached_input_tokens": 16896.0
+        },
+        "estimated_api_equivalent_usd": 0.22929560000000002,
+        "allocated_request_latency_seconds": 91.34222586251235,
+        "distinct_batch_receipts": 13,
+        "accounting_note": "Per-instance shares of shared batches; actual experiment attempts/cost/latency are recorded separately."
+      },
+      "0.1": {
+        "metrics": {
+          "rows": 1972,
+          "accuracy": 0.4710953346855984,
+          "f1_macro": 0.4684071612434066,
+          "label_order": [
+            "c1",
+            "c234",
+            "c5"
+          ],
+          "confusion_matrix": [
+            [
+              238,
+              230,
+              154
+            ],
+            [
+              166,
+              315,
+              226
+            ],
+            [
+              86,
+              181,
+              376
+            ]
+          ],
+          "classification_report": {
+            "c1": {
+              "precision": 0.4857142857142857,
+              "recall": 0.38263665594855306,
+              "f1-score": 0.42805755395683454,
+              "support": 622.0
+            },
+            "c234": {
+              "precision": 0.43388429752066116,
+              "recall": 0.44554455445544555,
+              "f1-score": 0.4396371249127704,
+              "support": 707.0
+            },
+            "c5": {
+              "precision": 0.4973544973544973,
+              "recall": 0.5847589424572317,
+              "f1-score": 0.5375268048606148,
+              "support": 643.0
+            },
+            "accuracy": 0.4710953346855984,
+            "macro avg": {
+              "precision": 0.4723176935298148,
+              "recall": 0.4709800509537434,
+              "f1-score": 0.4684071612434066,
+              "support": 1972.0
+            },
+            "weighted avg": {
+              "precision": 0.47092770074053497,
+              "recall": 0.4710953346855984,
+              "f1-score": 0.46790313458410504,
+              "support": 1972.0
+            }
+          },
+          "prediction_counts": {
+            "c1": 490,
+            "c5": 756,
+            "c234": 726
+          }
+        },
+        "routed_instances": 197,
+        "successful_gpt_instances": 197,
+        "fallback_instances": 0,
+        "changes": {
+          "corrected": 22,
+          "harmed": 29,
+          "both_wrong_changed_label": 25
+        },
+        "amortized_usage": {
+          "input_tokens": 237177.0,
+          "output_tokens": 4834.0,
+          "cached_input_tokens": 38016.0
+        },
+        "estimated_api_equivalent_usd": 0.45046359999999996,
+        "allocated_request_latency_seconds": 184.03454864802188,
+        "distinct_batch_receipts": 25,
+        "accounting_note": "Per-instance shares of shared batches; actual experiment attempts/cost/latency are recorded separately."
+      },
+      "0.2": {
+        "metrics": {
+          "rows": 1972,
+          "accuracy": 0.4751521298174442,
+          "f1_macro": 0.4710159039462524,
+          "label_order": [
+            "c1",
+            "c234",
+            "c5"
+          ],
+          "confusion_matrix": [
+            [
+              236,
+              215,
+              171
+            ],
+            [
+              162,
+              308,
+              237
+            ],
+            [
+              85,
+              165,
+              393
+            ]
+          ],
+          "classification_report": {
+            "c1": {
+              "precision": 0.4886128364389234,
+              "recall": 0.37942122186495175,
+              "f1-score": 0.4271493212669683,
+              "support": 622.0
+            },
+            "c234": {
+              "precision": 0.4476744186046512,
+              "recall": 0.43564356435643564,
+              "f1-score": 0.44157706093189963,
+              "support": 707.0
+            },
+            "c5": {
+              "precision": 0.49063670411985016,
+              "recall": 0.6111975116640747,
+              "f1-score": 0.5443213296398892,
+              "support": 643.0
+            },
+            "accuracy": 0.4751521298174442,
+            "macro avg": {
+              "precision": 0.47564131972114154,
+              "recall": 0.47542076596182065,
+              "f1-score": 0.4710159039462524,
+              "support": 1972.0
+            },
+            "weighted avg": {
+              "precision": 0.47459553700180646,
+              "recall": 0.4751521298174442,
+              "f1-score": 0.4705276241710731,
+              "support": 1972.0
+            }
+          },
+          "prediction_counts": {
+            "c1": 483,
+            "c5": 801,
+            "c234": 688
+          }
+        },
+        "routed_instances": 394,
+        "successful_gpt_instances": 394,
+        "fallback_instances": 0,
+        "changes": {
+          "corrected": 56,
+          "harmed": 55,
+          "both_wrong_changed_label": 53
+        },
+        "amortized_usage": {
+          "input_tokens": 484969.0,
+          "output_tokens": 9664.0,
+          "cached_input_tokens": 84480.0
+        },
+        "estimated_api_equivalent_usd": 0.906066,
+        "allocated_request_latency_seconds": 363.52981574902515,
+        "distinct_batch_receipts": 50,
+        "accounting_note": "Per-instance shares of shared batches; actual experiment attempts/cost/latency are recorded separately."
+      }
+    },
+    "calls": {
+      "status": "completed",
+      "targets": 394,
+      "initial_item_cache_hits": 197,
+      "attempts": 25,
+      "failed_attempts": 0,
+      "unknown_usage_attempts": 0,
+      "usage": {
+        "input_tokens": 247792,
+        "output_tokens": 4830,
+        "cached_input_tokens": 46464
+      },
+      "estimated_api_equivalent_usd": 0.4556024,
+      "cost_basis": "Standard API-equivalent estimate, not a subscription invoice; unknown failed usage is excluded.",
+      "wall_seconds": 91.25452406400291,
+      "summed_request_latency_seconds": 179.49526710100326,
+      "runtime": {
+        "kind": "codex",
+        "endpoint": "codex.exec",
+        "cli_version": "codex-cli 0.166.0",
+        "executable": "/home/felipe/.codex/packages/standalone/releases/0.166.0-x86_64-unknown-linux-musl/bin/codex",
+        "executable_sha256": "b8a11fedf24b2dfb59a70c9e52b030f9a508dcd49cd2dd0d41956f4c785156b8",
+        "adapter_sha256": "d60f3051e97d9289ec111742c06f2d33f241f270866f053970013beaf45e6d15",
+        "policy": {
+          "version": 1,
+          "sandbox": "read-only",
+          "ignore_user_config": true,
+          "ephemeral": true,
+          "disabled_features": [
+            "shell_tool",
+            "apps",
+            "plugins",
+            "hooks",
+            "multi_agent",
+            "memories",
+            "code_mode",
+            "browser_use",
+            "computer_use",
+            "image_generation",
+            "view_image",
+            "tool_suggest"
+          ],
+          "overrides": {
+            "approval_policy": "never",
+            "web_search": "disabled",
+            "project_doc_max_bytes": 0,
+            "skills.include_instructions": false,
+            "skills.bundled.enabled": false
+          }
+        }
+      },
+      "temperature": null,
+      "temperature_note": "The Codex CLI exposes no temperature control; reasoning effort is explicit."
+    },
+    "selected_budget": 0.0,
+    "selected_prompt": "with_local",
+    "test1_accessed": false,
+    "files": {
+      "decisions.json": "9d5c29c7c36ea13f63af9ecbc5fbf4be4ed2719517dd7fd79493212ecc2f4374",
+      "run.json": "0c1a7a30f4c36ad977182eb9a5e8ca8cab9354ca52bfde90fff35843ebef3ad3",
+      "predictions-0.0.jsonl": "0494693a3c18b530329397779ba4e2597ecf3c8c7ecf1279c6e8357fd74b44e3",
+      "predictions-0.05.jsonl": "bd80303bfad03122bb9e34d8e339f94571f1d0e72d767c2c210590df37cac183",
+      "predictions-0.1.jsonl": "4bae67a735d2685086c02925d927d715b5f59a3dbb9eef4c165a753c15b950c4",
+      "predictions-0.2.jsonl": "b74f1ee2974e0e83f5f92dac710197c9cd119e8b44f82b316fecae2061b80d36"
+    },
+    "initial_selection_sha256": "9e0dae6e975fb67417ad3a756794eb21035a7fe3909412ed2604c4c03968934f",
+    "preparation_sha256": "0e44d9458f25d798433af05f026d7eb8d507a9ad6c13aba2af19066fda4fd0c4"
+  },
+  "final_comparison": {
+    "status": "completed",
+    "scores": {
+      "0.0": {
+        "metrics": {
+          "rows": 900,
+          "accuracy": 0.4888888888888889,
+          "f1_macro": 0.4880336144513791,
+          "label_order": [
+            "c1",
+            "c234",
+            "c5"
+          ],
+          "confusion_matrix": [
+            [
+              116,
+              125,
+              59
+            ],
+            [
+              55,
+              158,
+              87
+            ],
+            [
+              36,
+              98,
+              166
+            ]
+          ],
+          "classification_report": {
+            "c1": {
+              "precision": 0.5603864734299517,
+              "recall": 0.38666666666666666,
+              "f1-score": 0.45759368836291914,
+              "support": 300.0
+            },
+            "c234": {
+              "precision": 0.4146981627296588,
+              "recall": 0.5266666666666666,
+              "f1-score": 0.46402349486049926,
+              "support": 300.0
+            },
+            "c5": {
+              "precision": 0.532051282051282,
+              "recall": 0.5533333333333333,
+              "f1-score": 0.5424836601307189,
+              "support": 300.0
+            },
+            "accuracy": 0.4888888888888889,
+            "macro avg": {
+              "precision": 0.5023786394036308,
+              "recall": 0.48888888888888893,
+              "f1-score": 0.4880336144513791,
+              "support": 900.0
+            },
+            "weighted avg": {
+              "precision": 0.5023786394036309,
+              "recall": 0.4888888888888889,
+              "f1-score": 0.48803361445137916,
+              "support": 900.0
+            }
+          },
+          "prediction_counts": {
+            "c234": 381,
+            "c5": 312,
+            "c1": 207
+          }
+        },
+        "routed_instances": 0,
+        "successful_gpt_instances": 0,
+        "fallback_instances": 0,
+        "changes": {
+          "corrected": 0,
+          "harmed": 0,
+          "both_wrong_changed_label": 0
+        },
+        "amortized_usage": {
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "cached_input_tokens": 0
+        },
+        "estimated_api_equivalent_usd": 0.0,
+        "allocated_request_latency_seconds": 0,
+        "distinct_batch_receipts": 0,
+        "accounting_note": "Per-instance shares of shared batches; actual experiment attempts/cost/latency are recorded separately."
+      },
+      "0.05": {
+        "metrics": {
+          "rows": 900,
+          "accuracy": 0.48333333333333334,
+          "f1_macro": 0.48182415579759713,
+          "label_order": [
+            "c1",
+            "c234",
+            "c5"
+          ],
+          "confusion_matrix": [
+            [
+              114,
+              117,
+              69
+            ],
+            [
+              53,
+              155,
+              92
+            ],
+            [
+              36,
+              98,
+              166
+            ]
+          ],
+          "classification_report": {
+            "c1": {
+              "precision": 0.5615763546798029,
+              "recall": 0.38,
+              "f1-score": 0.4532803180914513,
+              "support": 300.0
+            },
+            "c234": {
+              "precision": 0.4189189189189189,
+              "recall": 0.5166666666666667,
+              "f1-score": 0.4626865671641791,
+              "support": 300.0
+            },
+            "c5": {
+              "precision": 0.5076452599388379,
+              "recall": 0.5533333333333333,
+              "f1-score": 0.529505582137161,
+              "support": 300.0
+            },
+            "accuracy": 0.48333333333333334,
+            "macro avg": {
+              "precision": 0.4960468445125199,
+              "recall": 0.4833333333333334,
+              "f1-score": 0.48182415579759713,
+              "support": 900.0
+            },
+            "weighted avg": {
+              "precision": 0.49604684451251985,
+              "recall": 0.48333333333333334,
+              "f1-score": 0.48182415579759713,
+              "support": 900.0
+            }
+          },
+          "prediction_counts": {
+            "c234": 370,
+            "c5": 327,
+            "c1": 203
+          }
+        },
+        "routed_instances": 45,
+        "successful_gpt_instances": 45,
+        "fallback_instances": 0,
+        "changes": {
+          "corrected": 4,
+          "harmed": 9,
+          "both_wrong_changed_label": 8
+        },
+        "amortized_usage": {
+          "input_tokens": 53824.25,
+          "output_tokens": 1230.875,
+          "cached_input_tokens": 8448.0
+        },
+        "estimated_api_equivalent_usd": 0.10390605,
+        "allocated_request_latency_seconds": 44.46988432212129,
+        "distinct_batch_receipts": 6,
+        "accounting_note": "Per-instance shares of shared batches; actual experiment attempts/cost/latency are recorded separately."
+      },
+      "0.1": {
+        "metrics": {
+          "rows": 900,
+          "accuracy": 0.4822222222222222,
+          "f1_macro": 0.48047696114962024,
+          "label_order": [
+            "c1",
+            "c234",
+            "c5"
+          ],
+          "confusion_matrix": [
+            [
+              114,
+              115,
+              71
+            ],
+            [
+              53,
+              150,
+              97
+            ],
+            [
+              36,
+              94,
+              170
+            ]
+          ],
+          "classification_report": {
+            "c1": {
+              "precision": 0.5615763546798029,
+              "recall": 0.38,
+              "f1-score": 0.4532803180914513,
+              "support": 300.0
+            },
+            "c234": {
+              "precision": 0.4178272980501393,
+              "recall": 0.5,
+              "f1-score": 0.4552352048558422,
+              "support": 300.0
+            },
+            "c5": {
+              "precision": 0.5029585798816568,
+              "recall": 0.5666666666666667,
+              "f1-score": 0.5329153605015674,
+              "support": 300.0
+            },
+            "accuracy": 0.4822222222222222,
+            "macro avg": {
+              "precision": 0.49412074420386637,
+              "recall": 0.4822222222222223,
+              "f1-score": 0.48047696114962024,
+              "support": 900.0
+            },
+            "weighted avg": {
+              "precision": 0.4941207442038663,
+              "recall": 0.4822222222222222,
+              "f1-score": 0.48047696114962024,
+              "support": 900.0
+            }
+          },
+          "prediction_counts": {
+            "c234": 359,
+            "c5": 338,
+            "c1": 203
+          }
+        },
+        "routed_instances": 90,
+        "successful_gpt_instances": 90,
+        "fallback_instances": 0,
+        "changes": {
+          "corrected": 9,
+          "harmed": 15,
+          "both_wrong_changed_label": 11
+        },
+        "amortized_usage": {
+          "input_tokens": 107089.75,
+          "output_tokens": 2328.0,
+          "cached_input_tokens": 16896.0
+        },
+        "estimated_api_equivalent_usd": 0.20535710000000001,
+        "allocated_request_latency_seconds": 86.40887513224516,
+        "distinct_batch_receipts": 12,
+        "accounting_note": "Per-instance shares of shared batches; actual experiment attempts/cost/latency are recorded separately."
+      },
+      "0.2": {
+        "metrics": {
+          "rows": 900,
+          "accuracy": 0.48444444444444446,
+          "f1_macro": 0.4817607125354244,
+          "label_order": [
+            "c1",
+            "c234",
+            "c5"
+          ],
+          "confusion_matrix": [
+            [
+              114,
+              108,
+              78
+            ],
+            [
+              51,
+              144,
+              105
+            ],
+            [
+              35,
+              87,
+              178
+            ]
+          ],
+          "classification_report": {
+            "c1": {
+              "precision": 0.57,
+              "recall": 0.38,
+              "f1-score": 0.456,
+              "support": 300.0
+            },
+            "c234": {
+              "precision": 0.4247787610619469,
+              "recall": 0.48,
+              "f1-score": 0.4507042253521127,
+              "support": 300.0
+            },
+            "c5": {
+              "precision": 0.4930747922437673,
+              "recall": 0.5933333333333334,
+              "f1-score": 0.5385779122541604,
+              "support": 300.0
+            },
+            "accuracy": 0.48444444444444446,
+            "macro avg": {
+              "precision": 0.49595118443523806,
+              "recall": 0.48444444444444446,
+              "f1-score": 0.4817607125354244,
+              "support": 900.0
+            },
+            "weighted avg": {
+              "precision": 0.495951184435238,
+              "recall": 0.48444444444444446,
+              "f1-score": 0.4817607125354243,
+              "support": 900.0
+            }
+          },
+          "prediction_counts": {
+            "c234": 339,
+            "c5": 361,
+            "c1": 200
+          }
+        },
+        "routed_instances": 180,
+        "successful_gpt_instances": 180,
+        "fallback_instances": 0,
+        "changes": {
+          "corrected": 30,
+          "harmed": 34,
+          "both_wrong_changed_label": 20
+        },
+        "amortized_usage": {
+          "input_tokens": 221283.0,
+          "output_tokens": 4569.0,
+          "cached_input_tokens": 50688.0
+        },
+        "estimated_api_equivalent_usd": 0.3919488,
+        "allocated_request_latency_seconds": 171.38332552199427,
+        "distinct_batch_receipts": 23,
+        "accounting_note": "Per-instance shares of shared batches; actual experiment attempts/cost/latency are recorded separately."
+      }
+    },
+    "selected_budget_from_validation": 0.0,
+    "selected_prompt_from_validation": "with_local",
+    "parameters_updated": false,
+    "gold_read_after_all_predictions": true,
+    "gold_sha256": "c92658298f95b6325a49b017b58673ebda450fa54dc2280d74393cb093378406",
+    "cascade_sha256": "7e1a67123de1a137cbe2d0fbaba78eebfceb644bffb32a09c97beba1e379a8b5",
+    "calls": {
+      "status": "completed",
+      "targets": 180,
+      "initial_item_cache_hits": 0,
+      "attempts": 23,
+      "failed_attempts": 0,
+      "unknown_usage_attempts": 0,
+      "usage": {
+        "input_tokens": 221283,
+        "output_tokens": 4569,
+        "cached_input_tokens": 50688
+      },
+      "estimated_api_equivalent_usd": 0.3919488,
+      "cost_basis": "Standard API-equivalent estimate, not a subscription invoice; unknown failed usage is excluded.",
+      "wall_seconds": 86.17327017999924,
+      "summed_request_latency_seconds": 171.38332552199427,
+      "runtime": {
+        "kind": "codex",
+        "endpoint": "codex.exec",
+        "cli_version": "codex-cli 0.166.0",
+        "executable": "/home/felipe/.codex/packages/standalone/releases/0.166.0-x86_64-unknown-linux-musl/bin/codex",
+        "executable_sha256": "b8a11fedf24b2dfb59a70c9e52b030f9a508dcd49cd2dd0d41956f4c785156b8",
+        "adapter_sha256": "d60f3051e97d9289ec111742c06f2d33f241f270866f053970013beaf45e6d15",
+        "policy": {
+          "version": 1,
+          "sandbox": "read-only",
+          "ignore_user_config": true,
+          "ephemeral": true,
+          "disabled_features": [
+            "shell_tool",
+            "apps",
+            "plugins",
+            "hooks",
+            "multi_agent",
+            "memories",
+            "code_mode",
+            "browser_use",
+            "computer_use",
+            "image_generation",
+            "view_image",
+            "tool_suggest"
+          ],
+          "overrides": {
+            "approval_policy": "never",
+            "web_search": "disabled",
+            "project_doc_max_bytes": 0,
+            "skills.include_instructions": false,
+            "skills.bundled.enabled": false
+          }
+        }
+      },
+      "temperature": null,
+      "temperature_note": "The Codex CLI exposes no temperature control; reasoning effort is explicit."
+    },
+    "limitations": "Test1 has historical project exposure; no final labels selected this cascade. Holdout exposure includes Qwen checkpoint selection."
+  },
+  "independent_verification": {
+    "status": "passed",
+    "validation_rows": 1972,
+    "final_rows": 900,
+    "nested_oof_maximum_probability_error": 1.6653345369377348e-16,
+    "selected_budget_validation_only": 0.0,
+    "selected_prompt_validation_only": "with_local",
+    "validation": {
+      "0.0": {
+        "correct": 936,
+        "accuracy": 0.4746450304259635,
+        "f1_macro": 0.4729770559822655,
+        "f1_per_class": {
+          "c1": 0.43555555555555553,
+          "c234": 0.4488675360329444,
+          "c5": 0.5345080763582967
+        },
+        "confusion_matrix": [
+          [
+            245,
+            233,
+            144
+          ],
+          [
+            169,
+            327,
+            211
+          ],
+          [
+            89,
+            190,
+            364
+          ]
+        ],
+        "changes": {},
+        "routed": 0
+      },
+      "0.05": {
+        "correct": 937,
+        "accuracy": 0.4751521298174442,
+        "f1_macro": 0.47276180122338496,
+        "f1_per_class": {
+          "c1": 0.43189964157706096,
+          "c234": 0.4473684210526316,
+          "c5": 0.5390173410404624
+        },
+        "confusion_matrix": [
+          [
+            241,
+            230,
+            151
+          ],
+          [
+            167,
+            323,
+            217
+          ],
+          [
+            86,
+            184,
+            373
+          ]
+        ],
+        "changes": {
+          "corrected": 16,
+          "both_wrong_changed_label": 12,
+          "harmed": 15
+        },
+        "routed": 98
+      },
+      "0.1": {
+        "correct": 929,
+        "accuracy": 0.4710953346855984,
+        "f1_macro": 0.4684071612434066,
+        "f1_per_class": {
+          "c1": 0.42805755395683454,
+          "c234": 0.4396371249127704,
+          "c5": 0.5375268048606148
+        },
+        "confusion_matrix": [
+          [
+            238,
+            230,
+            154
+          ],
+          [
+            166,
+            315,
+            226
+          ],
+          [
+            86,
+            181,
+            376
+          ]
+        ],
+        "changes": {
+          "corrected": 22,
+          "harmed": 29,
+          "both_wrong_changed_label": 25
+        },
+        "routed": 197
+      },
+      "0.2": {
+        "correct": 937,
+        "accuracy": 0.4751521298174442,
+        "f1_macro": 0.47101590394625237,
+        "f1_per_class": {
+          "c1": 0.4271493212669683,
+          "c234": 0.44157706093189963,
+          "c5": 0.5443213296398892
+        },
+        "confusion_matrix": [
+          [
+            236,
+            215,
+            171
+          ],
+          [
+            162,
+            308,
+            237
+          ],
+          [
+            85,
+            165,
+            393
+          ]
+        ],
+        "changes": {
+          "corrected": 56,
+          "harmed": 55,
+          "both_wrong_changed_label": 53
+        },
+        "routed": 394
+      }
+    },
+    "test1": {
+      "0.0": {
+        "correct": 440,
+        "accuracy": 0.4888888888888889,
+        "f1_macro": 0.4880336144513791,
+        "f1_per_class": {
+          "c1": 0.45759368836291914,
+          "c234": 0.46402349486049926,
+          "c5": 0.5424836601307189
+        },
+        "confusion_matrix": [
+          [
+            116,
+            125,
+            59
+          ],
+          [
+            55,
+            158,
+            87
+          ],
+          [
+            36,
+            98,
+            166
+          ]
+        ],
+        "changes": {},
+        "routed": 0
+      },
+      "0.05": {
+        "correct": 435,
+        "accuracy": 0.48333333333333334,
+        "f1_macro": 0.48182415579759713,
+        "f1_per_class": {
+          "c1": 0.4532803180914513,
+          "c234": 0.4626865671641791,
+          "c5": 0.529505582137161
+        },
+        "confusion_matrix": [
+          [
+            114,
+            117,
+            69
+          ],
+          [
+            53,
+            155,
+            92
+          ],
+          [
+            36,
+            98,
+            166
+          ]
+        ],
+        "changes": {
+          "harmed": 9,
+          "corrected": 4,
+          "both_wrong_changed_label": 8
+        },
+        "routed": 45
+      },
+      "0.1": {
+        "correct": 434,
+        "accuracy": 0.4822222222222222,
+        "f1_macro": 0.4804769611496203,
+        "f1_per_class": {
+          "c1": 0.4532803180914513,
+          "c234": 0.4552352048558422,
+          "c5": 0.5329153605015674
+        },
+        "confusion_matrix": [
+          [
+            114,
+            115,
+            71
+          ],
+          [
+            53,
+            150,
+            97
+          ],
+          [
+            36,
+            94,
+            170
+          ]
+        ],
+        "changes": {
+          "corrected": 9,
+          "harmed": 15,
+          "both_wrong_changed_label": 11
+        },
+        "routed": 90
+      },
+      "0.2": {
+        "correct": 436,
+        "accuracy": 0.48444444444444446,
+        "f1_macro": 0.48176071253542435,
+        "f1_per_class": {
+          "c1": 0.456,
+          "c234": 0.4507042253521127,
+          "c5": 0.5385779122541604
+        },
+        "confusion_matrix": [
+          [
+            114,
+            108,
+            78
+          ],
+          [
+            51,
+            144,
+            105
+          ],
+          [
+            35,
+            87,
+            178
+          ]
+        ],
+        "changes": {
+          "corrected": 30,
+          "harmed": 34,
+          "both_wrong_changed_label": 20
+        },
+        "routed": 180
+      }
+    },
+    "verifier_sha256": "73510a6f57926aea6f7ba0204d44e8307f024fe74e18b6c1cb18ec60b39bdeaf",
+    "base_models_retrained": false,
+    "all_cached_gpt_requests_verified": true,
+    "all_budgets_and_changed_cases_verified": true
+  },
+  "selected_zero_budget_verification": {
+    "status": "passed",
+    "default_budget": 0,
+    "gpt_attempts": 0,
+    "all_900_labels_equal_frozen_stacking": true
+  },
+  "actual_remote_stages": {
+    "validation_text_only_10pct": {
+      "status": "completed",
+      "targets": 197,
+      "initial_item_cache_hits": 0,
+      "attempts": 24,
+      "failed_attempts": 0,
+      "unknown_usage_attempts": 0,
+      "usage": {
+        "input_tokens": 177280,
+        "output_tokens": 4436,
+        "cached_input_tokens": 12672
+      },
+      "estimated_api_equivalent_usd": 0.3748432,
+      "cost_basis": "Standard API-equivalent estimate, not a subscription invoice; unknown failed usage is excluded.",
+      "wall_seconds": 96.02331496199622,
+      "summed_request_latency_seconds": 186.9640141720156,
+      "runtime": {
+        "kind": "codex",
+        "endpoint": "codex.exec",
+        "cli_version": "codex-cli 0.166.0",
+        "executable": "/home/felipe/.codex/packages/standalone/releases/0.166.0-x86_64-unknown-linux-musl/bin/codex",
+        "executable_sha256": "b8a11fedf24b2dfb59a70c9e52b030f9a508dcd49cd2dd0d41956f4c785156b8",
+        "adapter_sha256": "d60f3051e97d9289ec111742c06f2d33f241f270866f053970013beaf45e6d15",
+        "policy": {
+          "version": 1,
+          "sandbox": "read-only",
+          "ignore_user_config": true,
+          "ephemeral": true,
+          "disabled_features": [
+            "shell_tool",
+            "apps",
+            "plugins",
+            "hooks",
+            "multi_agent",
+            "memories",
+            "code_mode",
+            "browser_use",
+            "computer_use",
+            "image_generation",
+            "view_image",
+            "tool_suggest"
+          ],
+          "overrides": {
+            "approval_policy": "never",
+            "web_search": "disabled",
+            "project_doc_max_bytes": 0,
+            "skills.include_instructions": false,
+            "skills.bundled.enabled": false
+          }
+        }
+      },
+      "temperature": null,
+      "temperature_note": "The Codex CLI exposes no temperature control; reasoning effort is explicit."
+    },
+    "validation_with_local_10pct": {
+      "status": "completed",
+      "targets": 197,
+      "initial_item_cache_hits": 0,
+      "attempts": 25,
+      "failed_attempts": 0,
+      "unknown_usage_attempts": 0,
+      "usage": {
+        "input_tokens": 237177,
+        "output_tokens": 4834,
+        "cached_input_tokens": 38016
+      },
+      "estimated_api_equivalent_usd": 0.45046359999999996,
+      "cost_basis": "Standard API-equivalent estimate, not a subscription invoice; unknown failed usage is excluded.",
+      "wall_seconds": 94.07360804600467,
+      "summed_request_latency_seconds": 184.03454864802188,
+      "runtime": {
+        "kind": "codex",
+        "endpoint": "codex.exec",
+        "cli_version": "codex-cli 0.166.0",
+        "executable": "/home/felipe/.codex/packages/standalone/releases/0.166.0-x86_64-unknown-linux-musl/bin/codex",
+        "executable_sha256": "b8a11fedf24b2dfb59a70c9e52b030f9a508dcd49cd2dd0d41956f4c785156b8",
+        "adapter_sha256": "d60f3051e97d9289ec111742c06f2d33f241f270866f053970013beaf45e6d15",
+        "policy": {
+          "version": 1,
+          "sandbox": "read-only",
+          "ignore_user_config": true,
+          "ephemeral": true,
+          "disabled_features": [
+            "shell_tool",
+            "apps",
+            "plugins",
+            "hooks",
+            "multi_agent",
+            "memories",
+            "code_mode",
+            "browser_use",
+            "computer_use",
+            "image_generation",
+            "view_image",
+            "tool_suggest"
+          ],
+          "overrides": {
+            "approval_policy": "never",
+            "web_search": "disabled",
+            "project_doc_max_bytes": 0,
+            "skills.include_instructions": false,
+            "skills.bundled.enabled": false
+          }
+        }
+      },
+      "temperature": null,
+      "temperature_note": "The Codex CLI exposes no temperature control; reasoning effort is explicit."
+    },
+    "validation_selected_prompt_extension_20pct": {
+      "status": "completed",
+      "targets": 394,
+      "initial_item_cache_hits": 197,
+      "attempts": 25,
+      "failed_attempts": 0,
+      "unknown_usage_attempts": 0,
+      "usage": {
+        "input_tokens": 247792,
+        "output_tokens": 4830,
+        "cached_input_tokens": 46464
+      },
+      "estimated_api_equivalent_usd": 0.4556024,
+      "cost_basis": "Standard API-equivalent estimate, not a subscription invoice; unknown failed usage is excluded.",
+      "wall_seconds": 91.25452406400291,
+      "summed_request_latency_seconds": 179.49526710100326,
+      "runtime": {
+        "kind": "codex",
+        "endpoint": "codex.exec",
+        "cli_version": "codex-cli 0.166.0",
+        "executable": "/home/felipe/.codex/packages/standalone/releases/0.166.0-x86_64-unknown-linux-musl/bin/codex",
+        "executable_sha256": "b8a11fedf24b2dfb59a70c9e52b030f9a508dcd49cd2dd0d41956f4c785156b8",
+        "adapter_sha256": "d60f3051e97d9289ec111742c06f2d33f241f270866f053970013beaf45e6d15",
+        "policy": {
+          "version": 1,
+          "sandbox": "read-only",
+          "ignore_user_config": true,
+          "ephemeral": true,
+          "disabled_features": [
+            "shell_tool",
+            "apps",
+            "plugins",
+            "hooks",
+            "multi_agent",
+            "memories",
+            "code_mode",
+            "browser_use",
+            "computer_use",
+            "image_generation",
+            "view_image",
+            "tool_suggest"
+          ],
+          "overrides": {
+            "approval_policy": "never",
+            "web_search": "disabled",
+            "project_doc_max_bytes": 0,
+            "skills.include_instructions": false,
+            "skills.bundled.enabled": false
+          }
+        }
+      },
+      "temperature": null,
+      "temperature_note": "The Codex CLI exposes no temperature control; reasoning effort is explicit."
+    },
+    "final_frozen_budget_comparison": {
+      "status": "completed",
+      "targets": 180,
+      "initial_item_cache_hits": 0,
+      "attempts": 23,
+      "failed_attempts": 0,
+      "unknown_usage_attempts": 0,
+      "usage": {
+        "input_tokens": 221283,
+        "output_tokens": 4569,
+        "cached_input_tokens": 50688
+      },
+      "estimated_api_equivalent_usd": 0.3919488,
+      "cost_basis": "Standard API-equivalent estimate, not a subscription invoice; unknown failed usage is excluded.",
+      "wall_seconds": 86.17327017999924,
+      "summed_request_latency_seconds": 171.38332552199427,
+      "runtime": {
+        "kind": "codex",
+        "endpoint": "codex.exec",
+        "cli_version": "codex-cli 0.166.0",
+        "executable": "/home/felipe/.codex/packages/standalone/releases/0.166.0-x86_64-unknown-linux-musl/bin/codex",
+        "executable_sha256": "b8a11fedf24b2dfb59a70c9e52b030f9a508dcd49cd2dd0d41956f4c785156b8",
+        "adapter_sha256": "d60f3051e97d9289ec111742c06f2d33f241f270866f053970013beaf45e6d15",
+        "policy": {
+          "version": 1,
+          "sandbox": "read-only",
+          "ignore_user_config": true,
+          "ephemeral": true,
+          "disabled_features": [
+            "shell_tool",
+            "apps",
+            "plugins",
+            "hooks",
+            "multi_agent",
+            "memories",
+            "code_mode",
+            "browser_use",
+            "computer_use",
+            "image_generation",
+            "view_image",
+            "tool_suggest"
+          ],
+          "overrides": {
+            "approval_policy": "never",
+            "web_search": "disabled",
+            "project_doc_max_bytes": 0,
+            "skills.include_instructions": false,
+            "skills.bundled.enabled": false
+          }
+        }
+      },
+      "temperature": null,
+      "temperature_note": "The Codex CLI exposes no temperature control; reasoning effort is explicit."
+    }
+  },
+  "actual_total_resources": {
+    "attempts": 97,
+    "failed_attempts": 0,
+    "unknown_usage_attempts": 0,
+    "estimated_api_equivalent_usd": 1.672858,
+    "wall_seconds_sum_of_remote_stages": 367.52471725200303,
+    "summed_request_latency_seconds": 721.877155443035,
+    "usage": {
+      "input_tokens": 883532,
+      "output_tokens": 18669,
+      "cached_input_tokens": 147840
+    }
+  },
+  "automated_tests": {
+    "passed": 201,
+    "seconds": 62.94,
+    "environment": "Offline pln-rocm:6.4.1 with existing SDK test runtime",
+    "excluded_modules": []
+  },
+  "frozen_artifacts": {
+    "model.json": "7e1a67123de1a137cbe2d0fbaba78eebfceb644bffb32a09c97beba1e379a8b5",
+    "validation.json": "64272282f293bf3a3588ba6962d410750f44dcb8816ab60f4cf33a736da7d421",
+    "prompt-ablation.json": "9e0dae6e975fb67417ad3a756794eb21035a7fe3909412ed2604c4c03968934f",
+    "preparation.json": "0e44d9458f25d798433af05f026d7eb8d507a9ad6c13aba2af19066fda4fd0c4"
+  },
+  "raw_evidence_sha256": {
+    "results/cascade-verification-20261105/verify.py": "73510a6f57926aea6f7ba0204d44e8307f024fe74e18b6c1cb18ec60b39bdeaf",
+    "results/cascade-verification-20261105/workbook_reader.py": "75bde3386027ea65f75a20dd192c465a5188b3e4947b28595ecab13365083a66",
+    "results/cascade-verification-20261105/independent-verification.json": "e23775203018c9784ebe00eeed4073b838deb762fd25c3868a89460f7c753e15",
+    "results/cascade-validation-20261105/preparation.json": "0e44d9458f25d798433af05f026d7eb8d507a9ad6c13aba2af19066fda4fd0c4",
+    "results/cascade-validation-20261105/initial/selection.json": "9e0dae6e975fb67417ad3a756794eb21035a7fe3909412ed2604c4c03968934f",
+    "results/cascade-validation-20261105/extended/comparison.json": "64272282f293bf3a3588ba6962d410750f44dcb8816ab60f4cf33a736da7d421",
+    "results/cascade-test1-20261105/run.json": "8991ccbffb2952e39356d404d6ce5e30a42cd7296abe578c1852367e6ca6f4b4",
+    "results/cascade-test1-evaluation-20261105/metrics.json": "7c5ad255e08bfe7a94a72128155a28b06465ce1ebbe50a470b06eaa2cb140d72"
+  },
+  "inherited_test1_normalized_matching_rows": {
+    "base_development": 85,
+    "calibration": 11,
+    "meta_training": 9
+  },
+  "base_models_retrained": false,
+  "parameters_updated_after_final_gold": false,
+  "test2_submission_generated": false,
+  "pricing_source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol",
+  "billing_note": "API-equivalent estimates from observed tokens, not actual ChatGPT subscription charges.",
+  "actual_cache_replay_verification": {
+    "status": "passed",
+    "all_180_decisions_identical": true,
+    "new_attempts": 0,
+    "item_cache_hits": 180,
+    "network_requests_disabled_by_backend_limit": true
+  }
+}

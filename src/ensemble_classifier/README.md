@@ -1,5 +1,10 @@
 # Ensemble com seleção de classificadores
 
+The separate [`cascade_classifier`](../../docs/guides/stacking-gpt-cascade.md)
+package adds selective GPT decisions to the frozen four-member stacking.
+It uses nested grouped OOF routing validation, persistent caching and explicit
+5/10/20% comparisons. Existing ensemble models and commands remain available.
+
 Combinação offline de previsões já produzidas, sem carregar modelos, retreinar
 ou realizar chamadas remotas. A avaliação final usa teste1 rotulado após a
 entrega de teste2. O [protocolo completo](../../docs/guides/ensemble.md) descreve as

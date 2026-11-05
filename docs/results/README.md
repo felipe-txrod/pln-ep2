@@ -6,6 +6,24 @@ Compare results only on the same dataset and preserve the training recipe
 and partition recorded by each report. The original EP1 NorBERTo reference
 has 48.00% accuracy on test1 and 45.31% on its frozen holdout.
 
+## Stacking + selective GPT: no measured improvement
+
+The [completed cascade experiment](stacking-gpt-cascade.md) uses nested 5x5
+grouped OOF predictions to select routing, prompt context and budget without
+in-sample meta-model predictions. The 10% ablation preferred local model
+predictions over text-only context, but neither improved stacking. Validation
+selected **zero GPT calls** by macro-F1. Frozen 5/10/20% configurations scored
+435/434/436 correct on test1, below stacking's 440/900. Macro-F1 was 48.18%,
+48.05%, 48.18%, versus 48.80% for stacking. All 900 labels were scored only
+after prediction; no final result changed the selected configuration.
+
+The experiment used 97 successful batched Codex requests in total, including
+23 for the final comparison, with no failures. Observed tokens correspond to
+USD 1.672858 at standard API-equivalent prices; this is not a ChatGPT invoice.
+The [frozen package](../../models/stacking-gpt-cascade/README.md) preserves the
+zero-budget choice, optional nonzero comparisons, source identities and audits.
+All 201 tests passed; independent arithmetic verified routing and all metrics.
+
 ## Qwen added to soft voting and stacking
 
 The [four-model integration](ensemble-qwen.md) preserves the original EP1

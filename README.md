@@ -33,6 +33,7 @@ measured results, assignment references, and historical experiments are separate
 | Train development-only lexical logistic regression with holdout reserved | [RL workflow](src/rl_classifier/README.md) |
 | Select ensemble members and the tie-breaking model | [Ensemble](docs/guides/ensemble.md) |
 | Run four-model calibrated soft voting and stacking with Qwen | [Current ensemble workflow](docs/guides/ensemble-qwen.md) |
+| Route uncertain stacking decisions to GPT with OOF validation and persistent caching | [Selective GPT cascade](docs/guides/stacking-gpt-cascade.md) |
 | Inspect the preserved three-model calibration and meta-LR protocol | [Soft voting](docs/guides/ensemble-soft.md) and [stacking](docs/guides/ensemble-stacking.md) |
 | Browse runnable scripts by model and purpose | [Script index](scripts/README.md) |
 | Restore frozen models and their pinned public bases | [Model artifacts](models/README.md) |
@@ -79,6 +80,7 @@ or install a GPU-specific PyTorch distribution.
 | [svm_classifier](src/svm_classifier/README.md) | Frozen TF-IDF and SVM pipeline, CPU inference |
 | [rl_classifier](src/rl_classifier/README.md) | Frozen TF-IDF and logistic regression pipeline, CPU inference |
 | [ensemble_classifier](src/ensemble_classifier/README.md) | Configurable members and arbitration over saved predictions |
+| `cascade_classifier` | Nested OOF routing validation and selective GPT decisions over frozen stacking |
 | `gpt_classifier` | Remote classification, example retrieval, and shared evaluation |
 
 Frozen packages live in `models/`; historical experimental adapters remain in

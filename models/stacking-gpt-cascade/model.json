@@ -1,0 +1,103 @@
+{
+  "version": 1,
+  "model_type": "stacking_selective_gpt",
+  "config": {
+    "stacking_model": "models/ensemble-stacking-qwen/model.json",
+    "holdout_scores": "results/ensemble-soft-qwen-20261105/scores",
+    "model": "gpt-6.1-sol",
+    "reasoning_effort": "low",
+    "budgets": [
+      0.05,
+      0.1,
+      0.2
+    ],
+    "initial_budget": 0.1,
+    "batch_size": 8,
+    "workers": 2,
+    "retries": 1,
+    "timeout": 180,
+    "max_request_bytes": 1000000,
+    "input_price_per_million": 2,
+    "cached_input_price_per_million": 0.1,
+    "output_price_per_million": 10
+  },
+  "routing_rule": {
+    "confidence_weight": 0.9,
+    "maximum_confidence": 0.5,
+    "maximum_margin": 0.05
+  },
+  "prompt_mode": "with_local",
+  "selected_budget": 0.0,
+  "comparison_budgets": [
+    0.0,
+    0.05,
+    0.1,
+    0.2
+  ],
+  "evidence": {
+    "source_sha256": "0e9219233664ac675fc47982bbc822acd3bb15d67fb7bfc26b67bec047e46818",
+    "stacking_artifact_sha256": "840bb780be7f396aed5f87514f3ca3446423e7cf305c50ed1f5caedfea3ee722",
+    "soft_artifact_sha256": "4d57a91185861b970eb42a2c2a11a25e069952f21ac15914147fc562c8be6d3d",
+    "partition_sha256": "943e88ce2b823b3581f963f6df8f3aab84ddc28c62681fb8b4fc9e8e65827d6b",
+    "base_models_retrained": false,
+    "development_rows": 16093,
+    "calibration_rows": 2027,
+    "routing_validation_rows": 1972,
+    "shared_calibration_meta_groups": 0,
+    "inherited_exposure": "Qwen checkpoint selection and historical research used the holdout; it is not untouched full-process validation."
+  },
+  "implementation": {
+    "cascade_classifier/__init__.py": "33c5b1abafc7eedba1dc9354cfd89a76a2682ece48328fffd34564d0d5aa7a67",
+    "cascade_classifier/__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+    "cascade_classifier/cli.py": "c3b3bd4b94a7a0eb65b194e96d22edce980fee2609100331e236e3d47ada6cfd",
+    "cascade_classifier/config.py": "f2ef415234b1d58b169527dfd881bdb3b5baaf8e94e7e78fab1320076590ab22",
+    "cascade_classifier/dataset.py": "4d132bcc483c39690dfabb48781c62eaa56e23cf598be4bb7bf87c1ba1af123c",
+    "cascade_classifier/experiment.py": "32ea0523a80caccd42cf68b3276b3c3dbf9598465b9b5c9b8f82e202107076b8",
+    "cascade_classifier/gpt.py": "e40233fba33f72b54ac00ab5226b0e2b79e4c2a75b8e3187ab2a6e8c277fbb1a",
+    "cascade_classifier/routing.py": "8f51ed134ffad208b6522b581beefe1d26856a535d6f6af28ef1acf31a9e3f41",
+    "gpt_classifier/backend.py": "e15903ba4bc196cff2ff210bcf4fe8e54b7e6075b7f0285e0dc6e83b12a06af9",
+    "gpt_classifier/batching.py": "a711c3f81eef69b0554555bed78ccf0b0968d5676ddf42527c9c09202943a06e",
+    "gpt_classifier/codex_backend.py": "d60f3051e97d9289ec111742c06f2d33f241f270866f053970013beaf45e6d15",
+    "gpt_classifier/prompt.py": "3c3d0ab8b1faf4be22b509bcb010123d7a48cf6fb0a1ff34245f2478693c0841"
+  },
+  "test1_accessed": false,
+  "validation_sha256": "64272282f293bf3a3588ba6962d410750f44dcb8816ab60f4cf33a736da7d421",
+  "prompt_selection_sha256": "9e0dae6e975fb67417ad3a756794eb21035a7fe3909412ed2604c4c03968934f",
+  "preparation_sha256": "0e44d9458f25d798433af05f026d7eb8d507a9ad6c13aba2af19066fda4fd0c4",
+  "selection_rule": "Validation macro-F1; ties prefer lower routing budget. Zero budget is eligible.",
+  "codex_runtime": {
+    "kind": "codex",
+    "endpoint": "codex.exec",
+    "cli_version": "codex-cli 0.166.0",
+    "executable": "/home/felipe/.codex/packages/standalone/releases/0.166.0-x86_64-unknown-linux-musl/bin/codex",
+    "executable_sha256": "b8a11fedf24b2dfb59a70c9e52b030f9a508dcd49cd2dd0d41956f4c785156b8",
+    "adapter_sha256": "d60f3051e97d9289ec111742c06f2d33f241f270866f053970013beaf45e6d15",
+    "policy": {
+      "version": 1,
+      "sandbox": "read-only",
+      "ignore_user_config": true,
+      "ephemeral": true,
+      "disabled_features": [
+        "shell_tool",
+        "apps",
+        "plugins",
+        "hooks",
+        "multi_agent",
+        "memories",
+        "code_mode",
+        "browser_use",
+        "computer_use",
+        "image_generation",
+        "view_image",
+        "tool_suggest"
+      ],
+      "overrides": {
+        "approval_policy": "never",
+        "web_search": "disabled",
+        "project_doc_max_bytes": 0,
+        "skills.include_instructions": false,
+        "skills.bundled.enabled": false
+      }
+    }
+  }
+}

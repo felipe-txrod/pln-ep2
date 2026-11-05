@@ -15,6 +15,7 @@ its inference files to SHA-256 checksums.
 | [gpt/](gpt/README.md) | Configuration and prompt snapshots | Remote service; weights unavailable locally |
 | [ensemble-soft-qwen/](ensemble-soft-qwen/README.md) | Default four-candidate calibration and soft weights; selected Qwen weight is zero | Selected SVM, development RL, original NorBERTo and EP1-split Qwen |
 | [ensemble-stacking-qwen/](ensemble-stacking-qwen/README.md) | Default meta-LR on twelve calibrated probabilities | The four selected model packages and frozen calibrators |
+| [stacking-gpt-cascade/](stacking-gpt-cascade/README.md) | Frozen selective-routing experiment; validation selected zero GPT calls | Unchanged four-member stacking and optional Codex GPT 6.1 Sol Low |
 | [ensemble-soft/](ensemble-soft/README.md) | Preserved original three-model calibration, soft weights and holdout roles | SVM, development RL and original NorBERTo |
 | [ensemble-stacking/](ensemble-stacking/README.md) | Preserved original three-model multinomial meta-LR and grouped CV provenance | The original nine calibrated probabilities |
 
