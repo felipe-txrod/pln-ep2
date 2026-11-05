@@ -1,6 +1,8 @@
 """Calibration and soft voting over frozen scores; base estimators are never fitted."""
 from __future__ import annotations
 
+from itertools import product
+
 import numpy as np
 from scipy.optimize import minimize_scalar
 from scipy.special import expit, softmax
@@ -13,6 +15,15 @@ from sklearn.model_selection import StratifiedGroupKFold
 from gpt_classifier.data import LABELS
 
 MODELS = ("svm", "rl", "norberto")
+QWEN_MODELS = (*MODELS, "qwen")
+
+
+def model_order(members):
+    """Keep the legacy three-model contract and the selected four-model extension explicit."""
+    names = tuple(members)
+    if len(set(names)) != len(names) or set(names) not in (set(MODELS), set(QWEN_MODELS)):
+        raise ValueError("Members must be svm, rl, norberto, optionally with the selected qwen.")
+    return QWEN_MODELS if "qwen" in names else MODELS
 
 
 def values(matrix):
@@ -100,6 +111,7 @@ def _temperature(p, y):
 def fit_calibrations(raw, labels, groups, *, seed=42):
     """All fitting and the native-vs-temperature check stay inside calibration rows."""
     y = np.asarray(labels)
+    models = model_order(raw)
     if set(y) != set(LABELS):
         raise ValueError("Calibration must contain every class.")
     svm = values(raw["svm"])
@@ -111,7 +123,7 @@ def fit_calibrations(raw, labels, groups, *, seed=42):
                        "b": [float(s.b_) for s in sigmoids]}}
     if not np.allclose(apply_calibration(svm, result["svm"]), frozen.predict_proba(svm), atol=1e-12):
         raise ValueError("Portable sigmoid parameters differ from sklearn calibration.")
-    for name in ("rl", "norberto"):
+    for name in models[1:]:
         p = probabilities(raw[name])
         oof = np.empty_like(p)
         folds = StratifiedGroupKFold(3, shuffle=True, random_state=seed)
@@ -127,24 +139,28 @@ def fit_calibrations(raw, labels, groups, *, seed=42):
 
 
 def soft_vote(matrices, weights):
-    if set(matrices) != set(MODELS) or set(weights) != set(MODELS):
-        raise ValueError("Soft voting requires exactly svm, rl and norberto.")
-    if any(type(weights[m]) not in (int, float) for m in MODELS):
+    models = model_order(matrices)
+    if set(weights) != set(models):
+        raise ValueError("Every selected soft-voting member requires an explicit weight.")
+    if any(type(weights[m]) not in (int, float) for m in models):
         raise ValueError("Weights must be numeric, not booleans or strings.")
-    w = np.asarray([weights[name] for name in MODELS], dtype=float)
+    w = np.asarray([weights[name] for name in models], dtype=float)
     if not np.isfinite(w).all() or np.any(w < 0) or not np.isclose(w.sum(), 1, atol=1e-10, rtol=0):
         raise ValueError("Weights must be finite, nonnegative and sum to one.")
-    parts = [probabilities(matrices[name]) for name in MODELS]
+    parts = [probabilities(matrices[name]) for name in models]
     if len({p.shape for p in parts}) != 1:
         raise ValueError("Member probability arrays must be aligned.")
     return probabilities(np.einsum("m,mnc->nc", w, np.stack(parts)))
 
 
 def choose_weights(matrices, labels):
-    """Exactly 15 quarter-simplex candidates plus equal weights; no adaptive search."""
-    candidates = [{name: weight for name, weight in zip(MODELS, (i / 4, j / 4, (4 - i - j) / 4))}
-                  for i in range(5) for j in range(5 - i)]
-    candidates.append(dict.fromkeys(MODELS, 1 / 3))
+    """Fixed quarter-simplex grid plus uniform weights, without duplicate candidates."""
+    models = model_order(matrices)
+    candidates = [dict(zip(models, (value / 4 for value in parts)))
+                  for parts in product(range(5), repeat=len(models)) if sum(parts) == 4]
+    uniform = dict.fromkeys(models, 1 / len(models))
+    if uniform not in candidates:
+        candidates.append(uniform)
     trials = []
     for weights in candidates:
         prediction = np.asarray(LABELS)[soft_vote(matrices, weights).argmax(axis=1)]
@@ -152,7 +168,7 @@ def choose_weights(matrices, labels):
                                                                       average="macro", zero_division=0)),
                        "accuracy": float(accuracy_score(labels, prediction))})
     winner = max(trials, key=lambda t: (t["f1_macro"], t["accuracy"],
-                                        -sum((w - 1 / 3) ** 2 for w in t["weights"].values())))
+                                        -sum((w - 1 / len(models)) ** 2 for w in t["weights"].values())))
     return winner["weights"], trials
 
 

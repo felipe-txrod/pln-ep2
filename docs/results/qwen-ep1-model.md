@@ -84,9 +84,12 @@ explicitly executed. It was not run during model preservation. Use
 script also defaults to the verified package; `--training-run` remains an
 explicit historical-run override with its original source-identity checks.
 
-Qwen stays excluded from the default ensemble. Its optional member paths use
-`models/qwen/adapter` and new `results/qwen-ep1-test1`/`-test2` directories,
-so historical predictions are not reused for the newly selected weights.
+Subsequent inference for the [soft-voting and stacking integration](ensemble-qwen.md)
+scored **414/900 (46.00%)** on test1, macro-F1 **45.53%**. Qwen now
+participates in those pipelines, while majority presets retain three voters.
+Its member paths use `models/qwen/adapter` and selected
+`results/qwen-ep1-test1`/`-test2` directories, so historical predictions from
+the older adapter are not reused. Test2 was not generated in this integration.
 
 To reproduce the byte-preserving export from the original local run:
 

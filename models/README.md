@@ -13,13 +13,15 @@ its inference files to SHA-256 checksums.
 | [norberto/](norberto/README.md) | LoRA adapter, classification head, tokenizer, configuration | Public NorBERTo base, pinned revision and checksums |
 | [qwen/](qwen/README.md) | Selected EP1-split QLoRA adapter, trained head, tokenizer and checksummed provenance | Public Qwen3-1.7B base at the pinned revision |
 | [gpt/](gpt/README.md) | Configuration and prompt snapshots | Remote service; weights unavailable locally |
-| [ensemble-soft/](ensemble-soft/README.md) | Frozen calibration, soft-vote weights and holdout roles | The selected SVM, development LR and original NorBERTo packages |
-| [ensemble-stacking/](ensemble-stacking/README.md) | Frozen multinomial meta-LR and grouped CV provenance | The same calibrated probabilities and disjoint meta-training rows as soft voting |
+| [ensemble-soft-qwen/](ensemble-soft-qwen/README.md) | Default four-candidate calibration and soft weights; selected Qwen weight is zero | Selected SVM, development RL, original NorBERTo and EP1-split Qwen |
+| [ensemble-stacking-qwen/](ensemble-stacking-qwen/README.md) | Default meta-LR on twelve calibrated probabilities | The four selected model packages and frozen calibrators |
+| [ensemble-soft/](ensemble-soft/README.md) | Preserved original three-model calibration, soft weights and holdout roles | SVM, development RL and original NorBERTo |
+| [ensemble-stacking/](ensemble-stacking/README.md) | Preserved original three-model multinomial meta-LR and grouped CV provenance | The original nine calibrated probabilities |
 
 Qwen now defaults to `models/qwen/adapter/`; its historical run directories
 remain preserved. Qwen checkpoints, optimizer states and public base weights
-stay outside the versioned package. Qwen is still excluded from the default
-ensemble membership.
+stay outside the versioned package. Qwen participates in soft voting and
+stacking; the separate majority presets retain NorBERTo, SVM and RL.
 
 ## Artifact formats
 

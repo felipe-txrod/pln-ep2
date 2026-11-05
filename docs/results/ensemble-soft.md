@@ -1,5 +1,9 @@
 # Weighted soft voting — avaliação final nas 900 linhas
 
+This document preserves the original **three-model** protocol and results.
+The current four-model defaults include Qwen; see the [current workflow](../guides/ensemble-qwen.md)
+and [integration results](ensemble-qwen.md).
+
 Implementação e avaliação concluídas em 05/11/2026. O ensemble foi congelado
 no commit `81e1cc5`, antes da leitura do gabarito nesta rodada. Nenhum dos
 modelos-base foi retreinado e nenhum parâmetro foi alterado depois da avaliação.

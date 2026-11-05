@@ -83,7 +83,7 @@ def offline_soft(tmp_path, monkeypatch):
     source["sha256"] = file_digest(tmp_path / "training.xlsx")
     monkeypatch.setattr(pipeline, "load_soft_config", lambda _: config)
     monkeypatch.setattr(pipeline, "holdout_records", lambda _: (records, np.arange(180), source, records, {}))
-    monkeypatch.setattr(pipeline, "model_identities", lambda: identities)
+    monkeypatch.setattr(pipeline, "model_identities", lambda *args: identities)
     monkeypatch.setattr(pipeline, "verify_lr_training", lambda *args: None)
     reads = []
     def scoring(config, targets, source, models, directory, **kwargs):

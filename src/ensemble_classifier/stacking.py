@@ -11,7 +11,7 @@ from sklearn.metrics import accuracy_score, f1_score
 from sklearn.model_selection import StratifiedGroupKFold
 
 from gpt_classifier.data import LABELS
-from .soft_voting import MODELS, probabilities
+from .soft_voting import MODELS, model_order, probabilities
 
 FEATURES = tuple(f"{model}:{label}" for model in MODELS for label in LABELS)
 CANDIDATES = (.01, .1, 1., 10.)
@@ -19,20 +19,24 @@ FOLDS = 5
 SEED = 42
 
 
+def feature_names(models):
+    return tuple(f"{model}:{label}" for model in model_order(models) for label in LABELS)
+
+
 def feature_matrix(matrices):
-    if set(matrices) != set(MODELS):
-        raise ValueError("Stacking requires exactly svm, rl and norberto probabilities.")
-    parts = [probabilities(matrices[model]) for model in MODELS]
+    models = model_order(matrices)
+    parts = [probabilities(matrices[model]) for model in models]
     if len({p.shape for p in parts}) != 1:
         raise ValueError("Stacking member rows are not aligned.")
     return np.ascontiguousarray(np.concatenate(parts, axis=1))
 
 
 def meta_probabilities(matrices, model):
-    if model.get("classes") != list(LABELS) or model.get("features") != list(FEATURES):
+    features = feature_names(matrices)
+    if model.get("classes") != list(LABELS) or model.get("features") != list(features):
         raise ValueError("Meta-model class/feature order differs from the frozen contract.")
     coef, intercept = np.asarray(model["coef"], dtype=float), np.asarray(model["intercept"], dtype=float)
-    if (coef.shape != (3, 9) or intercept.shape != (3,)
+    if (coef.shape != (3, len(features)) or intercept.shape != (3,)
             or not np.isfinite(coef).all() or not np.isfinite(intercept).all()):
         raise ValueError("Invalid multinomial meta-model parameters.")
     return probabilities(softmax(feature_matrix(matrices) @ coef.T + intercept, axis=1))
@@ -92,7 +96,7 @@ def fit_meta(matrices, labels, groups):
     selected, threshold = select_regularization(trials)
     estimator = _fit(X, y, selected)
     order = [list(estimator.classes_).index(label) for label in LABELS]
-    model = {"classes": list(LABELS), "features": list(FEATURES), "coef": estimator.coef_[order].tolist(),
+    model = {"classes": list(LABELS), "features": list(feature_names(matrices)), "coef": estimator.coef_[order].tolist(),
              "intercept": estimator.intercept_[order].tolist(), "C": selected,
              "solver": "lbfgs", "penalty": "l2", "max_iter": 2000, "tol": 1e-8,
              "class_weight": None, "n_iter": estimator.n_iter_.tolist()}

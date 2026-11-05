@@ -6,6 +6,19 @@ Compare results only on the same dataset and preserve the training recipe
 and partition recorded by each report. The original EP1 NorBERTo reference
 has 48.00% accuracy on test1 and 45.31% on its frozen holdout.
 
+## Qwen added to soft voting and stacking
+
+The [four-model integration](ensemble-qwen.md) preserves the original EP1
+split and the disjoint 2,027 calibration / 1,972 meta-training rows. Soft voting
+selected SVM 75%, RL 0%, NorBERTo 25%, Qwen 0% from 35 fixed candidates and
+reproduced **447/900 (49.67%)**. Stacking uses all twelve probabilities and
+scored **440/900 (48.89%)**, versus 442/900 for its three-model control.
+Qwen alone scored **414/900 (46.00%)**. No parameters were tuned on test1.
+The new default soft/stacking packages coexist with the original artifacts;
+the separate majority presets retain three voters. Independent arithmetic
+verified all scores, weights, predictions and metrics. Qwen's checkpoint
+selection used the holdout, so inherited validation exposure still applies.
+
 ## Selected Qwen: frozen EP1 partition
 
 The completed 16,093/3,999 run is now the default Qwen model in
@@ -14,10 +27,11 @@ scored **1,791/3,999 (44.79%)**, macro-F1 **44.44%**. All source rows, selected
 checkpoint, package checksums and 225 finite tensors were checked, followed
 by real GPU reload on synthetic texts. The original per-row validation export
 had a length-grouping order bug; exact checkpoint-RNG recovery reproduced
-the aggregate metrics and saved aligned records separately. Qwen remains
-excluded from the default ensemble. See the [model and audit](qwen-ep1-model.md).
+the aggregate metrics and saved aligned records separately. Subsequent test1
+inference scored 414/900; Qwen now participates in soft voting and stacking.
+See the [model and audit](qwen-ep1-model.md).
 
-## Stacking versus weighted soft voting
+## Original three-model stacking versus weighted soft voting
 
 The [stacking comparison](ensemble-stacking.md) reuses the same frozen models,
 calibrators and 1,972 development rows as soft-weight selection. Five grouped
@@ -41,8 +55,8 @@ confirms all 900 original labels match the saved NorBERTo predictions. Exact
 two-sided McNemar gives p=0.303327: the numerical gain is not statistically
 significant at 0.05. The official test2-before-test1 order was not established.
 
-The user subsequently excluded Qwen; active defaults are now NorBERTo + SVM +
-RL, strict majority, with RL arbitration. The [holdout isolation audit and
+The majority presets use NorBERTo + SVM + RL, strict majority, with RL
+arbitration; the separate soft/stacking defaults now also evaluate Qwen. The [holdout isolation audit and
 results](ensemble-holdout.md) confirm all 3,999 holdout rows and their groups
 were excluded from the selected models' fitting. NorBERTo scores 1,812/3,999
 (45.31%); RL and the best trio each score 1,803/3,999 (45.09%); SVM scores

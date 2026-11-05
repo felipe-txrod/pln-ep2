@@ -1,5 +1,9 @@
 # Stacking dos três classificadores congelados
 
+This document preserves the original **three-model** protocol and results.
+The current four-model defaults include Qwen; see the [current workflow](ensemble-qwen.md)
+and [integration results](../results/ensemble-qwen.md).
+
 O comando `fit-stacking` treina somente uma nova Regressão Logística como
 meta-modelo. SVM, LR de desenvolvimento, NorBERTo e seus calibradores são os
 mesmos artefatos do [soft voting](ensemble-soft.md), sem retreinamento. A LR
@@ -91,7 +95,7 @@ Restaure o cache ou execute `fit-soft` separadamente para reconstruí-lo.
 ```bash
 # Somente treino/seleção do meta-modelo; não abre teste1 nem teste2.
 .venv/bin/python -m ensemble_classifier fit-stacking \
-  --config configs/ensemble-stacking.json \
+  --config configs/ensemble-stacking-legacy.json \
   --output-dir results/novo-stacking-fit
 
 # Predição sem ler clarity, reutilizando os mesmos escores do teste1 já salvos.
@@ -110,7 +114,7 @@ Restaure o cache ou execute `fit-soft` separadamente para reconstruí-lo.
 
 Para usar o modelo que acabou de ajustar, troque `--model` por
 `results/novo-stacking-fit/model.json`. O caminho publicado acima usa o artefato
-congelado distribuído. `configs/ensemble-stacking.json` aponta apenas para o
+congelado distribuído. `configs/ensemble-stacking-legacy.json` aponta apenas para o
 modelo soft, sua partição e seus escores de holdout, sem caminho de gabarito.
 
 Para novos textos, omita `--soft-run`: o pipeline chama `predict-soft` em

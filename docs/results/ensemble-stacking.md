@@ -1,5 +1,9 @@
 # Stacking versus weighted soft voting nas 900 linhas
 
+This document preserves the original **three-model** protocol and results.
+The current four-model defaults include Qwen; see the [current workflow](../guides/ensemble-qwen.md)
+and [integration results](ensemble-qwen.md).
+
 O stacking **não superou o weighted soft voting nesta avaliação**: acertou
 442/900, contra 447/900. Acurácia caiu 0,56 ponto percentual e F1-macro caiu
 0,55 ponto percentual. McNemar exato bilateral deu p=0,664645, sem evidência

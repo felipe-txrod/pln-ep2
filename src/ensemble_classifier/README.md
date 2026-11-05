@@ -5,7 +5,27 @@ ou realizar chamadas remotas. A avaliação final usa teste1 rotulado após a
 entrega de teste2. O [protocolo completo](../../docs/guides/ensemble.md) descreve as
 regras e as extensões planejadas.
 
-## Stacking
+## Current soft voting and stacking defaults
+
+Both probability-based pipelines now select SVM, development-only RL,
+original EP1 NorBERTo, and the selected EP1-split Qwen. The default artifacts
+are `models/ensemble-soft-qwen/model.json` and
+`models/ensemble-stacking-qwen/model.json`. Soft voting searches 35 fixed
+quarter-simplex mixtures and selected zero Qwen weight. Stacking uses all
+12 calibrated probabilities, including Qwen, with grouped CV selecting C=0.1.
+
+The 2,027 calibration rows and 1,972 weight/meta rows remain disjoint and
+identical to the original partitions. Qwen never fitted its weights on the
+holdout, but used it for checkpoint selection. Its inherited validation
+exposure is recorded. Test1 gold never enters calibration or meta fitting.
+See the [current commands](../../docs/guides/ensemble-qwen.md) and
+[measured comparison](../../docs/results/ensemble-qwen.md). Original
+three-model artifacts and legacy configurations remain available explicitly.
+
+The following sections describe the original protocol. Majority presets
+remain independent and retain three voters.
+
+## Original three-model stacking
 
 Os comandos separados `fit-stacking`, `predict-stacking` e `evaluate-stacking`
 treinam somente uma meta-LR nas linhas que não calibraram os modelos,
@@ -14,7 +34,7 @@ calibradores, modelos-base e previsões do soft voting. Consulte o
 [guia de stacking](../../docs/guides/ensemble-stacking.md) e o
 [artefato congelado](../../models/ensemble-stacking/README.md).
 
-## Weighted soft voting
+## Original three-model weighted soft voting
 
 Os comandos `fit-soft`, `predict-soft` e `evaluate-soft` reutilizam os modelos
 congelados com probabilidades alinhadas. O antigo holdout é dividido por grupos
@@ -64,7 +84,7 @@ test2 run. Existing results are preserved. The measured best trio achieved
 
 `configs/ensemble.json` declares available members, while `models` selects
 the active voters. The default is `norberto`, `svm`, and `rl`, using majority
-voting and RL arbitration. Qwen is currently excluded from the active members.
+voting and RL arbitration. Qwen is optional in these majority presets.
 `--models` overrides the list for an explicitly selected alternative run:
 
 ```bash
@@ -103,7 +123,8 @@ to `models/rl-development/`, fitted on the same partition with all 3,999
 holdout rows reserved. Create it once with `bash scripts/rl/train.sh`; a
 missing bundle never falls back to the historical full-corpus RL model.
 The optional Qwen member now selects `models/qwen/adapter/`, trained on the
-same 16,093/3,999 EP1 split; it remains excluded from default membership.
+same 16,093/3,999 EP1 split. It is optional in majority voting and included
+in the separate soft-voting and stacking pipelines.
 
 The optional `manifest` member field pins an external model contract. For
 `identity_field=artifact_sha256`, the run must match that contract's artifact

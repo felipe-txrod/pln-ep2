@@ -1,0 +1,160 @@
+{
+  "version": 2,
+  "labels": [
+    "c1",
+    "c234",
+    "c5"
+  ],
+  "models": [
+    "svm",
+    "rl",
+    "norberto",
+    "qwen"
+  ],
+  "weights": {
+    "svm": 0.75,
+    "rl": 0.0,
+    "norberto": 0.25,
+    "qwen": 0.0
+  },
+  "calibration": {
+    "svm": {
+      "method": "sigmoid_ovr",
+      "a": [
+        -2.419949900930932,
+        -1.077683471736457,
+        -2.082415545144616
+      ],
+      "b": [
+        -0.07475435888733295,
+        0.27001899295894133,
+        0.12713762894145972
+      ]
+    },
+    "rl": {
+      "method": "temperature",
+      "temperature": 1.1391917666933158,
+      "calibration_only_check": {
+        "native_log_loss": 1.047865775823393,
+        "temperature_oof_log_loss": 1.0474176174939431,
+        "folds": 3,
+        "criterion": "OOF log loss improves by >1e-4"
+      }
+    },
+    "norberto": {
+      "method": "temperature",
+      "temperature": 1.1171232074295399,
+      "calibration_only_check": {
+        "native_log_loss": 1.0414639998056683,
+        "temperature_oof_log_loss": 1.0409951312338759,
+        "folds": 3,
+        "criterion": "OOF log loss improves by >1e-4"
+      }
+    },
+    "qwen": {
+      "method": "temperature",
+      "temperature": 1.515480709210816,
+      "calibration_only_check": {
+        "native_log_loss": 1.0529298253974053,
+        "temperature_oof_log_loss": 1.0407800523422481,
+        "folds": 3,
+        "criterion": "OOF log loss improves by >1e-4"
+      }
+    }
+  },
+  "model_identities": {
+    "svm": {
+      "artifact_sha256": "9a30abb664d5023d70f444641c4095cf800acba0c98fd8658087e7adad78ee12",
+      "manifest_sha256": "a0688c7f08e2ea74323e62d72b15cf930041fabf847d43102eaf024aeb7e764f",
+      "bundle": "models/svm"
+    },
+    "rl": {
+      "artifact_sha256": "05d69e147a10b7c49ebe3893f247e0f23e8d61005aaf4fd7b7eb45845d49a20f",
+      "manifest_sha256": "823580763f0be9555f3365d59cf83055675a019d3807d874bf8f48200597d47f",
+      "bundle": "models/rl-development"
+    },
+    "norberto": {
+      "artifact_sha256": "d693f6e2995d117ad04a5692817527764fcccee6bfb2dde99120baf9fdd2d385",
+      "manifest_sha256": "d5f7b0f8a18bc216c72fb0dc67e4de68ba89f343b99dc4b1e9546290431fd5fe",
+      "training_manifest_sha256": "26a7a4bdf41ddd36481ca767a9cdf1331f2375301fc946f262f04503d086b37d",
+      "bundle": "models/norberto"
+    },
+    "qwen": {
+      "artifact_sha256": "a045c5726a85c466914c55f9cee9fb0d412af4d66387e14b590e53b4782beed5",
+      "manifest_sha256": "15a5aaccb3c4fc975783e9ba7c8a6a7c5588bc4dc9103f70e11016e5ad8ac093",
+      "bundle": "models/qwen",
+      "holdout_used_for_checkpoint_selection": true
+    }
+  },
+  "score_configuration": {
+    "seed": 42,
+    "train": "data/train.xlsx",
+    "split": "data/ep1-development-holdout.csv",
+    "recorded_norberto": {
+      "holdout": {
+        "csv": "../EP1/results/norberto/delivery/norberto-lora-final-holdout-20260928/holdout-predictions.csv",
+        "csv_sha256": "6c9064f344ca3cb1adf70698467b8048b3289d80fa7f4544b20b13dfad17676a",
+        "metadata": "../EP1/results/norberto/delivery/norberto-lora-final-holdout-20260928/results.json",
+        "metadata_sha256": "5b73e30582f3a9dc134cd61b2203d2f0f649e49aa32fc726c1091c4ac48c682e"
+      },
+      "test1": {
+        "csv": "../EP1/results/norberto/delivery/norberto-lora-test1-20260929/predictions.csv",
+        "csv_sha256": "6d82ec85b7ad16a91331f89494667c5752c2e9e78fe6b4857430b89bed579963",
+        "metadata": "../EP1/results/norberto/delivery/norberto-lora-test1-20260929/manifest.json",
+        "metadata_sha256": "fd3856cd3206b898f3fd94ecd8eeef354be55b7596a29b284985976c5926213b"
+      }
+    },
+    "models": [
+      "svm",
+      "rl",
+      "norberto",
+      "qwen"
+    ],
+    "recorded_qwen": {
+      "holdout": {
+        "run": "results/qwen-ensemble-scores-20261105/holdout",
+        "run_sha256": "2f16d97ca625b52088686addbf11ca2356af36a8e93b3d637a7403f2db18acdb",
+        "predictions_sha256": "226451ba4b532fb4735187940c072967d8ed0d798c73edc7dfd8d00b67539319"
+      },
+      "test1": {
+        "run": "results/qwen-ensemble-scores-20261105/test1",
+        "run_sha256": "887c3fd789ed58db3bd1212f385fc352ea0da348ecf2bb870f925a856944a439",
+        "predictions_sha256": "1f7cfd6c149b02a00763d25371e7babc6d14e32d3727a7b482c7cc6baf68e79f"
+      }
+    }
+  },
+  "source_sha256": "0e9219233664ac675fc47982bbc822acd3bb15d67fb7bfc26b67bec047e46818",
+  "split_sha256": "0f78e7a809c7b7584db05b33cf03a73ff586d5de02ba824c16562d5070d41494",
+  "partition_sha256": "fcbd64ea192fe3706f51edf4038b796cac28842494febd21220cb2883f68a7d8",
+  "fit_code": {
+    "ensemble_classifier/files.py": "4d1903fdaf3210edf69e57ae9d79c6467d4ca4b9dec155805931c79783e7f45c",
+    "ensemble_classifier/soft_compatibility.py": "e7d3c5d329463eb63534266f45619dc924450c387da6b2db30b5f8bc2706ae31",
+    "ensemble_classifier/soft_pipeline.py": "30b44affe17a05e5907b620ffe61b7c17f0de903c70877a4d289e520c0626f4d",
+    "ensemble_classifier/soft_sources.py": "9f125fbc84630fa9b8480a99858f05a41e77e0ed5ee1dde38b8dbc3716df1a6a",
+    "ensemble_classifier/soft_voting.py": "03a24e5ae8e96d810b12013acc82bf52e2258ea6ba464addcc022a731cb427dc",
+    "gpt_classifier/data.py": "4e99c8c28bcc1062dd2b5259df48b4dc7d70b83c3e7e48e32a45129f6e1a9521",
+    "lexical_classifier/__init__.py": "ce765fb1eb7a3f5e983cac2f984adb87477da66785dfd5ca43d4bff71480115d",
+    "lexical_classifier/cli.py": "3b95ed01c1c9f4bc8de53ef520ebb58f6810e793e566b30436991317caa283cb",
+    "lexical_classifier/inference.py": "3127b32ef519407ad7a60c459b1b864e5f7ba4634ca21b0baf9e8a1c2542d065",
+    "norberto_classifier/__init__.py": "4a7e46b0c59e9bbfb7a775bd6daaf338dd6536d67ebfea4cfc95836a64140eab",
+    "norberto_classifier/__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+    "norberto_classifier/artifacts.py": "daae38b6b712ab7e8bd7ac253c4f18e8ebced180b22d8dc030320d74d5fd694f",
+    "norberto_classifier/cli.py": "e42babe3e373748cc309cb43b7ca691328b5cf74ec781a3511bf3ace77c50f2c",
+    "norberto_classifier/inference.py": "67b56f425ab849d99c7bcfe9b6129984b41e5e0eb3b6a85204345556305acf3b",
+    "norberto_classifier/tokenization.py": "0763eb125d6075fed15927362c990d0d835013d885fc76ca59a2635a8494a0ae",
+    "qwen_classifier/__init__.py": "394700c841dbf9c5ac210d3573b6b4605b35a7e63a6cdbd387e7eda08e7698cd",
+    "qwen_classifier/__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+    "qwen_classifier/artifacts.py": "d68827ffdb37abeba62d1129f6041dabd228f74001897a28938388179ac97de8",
+    "qwen_classifier/benchmark.py": "9161294aeec4e60d7d1ebe0fc5652eaa8c877998e5e6d0691b1b9bed73f76a80",
+    "qwen_classifier/cli.py": "3a25c50984c6091c396f1e408586cddbdf1749f70bb215f7c0a8b96fc3020e4e",
+    "qwen_classifier/config.py": "546022c35e52b2f7d7e9cc95ba8f7890d08b2d1cbf62679d707e5608170efc71",
+    "qwen_classifier/dataset.py": "dfa8ed0f9bf63edcdb831d9732ab11cf8fcc103082fad8e8dd09ef50b0d4aac3",
+    "qwen_classifier/hardware.py": "6f3551dace4fcfcb14bfb0d733f84b691ed2f5e6233566c6807f34f8a1058f07",
+    "qwen_classifier/inference.py": "8d0ef9668e2e1066fc40e55cc12cc07cbd58e633c8b0a15a70ee701398950a91",
+    "qwen_classifier/model.py": "de2a98023097fec44491e78e8275e3417bcf850760f0be3db97689e586079334",
+    "qwen_classifier/partitions.py": "f0ef538db332ad66b31d9452f1d95871d113487385a7017eca2d024ec448129d",
+    "qwen_classifier/training.py": "b9b89f8b7d60cf1d4c3a3ed0fed4c936cfaa428240f68e7da2a05e78ecc324c9"
+  },
+  "selection_criterion": "macro_f1_on_disjoint_weight_partition",
+  "candidate_count": 35
+}

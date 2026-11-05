@@ -20,7 +20,9 @@ def adapter_identity(adapter: Path | None) -> str:
     return digest(canonical({name: file_digest(adapter / name) for name in names if (adapter / name).exists()}))
 
 
-def predict_records(adapter: Path | None, cache_dir: Path, records) -> list[dict]:
+def predict_records(adapter: Path | None, cache_dir: Path, records, *, batch_size: int = 1) -> list[dict]:
+    if type(batch_size) is not int or batch_size < 1:
+        raise ValueError("Inference batch_size must be a positive integer.")
     adapter = resolve_adapter(adapter)
     import torch
     from torch.utils.data import DataLoader
@@ -36,18 +38,24 @@ def predict_records(adapter: Path | None, cache_dir: Path, records) -> list[dict
     model = build_model(config, tokenizer, cache_dir, adapter=adapter)
     model.eval()
     data = TokenizedTexts(records, tokenizer, config.max_length, labeled=False)
-    loader = DataLoader(data, batch_size=1, shuffle=False,
+    loader = DataLoader(data, batch_size=batch_size, shuffle=False,
                         collate_fn=DataCollatorWithPadding(tokenizer, pad_to_multiple_of=8))
     predictions = []
     with torch.inference_mode(), torch.autocast("cuda", dtype=torch.float16):
-        for record, batch in zip(records, loader):
-            logits = model(**{key: value.cuda() for key, value in batch.items()}).logits.float()[0]
+        for batch in loader:
+            logits = model(**{key: value.cuda() for key, value in batch.items()}).logits.float()
             if not torch.isfinite(logits).all():
-                raise FloatingPointError(f"Nonfinite prediction at Excel row {record.excel_row}.")
-            predictions.append({"excel_row": record.excel_row, "text_sha256": digest(record.text),
-                                "label": LABELS[int(logits.argmax().item())],
-                                "probabilities": logits.softmax(-1).cpu().tolist(),
-                                "logits": logits.cpu().tolist()})
+                raise FloatingPointError("Nonfinite Qwen prediction logits.")
+            batch_records = records[len(predictions):len(predictions) + len(logits)]
+            if logits.shape != (len(batch_records), len(LABELS)):
+                raise ValueError("Qwen batch output does not match its input rows or classes.")
+            for record, scores in zip(batch_records, logits):
+                predictions.append({"excel_row": record.excel_row, "text_sha256": digest(record.text),
+                                    "label": LABELS[int(scores.argmax().item())],
+                                    "probabilities": scores.softmax(-1).cpu().tolist(),
+                                    "logits": scores.cpu().tolist()})
+    if len(predictions) != len(records):
+        raise ValueError("Qwen predictions do not cover every source row.")
     return predictions
 
 

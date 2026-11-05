@@ -21,8 +21,9 @@ in the original ignored training directory.
 `qwen_classifier predict` uses this verified package when `--adapter` is
 omitted. Explicit historical overrides remain available. Missing or changed
 default files fail validation instead of selecting an older model. Optional
-Qwen ensemble entries point here, while default voters remain NorBERTo, SVM,
-and RL; Qwen is currently excluded.
+Qwen entries in soft voting and stacking point here. The separate majority
+presets retain NorBERTo, SVM and RL. Subsequent native test1 inference scored
+414/900 (46.00%); see the [ensemble integration](../../docs/results/ensemble-qwen.md).
 
 Validation scored **1,791/3,999 (44.79%)**, macro-F1 **44.44%**. Validation
 selected the best checkpoint and received no gradient updates. This is a

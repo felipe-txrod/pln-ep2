@@ -9,13 +9,15 @@ The selected NorBERTo is the **unchanged EP1 delivery adapter** in
 It achieved 48.00% on test1 and 45.31% on the EP1 holdout. Experimental loss
 corrections, refits, and the frozen-encoder logistic variant have been retired.
 
-The active ensemble uses **NorBERTo + SVM + RL**, equal majority votes, and
-RL to break three-way ties. Qwen is currently excluded from the default
-membership. All three selected models reserve the same 3,999-row EP1 holdout.
+The majority ensemble uses **NorBERTo + SVM + RL**, equal votes, and RL to
+break three-way ties. Soft voting and stacking now include **Qwen** as a fourth
+candidate/member. All four models reserve the same 3,999-row EP1 holdout.
 
 The default Qwen adapter is saved in `models/qwen/adapter/`, trained on the
-same 16,093/3,999 EP1 partition. Its validation accuracy is 44.79%; Qwen remains
-excluded from default ensemble membership. See the [selected model verification](docs/results/qwen-ep1-model.md).
+same 16,093/3,999 EP1 partition. Its validation accuracy is 44.79%, and test1
+accuracy is 46.00%. The four-candidate soft vote selected zero Qwen weight;
+stacking uses its probabilities. See the [integration results](docs/results/ensemble-qwen.md)
+and [selected model verification](docs/results/qwen-ep1-model.md).
 
 ## Documentation
 
@@ -30,14 +32,15 @@ measured results, assignment references, and historical experiments are separate
 | Retrain Qwen on the same 16,093/3,999 split as EP1 models | [Exact EP1 partition](docs/guides/qwen-finetuning.md#retrain-with-the-exact-ep1-partition) |
 | Train development-only lexical logistic regression with holdout reserved | [RL workflow](src/rl_classifier/README.md) |
 | Select ensemble members and the tie-breaking model | [Ensemble](docs/guides/ensemble.md) |
-| Calibrate frozen models and select weighted soft votes without test-label tuning | [Weighted soft voting](docs/guides/ensemble-soft.md) |
-| Fit a regularized meta-LR on disjoint calibrated probabilities | [Stacking](docs/guides/ensemble-stacking.md) |
+| Run four-model calibrated soft voting and stacking with Qwen | [Current ensemble workflow](docs/guides/ensemble-qwen.md) |
+| Inspect the preserved three-model calibration and meta-LR protocol | [Soft voting](docs/guides/ensemble-soft.md) and [stacking](docs/guides/ensemble-stacking.md) |
 | Browse runnable scripts by model and purpose | [Script index](scripts/README.md) |
 | Restore frozen models and their pinned public bases | [Model artifacts](models/README.md) |
 | Compare measured classifier results | [Results index](docs/results/README.md) |
 | Reproduce NorBERTo + SVM + RL majority voting and its test1 comparison | [Majority ensemble](docs/results/ensemble-majority.md) |
 | Compare calibrated weighted soft voting with each frozen classifier | [Soft-voting results and confusion matrices](docs/results/ensemble-soft.md) |
-| Compare stacking with soft voting, including affected instances | [Stacking results](docs/results/ensemble-stacking.md) |
+| Compare four-model ensembles against their three-model controls | [Qwen integration results](docs/results/ensemble-qwen.md) |
+| Inspect the original stacking comparison, including affected instances | [Three-model stacking results](docs/results/ensemble-stacking.md) |
 | Consult earlier GPT/Codex and training investigations | [Experiment archive](docs/archive/README.md) |
 
 ## Repository layout

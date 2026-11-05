@@ -75,7 +75,7 @@ def experiment(tmp_path, monkeypatch, make_xlsx):
     monkeypatch.setattr(pipeline, "load_soft_artifact", lambda _: soft)
     monkeypatch.setattr(pipeline, "holdout_records", lambda _: (records, groups, source, records, {}))
     monkeypatch.setattr(pipeline, "verify_lr_training", lambda *a: None)
-    monkeypatch.setattr(pipeline, "model_identities", lambda: identities)
+    monkeypatch.setattr(pipeline, "model_identities", lambda *args: identities)
 
     def cache(directory, targets, source):
         raw = sample(len(targets))

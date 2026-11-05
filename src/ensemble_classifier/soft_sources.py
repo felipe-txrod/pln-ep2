@@ -8,7 +8,7 @@ import numpy as np
 
 from gpt_classifier.data import LABELS, Text, canonical, digest, file_digest, group, read_xlsx, write_json, write_jsonl
 from .files import align, read_json, read_predictions, validate_scores
-from .soft_voting import MODELS, aligned_scores, probabilities
+from .soft_voting import MODELS, aligned_scores, model_order, probabilities
 
 ROOT = Path(__file__).resolve().parents[2]
 DATASET_SHA256 = "0e9219233664ac675fc47982bbc822acd3bb15d67fb7bfc26b67bec047e46818"
@@ -17,8 +17,13 @@ SPLIT_SHA256 = "0f78e7a809c7b7584db05b33cf03a73ff586d5de02ba824c16562d5070d41494
 
 def load_soft_config(path):
     config = read_json(path)
-    if set(config) != {"seed", "train", "split", "recorded_norberto"} or type(config["seed"]) is not int:
-        raise ValueError("Soft configuration must contain seed, train, split and recorded_norberto only.")
+    if (not {"seed", "train", "split", "recorded_norberto"} <= set(config)
+            or set(config) - {"seed", "train", "split", "recorded_norberto", "models", "recorded_qwen"}
+            or type(config["seed"]) is not int):
+        raise ValueError("Invalid soft-voting configuration fields.")
+    model_order(config.get("models", MODELS))
+    if "recorded_qwen" in config and not isinstance(config["recorded_qwen"], dict):
+        raise ValueError("recorded_qwen must map phases to verified saved score runs.")
     return config
 
 
@@ -51,7 +56,8 @@ def holdout_records(config):
     return selected, np.asarray([holdout[r.excel_row] for r in selected]), source, records, development
 
 
-def model_identities():
+def model_identities(models=MODELS):
+    models = model_order(models)
     result = {}
     for name, directory in (("svm", "models/svm"), ("rl", "models/rl-development")):
         root = ROOT / directory
@@ -89,6 +95,27 @@ def model_identities():
     result["norberto"] = {"artifact_sha256": ADAPTER_SHA256,
                            "manifest_sha256": file_digest(ROOT / "src/norberto_classifier/frozen_manifest.json"),
                            "training_manifest_sha256": file_digest(root / "run.json"), "bundle": "models/norberto"}
+    if "qwen" in models:
+        from qwen_classifier.artifacts import resolve_adapter
+        from qwen_classifier.inference import adapter_identity
+        adapter = resolve_adapter()
+        qwen = read_json(adapter.parent / "training.json")
+        partition = qwen.get("partition", {})
+        if (qwen.get("status") != "completed" or qwen.get("smoke") is not False or qwen.get("pilot") is not False
+                or qwen.get("train_rows") != 16093 or qwen.get("validation_rows") != 3999
+                or partition.get("source_sha256") != DATASET_SHA256 or partition.get("split_sha256") != SPLIT_SHA256
+                or partition.get("holdout_used_for_fit") is not False
+                or file_digest(adapter.parent / "partition/frozen-split.csv") != SPLIT_SHA256):
+            raise ValueError("The selected Qwen did not reserve the frozen EP1 holdout.")
+        membership = read_json(adapter.parent / "partition/split.json")
+        with (adapter.parent / "partition/frozen-split.csv").open(newline="") as stream:
+            rows = list(csv.DictReader(stream))
+        for role, field in (("development", "train_rows"), ("holdout", "validation_rows")):
+            if membership[field] != [int(row["excel_row"]) for row in rows if row["role"] == role]:
+                raise ValueError("The selected Qwen has incompatible saved training membership.")
+        result["qwen"] = {"artifact_sha256": adapter_identity(adapter),
+                          "manifest_sha256": file_digest(adapter.parent / "manifest.json"),
+                          "bundle": "models/qwen", "holdout_used_for_checkpoint_selection": True}
     return result
 
 
@@ -136,12 +163,37 @@ def recorded_norberto(config, records, source, identities, phase):
     return p, {"csv_sha256": file_digest(path), "metadata_sha256": file_digest(metadata_path)}
 
 
+def recorded_qwen(config, records, source, identities, phase):
+    specification = config.get("recorded_qwen", {}).get(phase)
+    if specification is None:
+        return None, None
+    root = location(specification["run"])
+    metadata_path, path = root / "run.json", root / "predictions.jsonl"
+    if (file_digest(metadata_path) != specification["run_sha256"]
+            or file_digest(path) != specification["predictions_sha256"]):
+        raise ValueError("Recorded Qwen scores or provenance changed.")
+    meta = read_json(metadata_path)
+    if (meta.get("status") != "completed" or meta.get("gold_accessed") is not False
+            or meta.get("training_performed") is not False
+            or meta.get("adapter_sha256") != identities["qwen"]["artifact_sha256"]
+            or meta.get("input", {}).get("sha256") != source["sha256"]
+            or meta.get("predictions_sha256") != specification["predictions_sha256"]):
+        raise ValueError("Recorded Qwen scores belong to another model or source.")
+    rows = read_predictions(path)
+    align(records, rows)
+    p = aligned_scores(rows, "probabilities", meta["labels"])
+    if [row["label"] for row in rows] != np.asarray(LABELS)[p.argmax(axis=1)].tolist():
+        raise ValueError("Recorded Qwen labels differ from probability argmax.")
+    return p, {"run": str(root), "run_sha256": file_digest(metadata_path), "predictions_sha256": file_digest(path)}
+
+
 def collect_scores(config, records, source, identities, directory, *, phase, device="cpu"):
     """Label-free inference with per-member cache, compatible prediction JSONL records."""
     if any(type(r) is not Text for r in records):
         raise TypeError("Scoring accepts Text targets only, without gold labels.")
     matrices, provenance = {}, {}
-    for name in MODELS:
+    models = model_order(identities)
+    for name in models:
         root = directory / name
         field = "decision_scores" if name == "svm" else "probabilities"
         key = {"member": name, "model_identity": identities[name], "source_sha256": source["sha256"],
@@ -168,6 +220,22 @@ def collect_scores(config, records, source, identities, directory, *, phase, dev
                 predicted = NorbertoClassifier(device=device).predict([r.text for r in records])
                 p = aligned_scores([{"probabilities": v.probabilities} for v in predicted], "probabilities")
             labels = np.asarray(LABELS)[p.argmax(axis=1)]
+        elif name == "qwen":
+            p, extra = recorded_qwen(config, records, source, identities, phase)
+            if p is None:
+                if device != "gpu":
+                    raise ValueError("Live Qwen scoring requires --device gpu or verified recorded scores.")
+                from qwen_classifier.inference import predict_records
+                import gc
+                import torch
+                gc.collect()
+                torch.cuda.empty_cache()
+                predicted = predict_records(None, ROOT / ".cache/qwen-model", records, batch_size=16)
+                p = aligned_scores(predicted, "probabilities")
+                gc.collect()
+                torch.cuda.empty_cache()
+            labels = np.asarray(LABELS)[p.argmax(axis=1)]
+            native_predict_proba = True
         else:
             from lexical_classifier import FrozenLexicalClassifier
             bundle = location(identities[name]["bundle"])
@@ -190,6 +258,6 @@ def collect_scores(config, records, source, identities, directory, *, phase, dev
                     "gold_accessed": False, "predictions_sha256": file_digest(root / "predictions.jsonl")}
         write_json(root / "run.json", manifest)
         matrices[name], provenance[name] = p, manifest
-    if model_identities() != identities:
+    if model_identities(models) != identities:
         raise ValueError("Base models changed during scoring.")
     return matrices, provenance

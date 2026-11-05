@@ -1,5 +1,9 @@
 # Ensemble por weighted soft voting
 
+This document preserves the original **three-model** protocol and results.
+The current four-model defaults include Qwen; see the [current workflow](ensemble-qwen.md)
+and [integration results](../results/ensemble-qwen.md).
+
 O novo fluxo usa os modelos congelados e o formato `predictions.jsonl` do
 pipeline existente. Os comandos de maioria/consenso e suas configurações
 permanecem disponíveis. Não há treinamento de SVM, LR, NorBERTo ou TF-IDF.
@@ -101,7 +105,7 @@ Os comandos abaixo usam o ambiente virtual do EP2, após instalar o projeto.
 
 # Reproduzir calibração/pesos, sem abrir os dados ou rótulos das 900 linhas:
 .venv/bin/python -m ensemble_classifier fit-soft \
-  --config configs/ensemble-soft.json --output-dir results/novo-soft-fit
+  --config configs/ensemble-soft-legacy.json --output-dir results/novo-soft-fit
 
 # Aplicar o modelo já congelado; não lê clarity nem ajusta parâmetros:
 .venv/bin/python -m ensemble_classifier predict-soft \

@@ -11,8 +11,9 @@ adapter with a different split; its score does not describe the new default.
 
 `predict` uses the checksum-verified `models/qwen/adapter/` when `--adapter`
 is omitted. The completed three-epoch run scored 1,791/3,999 (44.79%) on the
-EP1 holdout and retains the same NF4 recipe. Qwen remains outside the active
-ensemble until explicitly selected. The package includes the trained head,
+EP1 holdout and retains the same NF4 recipe. Qwen now participates in
+[soft voting and stacking](ensemble-qwen.md), with 414/900 (46.00%) in subsequent
+native test1 scoring. Majority presets retain three voters. The package includes the trained head,
 tokenizer, frozen partition, training provenance and a pinned base reference.
 No new training is required to load it.
 
@@ -53,8 +54,8 @@ if either training or preflight destination already exists.
 The 3,999 holdout rows receive no gradient updates. They are evaluated each
 epoch and select the best checkpoint, matching the existing Qwen training
 behavior; the resulting score is validation, not an untouched final test.
-No test1 or test2 workbook enters fitting or checkpoint selection. Qwen stays
-excluded from the default ensemble until explicitly selected again.
+No test1 or test2 workbook enters fitting or checkpoint selection. The saved
+model now participates in the separate soft-voting and stacking defaults.
 
 To inspect the split without model training:
 

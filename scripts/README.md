@@ -75,8 +75,9 @@ RL model is preserved and never selected as a fallback. See the
 For retraining on the same development/holdout rows as the other local models,
 pass `--ep1-split data/ep1-development-holdout.csv` to `train` or `prepare`.
 The [exact command](../docs/guides/qwen-finetuning.md#retrain-with-the-exact-ep1-partition)
-uses a fresh output and automatic compatibility preflight; Qwen remains excluded
-from the default ensemble until explicitly selected again.
+uses a fresh output and automatic compatibility preflight. The selected Qwen
+now participates in [soft voting and stacking](../docs/guides/ensemble-qwen.md);
+majority presets retain three voters.
 
 ## Model artifacts
 
@@ -130,6 +131,9 @@ macro-F1, confusion matrices and paired McNemar. It performs no inference or
 parameter tuning. It is an isolated comparison; it does not certify the
 assignment's test2-before-test1 order. See the
 [results and protocol limitations](../docs/results/ensemble-soft.md#conferência-contra-a-entrega-efetiva-do-ep1).
+
+The current four-model commands and frozen artifacts, including Qwen, are
+documented in the [Qwen ensemble guide](../docs/guides/ensemble-qwen.md).
 
 For stacking, use `python -m ensemble_classifier fit-stacking`,
 `predict-stacking` and `evaluate-stacking`. No additional launcher is required.

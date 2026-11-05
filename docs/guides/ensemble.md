@@ -2,6 +2,11 @@
 
 [Documentation index](../README.md)
 
+This guide covers majority/consensus composition and arbitration. The current
+probability-based soft-voting and stacking defaults include Qwen as a fourth
+candidate/member; see their [dedicated workflow](ensemble-qwen.md) and
+[measured results](../results/ensemble-qwen.md).
+
 ## Objetivo e escopo
 
 `src/ensemble_classifier/` combina classificadores das classes
@@ -30,15 +35,16 @@ Execução automática dos modelos e estratégias adicionais permanecem extensõ
 | GPT/Codex | `gpt_classifier.pipeline.run()` | Rótulo, sem probabilidades de classe | Adapter de desempate e importação de previsões válidas para os casos encaminhados |
 | Novo classificador | Contrato comum ou adapter | Rótulo; probabilidades e logits opcionais | Registro explícito de um novo tipo de adapter |
 
-O arquivo `validation-predictions.json` produzido pelo treinamento do Qwen
-contém rótulos previstos e verdadeiros, mas não probabilidades. Ele pode
-alimentar análises de votação por rótulo após validação da procedência; não
-permite reconstruir a votação por probabilidades. Para esta última, é
-necessária uma inferência do adapter salvo sobre a partição elegível.
+The original Qwen `validation-predictions.json` contains hard predictions,
+not probabilities, and the selected run's export had a length-grouping row-order
+bug. Do not use that original file for row-level ensemble inputs. The separately
+recovered aligned export supports hard-label analysis only. Soft voting and
+stacking use newly inferred, source-aligned probabilities from the saved adapter;
+see the [ordering audit](../results/qwen-ep1-model.md#per-row-export-ordering-audit).
 
-The active ensemble is **NorBERTo + SVM + RL**, with one hard vote per model.
+The majority presets use **NorBERTo + SVM + RL**, with one hard vote per model.
 A strict majority decides; when all three labels differ, RL breaks the tie.
-Qwen is currently excluded from default membership. The earlier Qwen +
+Qwen is optional in these presets. The earlier Qwen +
 NorBERTo consensus with GPT arbitration remains an optional historical setup.
 
 ## Seleção de membros

@@ -1,0 +1,148 @@
+{
+  "version": 2,
+  "model_type": "frozen_probability_stacking",
+  "labels": [
+    "c1",
+    "c234",
+    "c5"
+  ],
+  "models": [
+    "svm",
+    "rl",
+    "norberto",
+    "qwen"
+  ],
+  "features": [
+    "svm:c1",
+    "svm:c234",
+    "svm:c5",
+    "rl:c1",
+    "rl:c234",
+    "rl:c5",
+    "norberto:c1",
+    "norberto:c234",
+    "norberto:c5",
+    "qwen:c1",
+    "qwen:c234",
+    "qwen:c5"
+  ],
+  "meta_model": {
+    "classes": [
+      "c1",
+      "c234",
+      "c5"
+    ],
+    "features": [
+      "svm:c1",
+      "svm:c234",
+      "svm:c5",
+      "rl:c1",
+      "rl:c234",
+      "rl:c5",
+      "norberto:c1",
+      "norberto:c234",
+      "norberto:c5",
+      "qwen:c1",
+      "qwen:c234",
+      "qwen:c5"
+    ],
+    "coef": [
+      [
+        0.5654451003249057,
+        -0.17681132350213152,
+        -0.3886325517380093,
+        0.5332241752705176,
+        -0.2154410711609693,
+        -0.31778187902478333,
+        0.30708184341974815,
+        -0.12228683570021796,
+        -0.1847937826347654,
+        0.3093594944227158,
+        -0.008496182503646673,
+        -0.3008620868343047
+      ],
+      [
+        -0.10453831283598679,
+        0.2635257520536043,
+        -0.15898662841330619,
+        -0.13164743412531937,
+        0.34795392538132974,
+        -0.21630568045169948,
+        -0.049643536566578064,
+        0.24218757773624758,
+        -0.19254323036535836,
+        0.19069308983049355,
+        0.030904199772203836,
+        -0.22159647879838668
+      ],
+      [
+        -0.4609067874889185,
+        -0.08671442855147263,
+        0.5476191801513148,
+        -0.4015767411451979,
+        -0.13251285422036052,
+        0.5340875594764828,
+        -0.25743830685316993,
+        -0.11990074203602993,
+        0.3773370130001239,
+        -0.500052584253209,
+        -0.022408017268557318,
+        0.5224585656326909
+      ]
+    ],
+    "intercept": [
+      -1.0059019145390342e-05,
+      0.10823724688648913,
+      -0.10822718786733959
+    ],
+    "C": 0.1,
+    "solver": "lbfgs",
+    "penalty": "l2",
+    "max_iter": 2000,
+    "tol": 1e-08,
+    "class_weight": null,
+    "n_iter": [
+      62
+    ]
+  },
+  "soft_model": "models/ensemble-soft-qwen/model.json",
+  "soft_artifact_sha256": "4d57a91185861b970eb42a2c2a11a25e069952f21ac15914147fc562c8be6d3d",
+  "partition_sha256": "943e88ce2b823b3581f963f6df8f3aab84ddc28c62681fb8b4fc9e8e65827d6b",
+  "source_partition_sha256": "fcbd64ea192fe3706f51edf4038b796cac28842494febd21220cb2883f68a7d8",
+  "fit_code": {
+    "ensemble_classifier/files.py": "4d1903fdaf3210edf69e57ae9d79c6467d4ca4b9dec155805931c79783e7f45c",
+    "ensemble_classifier/soft_compatibility.py": "e7d3c5d329463eb63534266f45619dc924450c387da6b2db30b5f8bc2706ae31",
+    "ensemble_classifier/soft_pipeline.py": "30b44affe17a05e5907b620ffe61b7c17f0de903c70877a4d289e520c0626f4d",
+    "ensemble_classifier/soft_sources.py": "9f125fbc84630fa9b8480a99858f05a41e77e0ed5ee1dde38b8dbc3716df1a6a",
+    "ensemble_classifier/soft_voting.py": "03a24e5ae8e96d810b12013acc82bf52e2258ea6ba464addcc022a731cb427dc",
+    "gpt_classifier/data.py": "4e99c8c28bcc1062dd2b5259df48b4dc7d70b83c3e7e48e32a45129f6e1a9521",
+    "lexical_classifier/__init__.py": "ce765fb1eb7a3f5e983cac2f984adb87477da66785dfd5ca43d4bff71480115d",
+    "lexical_classifier/cli.py": "3b95ed01c1c9f4bc8de53ef520ebb58f6810e793e566b30436991317caa283cb",
+    "lexical_classifier/inference.py": "3127b32ef519407ad7a60c459b1b864e5f7ba4634ca21b0baf9e8a1c2542d065",
+    "norberto_classifier/__init__.py": "4a7e46b0c59e9bbfb7a775bd6daaf338dd6536d67ebfea4cfc95836a64140eab",
+    "norberto_classifier/__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+    "norberto_classifier/artifacts.py": "daae38b6b712ab7e8bd7ac253c4f18e8ebced180b22d8dc030320d74d5fd694f",
+    "norberto_classifier/cli.py": "e42babe3e373748cc309cb43b7ca691328b5cf74ec781a3511bf3ace77c50f2c",
+    "norberto_classifier/inference.py": "67b56f425ab849d99c7bcfe9b6129984b41e5e0eb3b6a85204345556305acf3b",
+    "norberto_classifier/tokenization.py": "0763eb125d6075fed15927362c990d0d835013d885fc76ca59a2635a8494a0ae",
+    "qwen_classifier/__init__.py": "394700c841dbf9c5ac210d3573b6b4605b35a7e63a6cdbd387e7eda08e7698cd",
+    "qwen_classifier/__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+    "qwen_classifier/artifacts.py": "d68827ffdb37abeba62d1129f6041dabd228f74001897a28938388179ac97de8",
+    "qwen_classifier/benchmark.py": "9161294aeec4e60d7d1ebe0fc5652eaa8c877998e5e6d0691b1b9bed73f76a80",
+    "qwen_classifier/cli.py": "3a25c50984c6091c396f1e408586cddbdf1749f70bb215f7c0a8b96fc3020e4e",
+    "qwen_classifier/config.py": "546022c35e52b2f7d7e9cc95ba8f7890d08b2d1cbf62679d707e5608170efc71",
+    "qwen_classifier/dataset.py": "dfa8ed0f9bf63edcdb831d9732ab11cf8fcc103082fad8e8dd09ef50b0d4aac3",
+    "qwen_classifier/hardware.py": "6f3551dace4fcfcb14bfb0d733f84b691ed2f5e6233566c6807f34f8a1058f07",
+    "qwen_classifier/inference.py": "8d0ef9668e2e1066fc40e55cc12cc07cbd58e633c8b0a15a70ee701398950a91",
+    "qwen_classifier/model.py": "de2a98023097fec44491e78e8275e3417bcf850760f0be3db97689e586079334",
+    "qwen_classifier/partitions.py": "f0ef538db332ad66b31d9452f1d95871d113487385a7017eca2d024ec448129d",
+    "qwen_classifier/training.py": "b9b89f8b7d60cf1d4c3a3ed0fed4c936cfaa428240f68e7da2a05e78ecc324c9",
+    "ensemble_classifier/stacking.py": "67e1714121bb64402e82a59085c802747429a22016645df9ed95ae327277163b",
+    "ensemble_classifier/stacking_pipeline.py": "ea9ece970fe3763036bbd7388da1f99701a1691b975f47031b6308d74529f7d5"
+  },
+  "runtime": {
+    "numpy": "2.3.3",
+    "scipy": "1.16.2",
+    "scikit-learn": "1.7.2"
+  }
+}

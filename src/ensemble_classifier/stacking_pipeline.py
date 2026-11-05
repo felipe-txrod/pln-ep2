@@ -13,13 +13,14 @@ from .files import align, read_json, read_predictions
 from .soft_pipeline import implementation as soft_implementation
 from .soft_pipeline import load_soft_artifact, prediction_rows, predict_soft, separate_holdout
 from .soft_sources import collect_scores, holdout_records, location, model_identities, verify_lr_training
-from .soft_voting import MODELS, aligned_scores, apply_calibration, soft_vote
-from .stacking import FEATURES, fit_meta, meta_probabilities
+from .soft_voting import MODELS, aligned_scores, apply_calibration, model_order, soft_vote
+from .soft_compatibility import compatible_fit_code
+from .stacking import feature_names, fit_meta, meta_probabilities
 
 
-def implementation():
+def implementation(models=MODELS):
     root = Path(__file__).resolve().parents[1]
-    return {**soft_implementation(), **{str(p.relative_to(root)): file_digest(p)
+    return {**soft_implementation(models), **{str(p.relative_to(root)): file_digest(p)
             for p in sorted((root / "ensemble_classifier").glob("stacking*.py"))}}
 
 
@@ -30,8 +31,9 @@ def reference(path):
 
 
 def cached_scores(config, records, source, identities, directory, phase):
+    models = model_order(identities or MODELS)
     # Missing cache is an explicit error: fitting/comparing must not trigger neural inference.
-    if any(not (directory / m / name).is_file() for m in MODELS for name in ("run.json", "predictions.jsonl")):
+    if any(not (directory / m / name).is_file() for m in models for name in ("run.json", "predictions.jsonl")):
         raise FileNotFoundError("Saved member scores are incomplete; restore them or run predict-soft/fit-soft separately.")
     return collect_scores(config, records, source, identities, directory, phase=phase)
 
@@ -44,6 +46,7 @@ def fit_stacking(config_path: Path, output: Path):
         raise ValueError("Stacking configuration requires soft_model, soft_partition and holdout_scores only.")
     soft_path, partition_path = location(config["soft_model"]), location(config["soft_partition"])
     soft = load_soft_artifact(soft_path)
+    models = model_order(soft["model_identities"])
     soft_sha = file_digest(soft_path)
     records, groups, source, all_records, development = holdout_records(soft["score_configuration"])
     verify_lr_training(all_records, development)
@@ -61,7 +64,7 @@ def fit_stacking(config_path: Path, output: Path):
     raw, provenance = cached_scores(soft["score_configuration"], [Text(r.excel_row, r.text) for r in records],
                                     source, soft["model_identities"], location(config["holdout_scores"]), "holdout")
     # Calibration rows are never fed to the meta-model, even during cross-validation.
-    calibrated = {m: apply_calibration(raw[m][meta], soft["calibration"][m]) for m in MODELS}
+    calibrated = {m: apply_calibration(raw[m][meta], soft["calibration"][m]) for m in models}
     model, search, fold_ids, oof = fit_meta(calibrated, y[meta], groups[meta])
     meta_records = [records[int(i)] for i in meta]
     assignments = {int(i): int(fold) for i, fold in zip(meta, fold_ids)}
@@ -70,14 +73,14 @@ def fit_stacking(config_path: Path, output: Path):
                    else "meta_training", meta_validation_fold=assignments.get(i)) for i, row in enumerate(partition)])
     write_json(output / "cv-search.json", search)
     write_jsonl(output / "meta-oof-predictions.jsonl", prediction_rows(meta_records, oof))
-    artifact = {"version": 1, "model_type": "frozen_probability_stacking", "labels": list(LABELS),
-                "models": list(MODELS), "features": list(FEATURES), "meta_model": model,
+    artifact = {"version": 2, "model_type": "frozen_probability_stacking", "labels": list(LABELS),
+                "models": list(models), "features": list(feature_names(models)), "meta_model": model,
                 "soft_model": reference(soft_path), "soft_artifact_sha256": soft_sha,
                 "partition_sha256": file_digest(output / "partition.jsonl"),
-                "source_partition_sha256": soft["partition_sha256"], "fit_code": implementation(),
+                "source_partition_sha256": soft["partition_sha256"], "fit_code": implementation(models),
                 "runtime": {p: importlib.metadata.version(p) for p in ("numpy", "scipy", "scikit-learn")}}
     if (file_digest(soft_path) != soft_sha or file_digest(partition_path) != soft["partition_sha256"]
-            or model_identities() != soft["model_identities"]):
+            or model_identities(models) != soft["model_identities"]):
         raise ValueError("Frozen inputs changed during meta training.")
     write_json(output / "model.json", artifact)
     write_json(output / "frozen_manifest.json", {"model_type": artifact["model_type"], "labels": list(LABELS),
@@ -87,6 +90,8 @@ def fit_stacking(config_path: Path, output: Path):
               "meta_training_performed": True, "test1_accessed": False, "test2_accessed": False,
               "artifact_sha256": file_digest(output / "model.json"), "soft_artifact_sha256": soft_sha,
               "selected_C": model["C"], "search": search, "score_provenance": provenance,
+              "base_checkpoint_selection_used_holdout": any(
+                  member.get("holdout_used_for_checkpoint_selection", False) for member in soft["model_identities"].values()),
               "partition": {"development_rows": 16093, "holdout_rows": len(records),
                             "calibration_rows": len(calibration), "meta_training_rows": len(meta),
                             "calibration_groups": len(set(groups[calibration])), "meta_training_groups": len(set(groups[meta])),
@@ -101,28 +106,31 @@ def fit_stacking(config_path: Path, output: Path):
 
 def load_stacking_artifact(path):
     artifact, contract = read_json(path), read_json(path.with_name("frozen_manifest.json"))
+    models = model_order(artifact.get("models", ()))
     if (contract.get("artifact_sha256") != file_digest(path)
             or contract.get("model_type") != "frozen_probability_stacking"
-            or artifact.get("version") != 1 or artifact.get("labels") != list(LABELS)
-            or artifact.get("models") != list(MODELS) or artifact.get("features") != list(FEATURES)
-            or artifact.get("fit_code") != implementation()):
+            or artifact.get("version") not in (1, 2) or artifact.get("labels") != list(LABELS)
+            or artifact.get("models") != list(models) or artifact.get("features") != list(feature_names(models))
+            or not compatible_fit_code(path, artifact, implementation(models), "stacking")):
         raise ValueError("Frozen stacking artifact/code/class contract changed.")
     for name, sha in contract["files"].items():
         if file_digest(path.with_name(name)) != sha:
             raise ValueError("Stacking training provenance changed.")
     soft_path = location(artifact["soft_model"])
     soft = load_soft_artifact(soft_path)
+    models = model_order(soft["model_identities"])
     if (file_digest(soft_path) != artifact["soft_artifact_sha256"]
             or soft["partition_sha256"] != artifact["source_partition_sha256"]
             or artifact["partition_sha256"] != file_digest(path.with_name("partition.jsonl"))):
         raise ValueError("Reference soft model/calibration/partition changed.")
-    meta_probabilities({m: np.asarray([[.2, .3, .5]]) for m in MODELS}, artifact["meta_model"])
+    meta_probabilities({m: np.asarray([[.2, .3, .5]]) for m in models}, artifact["meta_model"])
     return artifact, soft
 
 
 def saved_soft_inputs(soft_path, source_path, run):
     """Validate and reconstruct a saved soft run without accessing any gold labels."""
     soft = load_soft_artifact(soft_path)
+    models = model_order(soft["model_identities"])
     records, source = read_xlsx(source_path)
     manifest = read_json(run / "run.json")
     if (manifest.get("status") != "completed" or manifest.get("rows") != len(records)
@@ -134,10 +142,10 @@ def saved_soft_inputs(soft_path, source_path, run):
             or manifest.get("targets_sha256") != digest(canonical([(r.excel_row, digest(r.text)) for r in records]))):
         raise ValueError("Soft run differs from the frozen stacking reference or input.")
     raw, _ = cached_scores(soft["score_configuration"], records, source, soft["model_identities"], run / "members", "inference")
-    calibrated = {m: apply_calibration(raw[m], soft["calibration"][m]) for m in MODELS}
+    calibrated = {m: apply_calibration(raw[m], soft["calibration"][m]) for m in models}
     paths = {"run.json": file_digest(run / "run.json")}
     predictions = {}
-    for m in (*MODELS, *(m + "_calibrated" for m in MODELS), "soft_voting"):
+    for m in (*models, *(m + "_calibrated" for m in models), "soft_voting"):
         directory = run if m == "soft_voting" else (run / "calibrated" / m.removesuffix("_calibrated")
                      if m.endswith("_calibrated") else run / "members" / m)
         meta_path, pred_path = directory / "run.json", directory / "predictions.jsonl"
@@ -158,14 +166,16 @@ def saved_soft_inputs(soft_path, source_path, run):
     return records, source, calibrated, predictions, paths
 
 
-def predict_stacking(model_path: Path, source_path: Path, output: Path, *, soft_run=None, device="cpu", live_norberto=False):
+def predict_stacking(model_path: Path, source_path: Path, output: Path, *, soft_run=None, device="cpu",
+                     live_norberto=False, live_qwen=False):
     if output.exists():
         raise FileExistsError("Use a new stacking prediction directory.")
     artifact, _ = load_stacking_artifact(model_path)
     soft_path = location(artifact["soft_model"])
     if soft_run is None:
         soft_run = output / "soft"
-        predict_soft(soft_path, source_path, soft_run, device=device, live_norberto=live_norberto)
+        predict_soft(soft_path, source_path, soft_run, device=device, live_norberto=live_norberto,
+                     live_qwen=live_qwen)
     records, source, calibrated, _, snapshots = saved_soft_inputs(soft_path, source_path, soft_run)
     predictions = prediction_rows(records, meta_probabilities(calibrated, artifact["meta_model"]))
     output.mkdir(parents=True, exist_ok=True)
@@ -193,6 +203,7 @@ def evaluate_stacking(run: Path, gold_path: Path, output: Path):
         raise ValueError("A completed immutable 900-row stacking prediction run is required.")
     model_path = location(manifest["artifact_path"])
     artifact, soft = load_stacking_artifact(model_path)
+    models = model_order(artifact["models"])
     if file_digest(model_path) != manifest["artifact_sha256"]:
         raise ValueError("Stacking changed after prediction.")
     records, source, calibrated, predictions, snapshots = saved_soft_inputs(
@@ -209,7 +220,7 @@ def evaluate_stacking(run: Path, gold_path: Path, output: Path):
         align_labels(gold, rows)
     train, _ = read_xlsx(location(soft["score_configuration"]["train"]), labeled=True)
     paired = {}
-    for name in ("soft_voting", *MODELS):
+    for name in ("soft_voting", *models):
         baseline = [Example(r.excel_row, r.text, p["label"]) for r, p in zip(records, predictions[name])]
         comparison = compare(gold, predictions["stacking"], baseline, train)
         paired[name] = {"accuracy_delta": comparison["accuracy_delta"], **comparison["mcnemar"]}
