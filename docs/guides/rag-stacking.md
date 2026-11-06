@@ -11,6 +11,11 @@ frozen, and no final test1/test2 inference or evaluation has been performed.
 The [original preparation record](../results/rag-cascade-preparation.md) preserves
 the earlier no-execution milestone.
 
+The subsequent [offline investigation](../results/rag-offline-research.md)
+adds frozen NorBERTo retrieval, MMR ablations and historical reply replay in
+the separate `rag_research` package. It makes no new GPT calls and does not
+promote a different default. See its [guide](rag-offline-research.md).
+
 The new `rag_cascade` package reuses the existing frozen stacking, OOF routing,
 TF-IDF selector, pinned local E5 encoder interface, Codex backend, batch schema,
 SQLite response/item cache, evaluation functions and workbook exporters. It is

@@ -19,6 +19,7 @@ Executable entry points are listed in the [script index](../scripts/README.md).
 | Current four-model soft voting and stacking with the selected Qwen | [Qwen ensembles](guides/ensemble-qwen.md) |
 | Nested OOF routing, budget selection and selective GPT decisions | [Stacking + GPT cascade](guides/stacking-gpt-cascade.md) |
 | Train-only retrieval/context study; confirmation selected zero GPT routing | [RAG context study](guides/rag-stacking.md) |
+| Frozen NorBERTo retrieval, MMR ablations and cached routing/acceptance research | [Offline research guide](guides/rag-offline-research.md) and [results](results/rag-offline-research.md) |
 | Original three-model calibration, weights and grouped meta-LR CV | [Soft voting](guides/ensemble-soft.md) and [stacking](guides/ensemble-stacking.md) |
 | Frozen SVM, logistic regression, NorBERTo, and GPT configuration | [Model artifacts](../models/README.md) |
 

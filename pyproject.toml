@@ -26,6 +26,7 @@ rl-ep2 = "rl_classifier.cli:main"
 ensemble-ep2 = "ensemble_classifier.cli:main"
 cascade-ep2 = "cascade_classifier.cli:main"
 rag-cascade-ep2 = "rag_cascade.cli:main"
+rag-research-ep2 = "rag_research.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

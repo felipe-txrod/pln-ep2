@@ -6,6 +6,21 @@ Compare results only on the same dataset and preserve the training recipe
 and partition recorded by each report. The original EP1 NorBERTo reference
 has 48.00% accuracy on test1 and 45.31% on its frozen holdout.
 
+## Offline retrieval and selective acceptance: no promotion
+
+The [offline investigation](rag-offline-research.md) compares 171 retrieval
+variants plus two baselines on 1,972 validation rows, reusing frozen NorBERTo,
+E5 and historical GPT replies. The development-selected triple fusion did not
+improve audit Hit@1: 37.27% versus 38.48% for the current hybrid. Diversity
+ablations expose a purity/coverage tradeoff; expanded candidate pools add no
+measured benefit. The joint nested intervention selector scored macro-F1
+47.19%, versus stacking's 47.30% on these same 1,972 rows. Replay has limited
+logged support and fixed upstream OOF predictions, so family scores do not
+establish end-to-end generalization. No candidate passed the recorded paid-trial
+screen. Zero new GPT calls, no base-model refits or default changes. The
+[aggregate](data/rag-offline-research.json) and
+[reproduction guide](../guides/rag-offline-research.md) preserve the evidence.
+
 ## RAG context confirmation: zero GPT routing selected
 
 The [completed confirmation](rag-cascade-confirmation.md) scored all 1,884 OOF

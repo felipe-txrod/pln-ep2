@@ -1,0 +1,15 @@
+{
+  "study": "results/rag-context-pilot-20261106",
+  "e5_cache": ".cache/retrieval",
+  "norberto_cache": ".cache/rag-norberto-ft",
+  "norberto_artifact": "models/norberto",
+  "seed": 42,
+  "layers": [11, 22],
+  "poolings": ["mean", "cls"],
+  "batch_size": 16,
+  "device": "gpu",
+  "inner_folds": 3,
+  "regularization": [0.01, 0.1, 1.0],
+  "benefit_thresholds": [0.0, 0.05, 0.15],
+  "route_budgets": [0.05, 0.1]
+}

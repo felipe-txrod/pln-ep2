@@ -35,6 +35,7 @@ measured results, assignment references, and historical experiments are separate
 | Run four-model calibrated soft voting and stacking with Qwen | [Current ensemble workflow](docs/guides/ensemble-qwen.md) |
 | Route uncertain stacking decisions to GPT with OOF validation and persistent caching | [Selective GPT cascade](docs/guides/stacking-gpt-cascade.md) |
 | Prepare train-only RAG and four paired context ablations; classification is opt-in | [RAG + stacking context study](docs/guides/rag-stacking.md) |
+| Compare frozen NorBERTo retrieval, MMR and cached GPT acceptance without remote calls | [Offline research](docs/guides/rag-offline-research.md) and [measured findings](docs/results/rag-offline-research.md) |
 | Inspect the preserved three-model calibration and meta-LR protocol | [Soft voting](docs/guides/ensemble-soft.md) and [stacking](docs/guides/ensemble-stacking.md) |
 | Browse runnable scripts by model and purpose | [Script index](scripts/README.md) |
 | Restore frozen models and their pinned public bases | [Model artifacts](models/README.md) |
@@ -83,6 +84,7 @@ or install a GPU-specific PyTorch distribution.
 | [ensemble_classifier](src/ensemble_classifier/README.md) | Configurable members and arbitration over saved predictions |
 | `cascade_classifier` | Nested OOF routing validation and selective GPT decisions over frozen stacking |
 | `rag_cascade` | Train-only retrieval/context pilot and enforced test2-before-test1 inference |
+| `rag_research` | Offline frozen-feature retrieval ablations and historical GPT intervention replay |
 | `gpt_classifier` | Remote classification, example retrieval, and shared evaluation |
 
 Frozen packages live in `models/`; historical experimental adapters remain in

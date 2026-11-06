@@ -118,6 +118,12 @@ Choose a fresh output destination for every prediction or comparison run.
 
 ## Weighted soft voting versus the EP1 delivery
 
+`bash scripts/rag/offline.sh encode|retrieval|interventions|report` runs frozen
+NorBERTo extraction, retrieval ablations, cached GPT replay and evidence
+reporting. It exposes no GPT execution option. Use fresh output directories;
+see the [offline research guide](../docs/guides/rag-offline-research.md) and
+[measured findings](../docs/results/rag-offline-research.md).
+
 RAG context experiments use `python -m rag_cascade`. Pilot and confirmation are
 complete and selected zero GPT routing; final tests remain pending.
 Classification requires
