@@ -33,6 +33,18 @@ training launchers, diagnostics, candidate-08 evaluators, and the frozen
 logistic variant were retired on 2026-11-05. Their measurements remain in the
 [archive](../docs/archive/README.md#norberto-training-investigations).
 
+### Exploratory grid-screening candidate-08
+
+The separate [candidate-08 screening workflow](../docs/guides/norberto-candidate08-screening.md)
+loads the original grid-search `best_adapter`, not its later final refit or a CV
+fold. This preserves the selected NorBERTo package and the primary soft-voting
+decision. To run the requested retrospective 900-row Test1 comparison:
+
+```bash
+bash scripts/experiments/norberto/candidate08-test1.sh \
+  --output-dir results/norberto-candidate08-screening-test1
+```
+
 ## SVM
 
 Evaluate a newly trained EP1 artifact without replacing the frozen model:

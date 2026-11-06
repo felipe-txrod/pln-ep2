@@ -19,6 +19,7 @@ Executable entry points are listed in the [script index](../scripts/README.md).
 |---|---|
 | Selected unchanged EP1 delivery adapter and offline inference | [Original NorBERTo](../src/norberto_classifier/README.md) |
 | NorBERTo prediction and separate CPU scoring on test1 | [Test1 workflow](guides/norberto-test1.md) |
+| Retrospective evaluation of the original candidate-08 grid-screening adapter | [Screening checkpoint](guides/norberto-candidate08-screening.md) |
 | Qwen installation, ROCm compatibility, QLoRA, training, and inference | [Qwen fine-tuning](guides/qwen-finetuning.md) |
 | Classifier selection, prediction contracts, and tie-breaking | [Ensemble](guides/ensemble.md) |
 | Current four-model soft voting and stacking with the selected Qwen | [Qwen ensembles](guides/ensemble-qwen.md) |
