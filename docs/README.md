@@ -18,7 +18,7 @@ Executable entry points are listed in the [script index](../scripts/README.md).
 | Classifier selection, prediction contracts, and tie-breaking | [Ensemble](guides/ensemble.md) |
 | Current four-model soft voting and stacking with the selected Qwen | [Qwen ensembles](guides/ensemble-qwen.md) |
 | Nested OOF routing, budget selection and selective GPT decisions | [Stacking + GPT cascade](guides/stacking-gpt-cascade.md) |
-| Train-only semantic retrieval and paired context ablations; pilot complete | [RAG context study](guides/rag-stacking.md) |
+| Train-only retrieval/context study; confirmation selected zero GPT routing | [RAG context study](guides/rag-stacking.md) |
 | Original three-model calibration, weights and grouped meta-LR CV | [Soft voting](guides/ensemble-soft.md) and [stacking](guides/ensemble-stacking.md) |
 | Frozen SVM, logistic regression, NorBERTo, and GPT configuration | [Model artifacts](../models/README.md) |
 

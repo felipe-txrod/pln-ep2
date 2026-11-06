@@ -6,15 +6,26 @@ Compare results only on the same dataset and preserve the training recipe
 and partition recorded by each report. The original EP1 NorBERTo reference
 has 48.00% accuracy on test1 and 45.31% on its frozen holdout.
 
-## RAG context pilot: exploratory gain; confirmation pending
+## RAG context confirmation: zero GPT routing selected
+
+The [completed confirmation](rag-cascade-confirmation.md) scored all 1,884 OOF
+rows under four contexts and 0/5/10% routing. Original stacking won at 910 correct,
+accuracy 48.30%, macro-F1 48.08%. Every nonzero candidate lost macro-F1; the best
+was local predictions at 5%, with 47.84%. The hybrid RAG/local pilot gain did not
+persist. There were 94 successful calls, no failures/fallbacks, and USD 1.6595524
+estimated API-equivalent known usage. No final tests, production changes or new
+remote calls were made during scoring. The
+[aggregate](data/rag-cascade-confirmation.json) includes all metrics and audits.
+
+## RAG context pilot: exploratory gain not confirmed
 
 The [completed 48-target pilot](rag-cascade-pilot.md) compared 14 context arms
 using train-only TF-IDF/E5/hybrid retrieval and three/five demonstrations. The
 paired-arm rule selected hybrid retrieval with three examples. Its combined
 local-prediction arm scored 19/48, macro-F1 36.90%, versus stacking at 16/48 and
 27.59% on the same difficult cases: eight errors corrected, five correct labels
-harmed. This small exploratory gain is not statistically significant and has
-not been confirmed on the 1,884 reserved rows. The pilot used 84 successful
+harmed. This small exploratory gain was not statistically significant and did
+not persist in the subsequent 1,884-row confirmation. The pilot used 84 successful
 batched calls plus three archived failed attempts, with USD 2.022988 estimated
 API-equivalent known usage. No final tests or production defaults changed.
 The [original preparation record](rag-cascade-preparation.md),

@@ -2,6 +2,10 @@
 
 [Aggregate metrics and accounting](data/rag-cascade-pilot.json) · [Protocol and commands](../guides/rag-stacking.md) · [Original preparation record](rag-cascade-preparation.md)
 
+Follow-up: the [completed confirmation](rag-cascade-confirmation.md) selected
+zero GPT routing; the pilot gain below did not persist. This report preserves
+the earlier exploratory milestone and its original selection.
+
 The manually launched pilot completed all **14 arms on the same 48 difficult OOF targets**, with 672 valid classifications and no final fallback. The best observed arm was **hybrid retrieval with three examples plus local predictions**: 19/48 correct, accuracy 39.58%, macro-F1 36.90%, versus stacking at 16/48, 33.33%, and 27.59%. It corrected eight stacking errors and harmed five correct stacking decisions.
 
 The predeclared paired-arm mean selected **hybrid retrieval with three examples** for a possible later confirmation. This selects the retrieval recipe only. Context strategy and routing budget have not been confirmed, and no RAG model was frozen or promoted. The existing zero-GPT cascade default is unchanged.

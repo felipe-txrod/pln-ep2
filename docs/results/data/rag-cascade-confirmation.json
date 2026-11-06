@@ -1,0 +1,780 @@
+{
+  "date": "2026-11-06",
+  "status": "confirmation_completed_zero_gpt_selected",
+  "study_directory": "results/rag-context-pilot-20261106",
+  "implementation_commit": "6e1e02b",
+  "validation_rows": 1884,
+  "pilot_rows_excluded": 48,
+  "pilot_similarity_group_overlap": 0,
+  "bank_rows": 16093,
+  "reserved_holdout_rows": 3999,
+  "retrieval_method": "hybrid",
+  "retrieved_examples": 3,
+  "routed_instances": {
+    "0.0": 0,
+    "0.05": 94,
+    "0.1": 188
+  },
+  "context_variants": 4,
+  "gold_counts": {
+    "c234": 670,
+    "c5": 627,
+    "c1": 587
+  },
+  "label_order": [
+    "c1",
+    "c234",
+    "c5"
+  ],
+  "selected_configuration": {
+    "budget": 0.0,
+    "effective_system": "original_stacking",
+    "stored_recipe": {
+      "name": "text",
+      "include_local": false,
+      "method": null,
+      "count": 0
+    },
+    "criterion": "Confirmation macro-F1; ties prefer lower budget and allocated cost; zero-budget baseline is eligible",
+    "note": "The text recipe name is an inactive tie placeholder at zero routing; no GPT context is selected for use."
+  },
+  "baseline": {
+    "rows": 1884,
+    "correct": 910,
+    "accuracy": 0.4830148619957537,
+    "f1_macro": 0.4808189963060858,
+    "f1_per_class": {
+      "c1": 0.44361602982292636,
+      "c234": 0.4543462381300219,
+      "c5": 0.5444947209653092
+    },
+    "confusion_matrix": [
+      [
+        238,
+        211,
+        138
+      ],
+      [
+        159,
+        311,
+        200
+      ],
+      [
+        89,
+        177,
+        361
+      ]
+    ],
+    "prediction_counts": {
+      "c1": 486,
+      "c5": 699,
+      "c234": 699
+    }
+  },
+  "arms": {
+    "text": {
+      "recipe": {
+        "name": "text",
+        "include_local": false,
+        "method": null,
+        "count": 0
+      },
+      "budgets": {
+        "0.0": {
+          "metrics": {
+            "rows": 1884,
+            "correct": 910,
+            "accuracy": 0.4830148619957537,
+            "f1_macro": 0.4808189963060858,
+            "f1_per_class": {
+              "c1": 0.44361602982292636,
+              "c234": 0.4543462381300219,
+              "c5": 0.5444947209653092
+            },
+            "confusion_matrix": [
+              [
+                238,
+                211,
+                138
+              ],
+              [
+                159,
+                311,
+                200
+              ],
+              [
+                89,
+                177,
+                361
+              ]
+            ],
+            "prediction_counts": {
+              "c234": 699,
+              "c1": 486,
+              "c5": 699
+            }
+          },
+          "changes": {
+            "corrected": 0,
+            "harmed": 0,
+            "both_wrong_changed_label": 0
+          },
+          "routed_instances": 0,
+          "amortized_estimated_api_equivalent_usd": 0.0,
+          "amortized_usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cached_input_tokens": 0
+          },
+          "fallback_instances": 0
+        },
+        "0.05": {
+          "metrics": {
+            "rows": 1884,
+            "correct": 907,
+            "accuracy": 0.48142250530785563,
+            "f1_macro": 0.47801296648334485,
+            "f1_per_class": {
+              "c1": 0.4413145539906103,
+              "c234": 0.4421052631578947,
+              "c5": 0.5506190823015294
+            },
+            "confusion_matrix": [
+              [
+                235,
+                203,
+                149
+              ],
+              [
+                157,
+                294,
+                219
+              ],
+              [
+                86,
+                163,
+                378
+              ]
+            ],
+            "prediction_counts": {
+              "c234": 660,
+              "c1": 478,
+              "c5": 746
+            }
+          },
+          "changes": {
+            "corrected": 23,
+            "harmed": 26,
+            "both_wrong_changed_label": 14
+          },
+          "routed_instances": 94,
+          "amortized_estimated_api_equivalent_usd": 0.1651922,
+          "amortized_usage": {
+            "input_tokens": 83486.375,
+            "output_tokens": 2229.625,
+            "cached_input_tokens": 12672.0
+          },
+          "fallback_instances": 0
+        },
+        "0.1": {
+          "metrics": {
+            "rows": 1884,
+            "correct": 891,
+            "accuracy": 0.4729299363057325,
+            "f1_macro": 0.4682789467165813,
+            "f1_per_class": {
+              "c1": 0.4350282485875706,
+              "c234": 0.4235841737781226,
+              "c5": 0.5462244177840508
+            },
+            "confusion_matrix": [
+              [
+                231,
+                192,
+                164
+              ],
+              [
+                158,
+                273,
+                239
+              ],
+              [
+                86,
+                154,
+                387
+              ]
+            ],
+            "prediction_counts": {
+              "c234": 619,
+              "c1": 475,
+              "c5": 790
+            }
+          },
+          "changes": {
+            "corrected": 36,
+            "harmed": 55,
+            "both_wrong_changed_label": 30
+          },
+          "routed_instances": 188,
+          "amortized_estimated_api_equivalent_usd": 0.3411544,
+          "amortized_usage": {
+            "input_tokens": 171514.0,
+            "output_tokens": 4628.0,
+            "cached_input_tokens": 25344.0
+          },
+          "fallback_instances": 0
+        }
+      },
+      "actual_successful_calls": 23,
+      "actual_usage": {
+        "input_tokens": 171514,
+        "output_tokens": 4628,
+        "cached_input_tokens": 25344
+      },
+      "estimated_api_equivalent_usd": 0.3411544,
+      "wall_seconds": 94.87035257900061,
+      "summed_request_latency_seconds": 184.11915883899746
+    },
+    "local": {
+      "recipe": {
+        "name": "local",
+        "include_local": true,
+        "method": null,
+        "count": 0
+      },
+      "budgets": {
+        "0.0": {
+          "metrics": {
+            "rows": 1884,
+            "correct": 910,
+            "accuracy": 0.4830148619957537,
+            "f1_macro": 0.4808189963060858,
+            "f1_per_class": {
+              "c1": 0.44361602982292636,
+              "c234": 0.4543462381300219,
+              "c5": 0.5444947209653092
+            },
+            "confusion_matrix": [
+              [
+                238,
+                211,
+                138
+              ],
+              [
+                159,
+                311,
+                200
+              ],
+              [
+                89,
+                177,
+                361
+              ]
+            ],
+            "prediction_counts": {
+              "c234": 699,
+              "c1": 486,
+              "c5": 699
+            }
+          },
+          "changes": {
+            "corrected": 0,
+            "harmed": 0,
+            "both_wrong_changed_label": 0
+          },
+          "routed_instances": 0,
+          "amortized_estimated_api_equivalent_usd": 0.0,
+          "amortized_usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cached_input_tokens": 0
+          },
+          "fallback_instances": 0
+        },
+        "0.05": {
+          "metrics": {
+            "rows": 1884,
+            "correct": 906,
+            "accuracy": 0.48089171974522293,
+            "f1_macro": 0.47842833182105643,
+            "f1_per_class": {
+              "c1": 0.4444444444444444,
+              "c234": 0.44592592592592595,
+              "c5": 0.5449146250927989
+            },
+            "confusion_matrix": [
+              [
+                238,
+                206,
+                143
+              ],
+              [
+                159,
+                301,
+                210
+              ],
+              [
+                87,
+                173,
+                367
+              ]
+            ],
+            "prediction_counts": {
+              "c234": 680,
+              "c1": 484,
+              "c5": 720
+            }
+          },
+          "changes": {
+            "corrected": 12,
+            "harmed": 16,
+            "both_wrong_changed_label": 11
+          },
+          "routed_instances": 94,
+          "amortized_estimated_api_equivalent_usd": 0.16471439999999998,
+          "amortized_usage": {
+            "input_tokens": 103708.5,
+            "output_tokens": 2551.5,
+            "cached_input_tokens": 35904.0
+          },
+          "fallback_instances": 0
+        },
+        "0.1": {
+          "metrics": {
+            "rows": 1884,
+            "correct": 901,
+            "accuracy": 0.47823779193205945,
+            "f1_macro": 0.4751505422149296,
+            "f1_per_class": {
+              "c1": 0.44402985074626866,
+              "c234": 0.43636363636363634,
+              "c5": 0.5450581395348837
+            },
+            "confusion_matrix": [
+              [
+                238,
+                197,
+                152
+              ],
+              [
+                160,
+                288,
+                222
+              ],
+              [
+                87,
+                165,
+                375
+              ]
+            ],
+            "prediction_counts": {
+              "c234": 650,
+              "c1": 485,
+              "c5": 749
+            }
+          },
+          "changes": {
+            "corrected": 23,
+            "harmed": 32,
+            "both_wrong_changed_label": 22
+          },
+          "routed_instances": 188,
+          "amortized_estimated_api_equivalent_usd": 0.363062,
+          "amortized_usage": {
+            "input_tokens": 216338.0,
+            "output_tokens": 5077.0,
+            "cached_input_tokens": 63360.0
+          },
+          "fallback_instances": 0
+        }
+      },
+      "actual_successful_calls": 24,
+      "actual_usage": {
+        "input_tokens": 216338,
+        "output_tokens": 5077,
+        "cached_input_tokens": 63360
+      },
+      "estimated_api_equivalent_usd": 0.363062,
+      "wall_seconds": 100.7562465400024,
+      "summed_request_latency_seconds": 197.60171156599972
+    },
+    "hybrid-3-rag": {
+      "recipe": {
+        "name": "hybrid-3-rag",
+        "method": "hybrid",
+        "count": 3,
+        "include_local": false
+      },
+      "budgets": {
+        "0.0": {
+          "metrics": {
+            "rows": 1884,
+            "correct": 910,
+            "accuracy": 0.4830148619957537,
+            "f1_macro": 0.4808189963060858,
+            "f1_per_class": {
+              "c1": 0.44361602982292636,
+              "c234": 0.4543462381300219,
+              "c5": 0.5444947209653092
+            },
+            "confusion_matrix": [
+              [
+                238,
+                211,
+                138
+              ],
+              [
+                159,
+                311,
+                200
+              ],
+              [
+                89,
+                177,
+                361
+              ]
+            ],
+            "prediction_counts": {
+              "c234": 699,
+              "c1": 486,
+              "c5": 699
+            }
+          },
+          "changes": {
+            "corrected": 0,
+            "harmed": 0,
+            "both_wrong_changed_label": 0
+          },
+          "routed_instances": 0,
+          "amortized_estimated_api_equivalent_usd": 0.0,
+          "amortized_usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cached_input_tokens": 0
+          },
+          "fallback_instances": 0
+        },
+        "0.05": {
+          "metrics": {
+            "rows": 1884,
+            "correct": 901,
+            "accuracy": 0.47823779193205945,
+            "f1_macro": 0.4754822388177393,
+            "f1_per_class": {
+              "c1": 0.43911439114391143,
+              "c234": 0.43810952738184544,
+              "c5": 0.5492227979274611
+            },
+            "confusion_matrix": [
+              [
+                238,
+                206,
+                143
+              ],
+              [
+                168,
+                292,
+                210
+              ],
+              [
+                91,
+                165,
+                371
+              ]
+            ],
+            "prediction_counts": {
+              "c234": 663,
+              "c1": 497,
+              "c5": 724
+            }
+          },
+          "changes": {
+            "corrected": 17,
+            "harmed": 26,
+            "both_wrong_changed_label": 15
+          },
+          "routed_instances": 94,
+          "amortized_estimated_api_equivalent_usd": 0.2308454,
+          "amortized_usage": {
+            "input_tokens": 127175.125,
+            "output_tokens": 2464.875,
+            "cached_input_tokens": 25344.0
+          },
+          "fallback_instances": 0
+        },
+        "0.1": {
+          "metrics": {
+            "rows": 1884,
+            "correct": 899,
+            "accuracy": 0.47717622080679406,
+            "f1_macro": 0.47366312733376253,
+            "f1_per_class": {
+              "c1": 0.4409881061299177,
+              "c234": 0.42967542503863987,
+              "c5": 0.5503258508327299
+            },
+            "confusion_matrix": [
+              [
+                241,
+                193,
+                153
+              ],
+              [
+                171,
+                278,
+                221
+              ],
+              [
+                94,
+                153,
+                380
+              ]
+            ],
+            "prediction_counts": {
+              "c234": 624,
+              "c1": 506,
+              "c5": 754
+            }
+          },
+          "changes": {
+            "corrected": 36,
+            "harmed": 47,
+            "both_wrong_changed_label": 31
+          },
+          "routed_instances": 188,
+          "amortized_estimated_api_equivalent_usd": 0.45906759999999996,
+          "amortized_usage": {
+            "input_tokens": 261868.0,
+            "output_tokens": 4769.0,
+            "cached_input_tokens": 59136.0
+          },
+          "fallback_instances": 0
+        }
+      },
+      "actual_successful_calls": 23,
+      "actual_usage": {
+        "input_tokens": 261868,
+        "output_tokens": 4769,
+        "cached_input_tokens": 59136
+      },
+      "estimated_api_equivalent_usd": 0.45906759999999996,
+      "wall_seconds": 94.38368735699987,
+      "summed_request_latency_seconds": 182.12698488599926
+    },
+    "hybrid-3-local": {
+      "recipe": {
+        "name": "hybrid-3-local",
+        "method": "hybrid",
+        "count": 3,
+        "include_local": true
+      },
+      "budgets": {
+        "0.0": {
+          "metrics": {
+            "rows": 1884,
+            "correct": 910,
+            "accuracy": 0.4830148619957537,
+            "f1_macro": 0.4808189963060858,
+            "f1_per_class": {
+              "c1": 0.44361602982292636,
+              "c234": 0.4543462381300219,
+              "c5": 0.5444947209653092
+            },
+            "confusion_matrix": [
+              [
+                238,
+                211,
+                138
+              ],
+              [
+                159,
+                311,
+                200
+              ],
+              [
+                89,
+                177,
+                361
+              ]
+            ],
+            "prediction_counts": {
+              "c234": 699,
+              "c1": 486,
+              "c5": 699
+            }
+          },
+          "changes": {
+            "corrected": 0,
+            "harmed": 0,
+            "both_wrong_changed_label": 0
+          },
+          "routed_instances": 0,
+          "amortized_estimated_api_equivalent_usd": 0.0,
+          "amortized_usage": {
+            "input_tokens": 0,
+            "output_tokens": 0,
+            "cached_input_tokens": 0
+          },
+          "fallback_instances": 0
+        },
+        "0.05": {
+          "metrics": {
+            "rows": 1884,
+            "correct": 906,
+            "accuracy": 0.48089171974522293,
+            "f1_macro": 0.4783317707603465,
+            "f1_per_class": {
+              "c1": 0.4421831637372803,
+              "c234": 0.44411326378539495,
+              "c5": 0.5486988847583643
+            },
+            "confusion_matrix": [
+              [
+                239,
+                206,
+                142
+              ],
+              [
+                165,
+                298,
+                207
+              ],
+              [
+                90,
+                168,
+                369
+              ]
+            ],
+            "prediction_counts": {
+              "c234": 672,
+              "c1": 494,
+              "c5": 718
+            }
+          },
+          "changes": {
+            "corrected": 17,
+            "harmed": 21,
+            "both_wrong_changed_label": 13
+          },
+          "routed_instances": 94,
+          "amortized_estimated_api_equivalent_usd": 0.2441498,
+          "amortized_usage": {
+            "input_tokens": 147494.0,
+            "output_tokens": 2540.5,
+            "cached_input_tokens": 40128.0
+          },
+          "fallback_instances": 0
+        },
+        "0.1": {
+          "metrics": {
+            "rows": 1884,
+            "correct": 907,
+            "accuracy": 0.48142250530785563,
+            "f1_macro": 0.47818786699249133,
+            "f1_per_class": {
+              "c1": 0.4423963133640553,
+              "c234": 0.441400304414003,
+              "c5": 0.5507669831994156
+            },
+            "confusion_matrix": [
+              [
+                240,
+                196,
+                151
+              ],
+              [
+                166,
+                290,
+                214
+              ],
+              [
+                92,
+                158,
+                377
+              ]
+            ],
+            "prediction_counts": {
+              "c234": 644,
+              "c1": 498,
+              "c5": 742
+            }
+          },
+          "changes": {
+            "corrected": 29,
+            "harmed": 32,
+            "both_wrong_changed_label": 25
+          },
+          "routed_instances": 188,
+          "amortized_estimated_api_equivalent_usd": 0.4962684,
+          "amortized_usage": {
+            "input_tokens": 307283.0,
+            "output_tokens": 5024.0,
+            "cached_input_tokens": 88704.0
+          },
+          "fallback_instances": 0
+        }
+      },
+      "actual_successful_calls": 24,
+      "actual_usage": {
+        "input_tokens": 307283,
+        "output_tokens": 5024,
+        "cached_input_tokens": 88704
+      },
+      "estimated_api_equivalent_usd": 0.4962684,
+      "wall_seconds": 101.32977043500068,
+      "summed_request_latency_seconds": 196.86044793499605
+    }
+  },
+  "resources": {
+    "successful_calls": 94,
+    "failed_attempts": 0,
+    "fallback_instances": 0,
+    "maximum_new_attempts": 128,
+    "usage": {
+      "input_tokens": 957003,
+      "output_tokens": 19498,
+      "cached_input_tokens": 236544
+    },
+    "estimated_api_equivalent_usd": 1.6595524,
+    "summed_arm_wall_seconds": 391.34005691100356,
+    "summed_request_latency_seconds": 760.7083032259925,
+    "mean_request_latency_seconds": 8.092641523680772,
+    "cost_rates_per_million": {
+      "input_price_per_million": 2,
+      "cached_input_price_per_million": 0.1,
+      "output_price_per_million": 10
+    },
+    "note": "Configured standard API-equivalent estimates, not subscription invoices; 5%/10% share the same responses."
+  },
+  "combined_pilot_and_confirmation": {
+    "successful_calls": 178,
+    "archived_failed_attempts": 3,
+    "registered_attempts": 181,
+    "known_usage": {
+      "input_tokens": 2022920,
+      "output_tokens": 36703,
+      "cached_input_tokens": 384384
+    },
+    "estimated_api_equivalent_usd": 3.6825403999999997,
+    "note": "Three archived pilot failures have unknown usage excluded from this known-usage estimate."
+  },
+  "verification": {
+    "all_twelve_arm_budget_metrics_independently_recomputed": true,
+    "all_rows_retained": true,
+    "routing_reconstructed_without_labels": true,
+    "resource_journals_match_reports": true,
+    "scoring_gpt_calls": 0,
+    "test1_accessed": false,
+    "test2_accessed": false,
+    "new_model_frozen": false,
+    "production_default_changed": false
+  },
+  "limitations": [
+    "Pilot gain did not persist on the independent confirmation cohort; all eight nonzero candidates lost macro-F1.",
+    "This selects zero routing for this experiment, not proof of universal GPT inferiority.",
+    "Routing was previously developed on OOF validation and Qwen checkpoint selection historically used the holdout.",
+    "Test1/test2 were not opened and no final-test decision or new remote execution was made."
+  ],
+  "original_meta_validation_rows": 1972,
+  "other_rows_excluded_with_pilot_groups": 40
+}

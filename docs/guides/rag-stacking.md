@@ -1,12 +1,13 @@
 # Train-only RAG and local predictions for selective stacking
 
-**Status: the 48-target pilot is complete; confirmation and final tests are pending.**
-The [pilot report](../results/rag-cascade-pilot.md) records all 14 arms, actual
-resources and the CLI-update recovery. Hybrid retrieval with three examples
-won the predeclared paired-arm selection. Its combined local-context arm scored
-19/48 correct, macro-F1 36.90%, versus stacking at 16/48 and 27.59% on these same
-difficult targets. This exploratory result does not establish a significant
-generalization improvement. No production RAG model has been frozen or promoted.
+**Status: pilot and confirmation are complete; validation selected zero GPT routing.**
+The [confirmation report](../results/rag-cascade-confirmation.md) records four
+contexts at 0/5/10% routing on 1,884 OOF rows. Stacking won with 910 correct,
+accuracy 48.30%, macro-F1 48.08%; the best nonzero GPT candidate reached 47.84%
+macro-F1. The earlier [pilot](../results/rag-cascade-pilot.md) selected hybrid
+retrieval with three examples, but its exploratory gain did not persist.
+The existing zero-GPT default remains unchanged. No new RAG package has been
+frozen, and no final test1/test2 inference or evaluation has been performed.
 The [original preparation record](../results/rag-cascade-preparation.md) preserves
 the earlier no-execution milestone.
 
@@ -152,10 +153,12 @@ whole-stage costs and wall time. Prices are API-equivalent estimates, not invoic
 
 ## Commands for a future authorized run
 
-The pilot was executed manually in `results/rag-context-pilot-20261106` and is
-complete. The generic examples below are not instructions to repeat it or to
-advance automatically. Confirmation and final-test classification require
-separate user authorization.
+The pilot and confirmation were executed manually in
+`results/rag-context-pilot-20261106` and are complete. Do not repeat them to score
+existing outputs: use `score` only. The generic examples below are not instructions
+to repeat classification or advance automatically. Final-test inference requires
+separate user authorization. Test2 produces an unlabeled delivery workbook;
+quality metrics are computed on labeled test1 after configuration freezing.
 Use a Python environment with the project's dependencies and optional `rag`
 dependencies. The local pilot runtime now has ONNX Runtime and the pinned E5
 weights; other clones still need the explicit installation/download steps.
