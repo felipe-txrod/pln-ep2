@@ -6,6 +6,11 @@ Compare results only on the same dataset and preserve the training recipe
 and partition recorded by each report. The original EP1 NorBERTo reference
 has 48.00% accuracy on test1 and 45.31% on its frozen holdout.
 
+The [accepted project decision](../decisions/ensemble-strategy.md) retains
+weighted soft voting (SVM 75%, NorBERTo 25%) as the primary approach: Test1
+macro-F1 49.58%, accuracy 49.67% (447/900). Stacking, GPT and RAG studies remain
+preserved below, together with their exploratory and data-partition limitations.
+
 ## Offline retrieval and selective acceptance: no promotion
 
 The [offline investigation](rag-offline-research.md) compares 171 retrieval

@@ -4,6 +4,12 @@ Supervised text classification with Qwen3-1.7B, NorBERTo, SVM, logistic
 regression, and a configurable ensemble with GPT arbitration. The input is
 `resp_text`; output labels are `c1`, `c234`, and `c5`.
 
+The primary approach is **weighted soft voting: SVM 75%, NorBERTo 25%**,
+with macro-F1 **49.58%** on Test1 (447/900 correct; accuracy 49.67%).
+The [accepted ensemble decision](docs/decisions/ensemble-strategy.md) records
+the rationale, evaluation limitations and preservation of stacking/GPT/RAG
+experiments.
+
 The selected NorBERTo is the **unchanged EP1 delivery adapter** in
 `models/norberto/`: LoRA rank 4/alpha 8, two epochs on 16,093 development rows.
 It achieved 48.00% on test1 and 45.31% on the EP1 holdout. Experimental loss

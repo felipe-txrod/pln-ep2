@@ -8,6 +8,11 @@ command examples assume the EP2 repository root unless stated otherwise.
 
 Executable entry points are listed in the [script index](../scripts/README.md).
 
+## Accepted decisions
+
+- [Retain SVM 75% / NorBERTo 25% soft voting as the primary approach](decisions/ensemble-strategy.md),
+  preserving stacking, GPT and RAG experiments and their limitations.
+
 ## Guides
 
 | Subject | Document |
