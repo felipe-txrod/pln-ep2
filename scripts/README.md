@@ -118,8 +118,8 @@ Choose a fresh output destination for every prediction or comparison run.
 
 ## Weighted soft voting versus the EP1 delivery
 
-RAG context experiments use `python -m rag_cascade`. This workflow is currently
-**prepared, not executed** at the user's request. Classification requires
+RAG context experiments use `python -m rag_cascade`. The 48-target pilot is
+complete; confirmation and final tests remain pending. Classification requires
 `--execute`; see the [RAG guide](../docs/guides/rag-stacking.md) for previews,
 train-only example retrieval and the test2-before-test1 guards.
 

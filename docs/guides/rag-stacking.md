@@ -1,11 +1,14 @@
 # Train-only RAG and local predictions for selective stacking
 
-**Status: implemented and prepared; the real experiment has not been run.**
-The user explicitly deferred execution to preserve their token allowance.
-No new GPT classification, embedding generation, model download, base-model
-inference, test2 prediction or test1 evaluation was performed for this change.
-Only offline tests with synthetic texts, fake embeddings and fake transports
-were executed. There are no measured RAG quality gains or selected RAG model yet.
+**Status: the 48-target pilot is complete; confirmation and final tests are pending.**
+The [pilot report](../results/rag-cascade-pilot.md) records all 14 arms, actual
+resources and the CLI-update recovery. Hybrid retrieval with three examples
+won the predeclared paired-arm selection. Its combined local-context arm scored
+19/48 correct, macro-F1 36.90%, versus stacking at 16/48 and 27.59% on these same
+difficult targets. This exploratory result does not establish a significant
+generalization improvement. No production RAG model has been frozen or promoted.
+The [original preparation record](../results/rag-cascade-preparation.md) preserves
+the earlier no-execution milestone.
 
 The new `rag_cascade` package reuses the existing frozen stacking, OOF routing,
 TF-IDF selector, pinned local E5 encoder interface, Codex backend, batch schema,
@@ -135,6 +138,13 @@ exhausted failure. Interrupted attempts count toward each request's retry limit;
 unknown usage is flagged. Missing decisions explicitly retain stacking rather
 than becoming fake GPT labels. Completed stages are immutable/idempotent.
 
+Set `CASCADE_CODEX_BIN` to an immutable versioned executable before planning and
+retain it during execution. The pilot's default CLI symlink updated from 0.166.0
+to 0.167.0 mid-run, correctly triggering strict runtime mismatch checks. Pinning
+the original executable restored compatibility without changing requests or
+fingerprints. Preserve any failed journals and historical resources when
+preparing a reviewed retry; do not silently discard failures or reset budgets.
+
 Each arm records accuracy, macro-F1, per-class F1, confusion matrix, corrected,
 harmed and changed-but-still-wrong cases, tokens, cache hits, cost allocation,
 actual calls and latency. Shared-batch allocations are distinguished from actual
@@ -142,14 +152,18 @@ whole-stage costs and wall time. Prices are API-equivalent estimates, not invoic
 
 ## Commands for a future authorized run
 
-**None of the following experiment commands were executed for this change.**
+The pilot was executed manually in `results/rag-context-pilot-20261106` and is
+complete. The generic examples below are not instructions to repeat it or to
+advance automatically. Confirmation and final-test classification require
+separate user authorization.
 Use a Python environment with the project's dependencies and optional `rag`
-dependencies. The existing offline CPU test runtime does not currently contain
-ONNX Runtime or the E5 weights; install/prepare these only when execution is wanted.
+dependencies. The local pilot runtime now has ONNX Runtime and the pinned E5
+weights; other clones still need the explicit installation/download steps.
 
 ```bash
 python3 -m pip install -e '.[rag]'
 PYTHONPATH=src python3 -m rag_cascade prepare-encoder --download
+export CASCADE_CODEX_BIN=/absolute/path/to/versioned/codex
 
 PYTHONPATH=src python3 -m rag_cascade prepare \
   --config configs/rag-cascade.json --output-dir results/rag-context-new

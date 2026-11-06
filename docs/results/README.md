@@ -6,14 +6,20 @@ Compare results only on the same dataset and preserve the training recipe
 and partition recorded by each report. The original EP1 NorBERTo reference
 has 48.00% accuracy on test1 and 45.31% on its frozen holdout.
 
-## RAG context study: prepared, not executed
+## RAG context pilot: exploratory gain; confirmation pending
 
-The [RAG preparation record](rag-cascade-preparation.md) documents train-only
-TF-IDF/E5/hybrid retrieval, 3/5 examples, four paired context strategies and
-group-disjoint OOF validation. Per the user's instruction, no new GPT calls,
-real embeddings, model downloads or final predictions were run. The
-[guide](../guides/rag-stacking.md) provides future opt-in commands and the
-enforced test2-before-test1 protocol. No RAG improvement is claimed yet.
+The [completed 48-target pilot](rag-cascade-pilot.md) compared 14 context arms
+using train-only TF-IDF/E5/hybrid retrieval and three/five demonstrations. The
+paired-arm rule selected hybrid retrieval with three examples. Its combined
+local-prediction arm scored 19/48, macro-F1 36.90%, versus stacking at 16/48 and
+27.59% on the same difficult cases: eight errors corrected, five correct labels
+harmed. This small exploratory gain is not statistically significant and has
+not been confirmed on the 1,884 reserved rows. The pilot used 84 successful
+batched calls plus three archived failed attempts, with USD 2.022988 estimated
+API-equivalent known usage. No final tests or production defaults changed.
+The [original preparation record](rag-cascade-preparation.md),
+[aggregate](data/rag-cascade-pilot.json), and [guide](../guides/rag-stacking.md)
+preserve the milestones, recovery accounting and test2-before-test1 protocol.
 
 ## Stacking + selective GPT: no measured improvement
 

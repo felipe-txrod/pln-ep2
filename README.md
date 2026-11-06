@@ -82,7 +82,7 @@ or install a GPU-specific PyTorch distribution.
 | [rl_classifier](src/rl_classifier/README.md) | Frozen TF-IDF and logistic regression pipeline, CPU inference |
 | [ensemble_classifier](src/ensemble_classifier/README.md) | Configurable members and arbitration over saved predictions |
 | `cascade_classifier` | Nested OOF routing validation and selective GPT decisions over frozen stacking |
-| `rag_cascade` | Prepared train-only retrieval/context experiments and enforced test2-before-test1 inference |
+| `rag_cascade` | Train-only retrieval/context pilot and enforced test2-before-test1 inference |
 | `gpt_classifier` | Remote classification, example retrieval, and shared evaluation |
 
 Frozen packages live in `models/`; historical experimental adapters remain in

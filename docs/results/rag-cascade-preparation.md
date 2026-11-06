@@ -2,6 +2,10 @@
 
 [Commands and protocol](../guides/rag-stacking.md) · [Configuration](../../configs/rag-cascade.json)
 
+Historical implementation milestone, before the user authorized execution.
+The subsequent [completed pilot](rag-cascade-pilot.md) supersedes its execution
+status; the zero-call figures below describe preparation only.
+
 The user explicitly requested preparing the implementation without running the
 experiment because their token allowance was running low. This change therefore
 contains code, configuration, documentation and offline synthetic tests only.

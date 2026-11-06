@@ -1,0 +1,769 @@
+{
+  "date": "2026-11-06",
+  "status": "pilot_completed_confirmation_pending",
+  "study_directory": "results/rag-context-pilot-20261106",
+  "implementation_commit": "6e1e02b",
+  "bank_rows": 16093,
+  "eligible_retrieval_rows": 11562,
+  "reserved_holdout_rows": 3999,
+  "pilot_rows": 48,
+  "confirmation_rows_reserved": 1884,
+  "gold_counts": {
+    "c234": 21,
+    "c1": 17,
+    "c5": 10
+  },
+  "label_order": [
+    "c1",
+    "c234",
+    "c5"
+  ],
+  "selected_retrieval": {
+    "method": "hybrid",
+    "examples": 3,
+    "criterion": "Mean paired RAG-only/RAG+local pilot macro-F1; ties prefer fewer examples, then lexical retrieval"
+  },
+  "best_observed_arm": "hybrid-3-local",
+  "recipe_comparison": [
+    {
+      "method": "tfidf",
+      "examples": 3,
+      "mean_paired_macro_f1": 0.2883344670354391
+    },
+    {
+      "method": "tfidf",
+      "examples": 5,
+      "mean_paired_macro_f1": 0.2941043843682547
+    },
+    {
+      "method": "semantic",
+      "examples": 3,
+      "mean_paired_macro_f1": 0.2299614208676393
+    },
+    {
+      "method": "semantic",
+      "examples": 5,
+      "mean_paired_macro_f1": 0.26616420776840566
+    },
+    {
+      "method": "hybrid",
+      "examples": 3,
+      "mean_paired_macro_f1": 0.3340649267837216
+    },
+    {
+      "method": "hybrid",
+      "examples": 5,
+      "mean_paired_macro_f1": 0.2768829635837309
+    }
+  ],
+  "baseline": {
+    "rows": 48,
+    "correct": 16,
+    "accuracy": 0.3333333333333333,
+    "f1_macro": 0.2759103641456582,
+    "f1_per_class": {
+      "c1": 0.16666666666666666,
+      "c234": 0.47058823529411764,
+      "c5": 0.19047619047619047
+    },
+    "confusion_matrix": [
+      [
+        2,
+        10,
+        5
+      ],
+      [
+        5,
+        12,
+        4
+      ],
+      [
+        0,
+        8,
+        2
+      ]
+    ]
+  },
+  "arms": {
+    "text": {
+      "metrics": {
+        "rows": 48,
+        "correct": 14,
+        "accuracy": 0.2916666666666667,
+        "f1_macro": 0.26296296296296295,
+        "f1_per_class": {
+          "c1": 0.1,
+          "c234": 0.3888888888888889,
+          "c5": 0.3
+        },
+        "confusion_matrix": [
+          [
+            1,
+            4,
+            12
+          ],
+          [
+            2,
+            7,
+            12
+          ],
+          [
+            0,
+            4,
+            6
+          ]
+        ]
+      },
+      "changes": {
+        "corrected": 9,
+        "harmed": 11,
+        "both_wrong_changed_label": 11
+      },
+      "fallback_instances": 0,
+      "successful_calls": 6,
+      "actual_usage": {
+        "input_tokens": 45514,
+        "output_tokens": 1127,
+        "cached_input_tokens": 0
+      },
+      "estimated_api_equivalent_usd": 0.102298,
+      "summed_request_latency_seconds": 44.64934837299734,
+      "per_instance_amortized_estimated_usd": 0.102298
+    },
+    "local": {
+      "metrics": {
+        "rows": 48,
+        "correct": 18,
+        "accuracy": 0.375,
+        "f1_macro": 0.33074788301430297,
+        "f1_per_class": {
+          "c1": 0.17391304347826086,
+          "c234": 0.5106382978723404,
+          "c5": 0.3076923076923077
+        },
+        "confusion_matrix": [
+          [
+            2,
+            8,
+            7
+          ],
+          [
+            4,
+            12,
+            5
+          ],
+          [
+            0,
+            6,
+            4
+          ]
+        ]
+      },
+      "changes": {
+        "corrected": 6,
+        "harmed": 4,
+        "both_wrong_changed_label": 3
+      },
+      "fallback_instances": 0,
+      "successful_calls": 6,
+      "actual_usage": {
+        "input_tokens": 55590,
+        "output_tokens": 1214,
+        "cached_input_tokens": 0
+      },
+      "estimated_api_equivalent_usd": 0.12332,
+      "summed_request_latency_seconds": 46.360479079998186,
+      "per_instance_amortized_estimated_usd": 0.12332
+    },
+    "tfidf-3-rag": {
+      "metrics": {
+        "rows": 48,
+        "correct": 17,
+        "accuracy": 0.3541666666666667,
+        "f1_macro": 0.3225340967276451,
+        "f1_per_class": {
+          "c1": 0.19047619047619047,
+          "c234": 0.45454545454545453,
+          "c5": 0.3225806451612903
+        },
+        "confusion_matrix": [
+          [
+            2,
+            8,
+            7
+          ],
+          [
+            2,
+            10,
+            9
+          ],
+          [
+            0,
+            5,
+            5
+          ]
+        ]
+      },
+      "changes": {
+        "corrected": 12,
+        "harmed": 11,
+        "both_wrong_changed_label": 7
+      },
+      "fallback_instances": 0,
+      "successful_calls": 6,
+      "actual_usage": {
+        "input_tokens": 66685,
+        "output_tokens": 1235,
+        "cached_input_tokens": 0
+      },
+      "estimated_api_equivalent_usd": 0.14572,
+      "summed_request_latency_seconds": 46.560510013001476,
+      "per_instance_amortized_estimated_usd": 0.14572
+    },
+    "tfidf-3-local": {
+      "metrics": {
+        "rows": 48,
+        "correct": 14,
+        "accuracy": 0.2916666666666667,
+        "f1_macro": 0.2541348373432331,
+        "f1_per_class": {
+          "c1": 0.09523809523809523,
+          "c234": 0.391304347826087,
+          "c5": 0.27586206896551724
+        },
+        "confusion_matrix": [
+          [
+            1,
+            10,
+            6
+          ],
+          [
+            3,
+            9,
+            9
+          ],
+          [
+            0,
+            6,
+            4
+          ]
+        ]
+      },
+      "changes": {
+        "corrected": 7,
+        "harmed": 9,
+        "both_wrong_changed_label": 4
+      },
+      "fallback_instances": 0,
+      "successful_calls": 6,
+      "actual_usage": {
+        "input_tokens": 76763,
+        "output_tokens": 1270,
+        "cached_input_tokens": 8448
+      },
+      "estimated_api_equivalent_usd": 0.1501748,
+      "summed_request_latency_seconds": 52.030610089999755,
+      "per_instance_amortized_estimated_usd": 0.1501748
+    },
+    "tfidf-5-rag": {
+      "metrics": {
+        "rows": 48,
+        "correct": 16,
+        "accuracy": 0.3333333333333333,
+        "f1_macro": 0.30166632567232715,
+        "f1_per_class": {
+          "c1": 0.18181818181818182,
+          "c234": 0.46511627906976744,
+          "c5": 0.25806451612903225
+        },
+        "confusion_matrix": [
+          [
+            2,
+            6,
+            9
+          ],
+          [
+            3,
+            10,
+            8
+          ],
+          [
+            0,
+            6,
+            4
+          ]
+        ]
+      },
+      "changes": {
+        "corrected": 9,
+        "harmed": 9,
+        "both_wrong_changed_label": 7
+      },
+      "fallback_instances": 0,
+      "successful_calls": 6,
+      "actual_usage": {
+        "input_tokens": 80115,
+        "output_tokens": 1234,
+        "cached_input_tokens": 4224
+      },
+      "estimated_api_equivalent_usd": 0.1645444,
+      "summed_request_latency_seconds": 48.29882876099873,
+      "per_instance_amortized_estimated_usd": 0.1645444
+    },
+    "tfidf-5-local": {
+      "metrics": {
+        "rows": 48,
+        "correct": 15,
+        "accuracy": 0.3125,
+        "f1_macro": 0.2865424430641822,
+        "f1_per_class": {
+          "c1": 0.17391304347826086,
+          "c234": 0.4,
+          "c5": 0.2857142857142857
+        },
+        "confusion_matrix": [
+          [
+            2,
+            9,
+            6
+          ],
+          [
+            4,
+            9,
+            8
+          ],
+          [
+            0,
+            6,
+            4
+          ]
+        ]
+      },
+      "changes": {
+        "corrected": 6,
+        "harmed": 7,
+        "both_wrong_changed_label": 4
+      },
+      "fallback_instances": 0,
+      "successful_calls": 6,
+      "actual_usage": {
+        "input_tokens": 90199,
+        "output_tokens": 1220,
+        "cached_input_tokens": 12672
+      },
+      "estimated_api_equivalent_usd": 0.1685212,
+      "summed_request_latency_seconds": 47.762643284999285,
+      "per_instance_amortized_estimated_usd": 0.1685212
+    },
+    "semantic-3-rag": {
+      "metrics": {
+        "rows": 48,
+        "correct": 11,
+        "accuracy": 0.22916666666666666,
+        "f1_macro": 0.19718992248062017,
+        "f1_per_class": {
+          "c1": 0.0,
+          "c234": 0.27906976744186046,
+          "c5": 0.3125
+        },
+        "confusion_matrix": [
+          [
+            0,
+            11,
+            6
+          ],
+          [
+            4,
+            6,
+            11
+          ],
+          [
+            0,
+            5,
+            5
+          ]
+        ]
+      },
+      "changes": {
+        "corrected": 6,
+        "harmed": 11,
+        "both_wrong_changed_label": 7
+      },
+      "fallback_instances": 0,
+      "successful_calls": 6,
+      "actual_usage": {
+        "input_tokens": 69249,
+        "output_tokens": 1314,
+        "cached_input_tokens": 12672
+      },
+      "estimated_api_equivalent_usd": 0.12756119999999999,
+      "summed_request_latency_seconds": 51.41275179999684,
+      "per_instance_amortized_estimated_usd": 0.13360395
+    },
+    "semantic-3-local": {
+      "metrics": {
+        "rows": 48,
+        "correct": 14,
+        "accuracy": 0.2916666666666667,
+        "f1_macro": 0.2627329192546584,
+        "f1_per_class": {
+          "c1": 0.17391304347826086,
+          "c234": 0.4,
+          "c5": 0.21428571428571427
+        },
+        "confusion_matrix": [
+          [
+            2,
+            8,
+            7
+          ],
+          [
+            4,
+            9,
+            8
+          ],
+          [
+            0,
+            7,
+            3
+          ]
+        ]
+      },
+      "changes": {
+        "corrected": 3,
+        "harmed": 5,
+        "both_wrong_changed_label": 2
+      },
+      "fallback_instances": 0,
+      "successful_calls": 6,
+      "actual_usage": {
+        "input_tokens": 78913,
+        "output_tokens": 1156,
+        "cached_input_tokens": 12672
+      },
+      "estimated_api_equivalent_usd": 0.1453092,
+      "summed_request_latency_seconds": 45.412899560998994,
+      "per_instance_amortized_estimated_usd": 0.15021204999999999
+    },
+    "semantic-5-rag": {
+      "metrics": {
+        "rows": 48,
+        "correct": 15,
+        "accuracy": 0.3125,
+        "f1_macro": 0.2781935781935782,
+        "f1_per_class": {
+          "c1": 0.1,
+          "c234": 0.41025641025641024,
+          "c5": 0.32432432432432434
+        },
+        "confusion_matrix": [
+          [
+            1,
+            6,
+            10
+          ],
+          [
+            2,
+            8,
+            11
+          ],
+          [
+            0,
+            4,
+            6
+          ]
+        ]
+      },
+      "changes": {
+        "corrected": 10,
+        "harmed": 11,
+        "both_wrong_changed_label": 5
+      },
+      "fallback_instances": 0,
+      "successful_calls": 6,
+      "actual_usage": {
+        "input_tokens": 89197,
+        "output_tokens": 1218,
+        "cached_input_tokens": 21120
+      },
+      "estimated_api_equivalent_usd": 0.150446,
+      "summed_request_latency_seconds": 46.211397269999,
+      "per_instance_amortized_estimated_usd": 0.150446
+    },
+    "semantic-5-local": {
+      "metrics": {
+        "rows": 48,
+        "correct": 14,
+        "accuracy": 0.2916666666666667,
+        "f1_macro": 0.2541348373432331,
+        "f1_per_class": {
+          "c1": 0.09523809523809523,
+          "c234": 0.391304347826087,
+          "c5": 0.27586206896551724
+        },
+        "confusion_matrix": [
+          [
+            1,
+            10,
+            6
+          ],
+          [
+            3,
+            9,
+            9
+          ],
+          [
+            0,
+            6,
+            4
+          ]
+        ]
+      },
+      "changes": {
+        "corrected": 5,
+        "harmed": 7,
+        "both_wrong_changed_label": 3
+      },
+      "fallback_instances": 0,
+      "successful_calls": 6,
+      "actual_usage": {
+        "input_tokens": 99271,
+        "output_tokens": 1279,
+        "cached_input_tokens": 16896
+      },
+      "estimated_api_equivalent_usd": 0.17922960000000002,
+      "summed_request_latency_seconds": 49.96728272900327,
+      "per_instance_amortized_estimated_usd": 0.17922960000000002
+    },
+    "hybrid-3-rag": {
+      "metrics": {
+        "rows": 48,
+        "correct": 16,
+        "accuracy": 0.3333333333333333,
+        "f1_macro": 0.2990822345198242,
+        "f1_per_class": {
+          "c1": 0.09523809523809523,
+          "c234": 0.3902439024390244,
+          "c5": 0.4117647058823529
+        },
+        "confusion_matrix": [
+          [
+            1,
+            9,
+            7
+          ],
+          [
+            3,
+            8,
+            10
+          ],
+          [
+            0,
+            3,
+            7
+          ]
+        ]
+      },
+      "changes": {
+        "corrected": 10,
+        "harmed": 10,
+        "both_wrong_changed_label": 7
+      },
+      "fallback_instances": 0,
+      "successful_calls": 6,
+      "actual_usage": {
+        "input_tokens": 63826,
+        "output_tokens": 1288,
+        "cached_input_tokens": 12672
+      },
+      "estimated_api_equivalent_usd": 0.1164552,
+      "summed_request_latency_seconds": 50.13627372300107,
+      "per_instance_amortized_estimated_usd": 0.13212895000000002
+    },
+    "hybrid-3-local": {
+      "metrics": {
+        "rows": 48,
+        "correct": 19,
+        "accuracy": 0.3958333333333333,
+        "f1_macro": 0.36904761904761907,
+        "f1_per_class": {
+          "c1": 0.25,
+          "c234": 0.5,
+          "c5": 0.35714285714285715
+        },
+        "confusion_matrix": [
+          [
+            3,
+            7,
+            7
+          ],
+          [
+            4,
+            11,
+            6
+          ],
+          [
+            0,
+            5,
+            5
+          ]
+        ]
+      },
+      "changes": {
+        "corrected": 8,
+        "harmed": 5,
+        "both_wrong_changed_label": 3
+      },
+      "fallback_instances": 0,
+      "successful_calls": 6,
+      "actual_usage": {
+        "input_tokens": 72861,
+        "output_tokens": 1157,
+        "cached_input_tokens": 21120
+      },
+      "estimated_api_equivalent_usd": 0.117164,
+      "summed_request_latency_seconds": 45.64285933600149,
+      "per_instance_amortized_estimated_usd": 0.13293835
+    },
+    "hybrid-5-rag": {
+      "metrics": {
+        "rows": 48,
+        "correct": 15,
+        "accuracy": 0.3125,
+        "f1_macro": 0.2977900190176405,
+        "f1_per_class": {
+          "c1": 0.17391304347826086,
+          "c234": 0.3076923076923077,
+          "c5": 0.4117647058823529
+        },
+        "confusion_matrix": [
+          [
+            2,
+            9,
+            6
+          ],
+          [
+            4,
+            6,
+            11
+          ],
+          [
+            0,
+            3,
+            7
+          ]
+        ]
+      },
+      "changes": {
+        "corrected": 11,
+        "harmed": 12,
+        "both_wrong_changed_label": 4
+      },
+      "fallback_instances": 0,
+      "successful_calls": 6,
+      "actual_usage": {
+        "input_tokens": 83828,
+        "output_tokens": 1249,
+        "cached_input_tokens": 16896
+      },
+      "estimated_api_equivalent_usd": 0.1480436,
+      "summed_request_latency_seconds": 48.74861323599907,
+      "per_instance_amortized_estimated_usd": 0.1480436
+    },
+    "hybrid-5-local": {
+      "metrics": {
+        "rows": 48,
+        "correct": 14,
+        "accuracy": 0.2916666666666667,
+        "f1_macro": 0.2559759081498212,
+        "f1_per_class": {
+          "c1": 0.09090909090909091,
+          "c234": 0.391304347826087,
+          "c5": 0.2857142857142857
+        },
+        "confusion_matrix": [
+          [
+            1,
+            10,
+            6
+          ],
+          [
+            4,
+            9,
+            8
+          ],
+          [
+            0,
+            6,
+            4
+          ]
+        ]
+      },
+      "changes": {
+        "corrected": 5,
+        "harmed": 7,
+        "both_wrong_changed_label": 4
+      },
+      "fallback_instances": 0,
+      "successful_calls": 6,
+      "actual_usage": {
+        "input_tokens": 93906,
+        "output_tokens": 1244,
+        "cached_input_tokens": 8448
+      },
+      "estimated_api_equivalent_usd": 0.1842008,
+      "summed_request_latency_seconds": 43.292201506998026,
+      "per_instance_amortized_estimated_usd": 0.1842008
+    }
+  },
+  "resources": {
+    "successful_batched_calls": 84,
+    "archived_failed_attempts": 3,
+    "registered_attempts": 87,
+    "resume_new_attempts": 10,
+    "original_attempt_cap": 128,
+    "valid_classifications": 672,
+    "usage": {
+      "input_tokens": 1065917,
+      "output_tokens": 17205,
+      "cached_input_tokens": 147840
+    },
+    "estimated_api_equivalent_usd": 2.022988,
+    "mean_successful_request_latency_seconds": 7.9343654614761014,
+    "summed_successful_request_latency_seconds": 666.4866987639925,
+    "summed_failed_attempt_latency_seconds": 0.5492771049976,
+    "unknown_usage_failed_attempts": 3,
+    "cost_rates_per_million": {
+      "input_price_per_million": 2,
+      "cached_input_price_per_million": 0.1,
+      "output_price_per_million": 10
+    },
+    "notes": [
+      "Costs are configured standard API equivalents, not ChatGPT subscription charges.",
+      "Archived failures have unknown usage; zero recorded tokens do not prove zero consumption.",
+      "Sum actual attempt journals for total resources; per-arm amortized cache allocations are not additive.",
+      "Last invocation wall times include cache replay; cumulative pilot wall time across interruption/resume is unavailable."
+    ]
+  },
+  "exploratory_paired_analysis": {
+    "comparison": "hybrid-3-local versus stacking on the same 48 difficult targets",
+    "corrected": 8,
+    "harmed": 5,
+    "mcnemar_exact_two_sided_p": 0.5810546875,
+    "note": "Descriptive, unadjusted for searching 14 arms; not evidence of significant generalization improvement."
+  },
+  "verification": {
+    "all_arms_and_changes_independently_recomputed": true,
+    "no_fallback_instances": true,
+    "scoring_gpt_calls": 0,
+    "confirmation_executed": false,
+    "test1_accessed": false,
+    "test2_accessed": false
+  },
+  "limitations": [
+    "Small exploratory sample selected from difficult targets, not representative of the whole dataset.",
+    "Retrieval is selected by paired pilot macro-F1; prompt and routing budget still require group-disjoint confirmation.",
+    "Nested meta-model OOF removes meta in-sample leakage; inherited Qwen checkpoint selection exposure remains.",
+    "No production RAG model was frozen or promoted; the existing zero-GPT default is preserved."
+  ]
+}
