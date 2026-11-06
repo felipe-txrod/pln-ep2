@@ -118,6 +118,11 @@ Choose a fresh output destination for every prediction or comparison run.
 
 ## Weighted soft voting versus the EP1 delivery
 
+RAG context experiments use `python -m rag_cascade`. This workflow is currently
+**prepared, not executed** at the user's request. Classification requires
+`--execute`; see the [RAG guide](../docs/guides/rag-stacking.md) for previews,
+train-only example retrieval and the test2-before-test1 guards.
+
 Selective stacking + GPT uses `python -m cascade_classifier`; no additional
 wrapper is required. The [cascade guide](../docs/guides/stacking-gpt-cascade.md)
 documents preparation, initial 10% prompt ablation, cached extension, frozen

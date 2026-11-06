@@ -6,6 +6,15 @@ Compare results only on the same dataset and preserve the training recipe
 and partition recorded by each report. The original EP1 NorBERTo reference
 has 48.00% accuracy on test1 and 45.31% on its frozen holdout.
 
+## RAG context study: prepared, not executed
+
+The [RAG preparation record](rag-cascade-preparation.md) documents train-only
+TF-IDF/E5/hybrid retrieval, 3/5 examples, four paired context strategies and
+group-disjoint OOF validation. Per the user's instruction, no new GPT calls,
+real embeddings, model downloads or final predictions were run. The
+[guide](../guides/rag-stacking.md) provides future opt-in commands and the
+enforced test2-before-test1 protocol. No RAG improvement is claimed yet.
+
 ## Stacking + selective GPT: no measured improvement
 
 The [completed cascade experiment](stacking-gpt-cascade.md) uses nested 5x5
