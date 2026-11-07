@@ -1,121 +1,144 @@
-# Investigation of the full-corpus NorBERTo regression
+<a id="investigation-of-the-full-corpus-norberto-regression"></a>
 
-[Documentation index](../../README.md) · Historical experiment record; use the guides for current commands.
+# Investigação da regressão do NorBERTo no corpus completo
 
-Follow-up: the [completed normalized refit](recipe2-full-test1.md)
-achieved 408/900 (45.33%), compared with 341/900 for the legacy full refit and
-432/900 for the original EP1 submission. The initial investigation below
-remains a training-only diagnostic; the follow-up is a separate test1 comparison.
+[Índice da documentação](../../README.md) · Registro histórico do experimento; use os guias para comandos atuais.
 
-Evidence points to **unstable optimization during the full-corpus run**. A
-separate loss-normalization bug was reproduced, but it affects both historical
-runs and is not a proven sole cause of the regression. No full model was
-retrained, no optimizer update was performed, and diagnostics did not access test1.
+Acompanhamento: o [retreinamento normalizado concluído](recipe2-full-test1.md)
+obteve 408/900 (45.33%), contra 341/900 do retreinamento completo histórico e
+432/900 da entrega original do EP1. A investigação inicial abaixo permanece
+um diagnóstico restrito ao treino; o acompanhamento é uma comparação separada
+em teste1.
 
-## Verified inputs and parameters
+A evidência aponta **otimização instável durante a execução no corpus completo**.
+Um erro separado de normalização da perda foi reproduzido, mas afeta ambas as
+execuções históricas e não é causa única comprovada da regressão. Nenhum modelo
+completo foi retreinado, não houve atualização do otimizador e os diagnósticos
+não acessaram teste1.
 
-The two parsers returned identical texts and labels on all 20,092 rows. Token
-IDs, masks, and token type IDs matched on all 16,093 shared development rows.
-Saved numerical training arguments matched; only output/logging paths differed.
-Class counts in `c1/c234/c5` order were 5,090/5,436/5,567 in development and
-6,347/6,853/6,892 in the full corpus. Base and adapter weight hashes matched.
+<a id="verified-inputs-and-parameters"></a>
 
-The original trainer source was recovered from EP1 commit
-`fcae20328b49ef312b39babbe41a67acfd6acb1c`, matching its recorded SHA-256.
-Subsequent changes concerned device selection, logging, organization, and
-inference. Initialization, supervised tokenization, and numerical training
-arguments remained equivalent on the selected GPU path. This does not establish
-bitwise identical historical execution or exclude all backend differences.
+## Entradas e parâmetros verificados
 
-## Instability already present in training
+Os dois leitores retornaram textos e rótulos idênticos nas 20,092 linhas.
+IDs de tokens, máscaras e IDs de tipos de tokens coincidiram nas 16,093 linhas
+compartilhadas de desenvolvimento. Os argumentos numéricos de treino salvos
+coincidiram; só caminhos de saída/registro diferiram. As contagens em ordem
+`c1/c234/c5` eram 5,090/5,436/5,567 no desenvolvimento e 6,347/6,853/6,892 no
+corpus completo. Os hashes dos pesos da base e do adaptador coincidiram.
 
-Mean logged gradient norms, before clipping:
+O código original do treinador foi recuperado do commit do EP1
+`fcae20328b49ef312b39babbe41a67acfd6acb1c`, coincidindo com o SHA-256 registrado.
+Mudanças posteriores trataram seleção de dispositivo, registros, organização
+e inferência. Inicialização, tokenização supervisionada e argumentos numéricos
+de treino permaneceram equivalentes no caminho de GPU selecionado. Isso não
+estabelece execução histórica idêntica bit a bit nem exclui todas as diferenças
+entre implementações computacionais.
 
-| Epoch interval | Original training | Full-corpus training |
+<a id="instability-already-present-in-training"></a>
+
+## Instabilidade já presente no treinamento
+
+Médias das normas registradas dos gradientes, antes da limitação:
+
+| Intervalo de épocas | Treinamento original | Treinamento no corpus completo |
 |---|---:|---:|
 | 0–0.5 | 11.51 | 15.59 |
 | 0.5–1 | 8.09 | 106.16 |
 | 1–1.5 | 7.58 | 368.82 |
 | 1.5–2 | 8.14 | 319.61 |
 
-Maximum norms were 22.58 and 1,221.64. The first full-run record above 100
-occurred at step 1,100, epoch 0.876: norm 1,090.99, learning rate 0.00062522.
-Clipping was enabled at 1.0; these are not the norms passed directly to AdamW.
-Late logged loss averaged 4.1214 versus 4.4352. Those historical losses are
-scaled by the defect below and are not ordinary per-response cross entropy.
+As normas máximas foram 22.58 e 1,221.64. O primeiro registro completo acima de
+100 ocorreu no passo 1,100, época 0.876: norma 1,090.99, taxa 0.00062522.
+A limitação estava ativa em 1.0; essas normas não são passadas diretamente ao
+AdamW. A perda média registrada ao final foi 4.1214 contra 4.4352. Essas perdas
+históricas são escaladas pelo defeito abaixo e não são entropia cruzada comum
+por resposta.
 
-## Training-only probes
+<a id="training-only-probes"></a>
 
-A fixed sample used 300 shared training responses, 100 per class, seed 42:
+## Diagnósticos restritos ao treinamento
 
-| Metric | Original adapter | Full refit |
+Uma amostra fixa usou 300 respostas compartilhadas de treino, 100 por classe,
+semente 42:
+
+| Métrica | Adaptador original | Retreinamento completo |
 |---|---:|---:|
-| Correct | 151 | 111 |
-| Training-sample accuracy | 50.33% | 37.00% |
-| Mean cross entropy | 0.989255 | 1.103177 |
+| Acertos | 151 | 111 |
+| Acurácia na amostra de treino | 50.33% | 37.00% |
+| Entropia cruzada média | 0.989255 | 1.103177 |
 
-These are fit diagnostics, not generalization estimates. On another fixed batch
-of 12 short training responses, with dropout disabled and no optimizer:
+São diagnósticos de ajuste, não estimativas de generalização. Em outro lote
+fixo de 12 respostas curtas de treino, sem dropout nem otimizador:
 
-| Measurement | Original adapter | Full refit |
+| Medida | Adaptador original | Retreinamento completo |
 |---|---:|---:|
-| CPU gradient norm | 1.8443 | 189.7469 |
-| GPU gradient norm | 1.8443 | 190.1226 |
-| Maximum CPU/GPU logit difference | 0.00000501 | 0.00034493 |
-| Relative CPU/GPU gradient difference | 0.00119% | 0.40856% |
+| Norma do gradiente em CPU | 1.8443 | 189.7469 |
+| Norma do gradiente em GPU | 1.8443 | 190.1226 |
+| Diferença máxima de logits CPU/GPU | 0.00000501 | 0.00034493 |
+| Diferença relativa do gradiente CPU/GPU | 0.00119% | 0.40856% |
 
-Large gradients also occur on CPU, weakening an explanation based solely on
-incorrect GPU inference. A small probe cannot certify all training kernels.
-All adapter tensors matched their saved values after these calculations.
-Mean LoRA update norms were similar: 6.8376 and 6.8396; a uniform explosion
-in parameter magnitude was not demonstrated.
+Gradientes elevados também ocorrem em CPU, enfraquecendo a explicação baseada
+apenas em inferência incorreta na GPU. Um diagnóstico pequeno não certifica
+todos os núcleos computacionais de treinamento. Todos os tensores coincidiram
+com os salvos após os cálculos. As normas médias das atualizações LoRA foram
+semelhantes: 6.8376 e 6.8396; não se demonstrou explosão uniforme da magnitude
+dos parâmetros.
 
-## Confirmed loss-normalization bug
+<a id="confirmed-loss-normalization-bug"></a>
 
-The Trainer interprets `**kwargs` as support for accumulated example counts.
-ModernBERT's native classification loss instead computes a microbatch mean and
-ignores those counts. See the primary [Trainer implementation](https://github.com/huggingface/transformers/blob/v4.57.1/src/transformers/trainer.py)
-and [ModernBERT implementation](https://github.com/huggingface/transformers/blob/v4.57.1/src/transformers/models/modernbert/modeling_modernbert.py).
+## Erro confirmado de normalização da perda
 
-Synthetic CPU ModernBERT/PEFT forward/backward calculations reproduced:
+O Trainer interpreta `**kwargs` como suporte à contagem acumulada de exemplos.
+A perda nativa de classificação do ModernBERT calcula a média do microlote e
+ignora essa contagem. Veja a [implementação primária do Trainer](https://github.com/huggingface/transformers/blob/v4.57.1/src/transformers/trainer.py)
+e a [implementação do ModernBERT](https://github.com/huggingface/transformers/blob/v4.57.1/src/transformers/models/modernbert/modeling_modernbert.py).
 
-| Microbatch sizes | Legacy / correct loss | Legacy / correct gradient norm |
+Cálculos sintéticos de propagação e retropropagação com ModernBERT/PEFT em CPU reproduziram:
+
+| Tamanhos dos microlotes | Perda histórica / correta | Norma do gradiente histórica / correta |
 |---|---:|---:|
 | 4 + 4 + 4 + 4 | 4.0000 | 4.0000 |
 | 4 + 4 + 4 + 1 | 4.1404 | 5.3711 |
 
-The unequal tail also distorted gradient direction, with normalized-direction
-error 0.4244. Summed cross entropy divided by total examples matched a complete
-batch, with relative gradient error below 0.0000001.
+A cauda desigual também distorceu a direção do gradiente, com erro de direção
+normalizada 0.4244. A soma da entropia cruzada dividida pelo total de exemplos
+coincidiu com um lote completo, com erro relativo de gradiente abaixo de 0.0000001.
 
-**The bug is not a proven sole cause of the accuracy loss.** It existed in both
-runs. A constant scaling on equal microbatches is largely canceled when both
-gradients are clipped to the same norm. It must not be described as simply
-multiplying AdamW's learning rate by four. Unequal tails and finite precision remain relevant.
+**O erro não é causa única comprovada da perda de acurácia.** Existia nas duas
+execuções. Uma escala constante em microlotes iguais é em grande parte anulada
+quando ambos os gradientes são limitados à mesma norma. Não se deve descrever
+isso simplesmente como multiplicar a taxa do AdamW por quatro. Caudas desiguais
+e precisão finita continuam relevantes.
 
-## Causal limits and correction
+<a id="causal-limits-and-correction"></a>
 
-Two epochs on more data increased updates from **2,012 to 2,512 (+24.85%)**,
-warmup from 202 to 252, and changed sampling order, while retaining learning
-rate 0.001. Equal hyperparameters did not preserve the optimization trajectory.
-The full refit reached a poorly conditioned, poorly fitting state. The unique
-trigger among data composition, ordering, update budget, backend sensitivity,
-and their interactions was not isolated by controlled retraining.
+## Limites causais e correção
 
-The training wrapper now records recipe version 2 and uses explicit
-sample-normalized loss from [training_loss.py](../../../src/norberto_classifier/training_loss.py).
-Numerical hyperparameters and EP1 sources remain unchanged; the legacy Trainer
-constructor is restored after the call. Historical artifacts were preserved.
-Nine targeted CPU tests passed, including actual ModernBERT/PEFT/Trainer
-gradient equivalence on an unequal tail. A full-corpus dry-run passed without
-model imports. At that stage, no full training or test1 reevaluation had used
-the correction; the subsequent follow-up is linked above.
+Duas épocas com mais dados aumentaram as atualizações de **2,012 para 2,512
+(+24.85%)**, o aquecimento de 202 para 252 e mudaram a ordem de amostragem,
+mantendo taxa 0.001. Hiperparâmetros iguais não preservaram a trajetória de
+otimização. O retreinamento completo chegou a um estado mal condicionado e
+com ajuste ruim. O gatilho específico entre composição dos dados, ordem,
+orçamento de atualizações, sensibilidade computacional e suas interações não
+foi isolado por retreinamento controlado.
 
-Further causal experiments should isolate normalization, data inclusion, and
-update budget using development-only controls and internal validation. Test1
-must not choose hyperparameters or ensemble rules while being called untouched.
+O invólucro de treinamento agora registra receita versão 2 e usa perda explícita
+normalizada por amostra de [training_loss.py](../../../src/norberto_classifier/training_loss.py).
+Hiperparâmetros numéricos e fontes do EP1 permanecem inalterados; o construtor
+histórico do Trainer é restaurado após a chamada. Artefatos históricos foram
+preservados. Nove testes específicos em CPU passaram, incluindo equivalência
+real de gradientes ModernBERT/PEFT/Trainer em cauda desigual. A simulação do
+corpus completo passou sem importar modelos. Naquele estágio, nenhum treino
+completo nem reavaliação de teste1 havia usado a correção; o acompanhamento
+posterior está vinculado acima.
 
-Scripts: `CPU audit` and
-`training-only stability probe`.
-The [public aggregate](../../results/data/norberto-training-investigation-results.json) contains
-measurements; raw reports are in `results/norberto-full-investigation-20261105/`.
+Experimentos causais adicionais devem isolar normalização, inclusão de dados e
+orçamento de atualizações usando controles somente de desenvolvimento e
+validação interna. Teste1 não pode escolher hiperparâmetros nem regras do
+ensemble enquanto for chamado de não consultado.
+
+Scripts: `CPU audit` e `training-only stability probe`.
+O [agregado público](../../results/data/norberto-training-investigation-results.json)
+contém as medições; os relatórios brutos estão em
+`results/norberto-full-investigation-20261105/`.

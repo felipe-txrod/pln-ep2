@@ -1,27 +1,28 @@
-# Four-member probability stacking
+<a id="four-member-probability-stacking"></a>
 
-This is the selected stacking package for frozen SVM, development-only RL,
-original EP1 NorBERTo, and EP1-split Qwen. It references the calibrators and
-group-disjoint partition in `models/ensemble-soft-qwen/`.
+# Stacking de probabilidades de quatro membros
 
-The multinomial L2 logistic meta-model receives 12 calibrated probabilities,
-ordered `svm, rl, norberto, qwen` by `c1, c234, c5`. It is fitted only on the
-1,972 meta-training rows; 2,027 calibration rows are excluded. Five grouped
-folds compare the fixed grid `C=[0.01, 0.1, 1, 10]`, with the one-standard-error
-rule selecting **C=0.1**. Qwen has nonzero learned coefficients in the meta-model.
+Este é o pacote selecionado para SVM congelado, RL de desenvolvimento,
+NorBERTo original EP1 e Qwen na divisão EP1. Referencia calibradores e partição
+com grupos disjuntos de `models/ensemble-soft-qwen/`.
 
-Test1 scored **440/900 (48.89%)**, macro-F1 **48.80%**. The original
-three-member stacking scored 442/900 (49.11%). Adding Qwen corrected 25 of
-its errors and harmed 27 correct answers, a net loss of two correct answers.
-No model, calibration parameter or regularization setting was adjusted using
-this test result.
+O meta-modelo logístico multinomial L2 recebe 12 probabilidades calibradas,
+em ordem `svm, rl, norberto, qwen` por `c1, c234, c5`. Ajusta somente nas
+1,972 linhas de meta-treino; exclui as 2,027 de calibração. Cinco folds
+agrupados comparam `C=[0.01, 0.1, 1, 10]`; a regra de um erro-padrão escolhe
+**C=0.1**. Os coeficientes aprendidos do Qwen são não nulos.
 
-CLI `predict-stacking` defaults here. The previous package remains available
-under `models/ensemble-stacking/`; its weights and provenance are unchanged.
-The JSON model is checked against its manifest, shared soft model, partition,
-class order, feature order and numerical probability contract before use.
+Teste1 obteve **440/900 (48.89%)**, macro-F1 **48.80%**. O stacking original
+de três membros acertou 442/900 (49.11%). Qwen corrigiu 25 erros e prejudicou
+27 acertos, perda líquida de dois. Nenhum modelo, parâmetro de calibração ou
+regularização foi ajustado por esse resultado.
 
-See the [results](../../docs/results/ensemble-qwen.md) and
-[commands](../../docs/guides/ensemble-qwen.md). Qwen's checkpoint selection used
-the original holdout, so these are historically exposed development inputs,
-not an independent validation sample for the full modeling process.
+A CLI `predict-stacking` usa este pacote por padrão. O anterior permanece em
+`models/ensemble-stacking/`, com pesos e procedência inalterados. Antes do
+uso, o JSON é conferido contra manifesto, modelo suave compartilhado,
+partição, ordem de classes/atributos e contrato numérico de probabilidades.
+
+Veja os [resultados](../../docs/results/ensemble-qwen.md) e
+[comandos](../../docs/guides/ensemble-qwen.md). A seleção do checkpoint Qwen
+usou o conjunto reservado original; essas entradas de desenvolvimento têm
+exposição histórica, não são amostra independente de validação de todo o processo.

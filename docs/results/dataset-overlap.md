@@ -1,76 +1,86 @@
-# EP1 and EP2 dataset overlap
+<a id="ep1-and-ep2-dataset-overlap"></a>
 
-[Results index](README.md) · [Machine-readable audit](data/dataset-overlap.json)
+# Sobreposição dos dados do EP1 e EP2
 
-## Assignment and dataset identity
+[Índice dos resultados](README.md) · [Auditoria em formato estruturado](data/dataset-overlap.json)
 
-The [EP2 assignment](../reference/assignment.md) explicitly reuses the EP1
-training corpus. It introduces test2 (897 rows) as the official prediction
-deliverable and provides test1 labels (900 rows) only for the final paired
-statistical comparison with the EP1 submission.
+<a id="assignment-and-dataset-identity"></a>
 
-The original audit inspected the following byte-identical training files,
-with the same SHA-256,
-20,092 rows, response texts, labels, and row order:
+## Enunciado e identidade dos dados
+
+O [enunciado do EP2](../reference/assignment.md) reutiliza explicitamente o
+corpus de treino do EP1. Introduz teste2 (897 linhas) como entrega oficial e
+fornece rótulos de teste1 (900 linhas) apenas para comparação estatística final
+pareada com a entrega do EP1.
+
+A auditoria original inspecionou os arquivos de treino abaixo, idênticos em
+bytes, com o mesmo SHA-256, 20,092 linhas, textos, rótulos e ordem:
 
 - `EP1/data/train.xlsx`
 - `EP2/data/train_ep1.xlsx`
 - `EP2/data/train_ep2.xlsx`
 
-The two unlabeled test1 workbooks are also byte-identical. The labeled test1
-workbook contains exactly the same 900 response texts in the same order.
-The EP2 training copies have since been consolidated into `EP2/data/train.xlsx`:
-`train_ep1.xlsx` was renamed and the identical `train_ep2.xlsx` was removed.
-The canonical workbook retains the same bytes, labels, and row order. The saved
-audit JSON retains the original filenames as historical provenance.
+As duas planilhas não rotuladas de teste1 também são idênticas em bytes.
+A rotulada contém exatamente os mesmos 900 textos na mesma ordem. As cópias
+de treino do EP2 foram depois consolidadas em `EP2/data/train.xlsx`:
+`train_ep1.xlsx` foi renomeada, e a cópia idêntica `train_ep2.xlsx`, removida.
+A planilha canônica preserva bytes, rótulos e ordem. O JSON da auditoria mantém
+os nomes originais como procedência histórica.
 
-## Text overlap across partitions
+<a id="text-overlap-across-partitions"></a>
 
-Exact matching compares complete response strings, without changing them.
-Normalized matching uses the EP1 grouping rule: HTML entity decoding, whitespace
-collapse, trimming, and lowercase. It preserves accents and punctuation.
+## Sobreposição textual entre partições
 
-| Reference corpus | Compared partition | Exact matching rows | Normalized matching rows |
+A comparação exata usa as respostas completas, sem alterações. A normalizada
+segue o agrupamento EP1: decodificação de entidades HTML, redução de espaços,
+remoção de espaços nas extremidades e conversão para minúsculas. Preserva
+acentos e pontuação.
+
+| Corpus de referência | Partição comparada | Linhas com correspondência exata | Linhas com correspondência normalizada |
 |---|---|---:|---:|
-| Training, 20,092 rows | Test1, 900 rows | 88 (9.78%) | 105 (11.67%) |
-| Training, 20,092 rows | Test2, 897 rows | 93 (10.37%) | 107 (11.93%) |
-| Test1, 900 rows | Test2, 897 rows | 37 (4.12%) | 47 (5.24%) |
+| Treino, 20,092 linhas | Teste1, 900 linhas | 88 (9.78%) | 105 (11.67%) |
+| Treino, 20,092 linhas | Teste2, 897 linhas | 93 (10.37%) | 107 (11.93%) |
+| Teste1, 900 linhas | Teste2, 897 linhas | 37 (4.12%) | 47 (5.24%) |
 
-Counts refer to rows in the compared partition, each counted once regardless
-of how many matches exist in the reference corpus. Exact matches are included
-in normalized counts. Training/test1 share 72 exact or 83 normalized unique
-texts; training/test2 share 67 exact or 73 normalized unique texts.
+As contagens referem-se às linhas da partição comparada, contadas uma vez,
+independentemente do número de correspondências no corpus de referência.
+Correspondências exatas estão incluídas nas normalizadas. Treino/teste1
+compartilham 72 textos únicos exatos ou 83 normalizados; treino/teste2,
+67 exatos ou 73 normalizados.
 
-## Repeated texts and label disagreement
+<a id="repeated-texts-and-label-disagreement"></a>
 
-Training contains 18,432 unique exact texts or 18,143 normalized texts.
-There are 291 exact-text groups with different labels (1,682 rows), increasing
-to 316 normalized groups (1,975 rows).
+## Textos repetidos e divergência de rótulos
 
-Among the 105 test1 rows with normalized matches in training:
+O treino contém 18,432 textos únicos exatos ou 18,143 normalizados.
+Há 291 grupos de textos exatos com rótulos diferentes (1,682 linhas),
+aumentando para 316 grupos normalizados (1,975 linhas).
 
-- 21 have a gold label matching every training occurrence of that text.
-- 72 have both matching and different labels among training occurrences.
-- 12 have no training occurrence with their gold label.
+Entre as 105 linhas de teste1 com correspondência normalizada no treino:
 
-The labeled test1 itself contains 10 exact-text groups with different labels
-(24 rows), or 11 normalized groups (31 rows). Matching a text therefore does
-not guarantee recovering its label. The workbooks expose response text and
-clarity only; they cannot establish whether repeated responses correspond to
-the same request, author, or annotation context.
+- 21 têm rótulo verdadeiro igual a todas as ocorrências de treino do texto.
+- 72 têm ocorrências de treino com rótulos iguais e diferentes.
+- 12 não têm ocorrência de treino com seu rótulo verdadeiro.
 
-## Interpretation and reproduction
+O próprio teste1 rotulado tem 10 grupos exatos com rótulos distintos (24 linhas),
+ou 11 normalizados (31 linhas). Encontrar o texto não garante recuperar seu
+rótulo. As planilhas expõem só texto e clareza; não estabelecem se respostas
+repetidas têm a mesma solicitação, autor ou contexto de anotação.
 
-The supplied files have textual overlap between training and both test sets;
-response texts are not fully disjoint. These counts describe the provided data,
-independently of any classifier. Official scores include all prescribed rows;
-the overlap and annotation ambiguity should be disclosed when interpreting
-generalization and paired significance tests. Test1 gold labels remain reserved
-for comparison and must not be added to training, retrieval, or tie-breaking.
+<a id="interpretation-and-reproduction"></a>
 
-The CPU audit performs no training or model inference, does not modify source
-workbooks, and publishes only aggregates and workbook hashes. Run it with
-openpyxl available, from the EP2 root, selecting a new output file:
+## Interpretação e reprodução
+
+Os arquivos fornecidos têm sobreposição textual entre treino e ambos os testes;
+os textos não são totalmente disjuntos. As contagens descrevem os dados
+independentemente dos classificadores. Resultados oficiais incluem todas as
+linhas; a sobreposição e a ambiguidade de anotação devem ser informadas na
+interpretação de generalização e significância pareada. O gabarito de Teste1
+permanece reservado à comparação, sem inclusão no treino, recuperação ou desempate.
+
+A auditoria em CPU não treina nem executa inferência, não modifica planilhas
+e publica só agregados e hashes. Execute com openpyxl disponível, na raiz do
+EP2, escolhendo novo arquivo de saída:
 
 ```bash
 PYTHONPATH=src python3 scripts/diagnostics/audit-dataset-overlap.py \
@@ -78,8 +88,8 @@ PYTHONPATH=src python3 scripts/diagnostics/audit-dataset-overlap.py \
   --output results/dataset-overlap-new/summary.json
 ```
 
-The saved historical audit inspected seven workbooks and all 21 pairs.
-The command now inspects six workbooks and all 15 pairs, using the canonical
-EP2 training workbook. Matching is exact or normalized;
-near-duplicates and semantic similarity were not evaluated. Synthetic tests
-verify occurrence counts, normalization, conflicting labels, and ordered identity.
+A auditoria histórica salva inspecionou sete planilhas e os 21 pares. O comando
+atual inspeciona seis e os 15 pares, usando a planilha canônica do EP2.
+A comparação é exata ou normalizada; não avaliou quase duplicatas ou similaridade
+semântica. Testes sintéticos verificam contagem de ocorrências, normalização,
+conflitos e identidade ordenada.

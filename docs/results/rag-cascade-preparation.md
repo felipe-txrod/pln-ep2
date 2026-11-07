@@ -1,42 +1,46 @@
-# RAG context study: prepared, execution deferred
+<a id="rag-context-study-prepared-execution-deferred"></a>
 
-[Commands and protocol](../guides/rag-stacking.md) · [Configuration](../../configs/rag-cascade.json)
+# Estudo de contexto RAG: preparado, execução adiada
 
-Historical implementation milestone, before the user authorized execution.
-The subsequent [completed pilot](rag-cascade-pilot.md) supersedes its execution
-status; the zero-call figures below describe preparation only.
+[Comandos e protocolo](../guides/rag-stacking.md) · [Configuração](../../configs/rag-cascade.json)
 
-The user explicitly requested preparing the implementation without running the
-experiment because their token allowance was running low. This change therefore
-contains code, configuration, documentation and offline synthetic tests only.
+Marco histórico de implementação, antes da autorização de execução.
+O [piloto concluído posteriormente](rag-cascade-pilot.md) substitui seu estado
+de execução; os números zero abaixo descrevem somente a preparação.
 
-| Activity | Status |
+O usuário pediu explicitamente preparar a implementação sem executar o
+experimento porque sua cota de tokens estava baixa. A mudança contém apenas
+código, configuração, documentação e testes sintéticos offline.
+
+| Atividade | Estado |
 |---|---|
-| Train-only TF-IDF, semantic E5 and hybrid retrieval | Implemented; real-data execution deferred |
-| Three/five-example comparison and four context ablations | Prepared; no new measured quality results |
-| New GPT classifier calls | **0** |
-| New real embeddings or model downloads | **0** |
-| New base-model fitting or real-data inference | **0** |
-| New production test2 workbooks or test1 evaluations | **0** |
-| Existing experiments and frozen models | Preserved |
+| Recuperação TF-IDF, E5 semântico e híbrida somente no treino | Implementada; execução real adiada |
+| Comparação de três/cinco exemplos e quatro ablações de contexto | Preparada; sem novos resultados de qualidade medidos |
+| Novas chamadas de classificação GPT | **0** |
+| Novos embeddings reais ou downloads de modelos | **0** |
+| Novo ajuste de modelos-base ou inferência em dados reais | **0** |
+| Novas planilhas de produção teste2 ou avaliações teste1 | **0** |
+| Experimentos existentes e modelos congelados | Preservados |
 
-The prepared study excludes all holdout rows from the RAG bank. It reuses
-checksum-pinned nested OOF meta-model predictions, selects retrieval in a small
-pilot and compares the four contexts in separate similarity groups. The bank,
-prompts and selection never use test gold. Future test1 inference and evaluation
-are blocked until the same frozen configuration has a completed, unchanged test2
-run and workbook.
+O estudo preparado exclui todas as linhas reservadas do banco RAG. Reutiliza
+previsões OOF aninhadas do meta-modelo fixadas por checksum, seleciona recuperação
+em pequeno piloto e compara quatro contextos em grupos distintos. Banco,
+prompts e seleção nunca usam gabaritos finais. Inferência/avaliação futura
+em teste1 fica bloqueada até a mesma configuração congelada ter uma execução
+e planilha de teste2 concluídas e inalteradas.
 
-Runtime controls retain persistent response/item caching, explicit attempt caps,
-bounded retries, circuit breaking and stacking fallback. Classification requires
-`--execute`; encoder downloads require `--download`. Defaults only preview calls.
+Os controles mantêm cache persistente por resposta/item, limites explícitos
+de tentativas, retentativas limitadas, disjuntor e fallback de stacking.
+Classificação exige `--execute`; download do codificador, `--download`.
+Os padrões só mostram prévias das chamadas.
 
-The complete offline suite passed **215 tests in 58.60 seconds**. A subsequent
-empty-route regression and final checks passed **15 RAG tests**, with fake
-embeddings and a fake backend. Containers had networking disabled and no GPU
-devices attached. These tests verify implementation behavior, not RAG accuracy.
+A suíte offline completa passou em **215 testes em 58.60 segundos**. Uma
+regressão posterior de roteamento vazio e verificações finais passaram em
+**15 testes RAG**, com embeddings e integração simulados. Contêineres tinham
+rede desativada e nenhuma GPU conectada. Testam comportamento da implementação,
+não acurácia RAG.
 
-ONNX Runtime and the E5 weights still need preparation when an actual study is
-authorized. No new RAG artifact has been selected or published, and the previous
-zero-GPT cascade choice remains unchanged. Any claim of improvement must wait
-for the explicitly deferred experiment.
+ONNX Runtime e pesos E5 ainda precisam ser preparados quando um estudo real
+for autorizado. Nenhum artefato RAG novo foi selecionado ou publicado; a
+escolha anterior da cascata sem GPT não muda. Alegações de melhora devem
+aguardar o experimento explicitamente adiado.

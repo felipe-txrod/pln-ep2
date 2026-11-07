@@ -1,16 +1,32 @@
-# RAG context confirmation: stacking without GPT selected
+<a id="rag-context-confirmation-stacking-without-gpt-selected"></a>
 
-[Aggregate and independent verification](data/rag-cascade-confirmation.json) · [Pilot report](rag-cascade-pilot.md) · [Protocol](../guides/rag-stacking.md)
+# Confirmação de contexto RAG: stacking sem GPT selecionado
 
-The manually launched confirmation completed all four context variants, with **94 successful calls, no failed attempts and no fallback**. Its 1,884 OOF validation rows were retained. The best result was **original stacking with zero GPT routing**: 910 correct, accuracy **48.30%**, macro-F1 **48.08%**. Every tested nonzero routing configuration lost both accuracy and macro-F1 against the same baseline.
+[Agregado e verificação independente](data/rag-cascade-confirmation.json) · [Relatório do piloto](rag-cascade-pilot.md) · [Protocolo](../guides/rag-stacking.md)
 
-The best nonzero macro-F1 was local predictions without RAG at 5% routing: 906 correct, accuracy 48.09%, macro-F1 47.84%. Hybrid RAG with three examples plus local predictions scored 47.83% at 5% and 47.82% at 10%. The exploratory pilot gain did not persist on confirmation. No new remote execution, production-default change, frozen package or final-test evaluation was made during scoring.
+A confirmação iniciada manualmente concluiu as quatro variantes de contexto,
+com **94 chamadas válidas, nenhuma tentativa falha e nenhum fallback**.
+As 1,884 linhas OOF foram mantidas. O melhor resultado foi **stacking original
+com roteamento zero ao GPT**: 910 acertos, acurácia **48.30%**, macro-F1
+**48.08%**. Todas as configurações testadas com roteamento positivo perderam
+acurácia e macro-F1 frente à mesma referência.
 
-## Complete paired comparison
+O melhor macro-F1 com GPT foi previsões locais sem RAG a 5%: 906 acertos,
+acurácia 48.09%, macro-F1 47.84%. RAG híbrido com três exemplos e previsões
+locais obteve 47.83% a 5% e 47.82% a 10%. O ganho exploratório do piloto não
+persistiu. A avaliação não realizou nova execução remota, mudança de padrão,
+congelamento de pacote ou avaliação de teste final.
 
-Metrics include every confirmation row, not only the routed subset. Five percent routes 94 targets; ten percent routes 188. Both budgets reuse the same saved responses; they are not separate API runs. Corrected and harmed counts compare against stacking on the same rows.
+<a id="complete-paired-comparison"></a>
 
-| Context | GPT routing | Correct | Accuracy | Macro-F1 | Corrected | Harmed |
+## Comparação pareada completa
+
+As métricas incluem todas as linhas da confirmação, não só as roteadas.
+Cinco por cento encaminham 94 alvos; dez por cento, 188. Ambos reutilizam
+as mesmas respostas salvas, sem execuções separadas de API. Correções e
+prejuízos comparam com stacking nas mesmas linhas.
+
+| Contexto | Roteamento GPT | Acertos | Acurácia | Macro-F1 | Corrigidos | Prejudicados |
 |---|---:|---:|---:|---:|---:|---:|
 | Stacking | 0% | 910/1884 | 48.30% | 48.08% | 0 | 0 |
 | text | 5% | 907/1884 | 48.14% | 47.80% | 23 | 26 |
@@ -22,20 +38,30 @@ Metrics include every confirmation row, not only the routed subset. Five percent
 | hybrid-3-local | 5% | 906/1884 | 48.09% | 47.83% | 17 | 21 |
 | hybrid-3-local | 10% | 907/1884 | 48.14% | 47.82% | 29 | 32 |
 
-The stored selection has `budget: 0.0` and the inactive recipe name `text`, chosen by the predefined tie breaker. This means stacking only; it does not mean text-only GPT won. The existing zero-GPT cascade already has this behavior and was preserved.
+A seleção armazenada tem `budget: 0.0` e nome de receita inativa `text`,
+escolhido pelo desempate predefinido. Isso significa só stacking; não significa
+vitória de GPT somente com texto. A cascata existente sem GPT já tem esse
+comportamento e foi preservada.
 
-## Per-class F1 and observed error pattern
+<a id="per-class-f1-and-observed-error-pattern"></a>
 
-| Configuration | F1 c1 | F1 c234 | F1 c5 |
+## F1 por classe e padrão observado de erros
+
+| Configuração | F1 c1 | F1 c234 | F1 c5 |
 |---|---:|---:|---:|
 | Stacking | 44.36% | 45.43% | 54.45% |
 | Local, 5% | 44.44% | 44.59% | 54.49% |
-| Hybrid RAG + local, 5% | 44.22% | 44.41% | 54.87% |
-| Hybrid RAG + local, 10% | 44.24% | 44.14% | 55.08% |
+| RAG híbrido + local, 5% | 44.22% | 44.41% | 54.87% |
+| RAG híbrido + local, 10% | 44.24% | 44.14% | 55.08% |
 
-For hybrid RAG plus local predictions at 10%, the number of correctly classified c5 rows increased from 361 to 377 and c1 from 238 to 240. Correct c234 rows fell from 311 to 290. Those changes produced three fewer correct decisions overall: 29 errors corrected versus 32 correct decisions harmed. Predicted c5 frequency increased from 699 to 742, while c234 fell from 699 to 644. This is an observed shift toward high-clarity labels; its cause is not established by this experiment.
+Com RAG híbrido e previsões locais a 10%, os acertos c5 aumentaram de 361 para
+377 e c1 de 238 para 240. Os de c234 caíram de 311 para 290. O saldo foi três
+acertos a menos: 29 erros corrigidos contra 32 acertos prejudicados. A
+frequência predita c5 subiu de 699 para 742, enquanto c234 caiu de 699 para
+644. Observa-se deslocamento para rótulos de alta clareza; o experimento não
+estabelece sua causa.
 
-Confusion matrices use true rows and predicted columns in order `c1`, `c234`, `c5`.
+As matrizes usam linhas verdadeiras e colunas preditas em ordem `c1`, `c234`, `c5`.
 
 Stacking:
 
@@ -45,7 +71,7 @@ Stacking:
  89 177 361
 ```
 
-Hybrid RAG + local, 10%:
+RAG híbrido + local, 10%:
 
 ```text
 240 196 151
@@ -53,32 +79,67 @@ Hybrid RAG + local, 10%:
  92 158 377
 ```
 
-## Actual resources
+<a id="actual-resources"></a>
 
-| Context | Successful calls | Estimated USD | Arm wall seconds |
+## Recursos reais
+
+| Contexto | Chamadas válidas | USD estimados | Segundos totais do braço |
 |---|---:|---:|---:|
 | text | 23 | 0.341154 | 94.87 |
 | local | 24 | 0.363062 | 100.76 |
 | hybrid-3-rag | 23 | 0.459068 | 94.38 |
 | hybrid-3-local | 24 | 0.496268 | 101.33 |
 
-- Confirmation total: **94 successful calls**, zero failures, within its 128-attempt cap. Identical requests were deduplicated without dropping evaluation rows.
-- Known tokens: **957,003 input**, including **236,544 cached input**, and **19,498 output**.
-- Configured standard API-equivalent estimate: **USD 1.6595524**. This is not a ChatGPT subscription invoice.
-- Summed arm wall time: **391.34 seconds** (6 minutes 31 seconds), excluding local preparation. Mean request latency: **8.09 seconds**; summed request latency: **760.71 seconds**, with two concurrent workers.
-- Combined pilot and confirmation: **178 successful calls plus three archived failed pilot attempts**, 181 registered attempts. Known-usage estimate: **USD 3.6825404**. Archived pilot failures retain unknown usage excluded from that estimate.
-- Scoring and independent verification made **zero new GPT calls**.
+- Total da confirmação: **94 chamadas válidas**, zero falhas, dentro do limite
+  de 128 tentativas. Pedidos idênticos foram deduplicados sem remover linhas.
+- Tokens conhecidos: **957,003 de entrada**, incluindo **236,544 em cache**,
+  e **19,498 de saída**.
+- Estimativa configurada equivalente à API padrão: **USD 1.6595524**.
+  Não é fatura da assinatura ChatGPT.
+- Soma dos tempos dos braços: **391.34 segundos** (6 minutos e 31 segundos),
+  sem preparação local. Latência média: **8.09 segundos**; soma das latências:
+  **760.71 segundos**, com dois processos simultâneos.
+- Piloto e confirmação juntos: **178 chamadas válidas e três tentativas falhas
+  arquivadas do piloto**, 181 tentativas registradas. Estimativa com consumo
+  conhecido: **USD 3.6825404**. As falhas mantêm consumo desconhecido excluído
+  dessa estimativa.
+- Avaliação e verificação independente fizeram **zero novas chamadas GPT**.
 
-The model/runtime, original texts, training-only RAG examples and prompts remained frozen. Codex 0.166.0 was selected using its immutable versioned executable, avoiding the pilot update interruption. Cache, attempt histories and previous experiments were retained.
+Modelo/ambiente, textos originais, exemplos RAG restritos ao treino e prompts
+permaneceram congelados. Codex 0.166.0 foi selecionado pelo executável
+versionado imutável, evitando a interrupção por atualização do piloto.
+Cache, históricos de tentativas e experimentos anteriores foram mantidos.
 
-## Isolation, verification and next-state boundaries
+<a id="isolation-verification-and-next-state-boundaries"></a>
 
-All 48 pilot similarity groups are excluded from confirmation; 40 additional meta-validation rows in those groups are excluded as well, leaving 1,884 of the original 1,972 OOF rows. Retrieval uses only the original 16,093-row base-training bank, excluding all 3,999 holdout rows. The four contexts are text-only, local predictions, hybrid RAG with three examples, and both evidence sources. Routing depends only on saved OOF predictions and uncertainty.
+## Isolamento, verificação e limites das próximas etapas
 
-Every context had a persisted, checksum-verified 1,884-row prediction file before scoring opened the validation labels. An independent standard-library verifier reconstructed routing at 0/5/10%, all twelve metric sets and confusion matrices, corrected/harmed counts, final 10% prediction files, and resource totals directly from the attempt journals. All checks passed.
+Os 48 grupos de similaridade do piloto ficam fora da confirmação; outras
+40 linhas de meta-validação desses grupos também são excluídas, restando
+1,884 das 1,972 OOF originais. A recuperação usa só o banco original de
+16,093 linhas, excluindo 3,999 reservadas. Os quatro contextos são texto,
+previsões locais, RAG híbrido com três exemplos e ambas as evidências.
+O roteamento depende apenas das previsões OOF salvas e da incerteza.
 
-Selecting zero routing follows the predeclared macro-F1 criterion. Small observed losses are not proof that GPT is universally inferior. The pilot sample and confirmation cohort have different composition and routing coverage, so their absolute metric levels should not be compared as a learning curve. Previous router development on OOF validation and historical Qwen checkpoint exposure remain inherited limitations.
+Cada contexto tinha arquivo de 1,884 previsões persistido e verificado por
+checksum antes da abertura dos rótulos. Um verificador independente da biblioteca
+padrão reconstruiu roteamento 0/5/10%, os doze conjuntos de métricas/matrizes,
+correções/prejuízos, arquivos finais de 10% e totais de recursos diretamente
+dos registros de tentativas. Todas as verificações passaram.
 
-**Test1 and test2 were not opened in this stage.** Test2 has no gold here and only receives a prediction workbook for delivery; final accuracy/F1 require labeled test1 after configuration freezing. No final prediction or freezing command was executed as part of this verification. This completed confirmation does not need to be rerun.
+Selecionar zero segue o critério predefinido de macro-F1. Pequenas perdas não
+provam inferioridade universal do GPT. Piloto e confirmação têm composição
+e cobertura de roteamento diferentes; seus níveis absolutos não devem ser
+comparados como curva de aprendizado. Desenvolvimento anterior do roteador
+na validação OOF e exposição do checkpoint Qwen continuam limitações herdadas.
 
-Local evidence: `results/rag-context-pilot-20261106/confirmation/{plan,run,selection,independent-summary}.json` and each context directory with requests, retrieval traces, decisions, predictions and attempt histories. Public aggregates contain no original texts or individual gold labels.
+**Teste1 e teste2 não foram abertos nesta etapa.** Teste2 não tem gabarito aqui
+e só recebe planilha de predições para entrega; acurácia/F1 finais exigem
+Teste1 rotulado após congelar. Nenhum comando final de predição ou congelamento
+foi executado nesta verificação. A confirmação concluída não precisa ser repetida.
+
+Evidência local:
+`results/rag-context-pilot-20261106/confirmation/{plan,run,selection,independent-summary}.json`
+e cada diretório de contexto com solicitações, recuperação, decisões,
+previsões e tentativas. Agregados públicos não contêm textos originais nem
+rótulos individuais verdadeiros.

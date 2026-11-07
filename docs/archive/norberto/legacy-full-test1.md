@@ -1,127 +1,140 @@
-# Full-corpus NorBERTo evaluation on labeled test1
+<a id="full-corpus-norberto-evaluation-on-labeled-test1"></a>
 
-[Documentation index](../../README.md) · Historical experiment record; use the guides for current commands.
+# Avaliação do NorBERTo treinado no corpus completo em teste1 rotulado
 
-The subsequent [training-only investigation](regression-investigation.md)
-documents optimization instability, a reproduced loss-normalization bug,
-and the tested correction for future training. Historical results below remain unchanged.
+[Índice da documentação](../../README.md) · Registro histórico do experimento; use os guias para comandos atuais.
 
-The NorBERTo adapter refitted on all **20,092 EP1 training responses** achieved
-**37.89% accuracy (341/900)** and **36.47% macro-F1** on test1. The original EP1
-submission achieved 48.00% (432/900). Full-corpus refitting completed technically,
-but its observed test1 quality decreased by **91 correct predictions**, or
-**10.11 percentage points**. The original adapter remains unchanged.
+A [investigação posterior restrita ao treino](regression-investigation.md)
+documenta instabilidade na otimização, um erro reproduzido na normalização da
+perda e a correção testada para treinamentos futuros. Os resultados históricos
+abaixo permanecem inalterados.
 
-## Training and artifact verification
+O adaptador NorBERTo retreinado nas **20,092 respostas de treino do EP1** obteve
+**37.89% de acurácia (341/900)** e **36.47% de macro-F1** em teste1. A entrega
+original do EP1 obteve 48.00% (432/900). O retreinamento no corpus completo foi
+concluído tecnicamente, mas perdeu **91 previsões corretas**, ou **10.11 pontos
+percentuais**, em teste1. O adaptador original permanece inalterado.
 
-The run in `results/norberto-full-training/` completed both configured epochs
-and all **2,512 optimizer updates** in **2,389.49 seconds (39.82 minutes)**.
-It did not stop because of the 75-minute budget. The effective configuration
-matches the original two-epoch EP1 recipe: LoRA rank 4/alpha 8/dropout 0.05,
-`Wqkv`, context 512 with head/tail truncation, FP32, SDPA, learning rate 0.001,
-batch 4, accumulation 4, weight decay 0.01, warmup 0.1, and seed 42.
+<a id="training-and-artifact-verification"></a>
 
-All 20,092 saved training row IDs, text hashes, and labels were reconciled
-against the unchanged EP1 training workbook. The former holdout was included;
-test1/test2 were not training inputs, and no internal validation was performed.
-The inherited configuration retains historical split descriptors; the full-data
-runner does not apply that split.
+## Verificação do treinamento e dos artefatos
 
-The new adapter has **272,643 finite parameters**, 22 nonzero LoRA B tensors,
-and the trained classification weight and bias. Its SHA-256 is:
+A execução em `results/norberto-full-training/` concluiu as duas épocas
+configuradas e as **2,512 atualizações do otimizador** em **2,389.49 segundos
+(39.82 minutos)**. Não foi interrompida pelo orçamento de 75 minutos. A
+configuração efetiva corresponde à receita original de duas épocas do EP1:
+LoRA posto 4/alpha 8/dropout 0.05, `Wqkv`, contexto 512 com truncamento início/fim,
+FP32, SDPA, taxa de aprendizado 0.001, lote 4, acumulação 4, decaimento de pesos
+0.01, aquecimento 0.1 e semente 42.
+
+Todos os 20,092 IDs, hashes de texto e rótulos das linhas salvas de treino foram
+conferidos com a planilha original do EP1. O antigo conjunto reservado foi
+incluído; teste1/teste2 não entraram no treino, e não houve validação interna.
+A configuração herdada mantém descritores históricos da divisão; o executor
+com os dados completos não aplica essa divisão.
+
+O novo adaptador tem **272,643 parâmetros finitos**, 22 tensores LoRA B não nulos
+e os pesos e vieses treinados da classificação. Seu SHA-256 é:
 
 ```text
 ea0bd1ef02516e0de768dfb8d76313c3a8cacd25d43d9f4431c5c35a4b2c86be
 ```
 
-All exported file hashes were verified. The public NorBERTo base checksum
-matches the pinned revision `db73446f89c96044863ea05a39f680524b84bccb`.
-A separate CPU-only loading check compared all **46 loaded adapter tensors**
-against the safetensors file using exact equality. Every tensor, including the
-classification head, matched; the class mapping was also correct. This check
-performed no inference or training.
+Todos os hashes dos arquivos exportados foram verificados. O checksum da base
+pública NorBERTo corresponde à revisão fixada
+`db73446f89c96044863ea05a39f680524b84bccb`. Uma verificação separada de carregamento
+somente em CPU comparou, por igualdade exata, os **46 tensores carregados do
+adaptador** com o arquivo safetensors. Todos coincidiram, inclusive a cabeça de
+classificação; o mapeamento de classes também estava correto. Essa verificação
+não realizou inferência nem treinamento.
 
-## Test1 results
+<a id="test1-results"></a>
 
-Inference read only the texts from `data/test1.xlsx`. Predictions were saved
-before opening the gold workbook `test1-rotulado-para-teste-estatistico.xlsx`.
-All 900 rows, texts, and original IDs were preserved and aligned.
+## Resultados de Teste1
 
-| Metric | Result |
+A inferência leu somente os textos de `data/test1.xlsx`. As previsões foram
+salvas antes de abrir o gabarito `test1-rotulado-para-teste-estatistico.xlsx`.
+As 900 linhas, seus textos e IDs originais foram preservados e alinhados.
+
+| Métrica | Resultado |
 |---|---:|
-| Accuracy | 37.89% |
-| Correct / incorrect | 341 / 559 |
+| Acurácia | 37.89% |
+| Acertos / erros | 341 / 559 |
 | Macro-F1 | 36.47% |
-| Macro-precision | 37.27% |
-| Macro-recall | 37.89% |
+| Precisão macro | 37.27% |
+| Revocação macro | 37.89% |
 
-| Class | Precision | Recall | F1 | Correct / support |
+| Classe | Precisão | Revocação | F1 | Acertos / total |
 |---|---:|---:|---:|---:|
 | `c1` | 34.57% | 18.67% | 24.24% | 56 / 300 |
 | `c234` | 38.48% | 49.00% | 43.11% | 147 / 300 |
 | `c5` | 38.76% | 46.00% | 42.07% | 138 / 300 |
 
-Confusion matrix: rows are true labels and columns are predictions.
+Matriz de confusão: as linhas são os rótulos verdadeiros e as colunas, as previsões.
 
-| True / predicted | `c1` | `c234` | `c5` |
+| Verdadeiro / predito | `c1` | `c234` | `c5` |
 |---|---:|---:|---:|
 | `c1` | 56 | 129 | 115 |
 | `c234` | 50 | 147 | 103 |
 | `c5` | 56 | 106 | 138 |
 
-The model predicted `c1` 162 times, `c234` 382 times, and `c5` 356 times.
-The largest loss relative to the original submission was in `c1`:
+O modelo previu `c1` 162 vezes, `c234` 382 vezes e `c5` 356 vezes.
+A maior perda em relação à entrega original ocorreu em `c1`:
 
-| True class | Original EP1 correct | Full refit correct | Difference |
+| Classe verdadeira | Acertos do EP1 original | Acertos do retreinamento completo | Diferença |
 |---|---:|---:|---:|
 | `c1` | 118 | 56 | −62 |
 | `c234` | 155 | 147 | −8 |
 | `c5` | 159 | 138 | −21 |
 
-## Paired comparison and interpretation
+<a id="paired-comparison-and-interpretation"></a>
 
-The original EP1 predictions were reused without executing the original model:
-both models were correct on 192 rows, only the original on 240, only the full
-refit on 149, and neither on 319. Exact two-sided McNemar yielded
-**p = 0.000004585**, in the direction favoring the original model. Repeated
-texts and prior inspection of test1 limit interpretation as an independent
-confirmatory comparison.
+## Comparação pareada e interpretação
 
-| Saved model | Correct / 900 | Accuracy |
+As previsões originais do EP1 foram reutilizadas sem executar o modelo original:
+ambos acertaram 192 linhas, apenas o original acertou 240, apenas o retreinado
+completo acertou 149 e nenhum acertou 319. O teste exato bilateral de McNemar
+resultou em **p = 0.000004585**, favorecendo o modelo original. Textos repetidos
+e a inspeção anterior de teste1 limitam sua interpretação como comparação
+confirmatória independente.
+
+| Modelo salvo | Acertos / 900 | Acurácia |
 |---|---:|---:|
 | SVM | 445 | 49.44% |
-| Logistic regression | 444 | 49.33% |
-| Original EP1 NorBERTo | 432 | 48.00% |
+| Regressão logística | 444 | 49.33% |
+| NorBERTo original do EP1 | 432 | 48.00% |
 | Qwen3-1.7B QLoRA | 420 | 46.67% |
-| NorBERTo full-corpus refit | 341 | 37.89% |
+| NorBERTo retreinado no corpus completo | 341 | 37.89% |
 
-The checks establish that the requested corpus and recipe were used and the
-new weights were loaded correctly. They do not establish the cause of the
-performance decrease. More training responses change the number of updates,
-sampling order, and optimization trajectory even when hyperparameters remain
-fixed. No causal attribution to a particular change is supported by this run.
-No retraining, checkpoint search, threshold adjustment, model replacement, or
-ensemble modification was performed during evaluation.
+As verificações confirmam o uso do corpus e da receita solicitados e o
+carregamento correto dos novos pesos. Não estabelecem a causa da queda de
+desempenho. Mais respostas de treino alteram o número de atualizações, a ordem
+de amostragem e a trajetória da otimização, mesmo com hiperparâmetros fixos.
+Esta execução não sustenta atribuição causal a uma mudança específica. Durante
+a avaliação não houve retreinamento, busca de checkpoints, ajuste de limiares,
+substituição de modelo ou alteração do ensemble.
 
-This is an isolated comparison without a preceding test2 run for this adapter.
-The historical holdout is now part of this model's training data and cannot
-serve as its unseen validation set. Test1 metrics must not guide a new rule
-while the same test is presented as an untouched final evaluation.
+Esta é uma comparação isolada, sem execução anterior de teste2 para este
+adaptador. O conjunto reservado histórico agora integra seu treino e não pode
+ser validação inédita. As métricas de teste1 não devem orientar uma nova regra
+se o mesmo teste for apresentado como avaliação final ainda não consultada.
 
-## Execution and reproduction
+<a id="execution-and-reproduction"></a>
 
-The adapter was evaluated once on the RX 6650 XT, using the original EP1
-inference construction and batch size 8. The ROCm override was `10.3.0`.
-The container had no network access; project files, EP1 sources, and the base
-cache were mounted read-only. Loading, tokenization, and inference took
-**34.47 seconds**. Peak PyTorch allocated/reserved VRAM was
+## Execução e reprodução
+
+O adaptador foi avaliado uma vez na RX 6650 XT, usando a construção original de
+inferência do EP1 e lote 8. A substituição de versão do ROCm foi `10.3.0`.
+O contêiner não tinha rede; arquivos do projeto, fontes do EP1 e cache da base
+foram montados somente para leitura. Carregamento, tokenização e inferência
+levaram **34.47 segundos**. O pico de VRAM alocada/reservada pelo PyTorch foi
 **951.81 / 1,136 MiB**.
 
-The reusable entry point is
+O ponto de entrada reutilizável é
 [`scripts/norberto/evaluate-test1.py`](../../../scripts/norberto/evaluate-test1.py).
-It requires the original EP1 source and pinned base cache. Inside the validated
-ROCm container, with EP1 mounted at `/ep1` and its Hugging Face cache mounted
-at `/workspace/.cache/huggingface`:
+Exige o código original do EP1 e o cache da base fixada. Dentro do contêiner
+ROCm validado, com EP1 montado em `/ep1` e seu cache Hugging Face em
+`/workspace/.cache/huggingface`:
 
 ```bash
 HSA_OVERRIDE_GFX_VERSION=10.3.0 PYTHONPATH=src \
@@ -131,8 +144,9 @@ python3 scripts/norberto/evaluate-test1.py \
   --output-dir results/norberto-full-test1-another-new-run
 ```
 
-An independent standard-library ZIP/XML reader reconciled all gold labels,
-confusion counts, per-class scores, probability sums, logits/argmax predictions,
-and source/prediction hashes. Raw reports remain in
-`results/norberto-full-test1-20261105-003353/`; the full public aggregate is
+Um leitor ZIP/XML independente, baseado na biblioteca padrão, conferiu todos
+os rótulos verdadeiros, contagens de confusão, resultados por classe, somas das
+probabilidades, previsões por logits/argmax e hashes das fontes/previsões.
+Os relatórios brutos estão em `results/norberto-full-test1-20261105-003353/`;
+o agregado público completo é
 [`norberto-full-test1-results.json`](../../results/data/norberto-full-test1-results.json).

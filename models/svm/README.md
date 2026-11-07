@@ -1,18 +1,20 @@
-# Frozen SVM
+<a id="frozen-svm"></a>
 
-`model.joblib` contains the trained word/character TF-IDF + LinearSVC pipeline
-with `C=0.05`, including vocabularies, IDF values, coefficients, and intercepts.
-The file is approximately 3.59 MB and can be versioned in ordinary Git.
+# SVM congelado
 
-Original artifact SHA-256:
+`model.joblib` contém pipeline treinado TF-IDF de palavras/caracteres +
+LinearSVC com `C=0.05`, incluindo vocabulários, IDF, coeficientes e interceptos.
+Tem cerca de 3.59 MB e pode ser versionado em Git comum.
+
+SHA-256 do artefato original:
 
 ```text
 9a30abb664d5023d70f444641c4095cf800acba0c98fd8658087e7adad78ee12
 ```
 
-`metadata.json`, `config.json`, and `frozen_manifest.json` preserve EP1
-provenance and parameters. `manifest.json` identifies the distributed copies.
-Inference runs on CPU without retraining or artificial probabilities.
+`metadata.json`, `config.json` e `frozen_manifest.json` preservam procedência
+e parâmetros EP1. `manifest.json` identifica as cópias distribuídas.
+A inferência usa CPU sem retreinamento ou probabilidades artificiais.
 
-See the [usage guide](../../src/svm_classifier/README.md) and
-[test1 evaluation](../../docs/results/lexical-test1.md).
+Veja o [guia de uso](../../src/svm_classifier/README.md) e a
+[avaliação teste1](../../docs/results/lexical-test1.md).

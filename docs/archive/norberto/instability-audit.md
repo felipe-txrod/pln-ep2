@@ -1,163 +1,180 @@
-# NorBERTo instability: optimizer and backend audit
+<a id="norberto-instability-optimizer-and-backend-audit"></a>
 
-[Documentation index](../../README.md) · Historical experiment record; use the guides for current commands.
+# Instabilidade do NorBERTo: auditoria do otimizador e da implementação computacional
 
-The corrected development-only adapter is unstable, but the new checks do
-**not identify an incorrect sample-normalized loss or an extra accumulation
-division**. The complete tiny-model Trainer loop agrees with an independent
-manual CPU implementation, including GPU execution. The saved adapter's large
-derivatives also occur on CPU and agree locally with finite differences.
-The measured sensitivity is concentrated in the **first attention LoRA**.
+[Índice da documentação](../../README.md) · Registro histórico do experimento; use os guias para comandos atuais.
 
-The exact cause of the training trajectory remains unresolved. Passing these
-checks does not certify the entire training pipeline or recover model quality.
+O adaptador corrigido treinado somente no desenvolvimento é instável, mas as
+novas verificações **não identificam perda incorretamente normalizada por
+amostra nem divisão adicional na acumulação**. O ciclo completo do Trainer
+com modelo pequeno coincide com uma implementação manual independente em CPU,
+inclusive quando executado em GPU. As derivadas elevadas do adaptador salvo
+também ocorrem em CPU e concordam localmente com diferenças finitas. A
+sensibilidade medida concentra-se no **LoRA da primeira atenção**.
 
-## Complete optimizer-loop verification
+A causa exata da trajetória de treinamento permanece sem solução. Passar nessas
+verificações não certifica todo o pipeline nem recupera a qualidade do modelo.
 
-``audit-norberto-optimizer.py`` uses a
-random two-layer ModernBERT with PEFT, 29 synthetic examples, and zero dropout.
-It executes four updates over two epochs, alternately accumulating batches of
-`4+4+4+4` and `4+4+4+1`. The production loss-injection context is used unchanged.
-The full `Trainer.train()` loop is compared with a separate model and manual
-cross entropy, clipping, and AdamW updates on CPU.
+<a id="complete-optimizer-loop-verification"></a>
 
-| Check | CPU Trainer | GPU Trainer versus CPU reference |
+## Verificação completa do ciclo do otimizador
+
+``audit-norberto-optimizer.py`` usa um ModernBERT aleatório de duas camadas com
+PEFT, 29 exemplos sintéticos e dropout zero. Executa quatro atualizações em
+duas épocas, alternando acumulação de lotes `4+4+4+4` e `4+4+4+1`. O contexto
+de injeção da perda de produção é usado sem alterações. O ciclo completo
+`Trainer.train()` é comparado com outro modelo e entropia cruzada, limitação
+de gradiente e atualizações AdamW manuais em CPU.
+
+| Verificação | Trainer em CPU | Trainer em GPU contra referência em CPU |
 |---|---:|---:|
-| Updates checked | 4 | 4 |
-| Maximum relative gradient error | 9.48e-8 | 2.57e-7 |
-| Maximum absolute parameter difference | 1.50e-8 | 1.50e-8 |
-| Maximum post-clipping gradient norm | < 1.00000 | < 1.00000 |
-| Frozen parameters unchanged | Yes | Yes |
+| Atualizações verificadas | 4 | 4 |
+| Erro relativo máximo do gradiente | 9.48e-8 | 2.57e-7 |
+| Diferença absoluta máxima dos parâmetros | 1.50e-8 | 1.50e-8 |
+| Norma máxima do gradiente após limitação | < 1.00000 | < 1.00000 |
+| Parâmetros congelados inalterados | Sim | Sim |
 
-The actual batch counts are 16 and 13, respectively; every microbatch receives
-the correct accumulated count. Accumulated loss agrees with manual mean cross
-entropy. The test independently checks the linear scheduler's four learning
-rates, gradient clearing between updates, and frozen parameter preservation.
-The accelerator's accumulation divisor is 1 in this Trainer integration;
-the custom loss already handles the four microbatches. There is no additional
-division by four in the checked execution.
+Os totais reais dos lotes são 16 e 13, respectivamente; cada microlote recebe
+a contagem acumulada correta. A perda acumulada coincide com a entropia cruzada
+média manual. O teste verifica independentemente as quatro taxas de aprendizado
+do agendador linear, limpeza dos gradientes entre atualizações e preservação dos
+parâmetros congelados. O divisor de acumulação do acelerador é 1 nesta
+integração com Trainer; a perda personalizada já trata os quatro microlotes.
+Não há divisão adicional por quatro na execução verificada.
 
-The existing loss and partition suites also passed: **18 tests in 5.19 seconds**.
-These tests provide specific integration evidence, not proof of every update
-in a full-size training run.
+As suítes existentes de perda e partição também passaram: **18 testes em 5.19
+segundos**. Esses testes fornecem evidência específica de integração, não prova
+de todas as atualizações de um treinamento completo.
 
-## Real saved-adapter gradients on CPU and GPU
+<a id="real-saved-adapter-gradients-on-cpu-and-gpu"></a>
 
-``audit-norberto-backends.py`` selected
-the first four responses per class with at most 64 tokens from the shared
-development training rows. This fixed batch has 12 examples, padded to 64
-tokens. Dropout was disabled to isolate numerical differences. No optimizer
-was constructed for any production model.
+## Gradientes do adaptador real salvo em CPU e GPU
 
-| Adapter | CPU SDPA norm | CPU eager norm | GPU SDPA norm |
+``audit-norberto-backends.py`` selecionou as primeiras quatro respostas por
+classe com até 64 tokens das linhas compartilhadas de treino de desenvolvimento.
+Esse lote fixo tem 12 exemplos, preenchidos até 64 tokens. O dropout foi
+desativado para isolar diferenças numéricas. Nenhum otimizador foi construído
+para qualquer modelo de produção.
+
+| Adaptador | Norma CPU SDPA | Norma CPU eager | Norma GPU SDPA |
 |---|---:|---:|---:|
-| Original EP1 | 1.84432 | 1.84432 | 1.84432 |
-| Corrected full-corpus refit | 1.71013 | 1.71012 | 1.71011 |
-| Corrected development-only refit | 158.82942 | 158.83560 | 158.98747 |
+| EP1 original | 1.84432 | 1.84432 | 1.84432 |
+| Retreinamento corrigido no corpus completo | 1.71013 | 1.71012 | 1.71011 |
+| Retreinamento corrigido somente no desenvolvimento | 158.82942 | 158.83560 | 158.98747 |
 
-For the development-only adapter, CPU eager differs from CPU SDPA by a
-relative gradient vector difference of **4.30e-5**. GPU SDPA differs from CPU
-SDPA by **0.001058**, with maximum logit difference **0.0003555**. The large
-gradient is present across all three implementations. This makes a failure
-exclusive to the GPU override or to SDPA insufficient to explain the measured
-checkpoint sensitivity. It does not exclude backend effects during training.
+Para o adaptador somente de desenvolvimento, CPU eager difere de CPU SDPA em
+**4.30e-5** de diferença relativa do vetor de gradientes. GPU SDPA difere de
+CPU SDPA em **0.001058**, com diferença máxima de logits **0.0003555**. O
+gradiente elevado está presente nas três implementações. Assim, uma falha
+exclusiva da substituição de GPU ou de SDPA é insuficiente para explicar a
+sensibilidade medida no checkpoint. Isso não exclui efeitos da implementação
+computacional durante o treino.
 
-All loaded adapter tensors match their saved tensors exactly after the probes;
-all three saved weight hashes are unchanged. Two fresh constructions from the
-pinned public base and seed 42 reproduce the same trainable-parameter hash in
-the current environment. This does not prove historical bitwise identity.
+Todos os tensores carregados coincidem exatamente com os salvos após os testes;
+os três hashes dos pesos permanecem inalterados. Duas novas construções a
+partir da base pública fixada e semente 42 reproduzem o mesmo hash dos parâmetros
+treináveis no ambiente atual. Isso não prova identidade histórica bit a bit.
 
-## Local derivative verification and first-layer localization
+<a id="local-derivative-verification-and-first-layer-localization"></a>
 
-``audit-norberto-sensitivity.py``
-reloaded the development-only adapter on CPU and used the same 12 training
-responses. The measured norm was approximately **158.83**, with **99.911% of
-the squared gradient norm** in the first attention layer's LoRA parameters.
+## Verificação local de derivadas e localização na primeira camada
 
-One coordinate with the largest absolute derivative was checked by central
-finite differences in FP32, accounting for the actual representable parameter
-displacement:
+``audit-norberto-sensitivity.py`` recarregou o adaptador somente de desenvolvimento
+em CPU e usou as mesmas 12 respostas de treino. A norma medida foi aproximadamente
+**158.83**, com **99.911% da norma quadrática do gradiente** nos parâmetros LoRA
+da primeira camada de atenção.
 
-| Perturbation | Finite-difference derivative | Autograd derivative | Relative error |
+Uma coordenada com a maior derivada absoluta foi verificada por diferenças
+finitas centrais em FP32, considerando o deslocamento realmente representável
+do parâmetro:
+
+| Perturbação | Derivada por diferenças finitas | Derivada Autograd | Erro relativo |
 |---|---:|---:|---:|
 | 0.001 | 17.44067 | 18.15042 | 3.9103% |
 | 0.0001 | 18.18004 | 18.15042 | 0.1632% |
 | 0.00001 | 18.24995 | 18.15042 | 0.5484% |
 
-This verifies a genuinely sensitive direction in the saved model; it does not
-verify every coordinate of the backward pass. Temporarily setting only the
-first attention LoRA's multiplier to zero in memory reduced the total norm
-to **2.42088**. The multiplier and parameter values were then restored, and
-all adapter tensors were checked against the saved checkpoint.
+Isso verifica uma direção sensível real no modelo salvo; não verifica todas as
+coordenadas da retropropagação. Definir temporariamente em memória como zero
+apenas o multiplicador do LoRA da primeira atenção reduziu a norma total para
+**2.42088**. Em seguida, o multiplicador e os parâmetros foram restaurados, e
+todos os tensores do adaptador foram conferidos contra o checkpoint salvo.
 
-This ablation localizes the observed sensitivity. It is not an evaluated
-replacement adapter, an accuracy improvement claim, or evidence that the
-first layer was the initial trigger of the training regression.
+A ablação localiza a sensibilidade observada. Não é um adaptador substituto
+avaliado, uma afirmação de melhora de acurácia nem evidência de que a primeira
+camada tenha iniciado a regressão do treinamento.
 
-## Loss normalization changes the clipping regime
+<a id="loss-normalization-changes-the-clipping-regime"></a>
 
-Keeping the same numerical configuration after correcting the loss does not
-preserve the entire legacy optimization trajectory. For equal microbatches,
-the legacy gradient was approximately `4g`, where `g` is the correct mean-loss
-gradient. Both recipes use `max_grad_norm=1`.
+## A normalização da perda altera o regime de limitação de gradientes
 
-For example, consider `g=(0.3, 0.4)`:
+Manter a mesma configuração numérica após corrigir a perda não preserva toda
+a trajetória histórica de otimização. Com microlotes iguais, o gradiente
+histórico era aproximadamente `4g`, sendo `g` o gradiente correto da perda média.
+As duas receitas usam `max_grad_norm=1`.
 
-| Recipe | Raw gradient norm | Gradient after clipping, approximately |
+Por exemplo, considere `g=(0.3, 0.4)`:
+
+| Receita | Norma bruta do gradiente | Gradiente aproximado após limitação |
 |---|---:|---|
-| Legacy accumulation | 2.0 | `(0.6, 0.8)` |
-| Correct mean loss | 0.5 | `(0.3, 0.4)` |
+| Acumulação histórica | 2.0 | `(0.6, 0.8)` |
+| Perda média correta | 0.5 | `(0.3, 0.4)` |
 
-If both raw gradients exceed the threshold, their clipped vectors are nearly
-identical. If they straddle the threshold, they differ. As this condition
-changes across updates, AdamW's moment estimates can evolve differently.
-Ignoring numerical stabilizers, `clip(4g, 1) = 4 * clip(g, 0.25)`; keeping
-the corrected threshold at 1 therefore changes its effective clipping regime.
-Adam epsilon, unequal final microbatches, and floating-point differences also
-prevent a general claim of identical training. No clipping parameter or
-learning rate was changed as part of this audit.
+Se os dois gradientes brutos excedem o limiar, os vetores limitados são quase
+idênticos. Se ficam em lados opostos do limiar, diferem. Conforme essa condição
+muda entre atualizações, as estimativas dos momentos do AdamW podem evoluir de
+modo diferente. Ignorando estabilizadores numéricos, `clip(4g, 1) = 4 * clip(g, 0.25)`;
+manter o limiar corrigido em 1 muda seu regime efetivo de limitação. Epsilon do
+Adam, microlotes finais desiguais e diferenças de ponto flutuante também impedem
+afirmar treinamento idêntico em geral. Nenhum parâmetro de limitação ou taxa de
+aprendizado mudou nesta auditoria.
 
-The historical development logs initially agree after accounting for the
-factor of four: at update 20, the original norm divided by four is 3.8596323,
-versus 3.8596320 for the corrected run. The loss values agree to logging
-precision. At update 80 the corresponding norms are 4.6441612 and 4.6441574.
-Differences subsequently grow; the corrected run's first logged norm above 25
-is **253.149 at update 540, epoch 0.5368**. Logs are sampled every 20 updates,
-so they cannot identify the exact first unstable update or its cause.
+Os registros históricos de desenvolvimento coincidem inicialmente após
+considerar o fator quatro: na atualização 20, a norma original dividida por
+quatro é 3.8596323, contra 3.8596320 na execução corrigida. As perdas coincidem
+na precisão do registro. Na atualização 80, as normas correspondentes são
+4.6441612 e 4.6441574. As diferenças crescem depois; a primeira norma corrigida
+registrada acima de 25 é **253.149 na atualização 540, época 0.5368**. Os
+registros são amostrados a cada 20 atualizações, portanto não identificam a
+primeira atualização instável exata nem sua causa.
 
-The clipping interaction is an established mathematical difference between
-recipes, and a candidate mechanism for changed trajectories. It is **not a
-demonstrated explanation of the 386 lost holdout predictions**.
+A interação com a limitação é uma diferença matemática estabelecida entre as
+receitas e um mecanismo candidato para trajetórias distintas. **Não é uma
+explicação demonstrada para as 386 previsões corretas perdidas no conjunto reservado**.
 
-The implementation details are supported by the pinned
-[Transformers 4.57.1 Trainer source](https://github.com/huggingface/transformers/blob/v4.57.1/src/transformers/trainer.py),
-[ModernBERT classification source](https://github.com/huggingface/transformers/blob/v4.57.1/src/transformers/models/modernbert/modeling_modernbert.py),
-and PyTorch 2.8 documentation for
-[gradient clipping](https://docs.pytorch.org/docs/2.8/generated/torch.nn.utils.clip_grad_norm_.html)
-and [AdamW](https://docs.pytorch.org/docs/2.8/generated/torch.optim.AdamW.html).
+Os detalhes da implementação são sustentados pelo
+[código do Trainer no Transformers 4.57.1](https://github.com/huggingface/transformers/blob/v4.57.1/src/transformers/trainer.py),
+[código de classificação do ModernBERT](https://github.com/huggingface/transformers/blob/v4.57.1/src/transformers/models/modernbert/modeling_modernbert.py)
+e documentação PyTorch 2.8 sobre
+[limitação de gradientes](https://docs.pytorch.org/docs/2.8/generated/torch.nn.utils.clip_grad_norm_.html)
+e [AdamW](https://docs.pytorch.org/docs/2.8/generated/torch.optim.AdamW.html).
 
-## Scope and remaining causal question
+<a id="scope-and-remaining-causal-question"></a>
 
-All production models and inputs were mounted read-only, with network access
-disabled. No full-model optimizer updates, new holdout inference, test1/test2
-access, model replacement, or ensemble changes occurred. Only the random tiny
-models were updated. The confirmed accumulation fix remains unchanged.
+## Escopo e questão causal pendente
 
-A bounded training-only reproduction that traces every update around the
-first divergence is still required to separate clipping effects, numerical
-sensitivity, data order, and other implementation issues. The current evidence
-does not justify claiming either a new confirmed loss bug or a fully explained
-regression. Another full training run is not a substitute for that isolation.
+Todos os modelos de produção e entradas foram montados somente para leitura,
+com rede desativada. Não houve atualização de otimizador em modelos completos,
+nova inferência no conjunto reservado, acesso a teste1/teste2, substituição de
+modelo ou alteração de ensemble. Somente os pequenos modelos aleatórios foram
+atualizados. A correção confirmada da acumulação permanece inalterada.
 
-The subsequent [optimizer-unit correction](recipe3-optimizer-units.md)
-and its [completed holdout evaluation](../../results/norberto-recipe3-holdout.md)
-document a controlled prefix and full-run follow-up. Recipe 3 reproduced the
-original logged gradient norms through update 1,000, avoided the preceding
-escalation, and recovered 44.81% holdout accuracy. The audit above describes
-the evidence available before that correction.
+Ainda é necessária uma reprodução limitada somente no treino, rastreando cada
+atualização próxima à primeira divergência, para separar efeitos da limitação,
+sensibilidade numérica, ordem dos dados e outros problemas da implementação.
+A evidência atual não justifica afirmar um novo erro de perda confirmado nem
+uma regressão totalmente explicada. Outro treinamento completo não substitui
+esse isolamento.
 
-Inside the validated image with the project, EP1, and cache mounts available,
-the diagnostics can be reproduced with new output paths:
+A [correção posterior das unidades do otimizador](recipe3-optimizer-units.md)
+e sua [avaliação concluída no conjunto reservado](../../results/norberto-recipe3-holdout.md)
+documentam um prefixo controlado e o acompanhamento com execução completa.
+A receita 3 reproduziu as normas históricas até a atualização 1,000, evitou a
+escalada anterior e recuperou acurácia de 44.81% no conjunto reservado. A
+auditoria acima descreve a evidência disponível antes dessa correção.
+
+Dentro da imagem validada, com projeto, EP1 e cache montados, os diagnósticos
+podem ser reproduzidos com novos caminhos de saída:
 
 ```bash
 PYTHONPATH=src python3 scripts/diagnostics/norberto/audit-optimizer.py \
@@ -174,8 +191,8 @@ PYTHONPATH=src python3 scripts/diagnostics/norberto/audit-sensitivity.py --ep1-r
   --output results/new-audit/sensitivity.json
 ```
 
-The backend and sensitivity commands require an existing parent output directory.
-Raw outputs are in `results/norberto-deep-audit-20261105/`.
-The [public aggregate](../../results/data/norberto-deep-audit-results.json) records measured values,
-hashes, test scope, and limitations. The preceding
-[holdout validation](recipe2-development-holdout.md) remains unchanged.
+Os comandos de implementação computacional e sensibilidade exigem um diretório
+pai de saída existente. Saídas brutas estão em `results/norberto-deep-audit-20261105/`.
+O [agregado público](../../results/data/norberto-deep-audit-results.json) registra
+valores medidos, hashes, escopo dos testes e limitações. A
+[validação anterior do conjunto reservado](recipe2-development-holdout.md) permanece inalterada.

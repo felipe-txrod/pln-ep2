@@ -1,8 +1,8 @@
 # Stacking dos três classificadores congelados
 
-This document preserves the original **three-model** protocol and results.
-The current four-model defaults include Qwen; see the [current workflow](ensemble-qwen.md)
-and [integration results](../results/ensemble-qwen.md).
+Este documento preserva o protocolo e os resultados originais de **três modelos**.
+Os padrões atuais de quatro modelos incluem Qwen; veja o
+[fluxo atual](ensemble-qwen.md) e os [resultados da integração](../results/ensemble-qwen.md).
 
 O comando `fit-stacking` treina somente uma nova Regressão Logística como
 meta-modelo. SVM, LR de desenvolvimento, NorBERTo e seus calibradores são os

@@ -1,40 +1,43 @@
-# Qwen integration into soft voting and stacking
+<a id="qwen-integration-into-soft-voting-and-stacking"></a>
 
-[Results index](README.md) · [Commands](../guides/ensemble-qwen.md)
-· [Verified aggregate](data/ensemble-qwen.json)
+# Integração do Qwen à votação suave e ao stacking
 
-The selected EP1-split Qwen was added to both ensemble families, with its
-base weights unchanged. The integration preserves all original three-model
-artifacts and uses new packages under `models/ensemble-soft-qwen/` and
-`models/ensemble-stacking-qwen/`.
+[Índice dos resultados](README.md) · [Comandos](../guides/ensemble-qwen.md)
+· [Agregado verificado](data/ensemble-qwen.json)
 
-## Test1 comparison
+O Qwen selecionado com a divisão do EP1 foi adicionado às duas famílias de
+ensemble, sem alterar seus pesos-base. A integração preserva os artefatos
+originais de três modelos e usa novos pacotes em `models/ensemble-soft-qwen/`
+e `models/ensemble-stacking-qwen/`.
 
-All 900 original texts, row IDs and positions were retained. Predictions
-were saved before reading the labeled workbook, after calibration, weights
-and regularization were frozen.
+<a id="test1-comparison"></a>
 
-| Method | Correct / 900 | Accuracy | Macro-F1 |
+## Comparação em Teste1
+
+Os 900 textos, IDs e posições originais foram mantidos. As previsões foram
+salvas antes da leitura do gabarito, após congelar calibração, pesos e regularização.
+
+| Método | Acertos / 900 | Acurácia | Macro-F1 |
 |---|---:|---:|---:|
-| Soft voting, three members | 447 | 49.67% | 49.58% |
-| Soft voting, four candidates including Qwen | 447 | 49.67% | 49.58% |
-| Stacking, three members | 442 | 49.11% | 49.03% |
-| Stacking, four members including Qwen | 440 | 48.89% | 48.80% |
-| Selected Qwen alone | 414 | 46.00% | 45.53% |
+| Votação suave, três membros | 447 | 49.67% | 49.58% |
+| Votação suave, quatro candidatos incluindo Qwen | 447 | 49.67% | 49.58% |
+| Stacking, três membros | 442 | 49.11% | 49.03% |
+| Stacking, quatro membros incluindo Qwen | 440 | 48.89% | 48.80% |
+| Qwen selecionado isolado | 414 | 46.00% | 45.53% |
 
-The soft search selected **SVM 75%, RL 0%, NorBERTo 25%, Qwen 0%**. Qwen was
-scored, calibrated, and included in all relevant candidates, but the selected
-weighted sum gives it no contribution. All 900 final labels equal the
-three-member soft result. Inclusion did not improve its measured quality.
+A busca suave selecionou **SVM 75%, RL 0%, NorBERTo 25%, Qwen 0%**. Qwen foi
+avaliado, calibrado e incluído em todos os candidatos pertinentes, mas a soma
+escolhida não lhe atribui contribuição. Os 900 rótulos finais coincidem com a
+votação suave de três membros. A inclusão não melhorou a qualidade medida.
 
-The stacking model uses all 12 calibrated probabilities and selected C=0.1.
-Qwen's learned coefficients are nonzero. Relative to the original stacking,
-it corrects 25 errors and harms 27 correct answers, losing two net correct
-answers, or 0.22 percentage points. Relative to soft voting, it corrects 47
-errors and harms 54 correct answers; 30 additional changes remain wrong.
+Stacking usa as 12 probabilidades calibradas e selecionou C=0.1. Os coeficientes
+aprendidos do Qwen são não nulos. Frente ao stacking original, corrige 25 erros
+e prejudica 27 acertos, perdendo dois líquidos, ou 0.22 pontos percentuais.
+Frente à votação suave, corrige 47 erros e prejudica 54 acertos; outras 30
+mudanças continuam erradas.
 
-Confusion matrices use true classes in rows and predicted classes in columns,
-ordered `c1, c234, c5`:
+As matrizes usam classes verdadeiras nas linhas e preditas nas colunas,
+em ordem `c1, c234, c5`:
 
 ```text
 Soft with four candidates     Stacking with four members
@@ -43,77 +46,79 @@ Soft with four candidates     Stacking with four members
  [ 50, 77,173]]               [ 36, 98,166]]
 ```
 
-Against the actual NorBERTo submission from EP1, soft voting gains 15 correct
-answers with exact McNemar p=0.303327; stacking gains eight with p=0.615381.
-Neither establishes significant superiority. These comparisons remain
-exploratory because test1 was already consulted elsewhere in the project.
-No parameters were changed in response to these scores.
+Frente à entrega real do NorBERTo do EP1, votação suave ganha 15 acertos com
+McNemar exato p=0.303327; stacking ganha oito, p=0.615381. Nenhum estabelece
+superioridade significativa. As comparações continuam exploratórias, pois
+teste1 já foi consultado em outras etapas. Nenhum parâmetro mudou em resposta
+a esses resultados.
 
-## Frozen fitting protocol
+<a id="frozen-fitting-protocol"></a>
 
-All four base models were fitted on 16,093 development rows, excluding the
-3,999 holdout rows from gradient or classifier fitting. Qwen is the selected
-adapter with identity
+## Protocolo congelado de ajuste
+
+Os quatro modelos-base foram ajustados em 16,093 linhas, excluindo 3,999
+reservadas das atualizações de gradiente ou ajuste dos classificadores.
+Qwen é o adaptador selecionado de identidade
 `a045c5726a85c466914c55f9cee9fb0d412af4d66387e14b590e53b4782beed5`.
-The older Qwen adapter with a different split was excluded.
+O adaptador antigo com outra divisão foi excluído.
 
-The holdout split is unchanged:
+A divisão reservada permanece inalterada:
 
-| Role | Rows | Similarity groups |
+| Papel | Linhas | Grupos de similaridade |
 |---|---:|---:|
-| Probability calibration | 2,027 | 1,627 |
-| Soft weight selection / stacking meta-training | 1,972 | 1,654 |
+| Calibração de probabilidades | 2,027 | 1,627 |
+| Seleção de pesos suaves / meta-treinamento do stacking | 1,972 | 1,654 |
 
-Both partition files are byte-identical to the corresponding original
-three-member files, including the stacking CV assignments. No calibration
-rows enter the meta-model, and groups do not cross roles.
+Os dois arquivos de partição são idênticos em bytes aos originais de três
+membros, incluindo a atribuição dos folds do stacking. Nenhuma linha de
+calibração entra no meta-modelo, e grupos não cruzam papéis.
 
-The SVM sigmoid and existing temperature recipes were retained. Qwen's
-temperature was chosen only from the calibration subset, using three grouped
-folds: native log loss 1.05293 versus temperature OOF log loss 1.04078, with
-final temperature 1.515480709210816. Its class argmax remains unchanged.
+A sigmoide do SVM e as receitas existentes de temperatura foram mantidas.
+A temperatura Qwen foi escolhida somente na calibração, em três folds agrupados:
+perda logarítmica nativa 1.05293 contra OOF com temperatura 1.04078; temperatura
+final 1.515480709210816. O argmax de classe permanece inalterado.
 
-Soft voting compared the fixed 35 quarter-simplex candidates by selection
-macro-F1. Stacking used five grouped folds, fixed C candidates
-`[0.01, 0.1, 1, 10]`, and the existing one-standard-error rule. The selected
-stacking OOF macro-F1 is 47.30%; this participated in selection and is not
-an independent performance estimate.
+A votação suave comparou os 35 candidatos fixos em incrementos de um quarto
+no simplex por macro-F1 de seleção. Stacking usou cinco folds agrupados,
+candidatos fixos de C `[0.01, 0.1, 1, 10]` e a regra existente de um erro-padrão.
+O macro-F1 OOF selecionado é 47.30%; participou da seleção, não é estimativa
+independente de desempenho.
 
-Qwen's checkpoint was selected using the full original holdout. These rows
-were excluded from its weight updates but already influenced checkpoint
-selection. Combined with historical model research, this inherited exposure
-must be disclosed when interpreting calibration and meta-model validation.
+O checkpoint Qwen foi escolhido no conjunto reservado original completo.
+Essas linhas ficaram fora da atualização dos pesos, mas influenciaram a
+seleção do checkpoint. Com a pesquisa histórica, essa exposição herdada deve
+ser declarada ao interpretar calibração e validação do meta-modelo.
 
-## Inference, auditing and preserved artifacts
+<a id="inference-auditing-and-preserved-artifacts"></a>
 
-Fresh Qwen probabilities were generated in sequential batches of 16 for all
-3,999 holdout rows and 900 test1 texts, without passing gold labels to the
-model. This took 427.40 and 98.69 seconds, respectively. Every output retains
-its source row ID and text checksum. No hard-label export was converted into
-artificial probabilities, and the previously recovered validation export
-was not used as a probability source.
+## Inferência, auditoria e artefatos preservados
 
-Fresh holdout scoring again obtains 1,791/3,999 correct (44.79%). Its macro-F1
-is 44.4371%; a few individual decisions differ from the original grouped
-training evaluation, whose macro-F1 was 44.4429%. The four-member fit uses
-the newly generated inference distributions consistently.
+Novas probabilidades Qwen foram geradas em lotes sequenciais de 16 nas 3,999
+linhas reservadas e 900 textos de teste1, sem passar gabaritos ao modelo.
+Isso levou 427.40 e 98.69 segundos, respectivamente. Cada saída mantém ID e
+checksum do texto. Nenhuma exportação de classes virou probabilidade artificial,
+e a exportação de validação recuperada anteriormente não forneceu probabilidades.
 
-An independent standard-library ZIP/XML workbook reader verified all source
-IDs, texts and labels. Independent arithmetic reconstructed all calibrated
-test probabilities, all 35 weight-candidate scores, all soft sums and all
-12-feature meta-model outputs. Maximum probability difference was
-1.11e-16. Confusion matrices, accuracy and macro-F1 reproduce the saved
-reports; original three-member artifacts remain loadable and reproduce their
-447/900 and 442/900 controls.
+A nova avaliação reservada novamente acerta 1,791/3,999 (44.79%). Macro-F1 é
+44.4371%; poucas decisões diferem da avaliação original agrupada do treino,
+cujo macro-F1 era 44.4429%. O ajuste de quatro membros usa consistentemente
+as novas distribuições inferidas.
 
-Raw evidence is under `results/ensemble-qwen-verification-20261105/`.
-Qwen scores are under `results/qwen-ensemble-scores-20261105/`, with the
-selected test1 run also saved in `results/qwen-ep1-test1/`. Fit and prediction
-runs use separate `ensemble-soft-qwen-*` and `ensemble-stacking-qwen-*`
-directories. All original weights, models and historical result files remain
-unchanged. No base model was retrained and no test2 submission was generated.
+Um leitor ZIP/XML independente verificou IDs, textos e rótulos. Cálculos
+independentes reconstruíram todas as probabilidades calibradas de teste,
+os escores dos 35 candidatos, as somas suaves e saídas do meta-modelo de 12
+atributos. A diferença máxima de probabilidade foi 1.11e-16. Matrizes, acurácia
+e macro-F1 reproduzem os relatórios; os artefatos originais de três membros
+continuam carregáveis e reproduzem controles 447/900 e 442/900.
 
-The available offline suite passed 171 tests in 30.15 seconds; two unrelated
-optional OpenAI SDK modules were excluded in this container. Both documented
-default CLI commands were also executed on CPU with saved scores and reproduced
-the audited predictions byte for byte, without reading gold.
+A evidência bruta está em `results/ensemble-qwen-verification-20261105/`.
+Escores Qwen estão em `results/qwen-ensemble-scores-20261105/`, com a execução
+selecionada de teste1 também em `results/qwen-ep1-test1/`. Ajustes e previsões
+usam diretórios separados `ensemble-soft-qwen-*` e `ensemble-stacking-qwen-*`.
+Todos os pesos, modelos e resultados históricos originais permanecem
+inalterados. Nenhum modelo-base foi retreinado nem entrega de teste2 gerada.
+
+A suíte offline disponível passou em 171 testes em 30.15 segundos; dois módulos
+opcionais não relacionados do SDK OpenAI foram excluídos neste contêiner.
+Ambos os comandos padrão documentados também executaram em CPU com escores
+salvos, reproduzindo as previsões auditadas byte a byte, sem ler o gabarito.

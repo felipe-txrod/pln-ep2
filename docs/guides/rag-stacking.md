@@ -1,172 +1,197 @@
-# Train-only RAG and local predictions for selective stacking
+<a id="train-only-rag-and-local-predictions-for-selective-stacking"></a>
 
-**Status: pilot and confirmation are complete; validation selected zero GPT routing.**
-The [confirmation report](../results/rag-cascade-confirmation.md) records four
-contexts at 0/5/10% routing on 1,884 OOF rows. Stacking won with 910 correct,
-accuracy 48.30%, macro-F1 48.08%; the best nonzero GPT candidate reached 47.84%
-macro-F1. The earlier [pilot](../results/rag-cascade-pilot.md) selected hybrid
-retrieval with three examples, but its exploratory gain did not persist.
-The existing zero-GPT default remains unchanged. No new RAG package has been
-frozen, and no final test1/test2 inference or evaluation has been performed.
-The [original preparation record](../results/rag-cascade-preparation.md) preserves
-the earlier no-execution milestone.
+# RAG somente no treino e previsões locais para stacking seletivo
 
-The subsequent [offline investigation](../results/rag-offline-research.md)
-adds frozen NorBERTo retrieval, MMR ablations and historical reply replay in
-the separate `rag_research` package. It makes no new GPT calls and does not
-promote a different default. See its [guide](rag-offline-research.md).
+**Estado: piloto e confirmação concluídos; a validação selecionou roteamento zero ao GPT.**
+O [relatório da confirmação](../results/rag-cascade-confirmation.md) registra
+quatro contextos com roteamento de 0/5/10% em 1,884 linhas OOF. Stacking venceu
+com 910 acertos, acurácia de 48.30% e macro-F1 de 48.08%; o melhor candidato
+com GPT atingiu 47.84% de macro-F1. O [piloto anterior](../results/rag-cascade-pilot.md)
+selecionou recuperação híbrida com três exemplos, mas o ganho exploratório
+não persistiu. O padrão existente sem GPT permanece inalterado. Nenhum novo
+pacote RAG foi congelado, e não houve inferência nem avaliação final em
+teste1/teste2. O [registro original da preparação](../results/rag-cascade-preparation.md)
+preserva o marco anterior, sem execução.
 
-The new `rag_cascade` package reuses the existing frozen stacking, OOF routing,
-TF-IDF selector, pinned local E5 encoder interface, Codex backend, batch schema,
-SQLite response/item cache, evaluation functions and workbook exporters. It is
-separate from `cascade_classifier` so old experiment fingerprints remain valid.
+A [investigação offline posterior](../results/rag-offline-research.md) acrescenta
+recuperação com NorBERTo congelado, ablações MMR e reavaliação de respostas
+históricas no pacote separado `rag_research`. Não faz novas chamadas ao GPT
+nem promove outro padrão. Veja seu [guia](rag-offline-research.md).
 
-## Example bank and retrieval
+O novo pacote `rag_cascade` reutiliza stacking congelado, roteamento OOF,
+seletor TF-IDF, interface local fixada do E5, integração Codex, esquema de
+lotes, cache SQLite de respostas/itens, funções de avaliação e exportadores
+de planilhas. É separado de `cascade_classifier` para preservar a validade
+das identidades dos experimentos antigos.
 
-The bank contains only the **16,093 original base-training rows** of
-`data/train.xlsx`. The frozen EP1 split and workbook hashes are checked.
-All 3,999 holdout rows are excluded from the bank and index, including the
-2,027 calibration rows and 1,972 meta-training rows. Test1 and test2 gold never
-enter the bank, retrieval fitting, prompt development or configuration selection.
+<a id="example-bank-and-retrieval"></a>
 
-The existing selector removes normalized duplicates, conflicting-label groups,
-empty examples and overlong texts. The new layer also caps raw example length
-at 1,600 characters; entire examples are included, without silent truncation.
-It compares three retrieval methods:
+## Banco de exemplos e recuperação
 
-- **TF-IDF:** cosine similarity on the existing train-only unigram/bigram index.
-- **Semantic:** cosine similarity of frozen local `multilingual-e5-small`
-  embeddings, using the existing ONNX CPU encoder at pinned revision
-  `614241f622f53c4eeff9890bdc4f31cfecc418b3`.
-- **Hybrid:** equal-weight reciprocal-rank fusion of lexical and semantic ranks.
+O banco contém somente as **16,093 linhas originais de treino dos modelos-base**
+de `data/train.xlsx`. Os hashes da planilha e da divisão congelada do EP1 são
+verificados. As 3,999 linhas reservadas ficam fora do banco e índice, incluindo
+as 2,027 de calibração e 1,972 de meta-treinamento. Os gabaritos de Teste1 e
+Teste2 nunca entram no banco, ajuste da recuperação, desenvolvimento dos
+prompts ou seleção de configurações.
 
-The semantic path never falls back silently to TF-IDF. Missing dependencies or
-weights raise an actionable error. Encoder preparation is an explicit download
-command; normal retrieval uses local files only. Embeddings consume CPU and disk
-resources, with a persistent cache, rather than paid embedding API requests.
+O seletor existente remove duplicatas normalizadas, grupos com rótulos
+conflitantes, exemplos vazios e textos longos demais. A nova camada limita o
+texto bruto a 1,600 caracteres; inclui exemplos inteiros, sem truncamento
+silencioso. Compara três métodos de recuperação:
 
-Each method is tested with **3 and 5 examples**. Retrieval excludes identical
-normalized target text, lexical cosine >=0.95, and near duplicates by normalized
-character-shingle Jaccard >=0.85. Selected examples cannot share the original
-similarity component and are screened for pairwise near duplicates as well.
+- **TF-IDF:** cosseno no índice existente de unigramas/bigramas, ajustado somente
+  no treino.
+- **Semântico:** cosseno entre embeddings locais congelados de
+  `multilingual-e5-small`, com o codificador ONNX existente em CPU e revisão
+  fixada `614241f622f53c4eeff9890bdc4f31cfecc418b3`.
+- **Híbrido:** fusão por posições recíprocas das buscas lexical e semântica,
+  com pesos iguais.
 
-Within relevant candidates, MMR balances relevance and redundancy, with a small
-bonus for unseen classes and a per-class cap. Class representation never
-overrides the relevance floor: the method may return fewer than requested if
-eligible examples are insufficient, and records that shortfall. It does not
-fill the prompt with unrelated examples to impose a class quota.
+O caminho semântico nunca passa silenciosamente a TF-IDF. Dependências ou pesos
+ausentes geram erro com orientação de correção. A preparação do codificador é
+um comando explícito de download; a recuperação normal usa só arquivos locais.
+Os embeddings consomem CPU e disco, com cache persistente, em vez de chamadas
+pagas a uma API de embeddings.
 
-The lexical similarity floor is 0.03; semantic/hybrid retrieval requires semantic
-cosine >=0.45. These and the diversity settings are explicit, predeclared config
-values, not thresholds selected using test1 labels. Text checksums, groups,
-labels, lexical/semantic similarities, fusion relevance, and exclusions/shortfalls
-are recorded in `context-trace.jsonl`. No claim of retrieval quality is made
-until the experiment is actually run.
+Cada método é testado com **3 e 5 exemplos**. A recuperação exclui textos
+normalizados idênticos ao alvo, cosseno lexical >=0.95 e quase duplicatas por
+Jaccard de fragmentos normalizados de caracteres >=0.85. Exemplos selecionados
+não podem compartilhar o componente original de similaridade e também são
+verificados quanto a quase duplicatas entre si.
 
-## Matched structured prompts
+Entre candidatos relevantes, MMR equilibra relevância e redundância, com um
+pequeno bônus por classes ainda ausentes e limite por classe. A representação
+de classes nunca supera o piso de relevância: o método pode devolver menos
+exemplos se faltarem elegíveis e registra a insuficiência. Não preenche o
+prompt com exemplos sem relação para impor cotas de classe.
 
-All arms use the same class definitions and instructions. Only the supplied
-evidence changes:
+O piso lexical é 0.03; recuperação semântica/híbrida exige cosseno semântico
+>=0.45. Esses valores e os parâmetros de diversidade são explícitos e
+predefinidos, não limiares escolhidos pelos rótulos de teste1. Checksums,
+grupos, rótulos, similaridades lexical/semântica, relevância da fusão e
+exclusões/insuficiências são registrados em `context-trace.jsonl`. Não se
+alega qualidade de recuperação antes da execução real do experimento.
 
-1. Original text alone.
-2. Original text and local model evidence.
-3. Original text and retrieved labeled examples.
-4. Original text, retrieved examples and local model evidence.
+<a id="matched-structured-prompts"></a>
 
-The payload separates `examples` from `target.resp_text` and
-`target.model_evidence`. The original target is preserved literally. Model
-evidence includes native SVM/RL/NorBERTo/Qwen decisions, calibrated probabilities,
-stacking output, maximum probability, margin, entropy and pairwise disagreement.
-Probabilities are explicitly approximate at four decimal places to reduce tokens.
-SVM native labels are retained when calibration changes the probability argmax.
+## Prompts estruturados pareados
 
-The instructions identify demonstrations as subjective training observations and
-local outputs as fallible evidence. GPT must make an independent decision,
-without copying majority voting, inventing missing questions/attachments or
-following instructions embedded in example/target text. Output remains strict
-JSON with one of `c1`, `c234`, `c5`; no extra explanation tokens are requested.
+Todos os braços usam as mesmas definições de classes e instruções. Só muda
+a evidência fornecida:
 
-The default remains `gpt-6.1-sol`, reasoning `low`, using the authenticated,
-tool-free Codex backend. Its CLI exposes no temperature control. Standard
-API-equivalent prices are configurable; subscription usage is not reported as
-an API invoice. See the [official model documentation](https://developers.openai.com/api/docs/models/gpt-6.1-sol).
+1. Somente o texto original.
+2. Texto original e evidência dos modelos locais.
+3. Texto original e exemplos rotulados recuperados.
+4. Texto original, exemplos recuperados e evidência dos modelos locais.
 
-## Pilot and confirmation without test-label tuning
+O conteúdo separa `examples` de `target.resp_text` e `target.model_evidence`.
+O alvo original é preservado literalmente. A evidência inclui decisões nativas
+de SVM/RL/NorBERTo/Qwen, probabilidades calibradas, saída do stacking,
+probabilidade máxima, margem, entropia e divergência pareada. Probabilidades
+são explicitamente aproximadas a quatro casas decimais para reduzir tokens.
+Os rótulos nativos do SVM são mantidos quando a calibração altera o argmax.
 
-The study reuses the **checksum-pinned nested 5x5 grouped OOF predictions** from
-the previous cascade. Outer targets were excluded from both meta fitting and
-inner regularization selection. It does not use production stacking's in-sample
-meta predictions to optimize context.
+As instruções identificam demonstrações como observações subjetivas de treino
+e saídas locais como evidências falíveis. O GPT deve decidir independentemente,
+sem copiar a maioria, inventar perguntas/anexos ausentes ou seguir instruções
+embutidas nos exemplos/alvos. A saída continua sendo JSON estrito com `c1`,
+`c234` ou `c5`; não se solicitam tokens extras de explicação.
 
-The predeclared plan is:
+O padrão permanece `gpt-6.1-sol`, raciocínio `low`, com a integração Codex
+autenticada e sem ferramentas. Sua CLI não expõe controle de temperatura.
+Preços padrão equivalentes aos da API são configuráveis; consumo da assinatura
+não é apresentado como fatura de API. Veja a
+[documentação oficial do modelo](https://developers.openai.com/api/docs/models/gpt-6.1-sol).
 
-1. Select 48 difficult examples from the original 10% routing subset, by stable
-   label-free hashes, at most one example per similarity component.
-2. Compare the two non-RAG controls and all twelve RAG variants: three retrievers,
-   two example counts, with/without local evidence. This is 14 pilot arms.
-3. Choose the retrieval recipe by the mean paired macro-F1 of its RAG-only and
-   RAG+local arms; ties favor fewer examples and then lexical retrieval.
-4. Remove **every group containing a pilot example** from confirmation. On the
-   remaining OOF cohort, compare the four contexts using the chosen retrieval
-   recipe and the same difficult targets, capped initially at 10%.
-5. Compare zero, 5% and 10% routing using those cached decisions. Select by
-   confirmation macro-F1, then lower budget and allocated cost. Zero is eligible;
-   GPT is not presumed to help. Arms with unresolved fallback are ineligible
-   for a nonzero-budget selection.
-6. Freeze source/index/bank/runtime identities, prompt recipe and budget before
-   generating final predictions.
+<a id="pilot-and-confirmation-without-test-label-tuning"></a>
 
-Pilot selection is exploratory; confirmation similarity groups are disjoint
-for this context comparison. The earlier router was already selected using the
-OOF validation set, Qwen checkpoint selection used the full holdout, and historical
-project work consulted test1. This procedure does not undo inherited exposure or
-make the complete modeling history an untouched test. Official cross-dataset
-duplicates also remain in base-model training; RAG filters prevent simply showing
-an identical or near-identical target as a labeled demonstration.
+## Piloto e confirmação sem ajustes pelos rótulos de teste
 
-## Cache and bounded execution
+O estudo reutiliza as **previsões OOF aninhadas agrupadas 5x5 fixadas por checksum**
+da cascata anterior. Os alvos externos foram excluídos tanto do ajuste do
+meta-modelo quanto da seleção interna de regularização. Não usa previsões
+nos próprios dados de ajuste do stacking de produção para otimizar contexto.
 
-`plan` records exact per-target requests and the context trace. `run` and
-`predict` default to **preview**. They cannot classify without `--execute`.
-`prepare-encoder` cannot download without `--download`. There is no all-in-one
-command that automatically advances through remote stages.
+O plano predefinido é:
 
-The shared SQLite cache keys the exact model, runtime, instructions, examples,
-text and local evidence. Changing any evidence invalidates only that request;
-valid cached replies survive different budgets and batch boundaries. New prompts
-do not reuse replies from different historical prompts just because texts match.
+1. Selecionar 48 exemplos difíceis do subconjunto original de roteamento de 10%,
+   por hashes estáveis sem rótulos, no máximo um exemplo por componente de
+   similaridade.
+2. Comparar os dois controles sem RAG e as doze variantes RAG: três recuperadores,
+   duas quantidades de exemplos, com/sem evidência local. São 14 braços no piloto.
+3. Escolher a receita de recuperação pela média pareada de macro-F1 dos braços
+   somente RAG e RAG+local; empates favorecem menos exemplos e depois recuperação lexical.
+4. Remover **todo grupo que contenha exemplo do piloto** da confirmação. Na
+   coorte OOF restante, comparar os quatro contextos com a receita escolhida e
+   os mesmos alvos difíceis, inicialmente limitados a 10%.
+5. Comparar roteamento zero, 5% e 10% com as decisões em cache. Selecionar por
+   macro-F1 da confirmação, depois menor orçamento e custo alocado. Zero é
+   elegível; não se presume benefício do GPT. Braços com falha ainda não resolvida
+   não podem ser escolhidos com orçamento positivo.
+6. Congelar identidades de código/índice/banco/ambiente, receita do prompt e
+   orçamento antes das previsões finais.
 
-Defaults are batches of eight, two concurrent requests, one retry, and a hard
-**128 new-attempt limit per stage invocation**, shared across all arms and retries.
-Preflight counts cache misses and refuses a stage that already exceeds the cap.
-Retries consume the same cap. A circuit breaker stops later batches after an
-exhausted failure. Interrupted attempts count toward each request's retry limit;
-unknown usage is flagged. Missing decisions explicitly retain stacking rather
-than becoming fake GPT labels. Completed stages are immutable/idempotent.
+A seleção do piloto é exploratória; os grupos de similaridade da confirmação
+são disjuntos nesta comparação de contexto. O roteador anterior já foi
+selecionado na validação OOF, o checkpoint Qwen usou todo o conjunto reservado
+e o projeto consultou teste1 historicamente. Este procedimento não desfaz a
+exposição herdada nem torna toda a história de modelagem um teste inédito.
+Duplicatas oficiais entre bases também permanecem no treino dos modelos-base;
+os filtros RAG evitam apresentar o próprio alvo, idêntico ou quase idêntico,
+como demonstração rotulada.
 
-Set `CASCADE_CODEX_BIN` to an immutable versioned executable before planning and
-retain it during execution. The pilot's default CLI symlink updated from 0.166.0
-to 0.167.0 mid-run, correctly triggering strict runtime mismatch checks. Pinning
-the original executable restored compatibility without changing requests or
-fingerprints. Preserve any failed journals and historical resources when
-preparing a reviewed retry; do not silently discard failures or reset budgets.
+<a id="cache-and-bounded-execution"></a>
 
-Each arm records accuracy, macro-F1, per-class F1, confusion matrix, corrected,
-harmed and changed-but-still-wrong cases, tokens, cache hits, cost allocation,
-actual calls and latency. Shared-batch allocations are distinguished from actual
-whole-stage costs and wall time. Prices are API-equivalent estimates, not invoices.
+## Cache e execução limitada
 
-## Commands for a future authorized run
+`plan` registra as solicitações exatas por alvo e o rastreamento do contexto.
+`run` e `predict` usam **prévia** por padrão. Não classificam sem `--execute`.
+`prepare-encoder` não baixa sem `--download`. Não há comando único que avance
+automaticamente por etapas remotas.
 
-The pilot and confirmation were executed manually in
-`results/rag-context-pilot-20261106` and are complete. Do not repeat them to score
-existing outputs: use `score` only. The generic examples below are not instructions
-to repeat classification or advance automatically. Final-test inference requires
-separate user authorization. Test2 produces an unlabeled delivery workbook;
-quality metrics are computed on labeled test1 after configuration freezing.
-Use a Python environment with the project's dependencies and optional `rag`
-dependencies. The local pilot runtime now has ONNX Runtime and the pinned E5
-weights; other clones still need the explicit installation/download steps.
+O cache SQLite compartilhado usa chaves com modelo, ambiente, instruções,
+exemplos, texto e evidência local exatos. Alterar a evidência invalida só aquela
+solicitação; respostas válidas sobrevivem a outros orçamentos e limites de lote.
+Novos prompts não reutilizam respostas de prompts históricos distintos só
+porque os textos coincidem.
+
+Os padrões são lotes de oito, duas solicitações simultâneas, uma retentativa e
+**limite rígido de 128 novas tentativas por invocação de etapa**, compartilhado
+entre todos os braços e retentativas. A verificação prévia conta ausências
+no cache e recusa etapas que já excedam o limite. Retentativas consomem o mesmo
+limite. Um disjuntor interrompe lotes posteriores após falha esgotada. Tentativas
+interrompidas contam no limite da solicitação; consumo desconhecido é sinalizado.
+Decisões ausentes mantêm stacking explicitamente, sem inventar rótulos GPT.
+Etapas concluídas são imutáveis/idempotentes.
+
+Defina `CASCADE_CODEX_BIN` como executável versionado imutável antes de planejar
+e mantenha-o durante a execução. O link padrão da CLI do piloto atualizou de
+0.166.0 para 0.167.0 durante a execução, acionando corretamente a verificação
+estrita de divergência do ambiente. Fixar o executável original restaurou a
+compatibilidade sem alterar pedidos ou identidades. Preserve registros de
+falhas e recursos históricos ao preparar uma retentativa revisada; não descarte
+falhas nem reinicie orçamentos silenciosamente.
+
+Cada braço registra acurácia, macro-F1, F1 por classe, matriz de confusão,
+casos corrigidos, prejudicados e alterados ainda errados, tokens, acertos de
+cache, alocação de custo, chamadas reais e latência. Alocações compartilhadas
+por lote são distintas de custos reais e tempo total da etapa. Preços são
+estimativas equivalentes à API, não faturas.
+
+<a id="commands-for-a-future-authorized-run"></a>
+
+## Comandos para uma execução futura autorizada
+
+Piloto e confirmação foram executados manualmente em
+`results/rag-context-pilot-20261106` e estão concluídos. Não os repita para
+avaliar saídas existentes: use somente `score`. Os exemplos genéricos abaixo
+não instruem repetir classificação nem avançar automaticamente. Inferência
+nos testes finais exige autorização separada. Teste2 gera planilha de entrega
+sem gabarito; a qualidade é medida em teste1 rotulado após congelar a configuração.
+Use um ambiente Python com as dependências do projeto e opcionais `rag`.
+O ambiente local do piloto já tem ONNX Runtime e pesos E5 fixados; outras
+cópias ainda precisam das etapas explícitas de instalação/download.
 
 ```bash
 python3 -m pip install -e '.[rag]'
@@ -180,8 +205,8 @@ PYTHONPATH=src python3 -m rag_cascade plan --study results/rag-context-new --sta
 PYTHONPATH=src python3 -m rag_cascade run --study results/rag-context-new --stage pilot
 ```
 
-The last command only previews cache misses and planned calls. Once execution
-is explicitly wanted:
+O último comando apenas mostra ausências de cache e chamadas planejadas.
+Quando a execução for explicitamente desejada:
 
 ```bash
 PYTHONPATH=src python3 -m rag_cascade run \
@@ -198,20 +223,23 @@ PYTHONPATH=src python3 -m rag_cascade freeze \
   --study results/rag-context-new --output-dir models/rag-stacking-new
 ```
 
-Environment credentials follow the existing Codex login or `CODEX_API_KEY`
-contract. `CASCADE_CODEX_BIN` selects the executable. `RAG_RESPONSE_CACHE`,
+Credenciais seguem o contrato existente de autenticação Codex ou `CODEX_API_KEY`.
+`CASCADE_CODEX_BIN` seleciona o executável. `RAG_RESPONSE_CACHE`,
 `RAG_EMBEDDING_CACHE`, `RAG_PILOT_SIZE`, `RAG_MAX_NEW_REQUESTS`, `CASCADE_MODEL`
-and `CASCADE_REASONING_EFFORT` are resolved during preparation. After that,
-the saved configuration is immutable. No credential is written to a manifest.
+e `CASCADE_REASONING_EFFORT` são resolvidas na preparação. Depois, a configuração
+salva é imutável. Nenhuma credencial entra no manifesto.
 
-## EP2: test2 before retrospective test1
+<a id="ep2-test2-before-retrospective-test1"></a>
 
-First generate a verified four-model stacking run on the 897 original test2
-texts using the [existing workflow](ensemble-qwen.md). This requires actual
-model inference if member scores are unavailable; it is separate from this
-prepared context study. Use a new destination and the selected frozen artifacts.
+## EP2: teste2 antes do teste1 retrospectivo
 
-Then preview and explicitly execute the selected RAG configuration:
+Primeiro gere uma execução verificada de stacking com quatro modelos nos 897
+textos originais de teste2 pelo [fluxo existente](ensemble-qwen.md). Isso exige
+inferência real se os escores dos membros não estiverem disponíveis; é separado
+deste estudo de contexto preparado. Use novo destino e os artefatos congelados
+selecionados.
+
+Depois visualize e execute explicitamente a configuração RAG selecionada:
 
 ```bash
 PYTHONPATH=src python3 -m rag_cascade predict \
@@ -223,13 +251,14 @@ PYTHONPATH=src python3 -m rag_cascade predict --execute \
   --stacking-run results/stacking-test2-new --output-dir results/rag-test2-new
 ```
 
-The completed run exports `results/rag-test2-new/test2.xlsx`, preserving original
-OOXML entries except blank clarity cells. No upload or external submission occurs.
-Even if zero budget wins, explicitly complete this stage before test1.
+A execução concluída exporta `results/rag-test2-new/test2.xlsx`, preservando as
+entradas OOXML originais, exceto células vazias de clareza. Não há envio externo
+nem submissão. Mesmo que o orçamento zero vença, conclua explicitamente esta
+etapa antes de teste1.
 
-Only then may the **same frozen configuration** run on the 900 original test1
-texts. A completed matching test2 run and unchanged predictions/workbook are
-mandatory even for test1 preview. No new prompt selection occurs:
+Só então a **mesma configuração congelada** pode executar nos 900 textos originais
+de teste1. Uma execução de teste2 concluída e compatível, com previsões/planilha
+inalteradas, é obrigatória até para a prévia de teste1. Não há nova seleção de prompts:
 
 ```bash
 PYTHONPATH=src python3 -m rag_cascade predict --execute \
@@ -243,7 +272,8 @@ PYTHONPATH=src python3 -m rag_cascade evaluate \
   --output-dir results/rag-test1-evaluation-new
 ```
 
-Evaluation rechecks the test2 chain and every saved test1 decision before opening
-gold. It reports frozen RAG versus stacking, never selecting a new prompt or
-budget from those results. The four-way context optimization remains in validation;
-only its selected configuration advances to test2/test1 to minimize API calls.
+A avaliação verifica novamente a cadeia de teste2 e cada decisão salva de teste1
+antes de abrir o gabarito. Compara RAG congelado com stacking, sem selecionar
+novo prompt ou orçamento pelos resultados. A otimização dos quatro contextos
+permanece na validação; só a configuração selecionada avança para teste2/teste1,
+reduzindo chamadas à API.

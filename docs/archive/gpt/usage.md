@@ -1,6 +1,9 @@
-# GPT classification and earlier experiment workflows
+<a id="gpt-classification-and-earlier-experiment-workflows"></a>
 
-Historical workflow reference. For current entry points, see the [documentation index](../../README.md).
+# Classificação GPT e fluxos experimentais anteriores
+
+Referência histórica de execução. Para os pontos de entrada atuais, veja o
+[índice da documentação](../../README.md).
 
 ## Instalação
 

@@ -1,128 +1,144 @@
-# Frozen stacking with selective GPT decisions
+<a id="frozen-stacking-with-selective-gpt-decisions"></a>
 
-The completed [measured experiment](../results/stacking-gpt-cascade.md) selected
-zero GPT calls on validation; all three nonzero budgets also reduced test1
-quality. Its frozen package is `models/stacking-gpt-cascade/`. Configurable
-routing and explicit budget comparisons remain available as described below.
+# Stacking congelado com decisões seletivas do GPT
 
-The cascade reuses SVM, development-only logistic regression, the original EP1
-NorBERTo adapter, Qwen, the frozen probability calibrators, and the published
-four-member stacking model. No base classifier is refitted. GPT replaces the
-stacking decision only for the selected uncertain targets; API failures retain
-the original stacking decision and are explicitly marked as fallback.
+O [experimento medido concluído](../results/stacking-gpt-cascade.md) selecionou
+zero chamadas ao GPT na validação; os três orçamentos positivos também reduziram
+a qualidade em teste1. O pacote congelado é `models/stacking-gpt-cascade/`.
+Roteamento configurável e comparações explícitas de orçamento permanecem
+disponíveis conforme descrito abaixo.
 
-## Data and selection protocol
+A cascata reutiliza SVM, regressão logística de desenvolvimento, adaptador
+original do NorBERTo do EP1, Qwen, calibradores congelados e stacking publicado
+de quatro membros. Nenhum classificador-base é reajustado. O GPT substitui
+stacking somente nos alvos incertos selecionados; falhas da API mantêm a
+decisão original e são marcadas explicitamente como fallback.
 
-The original development partition has 16,093 rows. The 3,999 reserved rows
-already have two group-disjoint roles: 2,027 fit probability calibrators and
-1,972 train the stacking meta-model. Calibration rows are excluded from routing
-development. They cannot serve as clean routing validation for the complete
-calibrated pipeline because their labels fitted the calibrators.
+<a id="data-and-selection-protocol"></a>
 
-Routing development uses **nested five-by-five grouped OOF** predictions on the
-1,972 meta rows. Each outer target and its similarity group are excluded from
-both meta-model fitting and inner regularization selection. The original
-calibrators remain frozen and never used these 1,972 labels. Only the small
-meta-model is fitted for these OOF estimates; production stacking and base
-weights are unchanged. The saved fold audit includes training/validation IDs,
-portable numerical models, and inner CV results.
+## Dados e protocolo de seleção
 
-Qwen checkpoint selection used the full original holdout, and earlier research
-consulted holdout/test1. This inherited exposure cannot be undone by meta-model
-OOF. The new routing stage excludes its outer targets from supervised meta
-fitting, but does not claim untouched validation for the entire historical
-model-selection process.
+A partição original de desenvolvimento tem 16,093 linhas. As 3,999 reservadas
+já têm dois papéis com grupos disjuntos: 2,027 ajustam calibradores e 1,972
+treinam o meta-modelo de stacking. As linhas de calibração ficam fora do
+desenvolvimento do roteamento. Não podem servir de validação independente
+do roteamento para o pipeline calibrado completo, pois seus rótulos ajustaram
+os calibradores.
 
-The 900 final texts are never used to select a routing rule, prompt, threshold
-or budget. Prediction loads `Text` records without gold. All final prediction
-files are persisted and verified before the separate evaluation stage opens
-the gold workbook. This is an explicitly requested exploratory test1 experiment;
-it does not establish the assignment's test2-before-test1 delivery order.
+O desenvolvimento do roteamento usa previsões **OOF aninhadas de cinco por cinco
+folds agrupados** nas 1,972 linhas de meta-validação. Cada alvo externo e seu
+grupo são excluídos do ajuste do meta-modelo e da seleção interna de regularização.
+Os calibradores originais permanecem congelados e nunca usaram esses 1,972
+rótulos. Somente o pequeno meta-modelo é ajustado para essas estimativas OOF;
+stacking de produção e pesos-base não mudam. A auditoria salva inclui IDs de
+treino/validação, modelos numéricos portáveis e resultados internos da validação cruzada.
 
-## Hybrid uncertainty and budgets
+A seleção do checkpoint Qwen usou todo o conjunto reservado original, e pesquisas
+anteriores consultaram conjunto reservado/teste1. A OOF do meta-modelo não
+desfaz essa exposição. O novo roteamento exclui seus alvos externos do ajuste
+supervisionado do meta-modelo, mas não alega validação inédita de todo o processo
+histórico de seleção.
 
-For stacking probabilities p, define normalized entropy H, top-two margin M,
-and maximum probability P. The confidence uncertainty is
-`U = (H + (1-M) + 1.5*(1-P))/3`. Disagreement D is the fraction of the six pairs
-of four native member decisions that disagree. SVM uses its original margin
-argmax for this vote, even when probability calibration changes its argmax.
+Os 900 textos finais nunca selecionam regra de roteamento, prompt, limiar ou
+orçamento. A predição carrega registros `Text` sem gabarito. Todos os arquivos
+finais são persistidos e verificados antes da abertura do gabarito na avaliação
+separada. Este é um experimento exploratório em teste1 explicitamente solicitado;
+não estabelece a ordem de entrega teste2 antes de teste1 exigida pelo enunciado.
 
-The ranking score is `w*U + (1-w)*D`. A target is eligible if its maximum
-probability or margin is below the configured threshold, or any members
-disagree. A fixed twelve-candidate search on OOF predictions chooses w and
-thresholds by captured stacking errors at the initial 10% budget. Stable ties
-use text checksums and source row IDs, without labels. The saved search is a
-selection diagnostic, not an independent estimate of routing generalization.
+<a id="hybrid-uncertainty-and-budgets"></a>
 
-Each budget selects at most `floor(N * fraction)` eligible instances in ranked
-order. Thus 5%, 10%, and 20% select at most 98, 197, and 394 routing-validation
-instances, or 45, 90, and 180 final test1 instances. Fractions apply to the
-eligible evaluation cohort's total N, including rows that remain local.
-Selections are nested. Zero budget is also compared so GPT is never assumed
-to improve the result.
+## Incerteza híbrida e orçamentos
 
-The first remote stage compares text-only and local-prediction prompts on the
-same initial 10% subset. Macro-F1 over all OOF rows chooses the prompt; accuracy
-and then text-only break ties. Only that prompt is extended to 20%, reusing
-previous answers. Budget selection then uses OOF macro-F1 over 0%, 5%, 10% and
-20%; ties favor the lower budget. Both choices are frozen before final inference.
+Para probabilidades p do stacking, defina entropia normalizada H, margem entre
+as duas maiores M e probabilidade máxima P. A incerteza de confiança é
+`U = (H + (1-M) + 1.5*(1-P))/3`. A divergência D é a fração dos seis pares de
+decisões nativas dos quatro membros que divergem. O SVM usa o argmax original
+das margens nesse voto, mesmo se a calibração mudar seu argmax.
 
-## GPT transport and accounting
+O escore de ordenação é `w*U + (1-w)*D`. Um alvo é elegível se a probabilidade
+máxima ou margem ficar abaixo do limiar configurado, ou se algum membro
+divergir. Uma busca fixa de doze candidatos nas previsões OOF escolhe w e
+limiares pelos erros de stacking capturados no orçamento inicial de 10%.
+Empates estáveis usam checksums dos textos e IDs das linhas, sem rótulos.
+A busca salva é diagnóstico de seleção, não estimativa independente da
+generalização do roteamento.
 
-The default is **gpt-6.1-sol, low**, through the existing `CodexBackend`. It
-uses fresh isolated `codex exec` sessions, a strict JSON schema, no tools,
-repository context, gold files or session continuation. Original `resp_text`
-is sent without cleaning or truncation. Class definitions and instructions
-are explicit. The optional context includes native base decisions, calibrated
-probabilities and stacking output, identified as fallible predictions.
+Cada orçamento seleciona no máximo `floor(N * fraction)` instâncias elegíveis
+na ordem. Assim, 5%, 10% e 20% selecionam até 98, 197 e 394 instâncias na
+validação do roteamento, ou 45, 90 e 180 em teste1 final. As frações incidem
+sobre o total N da coorte elegível de avaliação, inclusive linhas que permanecem
+locais. As seleções são aninhadas. Orçamento zero também é comparado, sem
+presumir melhora pelo GPT.
 
-The CLI exposes no temperature parameter, so temperature is omitted. It
-supports low reasoning and structured output; see the official
-[model documentation](https://developers.openai.com/api/docs/models/gpt-6.1-sol)
-and [Codex non-interactive mode](https://learn.chatgpt.com/docs/non-interactive-mode).
+A primeira etapa remota compara prompts somente de texto e com previsões locais
+no mesmo subconjunto inicial de 10%. Macro-F1 em todas as linhas OOF escolhe
+o prompt; acurácia e depois somente texto desempatam. Só o prompt escolhido
+é estendido a 20%, reutilizando respostas. Depois, macro-F1 OOF seleciona o
+orçamento entre 0%, 5%, 10% e 20%, favorecendo o menor em empates. Ambas as
+escolhas são congeladas antes da inferência final.
 
-The remote model identifier is a requested alias. Persistent response replay
-supports exact reproducibility; new future requests may differ even with the
-same alias and reasoning setting.
+<a id="gpt-transport-and-accounting"></a>
 
-SQLite persists validated responses and individual decisions keyed by exact
-model, reasoning, instructions, original text, optional predictions and runtime.
-Item caching allows reuse when budgets or batch boundaries change. Up to eight
-independent targets share a Codex request; two requests may run concurrently.
-No labels are copied from one target to another. Exact repeated requests share
-one answer. Batch identifiers are opaque, unrelated to source IDs or classes.
+## Transporte GPT e contabilização
 
-Every attempt is journaled before sending. Retries are explicitly bounded,
-including after timeouts that might already have consumed tokens. A failed
-batch opens a circuit breaker for subsequent unsent batches. Failed calls do
-not populate the successful-decision cache. A missing GPT decision retains the
-stacking label and a visible `fallback` status; it never invents a GPT answer.
+O padrão é **gpt-6.1-sol, low**, via `CodexBackend` existente. Usa sessões novas
+e isoladas de `codex exec`, esquema JSON estrito, sem ferramentas, contexto
+do repositório, arquivos de gabarito ou continuação da sessão. O `resp_text`
+original é enviado sem limpeza nem truncamento. Definições de classes e
+instruções são explícitas. O contexto opcional inclui decisões nativas,
+probabilidades calibradas e saída do stacking, identificadas como previsões falíveis.
 
-Reports distinguish attempted calls, successful target decisions, cache hits,
-fallback, token usage, summed request latency and wall-clock time. API-equivalent
-cost uses standard prices recorded in the config: USD 2 input, 0.10 cached
-input, and 10 output per million tokens. These are estimates from the official
-model page, checked on 2026-11-05, **not an invoice for ChatGPT subscription
-usage**. Failed attempts with unavailable usage are counted and flagged; their
-unknown cost is not silently treated as known zero. Per-budget accounting uses
-per-instance shares of shared batches; actual experiment totals are separate.
+A CLI não expõe temperatura, portanto ela é omitida. Suporta raciocínio baixo
+e saída estruturada; veja a [documentação oficial do modelo](https://developers.openai.com/api/docs/models/gpt-6.1-sol)
+e o [modo não interativo do Codex](https://learn.chatgpt.com/docs/non-interactive-mode).
 
-## Configuration and execution
+O identificador remoto é um alias solicitado. Reutilizar respostas persistidas
+permite reprodução exata; novas solicitações futuras podem divergir mesmo com
+o mesmo alias e configuração de raciocínio.
 
-Use the project's Python environment with its pinned CPU dependencies and an
-authenticated Codex CLI >=0.165.0. `codex login` can provide existing ChatGPT
-authentication. Alternatively, supply `CODEX_API_KEY` through the environment
-for the Codex invocation. Do not write credentials into config files or Git.
+SQLite persiste respostas validadas e decisões individuais com chaves de modelo,
+raciocínio, instruções, texto original, previsões opcionais e ambiente exatos.
+O cache por item permite reutilização entre orçamentos e limites de lotes.
+Até oito alvos independentes compartilham uma solicitação Codex; duas podem
+executar simultaneamente. Não se copiam rótulos entre alvos. Pedidos exatamente
+repetidos compartilham resposta. IDs dos lotes são opacos, sem relação com
+IDs de origem ou classes.
 
-`configs/cascade.json` defines the experiment. Optional `CASCADE_MODEL`,
-`CASCADE_REASONING_EFFORT`, `CASCADE_BATCH_SIZE`, `CASCADE_WORKERS`,
-`CASCADE_RETRIES`, `CASCADE_TIMEOUT`, and the three `CASCADE_*_PRICE_PER_MILLION`
-variables override it **during preparation**. The resolved configuration is
-then immutable. `CASCADE_CODEX_BIN` selects the executable and `CASCADE_CACHE`
-selects the persistent cache. Runtime identity must match validation at final
-inference. The defaults remain the explicitly requested model and effort.
+Cada tentativa é registrada antes do envio. Retentativas são explicitamente
+limitadas, inclusive após tempo esgotado que possa já ter consumido tokens.
+Um lote com falha abre um disjuntor para lotes ainda não enviados. Chamadas
+falhas não preenchem o cache de decisões válidas. Uma decisão GPT ausente
+mantém o rótulo de stacking com estado `fallback` visível; nunca inventa resposta.
 
-From the EP2 root, use fresh preparation/publication/prediction destinations:
+Relatórios distinguem chamadas tentadas, decisões válidas por alvo, acertos de
+cache, fallback, tokens, soma de latências e tempo total. O custo equivalente
+à API usa os preços padrão da configuração: USD 2 entrada, 0.10 entrada em
+cache e 10 saída por milhão de tokens. São estimativas da página oficial do
+modelo, conferidas em 2026-11-05, **não uma fatura do uso da assinatura ChatGPT**.
+Falhas sem consumo disponível são contadas e sinalizadas; o custo desconhecido
+não vira zero conhecido silenciosamente. A contabilização por orçamento usa
+parcelas por instância dos lotes compartilhados; totais reais do experimento
+ficam separados.
+
+<a id="configuration-and-execution"></a>
+
+## Configuração e execução
+
+Use o ambiente Python do projeto com dependências CPU fixadas e Codex CLI
+>=0.165.0 autenticado. `codex login` pode fornecer a autenticação ChatGPT
+existente. Alternativamente, forneça `CODEX_API_KEY` pelo ambiente da execução.
+Não grave credenciais em configurações ou no Git.
+
+`configs/cascade.json` define o experimento. As variáveis opcionais
+`CASCADE_MODEL`, `CASCADE_REASONING_EFFORT`, `CASCADE_BATCH_SIZE`,
+`CASCADE_WORKERS`, `CASCADE_RETRIES`, `CASCADE_TIMEOUT` e as três
+`CASCADE_*_PRICE_PER_MILLION` substituem valores **durante a preparação**.
+A configuração resolvida fica então imutável. `CASCADE_CODEX_BIN` seleciona o
+executável, e `CASCADE_CACHE`, o cache persistente. A identidade do ambiente
+na inferência final deve coincidir com a validação. Os padrões continuam sendo
+o modelo e esforço explicitamente solicitados.
+
+Na raiz do EP2, use novos destinos de preparação/publicação/predição:
 
 ```bash
 PYTHONPATH=src python3 -m cascade_classifier prepare \
@@ -139,12 +155,13 @@ PYTHONPATH=src python3 -m cascade_classifier freeze \
   --output-dir models/stacking-gpt-cascade-new
 ```
 
-Preparation reuses pinned member score runs and needs no GPU or GPT call.
-The two validation commands perform remote classification. Stages can resume
-with their original cache/journal; changing inputs requires a new directory.
-An interrupted unknown-usage attempt counts toward the retry limit.
+A preparação reutiliza escores fixados dos membros, sem GPU ou chamadas ao GPT.
+Os dois comandos de validação fazem classificação remota. Etapas retomam com
+cache/registro originais; mudar entradas exige novo diretório. Uma tentativa
+interrompida com consumo desconhecido conta no limite de retentativas.
 
-For a final comparison, reuse a verified, completed stacking prediction run:
+Para comparação final, reutilize uma execução verificada e concluída de
+predição do stacking:
 
 ```bash
 PYTHONPATH=src python3 -m cascade_classifier predict \
@@ -159,13 +176,14 @@ PYTHONPATH=src python3 -m cascade_classifier evaluate \
   --output-dir results/cascade-test1-evaluation-new
 ```
 
-`--compare-budgets` explicitly queries the union up to the frozen 20% limit;
-smaller-budget variants reuse those answers. Without it, `predict` uses only
-the validation-selected budget and the local baseline, avoiding unnecessary
-experimental calls. If validation selects zero, production prediction makes
-no GPT requests. For another input, first generate a verified stacking run
-using the [four-model workflow](ensemble-qwen.md), then pass it here.
+`--compare-budgets` consulta explicitamente a união até o limite congelado de
+20%; variantes menores reutilizam essas respostas. Sem a opção, `predict`
+usa só o orçamento selecionado na validação e a referência local, evitando
+chamadas experimentais desnecessárias. Se a validação escolher zero, a predição
+de produção não faz pedidos GPT. Para outra entrada, gere primeiro uma execução
+verificada de stacking pelo [fluxo de quatro modelos](ensemble-qwen.md) e
+forneça-a aqui.
 
-Reports include macro-F1, accuracy, per-class F1, confusion matrices, corrected
-and harmed instances, fallback and resource consumption. Evaluation never
-changes a frozen rule, model, prompt or budget.
+Os relatórios incluem macro-F1, acurácia, F1 por classe, matrizes de confusão,
+instâncias corrigidas/prejudicadas, fallback e recursos consumidos. A avaliação
+nunca altera regra, modelo, prompt ou orçamento congelados.

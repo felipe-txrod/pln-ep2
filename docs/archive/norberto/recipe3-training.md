@@ -1,36 +1,43 @@
-# NorBERTo training
+<a id="norberto-training"></a>
 
-Historical workflow retired on 2026-11-05. The unchanged original EP1 delivery
-adapter is the selected model. Commands below describe the former experiment;
-its active training/evaluation implementation has been removed. Local source
-snapshots are preserved in `results/norberto-rollback-20261105/sources-before-rollback.tar.gz`.
+# Treinamento do NorBERTo
 
-[Documentation index](../../README.md)
+Fluxo histórico desativado em 2026-11-05. O modelo selecionado é o adaptador
+original da entrega do EP1, sem alterações. Os comandos abaixo descrevem o
+experimento anterior; sua implementação ativa de treino/avaliação foi removida.
+Cópias locais do código estão em `results/norberto-rollback-20261105/sources-before-rollback.tar.gz`.
 
-Recipe 3 reproduces the original EP1 optimizer units for clipping and AdamW
-while normalizing example weights across accumulated microbatches. The commands
-below reproduce that recipe; a stable full-corpus replacement has not been
-validated. The [optimizer guide](recipe3-optimizer-units.md) documents the
-implementation, the regression reintroduced by compatibility, and verification;
-older recipes are in the
-[experiment archive](../README.md#norberto-training-investigations).
+[Índice da documentação](../../README.md)
 
-The latest full-corpus recipe-3 run showed transient gradient escalation and
-worse fitting on shared training rows. Recipe 3 corrects accumulation and
-optimizer units; its development-run recovery does not establish stability
-on more data. See the [training-scale audit](../../results/README.md#training-scale-audit-recipe-3)
-before planning another unchanged full run. No corrective hyperparameter has
-been validated by that audit.
+A receita 3 reproduz as unidades originais do otimizador do EP1 para limitação
+e AdamW, normalizando os pesos dos exemplos entre microlotes acumulados.
+Os comandos abaixo reproduzem essa receita; um substituto estável treinado no
+corpus completo ainda não foi validado. O [guia do otimizador](recipe3-optimizer-units.md)
+documenta a implementação, a regressão reintroduzida pela compatibilidade e a
+verificação; receitas anteriores estão no
+[arquivo de experimentos](../README.md#norberto-training-investigations).
 
-## Environment
+A execução completa mais recente da receita 3 apresentou escalada transitória
+dos gradientes e pior ajuste nas linhas compartilhadas de treino. A receita 3
+corrige acumulação e unidades do otimizador; a recuperação no desenvolvimento
+não estabelece estabilidade com mais dados. Veja a
+[auditoria da escala de treino](../../results/README.md#training-scale-audit-recipe-3)
+antes de planejar outra execução completa sem alterações. A auditoria não
+validou nenhum hiperparâmetro corretivo.
 
-Run commands from the EP2 root. The launcher requires the sibling EP1 sources
-and Hugging Face cache, and the validated local image `pln-rocm:6.4.1`.
-`NORBERTO_EP1_ROOT` and `NORBERTO_IMAGE` select another local checkout or image.
-The container is offline, mounts EP1/cache read-only, and uses
-`HSA_OVERRIDE_GFX_VERSION=10.3.0` on the RX 6650 XT.
+<a id="environment"></a>
 
-## Train on 100% of the training data
+## Ambiente
+
+Execute na raiz do EP2. O script exige fontes do EP1 vizinho, cache Hugging
+Face e a imagem local validada `pln-rocm:6.4.1`. `NORBERTO_EP1_ROOT` e
+`NORBERTO_IMAGE` selecionam outra cópia local ou imagem. O contêiner é offline,
+monta EP1/cache somente para leitura e usa `HSA_OVERRIDE_GFX_VERSION=10.3.0`
+na RX 6650 XT.
+
+<a id="train-on-100-of-the-training-data"></a>
+
+## Treinar em 100% dos dados de treinamento
 
 ```bash
 NORBERTO_IMAGE=pln-rocm:6.4.1 \
@@ -39,14 +46,16 @@ bash scripts/norberto/train.sh \
   --output-dir /workspace/results/norberto-full-recipe3
 ```
 
-This initializes a fresh adapter from the pinned public base and uses all
-**20,092 EP1 training responses**, including the former holdout. It trains for
-two fixed epochs with no validation or checkpoint selection. The former
-holdout is training data for this adapter and cannot serve as unseen validation.
-Historical full-corpus runs took approximately 39–40 minutes on the recorded
-RX 6650 XT environment; duration is not a completion guarantee.
+Inicializa um adaptador novo da base pública fixada e usa as **20,092 respostas
+de treino do EP1**, incluindo o antigo conjunto reservado. Treina duas épocas
+fixas sem validação nem seleção de checkpoints. O antigo conjunto reservado
+é treino deste adaptador e não pode servir como validação inédita. Execuções
+históricas completas levaram aproximadamente 39–40 minutos no ambiente registrado
+da RX 6650 XT; a duração não garante conclusão.
 
-## Train on the frozen development partition
+<a id="train-on-the-frozen-development-partition"></a>
+
+## Treinar na partição congelada de desenvolvimento
 
 ```bash
 NORBERTO_IMAGE=pln-rocm:6.4.1 \
@@ -55,21 +64,23 @@ bash scripts/norberto/train.sh \
   --output-dir /workspace/results/norberto-development-recipe3-new
 ```
 
-This uses the original **16,093 development rows** and reserves **3,999 holdout
-rows**, with no random resplitting. The pinned split checksum, row IDs, counts,
-class coverage, and zero row/group overlap are checked before tokenization.
-The default split is
+Usa as **16,093 linhas originais de desenvolvimento** e reserva **3,999 linhas**,
+sem nova divisão aleatória. Checksum da divisão, IDs, contagens, cobertura de
+classes e ausência de sobreposição de linhas/grupos são verificados antes da
+tokenização. A divisão padrão é
 `EP1/results/research/dataset-hypotheses-20260923/splits.csv`; `--holdout-splits`
-can select another copy with the same checksum.
+pode selecionar outra cópia com o mesmo checksum.
 
-The completed recipe-3 development run took 31.32 minutes. Its quality is
-reported separately in the [results section](../../results/README.md), where
-holdout validation and test1 comparison have distinct tables.
+A execução concluída da receita 3 no desenvolvimento levou 31.32 minutos.
+A qualidade é relatada separadamente na [seção de resultados](../../results/README.md),
+com tabelas distintas para validação no conjunto reservado e comparação em teste1.
 
-## Validate the plan before training
+<a id="validate-the-plan-before-training"></a>
 
-Append `--dry-run` to either command. A dry-run checks data and parameters
-without importing model libraries, creating the output directory, or training:
+## Validar o plano antes de treinar
+
+Acrescente `--dry-run` a qualquer comando. Esse modo verifica dados e parâmetros
+sem importar bibliotecas dos modelos, criar o diretório de saída ou treinar:
 
 ```bash
 bash scripts/norberto/train.sh \
@@ -78,48 +89,52 @@ bash scripts/norberto/train.sh \
   --dry-run
 ```
 
-Every execution requires a new output directory. An existing directory is
-rejected; change `--output-dir` rather than overwriting earlier artifacts.
+Cada execução exige novo diretório de saída. Um diretório existente é rejeitado;
+altere `--output-dir` em vez de sobrescrever artefatos anteriores.
 
-## Fixed parameters and provenance
+<a id="fixed-parameters-and-provenance"></a>
 
-| Parameter | Value |
+## Parâmetros fixos e procedência
+
+| Parâmetro | Valor |
 |---|---|
 | Base | `Itau-Unibanco/NorBERTo-base` |
-| Public revision | `db73446f89c96044863ea05a39f680524b84bccb` |
-| Epochs | 2 |
-| LoRA | Rank 4, alpha 8, dropout 0.05, `Wqkv` in all 22 layers |
-| Context | 512 tokens, head/tail truncation, case preserved |
-| Precision / attention | FP32 / SDPA |
-| Batch / accumulation | 4 / 4 |
-| Learning rate | 0.001 |
-| Weight decay / warmup ratio | 0.01 / 0.1 |
-| Seed / CPU threads | 42 / 2 |
-| Recipe | Version 3, explicit optimizer gradient scale 4 |
+| Revisão pública | `db73446f89c96044863ea05a39f680524b84bccb` |
+| Épocas | 2 |
+| LoRA | Posto 4, alpha 8, dropout 0.05, `Wqkv` nas 22 camadas |
+| Contexto | 512 tokens, truncamento início/fim, maiúsculas/minúsculas preservadas |
+| Precisão / atenção | FP32 / SDPA |
+| Lote / acumulação | 4 / 4 |
+| Taxa de aprendizado | 0.001 |
+| Decaimento de pesos / proporção de aquecimento | 0.01 / 0.1 |
+| Semente / threads em CPU | 42 / 2 |
+| Receita | Versão 3, escala explícita 4 do gradiente do otimizador |
 
-The wrapper reuses EP1's training function with the effective configuration in
-`models/norberto/config.json` and the recipe-3 Trainer extension. It records
-source hashes, dataset/split hashes, optimizer units, selected training rows,
-completion state, and exported adapter checksums. Reported loss is an example
-mean. Logged gradient norms use EP1 optimizer units; divide by 4 when comparing
-with recipe-2 sample-unit norms.
+O invólucro reutiliza a função de treinamento do EP1 com a configuração efetiva
+em `models/norberto/config.json` e a extensão Trainer da receita 3. Registra
+hashes das fontes, dados/divisão, unidades do otimizador, linhas selecionadas,
+estado de conclusão e checksums exportados. A perda reportada é a média por
+exemplo. As normas registradas usam unidades do otimizador do EP1; divida por
+4 ao comparar com as normas por amostra da receita 2.
 
-## Outputs and evaluation
+<a id="outputs-and-evaluation"></a>
 
-Each selected output directory contains:
+## Saídas e avaliação
 
-| Artifact | Content |
+Cada diretório de saída selecionado contém:
+
+| Artefato | Conteúdo |
 |---|---|
-| `final_model/` | New LoRA adapter, classification head, and tokenizer |
-| `run.json`, `training.json`, `config.json` | Status, recipe, parameters, metrics, and hashes |
-| `training-rows.jsonl` | Training row IDs, labels, and text hashes |
-| `checkpoints/` | Intermediate training checkpoints |
+| `final_model/` | Novo adaptador LoRA, cabeça de classificação e tokenizador |
+| `run.json`, `training.json`, `config.json` | Estado, receita, parâmetros, métricas e hashes |
+| `training-rows.jsonl` | IDs das linhas de treino, rótulos e hashes dos textos |
+| `checkpoints/` | Checkpoints intermediários de treinamento |
 
-A new adapter is distinct from the frozen EP1 model and is not automatically
-installed in its inference package or selected by the ensemble.
+Um novo adaptador é distinto do modelo congelado do EP1 e não é instalado
+automaticamente no pacote de inferência nem selecionado pelo ensemble.
 
-Use the [two-stage test1 workflow](../../guides/norberto-test1.md) to predict and then score
-saved predictions. For a completed development-only run, the separate
-``evaluate-holdout.py``
-script can validate the frozen holdout. Holdout results and the recorded
-training audits are in the [recipe-3 report](../../results/norberto-recipe3-holdout.md).
+Use o [fluxo de teste1 em duas etapas](../../guides/norberto-test1.md) para
+predizer e depois avaliar as previsões salvas. Para uma execução concluída
+somente de desenvolvimento, o script separado ``evaluate-holdout.py`` pode
+validar o conjunto reservado congelado. Resultados e auditorias de treino estão
+no [relatório da receita 3](../../results/norberto-recipe3-holdout.md).

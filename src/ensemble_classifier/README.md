@@ -1,36 +1,41 @@
 # Ensemble com seleção de classificadores
 
-The separate [`cascade_classifier`](../../docs/guides/stacking-gpt-cascade.md)
-package adds selective GPT decisions to the frozen four-member stacking.
-It uses nested grouped OOF routing validation, persistent caching and explicit
-5/10/20% comparisons. Existing ensemble models and commands remain available.
+O pacote separado [`cascade_classifier`](../../docs/guides/stacking-gpt-cascade.md)
+acrescenta decisões seletivas GPT ao stacking congelado de quatro membros.
+Usa validação de roteamento OOF aninhada agrupada, cache persistente e
+comparações explícitas 5/10/20%. Modelos e comandos existentes continuam disponíveis.
 
 Combinação offline de previsões já produzidas, sem carregar modelos, retreinar
 ou realizar chamadas remotas. A avaliação final usa teste1 rotulado após a
 entrega de teste2. O [protocolo completo](../../docs/guides/ensemble.md) descreve as
 regras e as extensões planejadas.
 
-## Current soft voting and stacking defaults
+<a id="current-soft-voting-and-stacking-defaults"></a>
 
-Both probability-based pipelines now select SVM, development-only RL,
-original EP1 NorBERTo, and the selected EP1-split Qwen. The default artifacts
-are `models/ensemble-soft-qwen/model.json` and
-`models/ensemble-stacking-qwen/model.json`. Soft voting searches 35 fixed
-quarter-simplex mixtures and selected zero Qwen weight. Stacking uses all
-12 calibrated probabilities, including Qwen, with grouped CV selecting C=0.1.
+## Padrões atuais de votação suave e stacking
 
-The 2,027 calibration rows and 1,972 weight/meta rows remain disjoint and
-identical to the original partitions. Qwen never fitted its weights on the
-holdout, but used it for checkpoint selection. Its inherited validation
-exposure is recorded. Test1 gold never enters calibration or meta fitting.
-See the [current commands](../../docs/guides/ensemble-qwen.md) and
-[measured comparison](../../docs/results/ensemble-qwen.md). Original
-three-model artifacts and legacy configurations remain available explicitly.
+Os dois pipelines de probabilidades selecionam SVM, RL de desenvolvimento,
+NorBERTo original EP1 e Qwen na divisão EP1 selecionado. Os artefatos padrão
+são `models/ensemble-soft-qwen/model.json` e
+`models/ensemble-stacking-qwen/model.json`. Votação suave busca 35 misturas
+fixas do simplex em incrementos de um quarto e escolheu Qwen com peso zero.
+Stacking usa as 12 probabilidades, incluindo Qwen, com C=0.1 selecionado por
+validação agrupada.
 
-The following sections describe the original protocol. Majority presets
-remain independent and retain three voters.
+As 2,027 linhas de calibração e 1,972 de pesos/meta-modelo permanecem disjuntas
+e idênticas às partições originais. Qwen nunca ajustou pesos no conjunto
+reservado, mas o usou para selecionar checkpoint. Sua exposição herdada é
+registrada. Gabarito Teste1 nunca calibra ou ajusta o meta-modelo. Veja
+[comandos atuais](../../docs/guides/ensemble-qwen.md) e
+[comparação medida](../../docs/results/ensemble-qwen.md). Artefatos originais
+de três modelos e configurações antigas continuam disponíveis explicitamente.
 
-## Original three-model stacking
+As seções seguintes descrevem o protocolo original. Presets de maioria
+continuam independentes e mantêm três votantes.
+
+<a id="original-three-model-stacking"></a>
+
+## Stacking original de três modelos
 
 Os comandos separados `fit-stacking`, `predict-stacking` e `evaluate-stacking`
 treinam somente uma meta-LR nas linhas que não calibraram os modelos,
@@ -39,7 +44,9 @@ calibradores, modelos-base e previsões do soft voting. Consulte o
 [guia de stacking](../../docs/guides/ensemble-stacking.md) e o
 [artefato congelado](../../models/ensemble-stacking/README.md).
 
-## Original three-model weighted soft voting
+<a id="original-three-model-weighted-soft-voting"></a>
+
+## Votação suave ponderada original de três modelos
 
 Os comandos `fit-soft`, `predict-soft` e `evaluate-soft` reutilizam os modelos
 congelados com probabilidades alinhadas. O antigo holdout é dividido por grupos
@@ -49,12 +56,14 @@ Consulte o [guia](../../docs/guides/ensemble-soft.md), o
 [modelo congelado](../../models/ensemble-soft/README.md) e os
 [resultados com matrizes de confusão](../../docs/results/ensemble-soft.md).
 
-## Local majority ensemble
+<a id="local-majority-ensemble"></a>
 
-`configs/ensemble-majority.json` selects the original EP1 NorBERTo,
-development-only SVM, and development-only RL. Each model has one vote; two
-matching votes decide. When all three labels differ, RL resolves the tie.
-The configuration uses only saved local predictions and pinned manifests:
+## Ensemble de maioria local
+
+`configs/ensemble-majority.json` seleciona NorBERTo original EP1, SVM e RL
+de desenvolvimento. Cada modelo vota uma vez; dois votos iguais decidem.
+Se os três rótulos diferem, RL desempata. A configuração usa só previsões
+locais salvas e manifestos fixados:
 
 ```bash
 PYTHONPATH=src python3 -m ensemble_classifier combine \
@@ -62,8 +71,8 @@ PYTHONPATH=src python3 -m ensemble_classifier combine \
   --input data/test2.xlsx --output-dir results/ensemble-majority-test2-new
 ```
 
-The corresponding member test2 runs must already exist. To compare the saved
-test1 runs without new model inference, use the explicit exploratory command:
+As execuções correspondentes de teste2 dos membros já devem existir.
+Para comparar teste1 salvo sem nova inferência, use o comando exploratório explícito:
 
 ```bash
 PYTHONPATH=src python3 -m ensemble_classifier compare-majority \
@@ -73,24 +82,25 @@ PYTHONPATH=src python3 -m ensemble_classifier compare-majority \
   --output-dir results/ensemble-majority-comparison-new
 ```
 
-This compares all nonempty model subsets, trying each configured local model
-as tiebreaker, including models outside a selected pair. Singletons are scored
-once. All candidate predictions are written before gold is loaded. Row/text
-alignment and selected artifact identities are mandatory. Results include
-accuracy, macro-F1, confusion matrices, tie counts, pairwise agreement, and
-all configurations tied for maximum accuracy.
+Compara todos os subconjuntos não vazios, testando cada modelo local configurado
+como árbitro, inclusive fora do par selecionado. Modelos isolados são avaliados
+uma vez. Todas as previsões são gravadas antes de carregar o gabarito.
+Alinhamento de linhas/textos e identidades são obrigatórios. Resultados incluem
+acurácia, macro-F1, matrizes, empates, concordância pareada e todas as
+configurações empatadas na maior acurácia.
 
-The comparison writes an exploratory report and never changes delivery
-defaults. Official `combine` test1 execution still requires a matching completed
-test2 run. Existing results are preserved. The measured best trio achieved
-49.22%, versus 49.67% for RL alone; see the [full comparison](../../docs/results/ensemble-majority.md).
+A comparação grava relatório exploratório e nunca muda padrões de entrega.
+`combine` oficial de teste1 ainda exige execução compatível concluída de
+teste2. Resultados existentes são preservados. O melhor trio medido obteve
+49.22%, contra 49.67% da RL; veja a
+[comparação completa](../../docs/results/ensemble-majority.md).
 
 ## Escolher os membros
 
-`configs/ensemble.json` declares available members, while `models` selects
-the active voters. The default is `norberto`, `svm`, and `rl`, using majority
-voting and RL arbitration. Qwen is optional in these majority presets.
-`--models` overrides the list for an explicitly selected alternative run:
+`configs/ensemble.json` declara membros disponíveis, enquanto `models`
+seleciona votantes ativos. O padrão é `norberto`, `svm` e `rl`, com maioria
+e arbitragem RL. Qwen é opcional nesses presets. `--models` substitui a lista
+para execução alternativa explicitamente selecionada:
 
 ```bash
 PYTHONPATH=src python -m ensemble_classifier combine \
@@ -121,22 +131,23 @@ siga esse contrato, sem alterar o combinador. `identity_field` permite indicar
 o nome do campo SHA-256 do modelo no manifesto, caso não seja um dos padrões
 `artifact_sha256`, `adapter_sha256` ou `artifact_manifest_sha256`.
 
-## Selected model variants
+<a id="selected-model-variants"></a>
 
-NorBERTo and SVM use their original 16,093-row development models. RL defaults
-to `models/rl-development/`, fitted on the same partition with all 3,999
-holdout rows reserved. Create it once with `bash scripts/rl/train.sh`; a
-missing bundle never falls back to the historical full-corpus RL model.
-The optional Qwen member now selects `models/qwen/adapter/`, trained on the
-same 16,093/3,999 EP1 split. It is optional in majority voting and included
-in the separate soft-voting and stacking pipelines.
+## Variantes selecionadas dos modelos
 
-The optional `manifest` member field pins an external model contract. For
-`identity_field=artifact_sha256`, the run must match that contract's artifact
-hash. For `identity_field=artifact_manifest_sha256`, it must match the selected
-manifest file hash. In both cases the selected manifest identity is also
-recorded in the ensemble fingerprint. The default configurations use these
-checks to reject full-corpus or otherwise different models before combining.
+NorBERTo e SVM usam modelos originais de desenvolvimento de 16,093 linhas.
+RL usa `models/rl-development/`, na mesma partição, preservando 3,999 reservadas.
+Crie uma vez com `bash scripts/rl/train.sh`; pacote ausente nunca recorre à
+RL histórica completa. O membro opcional Qwen seleciona `models/qwen/adapter/`,
+treinado na mesma divisão EP1 16,093/3,999. É opcional na maioria e incluído
+nos pipelines separados de votação suave e stacking.
+
+O campo opcional `manifest` fixa contrato externo do modelo. Com
+`identity_field=artifact_sha256`, a execução deve coincidir com o hash do
+artefato do contrato. Com `identity_field=artifact_manifest_sha256`, deve
+coincidir com o hash do manifesto selecionado. Nos dois casos, a identidade
+do manifesto também integra a do ensemble. Configurações padrão rejeitam
+modelos completos ou diferentes antes de combinar.
 
 ## Escolher o árbitro
 
@@ -224,13 +235,13 @@ artefatos, modelo de desempate, configuração GPT quando aplicável e código,
 mas não os caminhos de saída de cada fase. Trocar os membros ou o árbitro em
 teste1 invalida o vínculo à entrega de teste2.
 
-Completed `combine` runs write `predictions.jsonl`, `routing.jsonl`, and
-`run.json`. Each prediction records its label, decision source, and member
-labels in the existing evaluation/export format. The `combine` command does
-not generate XLSX or calculate metrics; `compare-majority` provides separate
-exploratory scoring. Missing arbitration responses prevent completion.
-Existing outputs are preserved; use a new directory.
+Execuções `combine` concluídas gravam `predictions.jsonl`, `routing.jsonl` e
+`run.json`. Cada previsão registra rótulo, fonte da decisão e rótulos dos
+membros no formato existente de avaliação/exportação. `combine` não gera
+XLSX nem métricas; `compare-majority` oferece avaliação exploratória separada.
+Arbitragem ausente impede concluir. Saídas existentes são preservadas; use
+novo diretório.
 
-The majority integration was verified with real saved predictions and an
-independent vote/metric checker. New adapters or arbitration configurations
-still require their own runtime verification.
+A integração de maioria foi verificada com previsões reais salvas e um
+verificador independente de votos/métricas. Adaptadores ou configurações novas
+ainda precisam de sua própria verificação de ambiente.

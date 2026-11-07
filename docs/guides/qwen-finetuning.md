@@ -1,37 +1,47 @@
-# Fine-tuning do Qwen3 na RX 6650 XT
+<a id="fine-tuning-do-qwen3-na-rx-6650-xt"></a>
 
-[Documentation index](../README.md)
+# Ajuste fino do Qwen3 na RX 6650 XT
 
-The selected model is now saved under `models/qwen/adapter/`, trained on the
-exact EP1 development/holdout split. See the [selected model verification](../results/qwen-ep1-model.md).
-The [earlier test1 report](../results/qwen-test1.md) describes the historical
-adapter with a different split; its score does not describe the new default.
+[Índice da documentação](../README.md)
 
-## Saved default
+O modelo selecionado está salvo em `models/qwen/adapter/`, treinado na divisão
+exata de desenvolvimento/conjunto reservado do EP1. Veja a
+[verificação do modelo selecionado](../results/qwen-ep1-model.md). O
+[relatório anterior de teste1](../results/qwen-test1.md) descreve o adaptador
+histórico com outra divisão; seu resultado não representa o novo padrão.
 
-`predict` uses the checksum-verified `models/qwen/adapter/` when `--adapter`
-is omitted. The completed three-epoch run scored 1,791/3,999 (44.79%) on the
-EP1 holdout and retains the same NF4 recipe. Qwen now participates in
-[soft voting and stacking](ensemble-qwen.md), with 414/900 (46.00%) in subsequent
-native test1 scoring. Majority presets retain three voters. The package includes the trained head,
-tokenizer, frozen partition, training provenance and a pinned base reference.
-No new training is required to load it.
+<a id="saved-default"></a>
 
-The original per-row validation export was reordered by length grouping and
-has been preserved as historical evidence. Correctly aligned predictions were
-recovered separately from checkpoint RNG; see the [ordering audit](../results/qwen-ep1-model.md#per-row-export-ordering-audit).
-Future exports use sequential evaluation and verify the output label order.
+## Modelo padrão salvo
 
-## Retrain with the exact EP1 partition
+`predict` usa `models/qwen/adapter/`, verificado por checksum, quando `--adapter`
+é omitido. A execução concluída de três épocas acertou 1,791/3,999 (44.79%) no
+conjunto reservado do EP1 e mantém a receita NF4. Qwen participa da
+[votação suave e do stacking](ensemble-qwen.md), com 414/900 (46.00%) na
+avaliação nativa posterior de teste1. Os presets de maioria mantêm três
+votantes. O pacote inclui cabeça treinada, tokenizador, partição congelada,
+procedência do treino e referência fixada da base. Não é necessário novo treino
+para carregá-lo.
 
-Use `--ep1-split data/ep1-development-holdout.csv` to reuse the same 16,093
-development rows and 3,999 holdout rows as NorBERTo, SVM, and development-only
-RL. The versioned CSV is byte-identical to the original EP1 split, SHA-256
-`0f78e7a809c7b7584db05b33cf03a73ff586d5de02ba824c16562d5070d41494`.
-The workbook and split checksums are validated before GPU preflight. No new
-folds are generated; the seed and fold settings do not change membership.
+A exportação original de validação por linha foi reordenada pelo agrupamento
+por comprimento e preservada como evidência histórica. As previsões alinhadas
+foram recuperadas separadamente do estado aleatório do checkpoint; veja a
+[auditoria da ordem](../results/qwen-ep1-model.md#per-row-export-ordering-audit).
+Exportações futuras usam avaliação sequencial e verificam a ordem dos rótulos.
 
-From the EP2 root, using the existing local image, runtime cache, and base:
+<a id="retrain-with-the-exact-ep1-partition"></a>
+
+## Retreinar com a partição exata do EP1
+
+Use `--ep1-split data/ep1-development-holdout.csv` para reutilizar as mesmas
+16,093 linhas de desenvolvimento e 3,999 reservadas de NorBERTo, SVM e RL de
+desenvolvimento. O CSV versionado é idêntico em bytes à divisão original do
+EP1, SHA-256 `0f78e7a809c7b7584db05b33cf03a73ff586d5de02ba824c16562d5070d41494`.
+Os checksums da planilha e da divisão são validados antes da verificação prévia
+da GPU. Nenhum fold novo é gerado; semente e parâmetros dos folds não mudam
+a composição da partição.
+
+Na raiz do EP2, usando imagem local, cache do ambiente e base existentes:
 
 ```bash
 QWEN_IMAGE=pln-rocm:6.4.1 \
@@ -43,21 +53,21 @@ bash scripts/qwen/container.sh train \
   --output-dir results/qwen-ep1-training-20261105
 ```
 
-This keeps the existing optimized QLoRA NF4 recipe: three epochs, batch 4,
-accumulation 4, context 256, rank 8/alpha 16, and the pinned public base.
-A fresh synthetic two-step compatibility preflight runs automatically in the
-adjacent `qwen-ep1-training-20261105-preflight/` directory. Old smoke reports
-are invalidated by the implementation change and must not be supplied.
-Existing results and adapters are preserved; choose a new output directory
-if either training or preflight destination already exists.
+Mantém a receita otimizada QLoRA NF4 existente: três épocas, lote 4, acumulação
+4, contexto 256, posto 8/alpha 16 e base pública fixada. Uma nova verificação
+sintética de compatibilidade com dois passos executa automaticamente no
+diretório adjacente `qwen-ep1-training-20261105-preflight/`. Relatórios antigos
+de verificação foram invalidados pela mudança da implementação e não devem
+ser fornecidos. Resultados e adaptadores existentes são preservados; escolha
+novo diretório se a saída de treinamento ou de verificação já existir.
 
-The 3,999 holdout rows receive no gradient updates. They are evaluated each
-epoch and select the best checkpoint, matching the existing Qwen training
-behavior; the resulting score is validation, not an untouched final test.
-No test1 or test2 workbook enters fitting or checkpoint selection. The saved
-model now participates in the separate soft-voting and stacking defaults.
+As 3,999 linhas reservadas não recebem atualizações de gradiente. São avaliadas
+a cada época e selecionam o melhor checkpoint, conforme o treino existente
+do Qwen; o resultado é validação, não teste final inédito. Nenhuma planilha de
+teste1 ou teste2 entra no ajuste ou na seleção do checkpoint. O modelo salvo
+participa agora dos padrões separados de votação suave e stacking.
 
-To inspect the split without model training:
+Para inspecionar a divisão sem treinar o modelo:
 
 ```bash
 PYTHONPATH=src python3 -m qwen_classifier prepare \
@@ -66,17 +76,17 @@ PYTHONPATH=src python3 -m qwen_classifier prepare \
   --output-dir results/qwen-ep1-prepared-new
 ```
 
-Preparation checks complete row coverage and order, similarity-group isolation,
-normalized-text isolation, and class coverage. It snapshots the CSV and saves
-all original row IDs in `data/split.json`, `train.jsonl`, and `validation.jsonl`
-inside a training run. The final `adapter/experiment.json` and training
-`run.json` record partition and prepared-data checksums. The final adapter
-will be under `results/qwen-ep1-training-20261105/adapter/`.
+A preparação verifica cobertura e ordem completas das linhas, isolamento de
+grupos de similaridade e textos normalizados e cobertura de classes. Copia o
+CSV e salva todos os IDs originais em `data/split.json`, `train.jsonl` e
+`validation.jsonl` na execução. `adapter/experiment.json` final e `run.json`
+de treinamento registram checksums da partição e dos dados preparados.
+O adaptador final ficará em `results/qwen-ep1-training-20261105/adapter/`.
 
-Omitting `--ep1-split` retains the historical grouped-fold method described
-below; its 16,010/4,082 partition differs from EP1. The frozen preparation was
-verified against all original EP1 row IDs and source texts without GPU
-execution. See the [preparation evidence](../results/data/qwen-ep1-preparation.json).
+Omitir `--ep1-split` mantém o método histórico de folds agrupados abaixo; sua
+partição 16,010/4,082 difere do EP1. A preparação congelada foi verificada
+contra todos os IDs originais e textos-fonte do EP1, sem execução em GPU.
+Veja a [evidência da preparação](../results/data/qwen-ep1-preparation.json).
 
 ## Visão geral
 
@@ -260,11 +270,11 @@ A leitura JSONL usa exclusivamente LF como delimitador: três separadores Unicod
 presentes dentro de textos reais quebravam o uso anterior de `splitlines()`.
 A correção preserva U+0085, U+2028 e U+2029 nas strings; há teste de regressão.
 
-`validation-metrics.json` contém accuracy, macro-F1, macro-precision,
-macro-recall e métricas/suporte por classe. A matriz de confusão tem linhas
-verdadeiras e colunas previstas na ordem `c1`, `c234`, `c5`. Classes ausentes nas
-previsões continuam participando. `validation-predictions.json` permite uma
-verificação independente. A seleção de checkpoint usa acurácia de validação.
+`validation-metrics.json` contém acurácia, macro-F1, precisão macro,
+revocação macro e métricas/total por classe. A matriz tem linhas verdadeiras
+e colunas preditas em ordem `c1`, `c234`, `c5`. Classes ausentes nas previsões
+continuam incluídas. `validation-predictions.json` permite verificação
+independente. O checkpoint é selecionado pela acurácia de validação.
 
 Depois de congelar o método, produza teste2 antes da comparação em teste1:
 
@@ -295,11 +305,11 @@ checkpointing e duas atualizações reais em dados sintéticos:
 | QLoRA NF4 | 2476,71 MiB | 2922 MiB | Aprovada |
 | LoRA FP16 | 3467,38 MiB | 3486 MiB | Aprovada |
 
-Ambos treinam 3.217.408 parâmetros. O piloto real original obteve accuracy
-0,375000, macro-F1 0,346341, macro-precision 0,408333 e macro-recall 0,373693 em
-48 respostas. A matriz foi `[[7, 2, 6], [5, 2, 9], [8, 0, 9]]`.
-Essas duas atualizações verificam integração; não estimam a qualidade final e
-não permitem comparação direta com as avaliações anteriores de GPT ou EP1.
+Ambos treinam 3.217.408 parâmetros. O piloto real original obteve acurácia
+0,375000, macro-F1 0,346341, precisão macro 0,408333 e revocação macro 0,373693
+em 48 respostas. A matriz foi `[[7, 2, 6], [5, 2, 9], [8, 0, 9]]`.
+As duas atualizações verificam integração; não estimam qualidade final nem
+permitem comparação direta com avaliações anteriores GPT ou EP1.
 
 Artefatos: `results/qwen-smoke-verified/`,
 `results/qwen-smoke-fp16-verified/`, `results/qwen-pilot-verified/` e
@@ -408,13 +418,13 @@ para fingir continuidade. Uma nova configuração usa outro destino e relatório
 
 ### Validação final da configuração otimizada
 
-O teste em `results/qwen-fast-final/` aprovou as duas atualizações, o salvamento
-e a recarga após a correção da loss. O piloto real final em
+O teste em `results/qwen-fast-final/` aprovou duas atualizações, salvamento e
+recarga após corrigir a perda. O piloto real final em
 `results/qwen-fast-final-pilot/` mediu média de **3,76 s por atualização**,
-avaliação de 48 respostas em **5,47 s** e pico reservado de **6464 MiB**.
-Não houve overflow. As métricas após apenas duas atualizações foram accuracy
-0,395833, macro-F1 0,333892, macro-precision 0,489035 e macro-recall 0,407761;
-elas verificam integração, sem demonstrar qualidade final.
+avaliação de 48 respostas em **5,47 s** e pico reservado **6464 MiB**.
+Sem estouro numérico. Após só duas atualizações: acurácia 0,395833, macro-F1
+0,333892, precisão macro 0,489035 e revocação macro 0,407761. Verificam integração,
+sem demonstrar qualidade final.
 
 O caminho principal usa QLoRA NF4. `configs/qwen-fp16-fast.json` contém a
 alternativa FP16 medida em benchmark; essa configuração requer um novo teste

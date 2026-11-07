@@ -1,87 +1,93 @@
-# Frozen stacking + selective GPT: measured experiment
+<a id="frozen-stacking--selective-gpt-measured-experiment"></a>
 
-[Results index](README.md) · [Commands and protocol](../guides/stacking-gpt-cascade.md) · [Verified aggregate](data/stacking-gpt-cascade.json)
+# Stacking congelado + GPT seletivo: experimento medido
 
-**Selective GPT did not improve this experiment.** Validation selected the local stacking
-baseline, with zero GPT calls, before the final gold workbook was opened. All three
-predeclared nonzero budgets also reduced macro-F1 and accuracy on test1. The implemented
-cascade remains available with configurable budgets, persistent cache, retries and fallback;
-its selected production behavior retains stacking. No classifier or routing rule was
-changed in response to final scores.
+[Índice dos resultados](README.md) · [Comandos e protocolo](../guides/stacking-gpt-cascade.md) · [Agregado verificado](data/stacking-gpt-cascade.json)
 
-## Validation-only model and budget selection
+**GPT seletivo não melhorou este experimento.** A validação escolheu stacking
+local sem chamadas GPT antes da abertura do gabarito final. Os três orçamentos
+positivos predefinidos também reduziram macro-F1 e acurácia em teste1.
+A cascata permanece disponível com orçamentos configuráveis, cache persistente,
+retentativas e fallback; o comportamento selecionado mantém stacking.
+Nenhum classificador ou regra mudou em resposta aos resultados finais.
 
-The frozen base models use the original 16,093 development rows. The reserved 3,999
-rows retain their original roles: 2,027 fit probability calibrators; 1,972 support
-meta-training and routing development through **nested 5x5 grouped OOF predictions**.
-Each outer target and its similarity group are excluded from both meta fitting and
-inner C selection. All five outer folds selected C=0.1 using their own training data.
-The production stacking model and all base artifacts remain byte-identical.
+<a id="validation-only-model-and-budget-selection"></a>
 
-Routing combines normalized entropy, maximum probability, top-two margin and native
-pairwise disagreement among SVM, RL, NorBERTo and Qwen. The fixed twelve-candidate
-search captured 122 OOF errors among the initial 197 routed rows. All twelve candidates
-captured the same number; the deterministic tie rule selected confidence weight 0.9,
-maximum-probability threshold 0.5 and margin threshold 0.05. Ranking and eligibility
-for final targets depend exclusively on predictions, with no gold inputs.
+## Seleção de modelo e orçamento somente na validação
 
-At the initial 10% budget, prompts were compared on the same selected rows:
+As bases congeladas usam 16,093 linhas originais. As 3,999 reservadas mantêm
+os papéis: 2,027 ajustam calibradores; 1,972 sustentam meta-treino e roteamento
+por **previsões OOF agrupadas aninhadas 5x5**. Cada alvo externo e seu grupo
+ficam fora do ajuste do meta-modelo e da escolha interna de C. Os cinco folds
+escolheram C=0.1 com seus próprios treinos. Stacking de produção e todos os
+artefatos-base permanecem idênticos em bytes.
 
-| Validation method | Correct / 1,972 | Macro-F1 | Corrected | Harmed |
+O roteamento combina entropia normalizada, probabilidade máxima, margem das
+duas maiores e divergência nativa pareada SVM/RL/NorBERTo/Qwen. A busca fixa
+de doze candidatos capturou 122 erros OOF nas 197 linhas iniciais. Os doze
+capturaram a mesma quantidade; o desempate determinístico escolheu peso de
+confiança 0.9, limiar máximo de probabilidade 0.5 e de margem 0.05. Ordem e
+elegibilidade finais dependem só das previsões, sem gabarito.
+
+No orçamento inicial de 10%, os prompts foram comparados nas mesmas linhas:
+
+| Método de validação | Acertos / 1,972 | Macro-F1 | Corrigidos | Prejudicados |
 |---|---:|---:|---:|---:|
-| Nested OOF stacking | 936 | 47.2977% | 0 | 0 |
-| GPT with original text only | 925 | 46.5751% | 31 | 42 |
-| GPT with local predictions | 929 | 46.8407% | 22 | 29 |
+| Stacking OOF aninhado | 936 | 47.2977% | 0 | 0 |
+| GPT somente com texto original | 925 | 46.5751% | 31 | 42 |
+| GPT com previsões locais | 929 | 46.8407% | 22 | 29 |
 
-Local predictions helped relative to the text-only prompt, but both underperformed
-stacking. Only the local-context prompt was extended to 20%, reusing all 197
-previous decisions. The frozen prompt includes the original text, class definitions,
-native local labels, calibrated probabilities and stacking probabilities; these
-are identified as fallible predictions, never as ground truth.
+Previsões locais ajudaram frente ao texto isolado, mas ambos ficaram abaixo
+do stacking. Só o contexto local foi estendido a 20%, reutilizando as 197
+decisões. O prompt congelado inclui texto, definições de classes, rótulos
+nativos locais, probabilidades calibradas e de stacking; são identificados
+como previsões falíveis, nunca verdade conhecida.
 
-Validation budget comparison:
+Comparação de orçamentos na validação:
 
-| GPT budget | Routed | Correct | Accuracy | Macro-F1 | Corrected | Harmed |
+| Orçamento GPT | Roteados | Acertos | Acurácia | Macro-F1 | Corrigidos | Prejudicados |
 |---|---:|---:|---:|---:|---:|---:|
 | 0% | 0 | 936/1972 | 47.4645% | 47.2977% | 0 | 0 |
 | 5% | 98 | 937/1972 | 47.5152% | 47.2762% | 16 | 15 |
 | 10% | 197 | 929/1972 | 47.1095% | 46.8407% | 22 | 29 |
 | 20% | 394 | 937/1972 | 47.5152% | 47.1016% | 56 | 55 |
 
-The 5% and 20% budgets each gained one net correct answer, but reduced the primary
-macro-F1 metric. Zero budget therefore won the validation selection. These are
-selection diagnostics, not independent estimates after tuning.
+Orçamentos 5% e 20% ganharam um acerto líquido cada, mas reduziram macro-F1,
+a métrica principal. Assim, zero venceu a validação. São diagnósticos de
+seleção, não estimativas independentes após ajustes.
 
-## Final comparison: all 900 original rows
+<a id="final-comparison-all-900-original-rows"></a>
 
-The prompt, routing formula, thresholds, budget choices and source fingerprints
-were frozen in `models/stacking-gpt-cascade/` before final inference. The union
-of the 5/10/20% selections required at most 180 targets. Every prediction file
-was saved before the separate evaluator opened test1 gold. No final label
-selected the forwarded examples or modified the frozen configuration.
+## Comparação final: as 900 linhas originais
 
-Measured test1 results:
+Prompt, fórmula, limiares, opções de orçamento e identidades das fontes foram
+congelados em `models/stacking-gpt-cascade/` antes da inferência final.
+A união de 5/10/20% exigiu no máximo 180 alvos. Cada arquivo foi salvo antes
+da abertura do gabarito pelo avaliador separado. Nenhum rótulo final escolheu
+exemplos encaminhados ou modificou a configuração congelada.
 
-| GPT budget | Routed | Correct | Accuracy | Macro-F1 | Corrected | Harmed |
+Resultados medidos em teste1:
+
+| Orçamento GPT | Roteados | Acertos | Acurácia | Macro-F1 | Corrigidos | Prejudicados |
 |---|---:|---:|---:|---:|---:|---:|
 | 0% | 0 | 440/900 | 48.8889% | 48.8034% | 0 | 0 |
 | 5% | 45 | 435/900 | 48.3333% | 48.1824% | 4 | 9 |
 | 10% | 90 | 434/900 | 48.2222% | 48.0477% | 9 | 15 |
 | 20% | 180 | 436/900 | 48.4444% | 48.1761% | 30 | 34 |
 
-The lower-budget results reuse answers from the same nested ranked selections.
-Other changed labels remained incorrect: 8 at 5%, 11 at 10%, and 20 at 20%.
-There were no failed calls or fallback instances in the measured runs.
+Orçamentos menores reutilizam respostas das mesmas seleções ordenadas
+aninhadas. Outras mudanças de rótulo continuaram erradas: 8 a 5%, 11 a 10%
+e 20 a 20%. Não houve chamadas falhas nem fallback nas execuções medidas.
 
-| GPT budget | F1 c1 | F1 c234 | F1 c5 |
+| Orçamento GPT | F1 c1 | F1 c234 | F1 c5 |
 |---|---:|---:|---:|
 | 0% | 45.7594% | 46.4023% | 54.2484% |
 | 5% | 45.3280% | 46.2687% | 52.9506% |
 | 10% | 45.3280% | 45.5235% | 53.2915% |
 | 20% | 45.6000% | 45.0704% | 53.8578% |
 
-Confusion matrices use true classes in rows and predicted classes in columns,
-ordered `c1, c234, c5`:
+As matrizes usam classes verdadeiras nas linhas e preditas nas colunas,
+em ordem `c1, c234, c5`:
 
 ```text
 GPT 0%:
@@ -106,73 +112,74 @@ GPT 20%:
 
 ```
 
-## Calls, tokens, cost and latency
+<a id="calls-tokens-cost-and-latency"></a>
 
-The runtime was `codex-cli 0.166.0`, requesting `gpt-6.1-sol` with reasoning
-`low`. Original text was preserved, strict JSON was validated, and the isolated
-CLI had tools and repository context disabled. The CLI exposes no temperature
-control. The remote model is a requested alias; replay uses the recorded response
-cache rather than assuming future requests are byte-deterministic.
+## Chamadas, tokens, custo e latência
 
-| Stage | Target instances | Item cache hits | New calls | API-equivalent USD | Wall seconds |
+O ambiente foi `codex-cli 0.166.0`, solicitando `gpt-6.1-sol` com raciocínio
+`low`. O texto original foi preservado, JSON estrito validado e ferramentas/
+contexto do repositório desativados na CLI isolada. Não há controle de
+temperatura. O modelo remoto é um alias solicitado; a reprodução usa respostas
+registradas em cache, sem presumir determinismo de bytes em pedidos futuros.
+
+| Etapa | Instâncias-alvo | Acertos de cache por item | Novas chamadas | USD equivalentes à API | Segundos decorridos |
 |---|---:|---:|---:|---:|---:|
 | validation_text_only_10pct | 197 | 0 | 24 | 0.374843 | 96.02 |
 | validation_with_local_10pct | 197 | 0 | 25 | 0.450464 | 94.07 |
 | validation_selected_prompt_extension_20pct | 394 | 197 | 25 | 0.455602 | 91.25 |
 | final_frozen_budget_comparison | 180 | 0 | 23 | 0.391949 | 86.17 |
 
-Total: **97 calls**, **883,532 input tokens**
-(including 147,840 cached input tokens),
-**18,669 output tokens**, and **USD 1.672858**
-as a standard API-equivalent estimate. Authentication used the existing ChatGPT
-Codex login; the estimate is not a measured subscription invoice. Prices were
-checked on 2026-11-05 against the official
-[GPT-6.1 Sol model page](https://developers.openai.com/api/docs/models/gpt-6.1-sol):
-USD 2 input, 0.10 cached input, and 10 output per million tokens.
+Total: **97 chamadas**, **883,532 tokens de entrada** (incluindo 147,840 em cache),
+**18,669 de saída** e **USD 1.672858** de estimativa equivalente à API padrão.
+A autenticação usou o login ChatGPT Codex existente; não é fatura medida da
+assinatura. Preços conferidos em 2026-11-05 na
+[página oficial GPT-6.1 Sol](https://developers.openai.com/api/docs/models/gpt-6.1-sol):
+USD 2 entrada, 0.10 entrada em cache e 10 saída por milhão de tokens.
 
-The complete final comparison took 86.17 wall seconds with two concurrent
-requests; summed request latency was 171.38 seconds. Each request grouped up
-to eight independent targets. Reports allocate each shared batch proportionally
-to its unique targets for lower-budget cost/latency accounting:
+A comparação final completa levou 86.17 segundos com duas solicitações
+simultâneas; a soma das latências foi 171.38 segundos. Cada solicitação
+agrupou até oito alvos independentes. Os relatórios rateiam cada lote pelos
+alvos únicos para contabilizar custo/latência dos orçamentos menores:
 
-| Final GPT budget | Routed | Batch receipts touched | Allocated USD | Allocated request seconds |
+| Orçamento GPT final | Roteados | Recibos de lotes utilizados | USD alocados | Segundos de solicitações alocados |
 |---|---:|---:|---:|---:|
 | 0% | 0 | 0 | 0.000000 | 0.00 |
 | 5% | 45 | 6 | 0.103906 | 44.47 |
 | 10% | 90 | 12 | 0.205357 | 86.41 |
 | 20% | 180 | 23 | 0.391949 | 171.38 |
 
-These are allocations from the shared experiment, not independent timing or
-billing measurements from rerunning each budget. The selected zero-budget
-production path was also actually executed: zero GPT attempts, with all 900
-labels exactly matching frozen stacking. Replaying all 180 final GPT decisions
-with the backend request limit set to zero reproduced every cached label, with
-180 item-cache hits and no new attempts.
+São rateios do experimento compartilhado, não medições independentes de tempo
+ou cobrança de cada orçamento reexecutado. O caminho de produção selecionado
+com orçamento zero também foi executado: zero tentativas GPT e os 900 rótulos
+idênticos ao stacking congelado. Reproduzir as 180 decisões finais com limite
+de solicitações zero recuperou todos os rótulos, com 180 acertos de cache por
+item e nenhuma tentativa nova.
 
-## Verification and limitations
+<a id="verification-and-limitations"></a>
 
-All **201 available tests passed**, including the SDK modules. Tests cover
-percentage caps, all-four-member native disagreement, outer/inner group isolation,
-original-text preservation, cache reuse across budgets and batch boundaries,
-bounded retries, circuit breaking, explicit fallback, immutable outputs and
-final-gold access only after all predictions are persisted.
+## Verificação e limitações
 
-An independent standard-library verifier checked original workbook identities,
-all nested OOF coefficient outputs, routing arithmetic, percentage caps, cached
-GPT request/response provenance, validation-only prompt/budget selection, final
-classifications, per-class F1, confusion matrices and every corrected/harmed case.
-Maximum OOF probability reconstruction error was 1.67e-16.
-Raw evidence and the independent script remain in
-`results/cascade-verification-20261105/`; routing validation, final prediction
-and scoring have separate preserved directories.
+Os **201 testes disponíveis passaram**, incluindo módulos do SDK. Cobrem
+limites percentuais, divergência nativa dos quatro membros, isolamento de
+grupos externos/internos, preservação do texto, cache entre orçamentos/lotes,
+retentativas limitadas, disjuntor, fallback explícito, saídas imutáveis e
+leitura do gabarito só após persistir todas as previsões.
 
-Qwen checkpoint selection previously used all 3,999 holdout rows. Official files
-also contain normalized-text repetitions across test1 and development (85 rows),
-calibration (11) and meta-training (9), as recorded by the earlier
-[overlap audit](ensemble-soft.md). No new test1 label entered fitting,
-but OOF meta prediction cannot remove this inherited exposure without changing
-the original models/data. All 900 rows remain evaluated. This is an exploratory
-comparison with historical test1 exposure, not a new untouched final sample.
+Um verificador independente da biblioteca padrão conferiu identidades das
+planilhas, saídas dos coeficientes OOF aninhados, cálculos de roteamento,
+limites percentuais, procedência GPT, seleção só na validação, classificações
+finais, F1 por classe, matrizes e todas as correções/prejuízos. O erro máximo
+de reconstrução OOF foi 1.67e-16. Evidência e script ficam em
+`results/cascade-verification-20261105/`; validação do roteamento, predição
+final e avaliação têm diretórios separados preservados.
 
-No base model was retrained, no original experiment was overwritten, no remote
-configuration was tuned after final scoring, and no test2 submission was generated.
+A seleção do checkpoint Qwen usou as 3,999 linhas reservadas. Os arquivos
+oficiais também repetem textos normalizados entre teste1 e desenvolvimento
+(85 linhas), calibração (11) e meta-treino (9), conforme a
+[auditoria anterior](ensemble-soft.md). Nenhum novo rótulo de teste1 entrou
+no ajuste, mas OOF do meta-modelo não remove essa exposição sem mudar modelos/
+dados originais. As 900 linhas continuam avaliadas. É comparação exploratória
+com exposição histórica, não nova amostra final inédita.
+
+Nenhum modelo-base foi retreinado, experimento original sobrescrito,
+configuração remota ajustada após avaliação final ou entrega teste2 gerada.

@@ -1,6 +1,6 @@
 # Recuperação híbrida de demonstrações — 04/11/2026
 
-[Documentation index](../../README.md) · Historical experiment record; use the guides for current commands.
+[Índice da documentação](../../README.md) · Registro histórico do experimento; use os guias para comandos atuais.
 
 ## Hipótese e escopo
 
@@ -124,9 +124,9 @@ promessa de economia de tokens só por trocar o seletor.
 |---|---:|---:|
 | Acurácia | 16,67% (2/12) | 25,00% (3/12) |
 | F1 macro | 16,67% | 23,15% |
-| Recall c1 | 25,00% (1/4) | 25,00% (1/4) |
-| Recall c234 | 0,00% (0/4) | 0,00% (0/4) |
-| Recall c5 | 25,00% (1/4) | 50,00% (2/4) |
+| Revocação c1 | 25,00% (1/4) | 25,00% (1/4) |
+| Revocação c234 | 0,00% (0/4) | 0,00% (0/4) |
+| Revocação c5 | 25,00% (1/4) | 50,00% (2/4) |
 | Processos Codex novos | 4 | 4 |
 | Tokens de entrada informados pelo CLI | 33.744 | 34.850 |
 | Tokens de saída informados pelo CLI | 340 | 406 |
@@ -186,9 +186,9 @@ os embeddings necessários foram reutilizados localmente.
 |---|---:|---:|
 | Acurácia | 40,33% (121/300) | 42,33% (127/300) |
 | F1 macro | 39,76% | 41,53% |
-| Recall c1 | 27,08% (26/96) | 27,08% (26/96) |
-| Recall c234 | 44,44% (44/99) | 48,48% (48/99) |
-| Recall c5 | 48,57% (51/105) | 50,48% (53/105) |
+| Revocação c1 | 27,08% (26/96) | 27,08% (26/96) |
+| Revocação c234 | 44,44% (44/99) | 48,48% (48/99) |
+| Revocação c5 | 48,57% (51/105) | 50,48% (53/105) |
 | Processos Codex novos | 96 | 96 |
 | Tokens de entrada | 778.370 | 793.841 |
 | Entrada em cache remoto (subconjunto da entrada) | 185.856 | 283.008 |

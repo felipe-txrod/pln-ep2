@@ -1,80 +1,90 @@
-# Decision: retain weighted soft voting as the primary approach
+<a id="decision-retain-weighted-soft-voting-as-the-primary-approach"></a>
 
-Date: 2026-11-06. Status: accepted by the project team.
+# Decisão: manter votação suave ponderada como abordagem principal
 
-[Documentation index](../README.md) · [Results index](../results/README.md)
+Data: 2026-11-06. Estado: aprovado pela equipe do projeto.
 
-## Evaluation of alternative ensemble strategies
+[Índice da documentação](../README.md) · [Índice dos resultados](../results/README.md)
 
-Alongside soft voting, the project investigated more complex classifier
-combinations, including stacking and selective classification assisted by GPT.
-The GPT experiments compared different contexts, including retrieval-augmented
-generation (RAG) with labeled historical training examples supplied during
-inference. Retrieval alternatives included lexical, semantic and hybrid search,
-as well as representations from the NorBERTo checkpoint previously fine-tuned
-for this task.
+<a id="evaluation-of-alternative-ensemble-strategies"></a>
 
-Some exploratory experiments appeared promising, but their gains did not persist
-in subsequent evaluations. GPT corrected some stacking errors while introducing
-errors on instances that stacking had classified correctly. Changes to retrieval,
-routing and acceptance policies did not demonstrate consistent improvements.
+## Avaliação de estratégias alternativas de ensemble
 
-Weighted soft voting with **75% SVM and 25% NorBERTo** achieved **49.58% macro-F1
-on Test1**, exceeding the stacking configurations evaluated on the same dataset.
-The compared frozen results retain all 900 Test1 instances:
+Além da votação suave, o projeto investigou combinações mais complexas,
+incluindo stacking e classificação seletiva assistida pelo GPT. Os experimentos
+com GPT compararam contextos distintos, incluindo geração aumentada por
+recuperação (RAG), com exemplos históricos rotulados de treino fornecidos na
+inferência. A recuperação incluiu busca lexical, semântica e híbrida, além de
+representações do checkpoint NorBERTo previamente ajustado para a tarefa.
 
-| Method | Correct / 900 | Accuracy | Macro-F1 |
+Alguns experimentos exploratórios pareceram promissores, mas os ganhos não
+persistiram nas avaliações seguintes. O GPT corrigiu erros do stacking e
+introduziu erros em instâncias que o stacking acertava. Mudanças na recuperação,
+no roteamento e nas políticas de aceitação não demonstraram melhora consistente.
+
+A votação suave ponderada com **75% SVM e 25% NorBERTo** obteve **49.58% de
+macro-F1 no Teste1**, superando as configurações de stacking avaliadas na mesma
+base. Os resultados congelados comparados mantêm as 900 instâncias de Teste1:
+
+| Método | Acertos / 900 | Acurácia | Macro-F1 |
 |---|---:|---:|---:|
-| Weighted soft voting | 447 | 49.67% | 49.58% |
-| Stacking with SVM, LR and NorBERTo | 442 | 49.11% | 49.03% |
-| Stacking with SVM, LR, NorBERTo and Qwen | 440 | 48.89% | 48.80% |
+| Votação suave ponderada | 447 | 49.67% | 49.58% |
+| Stacking com SVM, LR e NorBERTo | 442 | 49.11% | 49.03% |
+| Stacking com SVM, LR, NorBERTo e Qwen | 440 | 48.89% | 48.80% |
 
-The soft-voting weights were originally selected using validation data. Both
-the three-model artifact and the four-candidate artifact including Qwen assign
-zero weight to LR; the latter also assigns zero weight to Qwen and reproduces
-the same 900 predictions. The decision retains the existing calibrated
-probability mixture, rather than a new combination of uncalibrated scores.
+Os pesos da votação suave foram selecionados originalmente em validação.
+Tanto o artefato de três modelos quanto o de quatro candidatos com Qwen dão
+peso zero à LR; o segundo também dá peso zero ao Qwen e reproduz as mesmas
+900 previsões. A decisão mantém a mistura existente de probabilidades
+calibradas, em vez de criar uma combinação de escores não calibrados.
 
-## Accepted decision
+<a id="accepted-decision"></a>
 
-Retain **weighted soft voting as the project's primary classification approach**,
-using the frozen SVM 0.75 / NorBERTo 0.25 weights. Its measured performance,
-implementation simplicity and lack of additional language-model calls support
-this choice.
+## Decisão adotada
 
-Preserve stacking, selective GPT and RAG implementations, artifacts, caches and
-results as part of the investigation. The experiments demonstrate that greater
-ensemble complexity does not necessarily improve predictive performance.
-They remain available for reproducibility and analysis; this decision does not
-authorize additional training, GPT calls or experiment runs.
+Manter **votação suave ponderada como abordagem principal de classificação do
+projeto**, com os pesos congelados SVM 0.75 / NorBERTo 0.25. O desempenho medido,
+a simplicidade da implementação e a ausência de chamadas adicionais a modelos
+de linguagem sustentam essa escolha.
 
-This record documents the approach choice without changing classifier code,
-frozen packages or command defaults, and without generating a new Test2 delivery.
+Preservar implementações, artefatos, caches e resultados de stacking, GPT
+seletivo e RAG como parte da investigação. Os experimentos mostram que maior
+complexidade do ensemble não melhora necessariamente a predição. Permanecem
+disponíveis para reprodução e análise; esta decisão não autoriza novos treinos,
+chamadas ao GPT ou execuções experimentais.
 
-## Interpretation and limitations
+Este registro documenta a escolha sem alterar código dos classificadores,
+pacotes congelados ou padrões dos comandos e sem gerar nova entrega de Teste2.
 
-The conclusion reflects the recorded data partitions and the exploratory nature
-of part of the investigation. The Test1 comparison is retrospective: Test1 had
-already been examined in earlier project work, and choosing the primary method
-after comparing these scores does not constitute a new independent evaluation.
-The numerical advantage is not a claim of statistically significant superiority.
-Validation scores from different populations are not directly interchangeable
-with the 900-row Test1 scores above.
+<a id="interpretation-and-limitations"></a>
 
-Qwen checkpoint selection had already used the original holdout, and the
-historical routing/acceptance replay retained fixed upstream OOF predictions
-and limited logged GPT support. These limitations remain disclosed in the
-source reports. Improvements in retrieval label matching are auxiliary results
-and do not establish an improvement in GPT classification macro-F1.
+## Interpretação e limitações
 
-## Evidence preserved
+A conclusão reflete as partições registradas e o caráter exploratório de parte
+da investigação. A comparação em Teste1 é retrospectiva: o conjunto já havia
+sido examinado, e escolher o método principal após comparar esses resultados
+não constitui nova avaliação independente. A vantagem numérica não afirma
+superioridade estatisticamente significativa. Resultados de validação em
+populações diferentes não são diretamente intercambiáveis com os das 900
+linhas de Teste1 acima.
 
-- [Original calibrated soft-voting protocol and Test1 results](../results/ensemble-soft.md).
-- [Three- and four-model ensemble comparison, weights and limitations](../results/ensemble-qwen.md).
-- [Selective stacking + GPT experiment](../results/stacking-gpt-cascade.md).
-- [Exploratory RAG pilot](../results/rag-cascade-pilot.md) and
-  [subsequent confirmation](../results/rag-cascade-confirmation.md).
-- [Offline NorBERTo retrieval, MMR and intervention investigation](../results/rag-offline-research.md).
-- Frozen soft-voting artifacts:
-  [original three-model package](../../models/ensemble-soft/README.md) and
-  [four-candidate package](../../models/ensemble-soft-qwen/README.md).
+A seleção do checkpoint Qwen já havia usado o conjunto reservado original;
+a reavaliação histórica de roteamento/aceitação manteve previsões OOF fixas dos
+estágios anteriores e cobertura limitada de respostas GPT registradas. Essas
+limitações continuam explícitas nos relatórios de origem. Melhoras na
+correspondência de rótulos da recuperação são resultados auxiliares, não
+estabelecem melhora do macro-F1 de classificação pelo GPT.
+
+<a id="evidence-preserved"></a>
+
+## Evidências preservadas
+
+- [Protocolo original de votação suave calibrada e resultados de Teste1](../results/ensemble-soft.md).
+- [Comparação dos ensembles de três e quatro modelos, pesos e limitações](../results/ensemble-qwen.md).
+- [Experimento de stacking + GPT seletivo](../results/stacking-gpt-cascade.md).
+- [Piloto exploratório de RAG](../results/rag-cascade-pilot.md) e
+  [confirmação posterior](../results/rag-cascade-confirmation.md).
+- [Investigação offline de recuperação pelo NorBERTo, MMR e intervenções](../results/rag-offline-research.md).
+- Artefatos congelados da votação suave:
+  [pacote original de três modelos](../../models/ensemble-soft/README.md) e
+  [pacote de quatro candidatos](../../models/ensemble-soft-qwen/README.md).

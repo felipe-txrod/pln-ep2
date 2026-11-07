@@ -1,8 +1,14 @@
-# Ensemble por weighted soft voting
+<a id="ensemble-por-weighted-soft-voting"></a>
 
-This document preserves the original **three-model** protocol and results.
-The current four-model defaults include Qwen; see the [current workflow](ensemble-qwen.md)
-and [integration results](../results/ensemble-qwen.md).
+# Ensemble por votação suave ponderada
+
+Para gerar o Excel oficial com a configuração final 75/25, use
+`bash scripts/ensemble/deliver-test2.sh`, conforme o
+[guia de entrega nativa](final-delivery.md).
+
+Este documento preserva o protocolo e os resultados originais de **três modelos**.
+Os padrões atuais de quatro modelos incluem Qwen; veja o
+[fluxo atual](ensemble-qwen.md) e os [resultados da integração](../results/ensemble-qwen.md).
 
 O novo fluxo usa os modelos congelados e o formato `predictions.jsonl` do
 pipeline existente. Os comandos de maioria/consenso e suas configurações

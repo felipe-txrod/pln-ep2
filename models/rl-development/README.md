@@ -1,34 +1,36 @@
-# Development-only logistic regression
+<a id="development-only-logistic-regression"></a>
 
-This is the selected RL bundle for EP2. Training completed on the fixed
-16,093 development rows while excluding all 3,999 holdout rows. It uses the
-original EP1 word/character TF-IDF pipeline and fixed C=0.25, L2/L-BFGS,
-seed 42, and two CPU threads, without parameter search.
+# Regressão logística somente de desenvolvimento
 
-The fit converged in 38 iterations and completed in 25.08 seconds. The
-exported artifact was reloaded and validated. A subsequent independent check
-verified all 16,093 training row IDs, text hashes, labels, source/split hashes,
-and zero overlap between 12,956 training and 3,281 holdout similarity groups.
-Default RL loading and inference on three synthetic texts passed.
+Este é o pacote RL selecionado para EP2. Treinou nas 16,093 linhas fixas de
+desenvolvimento, excluindo 3,999 reservadas. Usa o pipeline TF-IDF original EP1
+de palavras/caracteres e C=0.25 fixo, L2/L-BFGS, semente 42 e duas threads CPU,
+sem busca de parâmetros.
 
-Artifact SHA-256:
+Convergiu em 38 iterações e 25.08 segundos. O artefato exportado foi recarregado
+e validado. Verificação independente posterior conferiu os 16,093 IDs de
+treino, hashes de texto, rótulos, hashes de fontes/divisão e nenhuma sobreposição
+entre 12,956 grupos de treino e 3,281 reservados. Carregamento padrão e
+inferência RL em três textos sintéticos passaram.
+
+SHA-256 do artefato:
 
 ```text
 05d69e147a10b7c49ebe3893f247e0f23e8d61005aaf4fd7b7eb45845d49a20f
 ```
 
-`manifest.json` records inference-file checksums; `frozen_manifest.json`
-defines the loader and ensemble identity contract. Training metadata and row
-identities remain available for provenance. Separate evaluation measured
-1,803/3,999 correct on holdout (45.09% accuracy, 44.78% macro-F1) and 447/900
-on test1 (49.67% accuracy, 49.32% macro-F1). All 4,899 source rows and metrics
-were independently verified, with unchanged model hashes. Test2 remains
-unevaluated. Earlier full-corpus RL scores do not apply to this model.
+`manifest.json` registra checksums de inferência; `frozen_manifest.json` define
+o contrato de identidade do carregador/ensemble. Metadados e identidades das
+linhas preservam procedência. Avaliação separada mediu 1,803/3,999 no conjunto
+reservado (45.09% acurácia, 44.78% macro-F1) e 447/900 em teste1 (49.67%, 49.32%).
+As 4,899 linhas e métricas foram verificadas independentemente, sem mudar
+hashes. Teste2 não foi avaliado. Resultados antigos da RL completa não se
+aplicam a este modelo.
 
-The ensemble selects this artifact when `rl` is included as a member or local
-arbitrator. Its existing default membership remains Qwen + NorBERTo. Prediction
-runs must still be generated for the desired input workbook; training itself
-does not generate test predictions or submission files.
+O ensemble seleciona este artefato quando `rl` é membro ou árbitro local.
+Sua composição padrão existente continua Qwen + NorBERTo. As previsões ainda
+precisam ser geradas para a planilha desejada; o treino não gera previsões
+de teste ou arquivos de entrega.
 
-See the [RL workflow](../../src/rl_classifier/README.md) and
-[verification record](../../docs/results/data/rl-development-verification.json).
+Veja o [fluxo RL](../../src/rl_classifier/README.md) e o
+[registro da verificação](../../docs/results/data/rl-development-verification.json).

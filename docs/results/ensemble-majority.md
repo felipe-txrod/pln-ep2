@@ -1,85 +1,90 @@
-# NorBERTo, SVM, and RL majority comparison
+<a id="norberto-svm-and-rl-majority-comparison"></a>
 
-[Results index](README.md) · [Verified aggregate](data/ensemble-majority-test1.json)
+# Comparação de maioria NorBERTo, SVM e RL
 
-The strongest three-member majority configuration on the 900 labeled test1
-rows was **NorBERTo + SVM + RL, with RL breaking three-way ties**: 443 correct,
-49.22% accuracy, and 48.86% macro-F1. RL alone scored 447 correct (49.67%),
-so the best genuine ensemble lost four correct predictions, or 0.44 percentage
-points, relative to the strongest individual model.
+[Índice dos resultados](README.md) · [Agregado verificado](data/ensemble-majority-test1.json)
 
-| Configuration | Correct / 900 | Accuracy | Macro-F1 | Tiebreak rows |
+A melhor maioria de três membros nas 900 linhas rotuladas foi **NorBERTo + SVM
++ RL, com RL nos empates triplos**: 443 acertos, acurácia 49.22% e macro-F1
+48.86%. RL isolada acertou 447 (49.67%); o melhor ensemble efetivo perdeu quatro
+acertos, ou 0.44 pontos percentuais, frente ao melhor modelo individual.
+
+| Configuração | Acertos / 900 | Acurácia | Macro-F1 | Linhas de desempate |
 |---|---:|---:|---:|---:|
-| RL alone | 447 | 49.67% | 49.32% | 0 |
-| SVM alone | 445 | 49.44% | 49.06% | 0 |
-| All three, RL tiebreaker | 443 | 49.22% | 48.86% | 5 |
-| All three, NorBERTo tiebreaker | 442 | 49.11% | 48.75% | 5 |
-| All three, SVM tiebreaker | 440 | 48.89% | 48.52% | 5 |
-| Original EP1 NorBERTo alone | 432 | 48.00% | 47.86% | 0 |
+| RL isolada | 447 | 49.67% | 49.32% | 0 |
+| SVM isolado | 445 | 49.44% | 49.06% | 0 |
+| Os três, desempate RL | 443 | 49.22% | 48.86% | 5 |
+| Os três, desempate NorBERTo | 442 | 49.11% | 48.75% | 5 |
+| Os três, desempate SVM | 440 | 48.89% | 48.52% | 5 |
+| NorBERTo original do EP1 isolado | 432 | 48.00% | 47.86% | 0 |
 
-## Voting rule and candidate coverage
+<a id="voting-rule-and-candidate-coverage"></a>
 
-Every selected member contributes one hard label. A strict majority wins;
-otherwise, the configured local arbitrator supplies its saved prediction.
-No confidence thresholds, probability averaging, weights, calibration, new
-inference, retraining, or remote requests are involved.
+## Regra de votação e cobertura dos candidatos
 
-The comparison covered 15 configurations: three singletons, three pairs with
-each of the three local arbitrators, and the full trio with each arbitrator.
-These produce six distinct label sequences. A two-member ensemble that uses
-one of its voters to break ties exactly reproduces that voter. The apparent
-447-correct pair winners therefore duplicate RL; they do not improve it.
-A pair with the third model as arbitrator reproduces the corresponding
-three-member majority with that third model as tiebreaker.
+Cada membro contribui um rótulo de classe. A maioria estrita vence; caso
+contrário, o árbitro local fornece sua previsão salva. Não há limiares de
+confiança, média de probabilidades, pesos, calibração, nova inferência,
+retreinamento ou pedidos remotos.
 
-All three models agreed on 579 rows. Another 316 rows had a 2-to-1 majority,
-and five had three different labels. Pairwise agreement was:
+A comparação cobriu 15 configurações: três modelos isolados, três pares com
+cada um dos três árbitros e o trio com cada árbitro. Produzem seis sequências
+distintas. Um par que usa um votante para desempatar reproduz exatamente esse
+votante. Os pares vencedores aparentes de 447 acertos duplicam RL; não a
+melhoram. Um par com o terceiro modelo como árbitro reproduz a maioria do trio
+com esse terceiro como desempate.
 
-| Pair | Agreement / 900 | Fraction |
+Os três concordaram em 579 linhas. Outras 316 tiveram maioria de 2 contra 1,
+e cinco tiveram três rótulos distintos. A concordância entre pares foi:
+
+| Par | Concordâncias / 900 | Fração |
 |---|---:|---:|
-| SVM and RL | 861 | 95.67% |
-| NorBERTo and RL | 608 | 67.56% |
-| NorBERTo and SVM | 584 | 64.89% |
+| SVM e RL | 861 | 95.67% |
+| NorBERTo e RL | 608 | 67.56% |
+| NorBERTo e SVM | 584 | 64.89% |
 
-This high lexical-model agreement limits the diversity of their votes. With
-RL resolving ties, the trio changes only five of RL's predictions; these
-changes lose four correct answers and gain none. This describes the observed
-test1 result, not a general guarantee about future datasets.
+A concordância elevada dos modelos lexicais limita a diversidade dos votos.
+Com RL no desempate, o trio muda só cinco previsões dela; perde quatro acertos
+e não ganha nenhum. Isso descreve o teste1 observado, sem garantir comportamento
+em bases futuras.
 
-## Artifacts, verification, and scope
+<a id="artifacts-verification-and-scope"></a>
 
-A subsequent [holdout audit](ensemble-holdout.md) verified training isolation
-and scored these same selected artifacts on the frozen 3,999-row partition.
+## Artefatos, verificação e escopo
 
-All models trained on the frozen 16,093-row EP1 development partition, keeping
-3,999 holdout rows outside fitting. NorBERTo is the unchanged EP1 adapter;
-SVM uses fixed C=0.05, and RL uses fixed C=0.25. Selected manifests and saved
-run identities were verified before importing predictions. Historical
-full-corpus models were excluded.
+Uma [auditoria posterior do conjunto reservado](ensemble-holdout.md) verificou
+isolamento do treino e avaliou os mesmos artefatos na partição congelada de
+3,999 linhas.
 
-All candidate predictions and configurations were persisted before reading
-the gold workbook. Every one of the 900 source texts, row IDs, and positions
-matched `data/test1-rotulado-para-teste-estatistico.xlsx`. An independent
-standard-library ZIP/XML reader verified all 13,500 candidate predictions,
-strict-majority routing, ties, confusion matrices, accuracy, macro-F1, and
-model/run/file hashes. The CPU comparison took 1.27 seconds.
+Os modelos treinaram nas 16,093 linhas congeladas de desenvolvimento do EP1,
+excluindo 3,999 reservadas. NorBERTo é o adaptador original inalterado; SVM usa
+C=0.05 fixo, e RL, C=0.25. Manifestos e identidades das execuções foram
+verificados antes da importação. Modelos históricos completos foram excluídos.
 
-Raw evidence is under `results/ensemble-majority-comparison-20261105/`, with
-per-candidate configurations, predictions, and metrics; `summary.json` stores
-the ranking and provenance. `verify.py` and `independent-verification.json`
-record the independent check.
+Todas as previsões/configurações foram persistidas antes de ler o gabarito.
+Os 900 textos, IDs e posições coincidiram com
+`data/test1-rotulado-para-teste-estatistico.xlsx`. Um leitor ZIP/XML independente
+verificou as 13,500 previsões, roteamento de maioria, empates, matrizes,
+acurácia, macro-F1 e hashes dos modelos/execuções/arquivos. A comparação em CPU
+levou 1.27 segundos.
 
-This is an **exploratory comparison on previously consulted test1 labels**.
-Ranking these configurations does not provide an independent final evaluation
-or establish statistical superiority. At comparison time, delivery defaults
-remained Qwen + NorBERTo. The user subsequently excluded Qwen; current defaults
-are NorBERTo + SVM + RL with RL arbitration. The official test2-before-test1
-protocol remains unchanged.
-No test2 predictions or submission were generated.
+A evidência bruta está em `results/ensemble-majority-comparison-20261105/`,
+com configurações, previsões e métricas por candidato; `summary.json` guarda
+classificação e procedência. `verify.py` e `independent-verification.json`
+registram a verificação independente.
 
-## Reproduction
+Esta é uma **comparação exploratória em rótulos de teste1 já consultados**.
+Ordenar configurações não fornece avaliação final independente nem estabelece
+superioridade estatística. Na comparação, o padrão de entrega era Qwen +
+NorBERTo. Depois o usuário excluiu Qwen; o padrão atual é NorBERTo + SVM + RL
+com arbitragem RL. O protocolo oficial teste2 antes de teste1 não muda.
+Nenhuma previsão ou entrega de teste2 foi gerada.
 
-With the existing saved member runs and project dependencies available:
+<a id="reproduction"></a>
+
+## Reprodução
+
+Com execuções salvas dos membros e dependências do projeto disponíveis:
 
 ```bash
 PYTHONPATH=src python3 -m ensemble_classifier compare-majority \
@@ -89,6 +94,6 @@ PYTHONPATH=src python3 -m ensemble_classifier compare-majority \
   --output-dir results/ensemble-majority-comparison-new
 ```
 
-Use a new output directory. The separate production configuration,
-`configs/ensemble-majority.json`, selects the same models, strict majority,
-and RL tiebreaker for test2 once their test2 member predictions exist.
+Use novo diretório. A configuração separada de produção,
+`configs/ensemble-majority.json`, seleciona os mesmos modelos, maioria estrita
+e desempate RL para teste2 quando as previsões dos membros existirem.

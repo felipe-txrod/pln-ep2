@@ -1,42 +1,43 @@
-# Selected Qwen model
+<a id="selected-qwen-model"></a>
 
-This package is the default Qwen3-1.7B classifier. It preserves the exact
-QLoRA adapter, trained classification head, and tokenizer exported by
-`results/qwen-ep1-training-20261105/`. Training completed three epochs and
-3,018 updates on the frozen EP1 development partition: 16,093 training rows
-and 3,999 validation rows, with no shared rows or similarity groups.
+# Modelo Qwen selecionado
 
-The selected adapter is under `adapter/`. Its raw weights SHA-256 is
+Este pacote é o classificador padrão Qwen3-1.7B. Preserva adaptador QLoRA,
+cabeça e tokenizador exatos de `results/qwen-ep1-training-20261105/`.
+O treino concluiu três épocas e 3,018 atualizações na partição congelada EP1:
+16,093 linhas de treino e 3,999 de validação, sem linhas/grupos compartilhados.
+
+O adaptador está em `adapter/`. O SHA-256 dos pesos brutos é
 `c419c68572ab8e5cd6bda6730714ec27cb28d2d7374d5954a812469346427e53`;
-the inference identity, including configuration and tokenizer files, is
+a identidade de inferência, incluindo configuração e tokenizadores, é
 `a045c5726a85c466914c55f9cee9fb0d412af4d66387e14b590e53b4782beed5`.
-`manifest.json` pins every packaged inference and provenance file.
+`manifest.json` fixa cada arquivo de inferência e procedência do pacote.
 
-The public base remains external, pinned to Qwen/Qwen3-1.7B revision
-`70d244cc86ccca08cf5af4e1e306ecf908b1ad5e`, restored through
-`base_reference.json` into the existing `.cache/qwen-model/` cache.
-The saved adapter is not a merged model. Checkpoints and optimizer state stay
-in the original ignored training directory.
+A base pública permanece externa, fixada em Qwen/Qwen3-1.7B revisão
+`70d244cc86ccca08cf5af4e1e306ecf908b1ad5e`, restaurada por `base_reference.json`
+no cache existente `.cache/qwen-model/`. O adaptador salvo não é modelo fundido.
+Checkpoints e estado do otimizador ficam no diretório original de treino,
+ignorado pelo Git.
 
-`qwen_classifier predict` uses this verified package when `--adapter` is
-omitted. Explicit historical overrides remain available. Missing or changed
-default files fail validation instead of selecting an older model. Optional
-Qwen entries in soft voting and stacking point here. The separate majority
-presets retain NorBERTo, SVM and RL. Subsequent native test1 inference scored
-414/900 (46.00%); see the [ensemble integration](../../docs/results/ensemble-qwen.md).
+`qwen_classifier predict` usa este pacote verificado quando `--adapter` é
+omitido. Alternativas históricas explícitas continuam disponíveis. Arquivos
+padrão ausentes/alterados falham na validação, sem selecionar modelo antigo.
+Entradas opcionais Qwen de votação suave/stacking apontam aqui. Presets
+separados de maioria mantêm NorBERTo, SVM e RL. Inferência nativa posterior
+em teste1 acertou 414/900 (46.00%); veja a
+[integração dos ensembles](../../docs/results/ensemble-qwen.md).
 
-Validation scored **1,791/3,999 (44.79%)**, macro-F1 **44.44%**. Validation
-selected the best checkpoint and received no gradient updates. This is a
-historically consulted holdout, not an independent final test. The source
-training report is preserved in `training.json`, without per-step timings.
+Validação: **1,791/3,999 (44.79%)**, macro-F1 **44.44%**. Selecionou o melhor
+checkpoint e não recebeu atualizações de gradiente. É conjunto historicamente
+consultado, não teste final independente. O relatório de treino original
+fica em `training.json`, sem tempos por passo.
 
-The original per-row validation export associated grouped prediction output
-with sequential workbook IDs. Its order was recovered exactly from the final
-checkpoint RNG and sampler, reproducing the recorded confusion matrix.
-Correctly aligned predictions are preserved separately under
+A exportação original de validação associava saídas agrupadas a IDs sequenciais
+da planilha. A ordem foi recuperada exatamente do estado aleatório e amostrador
+do checkpoint final, reproduzindo a matriz registrada. Previsões alinhadas
+ficam separadas em
 `results/qwen-ep1-publication-20261105/validation-predictions-aligned.jsonl`.
-The historical source file remains unchanged. Future evaluation uses a
-sequential sampler and checks label order before writing records; this change
-does not modify this adapter's weights.
+A fonte histórica permanece inalterada. Avaliação futura usa amostrador
+sequencial e confere a ordem antes de gravar; isso não muda os pesos do adaptador.
 
-See the [verification and usage guide](../../docs/results/qwen-ep1-model.md).
+Veja o [guia de verificação e uso](../../docs/results/qwen-ep1-model.md).

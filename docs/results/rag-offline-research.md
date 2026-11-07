@@ -1,48 +1,103 @@
-# Offline RAG and selective-GPT investigation
+<a id="offline-rag-and-selective-gpt-investigation"></a>
 
-[Machine-readable evidence](data/rag-offline-research.json)
+# Investigação offline de RAG e GPT seletivo
 
-This study made **zero new GPT calls**, did not use test1/test2 for optimization or configuration selection, and never retrained SVM, LR, NorBERTo, Qwen or stacking. Historical experiment packages and response caches were preserved. New small utility classifiers are research-only policies, not replacements for the trained base LR.
+[Evidências em formato estruturado](data/rag-offline-research.json)
 
-## Verified historical problem
+Este estudo fez **zero novas chamadas GPT**, não usou teste1/teste2 para otimizar
+ou selecionar configurações e nunca retreinou SVM, LR, NorBERTo, Qwen ou
+stacking. Pacotes históricos e caches de respostas foram preservados. Os novos
+pequenos classificadores de utilidade são políticas só de pesquisa, não
+substitutos da LR base treinada.
 
-On the 188 confirmation queries, hybrid-3-local corrected 29 stacking errors and harmed 32 correct decisions. Of the harms, 26 had true class c234. Its first retrieved example matched the query label 60/188 times (31.91%). RAG changed 55 GPT decisions versus local predictions alone: 21 exclusive correct decisions versus 15 lost correct decisions.
+<a id="verified-historical-problem"></a>
 
-Mean first-neighbor E5 cosine was 0.9505 despite these mismatches. High semantic similarity therefore did not establish rating agreement in this domain. Topic resemblance and perceived clarity are different signals; the latter explanation remains a hypothesis rather than a proven cause.
+## Problema histórico verificado
 
-| Descriptive validation case | Query row | Gold | Stacking | GPT | First training row / label | E5 cosine |
+Nas 188 consultas da confirmação, hybrid-3-local corrigiu 29 erros e prejudicou
+32 acertos do stacking. Dos prejuízos, 26 eram da classe verdadeira c234.
+O primeiro exemplo recuperado coincidiu com o rótulo da consulta 60/188 vezes
+(31.91%). RAG mudou 55 decisões GPT frente a previsões locais: 21 acertos
+exclusivos contra 15 acertos perdidos.
+
+O cosseno E5 médio do primeiro vizinho foi 0.9505 apesar das divergências.
+Logo, alta similaridade semântica não estabeleceu concordância de notas neste
+domínio. Semelhança temática e clareza percebida são sinais distintos; essa
+explicação permanece hipótese, não causa comprovada.
+
+| Caso descritivo de validação | Linha consultada | Gabarito | Stacking | GPT | Primeira linha de treino / rótulo | Cosseno E5 |
 |---|---:|---|---|---|---|---:|
 | harmed_c234 | 2218 | c234 | c234 | c5 | 15171 / c1 | 0.9507 |
 | corrected | 1808 | c5 | c234 | c5 | 8942 / c1 | 0.9353 |
 | highest_cosine_label_mismatch | 3767 | c5 | c234 | c1 | 3259 / c1 | 0.9964 |
 
-These are retrospective error diagnostics, not development examples for a new prompt. Query/example excerpts, all four native classifier predictions, local-only GPT decisions and the three retrieved labels are included in the aggregate; full original traces remain local. A retrieved example's subjective clarity rating cannot be transferred to a target solely from topic or wording overlap. The original request and attachments are unavailable, so this review cannot establish why the human assessor assigned a particular score.
+São diagnósticos retrospectivos de erros, não exemplos de desenvolvimento para
+novo prompt. Trechos de consulta/exemplo, as quatro previsões nativas, decisões
+GPT só locais e os três rótulos recuperados estão no agregado; rastreamentos
+completos ficam locais. A nota subjetiva de um exemplo não pode ser transferida
+ao alvo só pela sobreposição de tema ou palavras. Pedido original e anexos não
+estão disponíveis, portanto a revisão não determina por que o avaliador humano
+atribuiu uma nota específica.
 
-The highest-cosine mismatch shares a long administrative attachment-forwarding template, yet has different gold labels; its lexical cosine remains below the duplicate exclusion threshold. The harmed c234 example has three base votes for c5 while stacking is correct, demonstrating why majority support alone cannot guarantee a safe override. In the corrected case, RAG changes local-only GPT from c234 to the correct c5 despite the first neighbor being c1. Retrieved label agreement is therefore insufficient to explain individual successes or failures causally.
+A divergência de maior cosseno compartilha um longo modelo administrativo de
+encaminhamento de anexos, mas tem rótulos diferentes; o cosseno lexical fica
+abaixo do limiar de exclusão de duplicatas. O caso c234 prejudicado tem três
+votos-base c5 enquanto stacking acerta, mostrando que maioria não garante
+substituição segura. No caso corrigido, RAG muda o GPT somente local de c234
+para o c5 correto apesar do primeiro vizinho c1. Concordância dos rótulos
+recuperados é insuficiente para explicar causalmente sucessos ou falhas individuais.
 
-| Confirmation true class (analysis only) | Corrected | Harmed | Net correct change |
+| Classe verdadeira da confirmação (somente análise) | Corrigidos | Prejudicados | Variação líquida de acertos |
 |---|---:|---:|---:|
 | c1 | 7 | 5 | +2 |
 | c234 | 5 | 26 | -21 |
 | c5 | 17 | 1 | +16 |
 
-The concentration of harm in c234 motivates diagnostic protection rules, but does not validate them. The inference-time protection rule uses the **predicted stacking class**, never the target's true class.
+A concentração de prejuízos em c234 motiva regras diagnósticas de proteção,
+mas não as valida. A regra na inferência usa a **classe predita pelo stacking**,
+nunca a verdadeira do alvo.
 
-## Frozen NorBERTo extraction
+<a id="frozen-norberto-extraction"></a>
 
-The checkpoint is ModernBERT with 22 layers, hidden size 768 and LoRA rank 4 on Wqkv. The adapter is the unchanged EP1 artifact (`d693f6e2…`). The classifier was trained with masked mean pooling. We extracted mean and first-token representations at layers 11 and 22, in the same frozen FP32/SDPA forward pass, with the original cased 512-token head/tail preprocessing and L2 normalization.
+## Extração com NorBERTo congelado
 
-The tokenizer actually inserts [CLS] ID 3 and [SEP] ID 4. CLS features use the actual first token. The installed Transformers model exposes its last `hidden_states` entry before `final_norm`; the last-layer view uses `last_hidden_state` after that normalization, matching the classifier input. Intermediate layer 11 uses its own pre-final-normalization state.
+O checkpoint é ModernBERT de 22 camadas, dimensão oculta 768 e LoRA posto 4
+em Wqkv. O adaptador é o artefato EP1 inalterado (`d693f6e2…`). O classificador
+foi treinado com média mascarada. Extraímos média e primeiro token nas camadas
+11 e 22 na mesma passagem congelada FP32/SDPA, com pré-processamento original
+início/fim de 512 tokens, preservando maiúsculas/minúsculas, e normalização L2.
 
-Feature exports retain 11,562 eligible training examples and 1,972 validation rows. Missing texts are encoded once for all requested views, and cached vectors are reused. Existing E5 vectors are also reused. The older NorBERTo-logistic cache contains **unadapted base-model** vectors and cannot represent this adapter; it was preserved rather than mislabeled or overwritten.
+O tokenizador insere de fato [CLS] ID 3 e [SEP] ID 4. Atributos CLS usam o
+primeiro token real. O modelo Transformers instalado expõe a última entrada
+`hidden_states` antes de `final_norm`; a representação final usa
+`last_hidden_state` depois dela, como a entrada do classificador. A camada
+intermediária 11 usa seu estado anterior à normalização final.
 
-## Retrieval comparison
+As exportações mantêm 11,562 exemplos elegíveis de treino e 1,972 linhas de
+validação. Textos ausentes são codificados uma vez para todas as representações,
+e vetores em cache são reutilizados. Vetores E5 existentes também são
+reutilizados. O cache NorBERTo-logistic antigo tem vetores da **base não adaptada**
+e não representa este adaptador; foi preservado, sem renomeação enganosa ou sobrescrita.
 
-There are 171 predeclared method/view/policy variants, plus random and length controls. Development uses original OOF folds 0/1/2 (1143 rows), and audit uses folds 3/4 (829 rows), with similarity groups disjoint. The proposal selected **only on development** is `tfidf_e5_norberto--layer11_mean--relevance`. The seven-method table fixes the NorBERTo view selected from NorBERTo-only development performance: `layer22_mean`. It holds the legacy MMR policy fixed.
+<a id="retrieval-comparison"></a>
 
-Hit@1 is first-neighbor class agreement. Class Recall@3 means at least one of the three examples has the true class; purity@3 is the fraction matching it. These use gold only after retrieval. Document-level label recall is also exported with the class-bank-size denominator. None is a measure of GPT macro-F1.
+## Comparação da recuperação
 
-| Method | Hit@1 | Class Recall@3 | Purity@3 | Unique classes |
+Há 171 variantes predefinidas de método/representação/política e controles
+aleatório e por comprimento. Desenvolvimento usa folds OOF originais 0/1/2
+(1143 linhas), e auditoria usa 3/4 (829 linhas), com grupos disjuntos.
+A proposta selecionada **só no desenvolvimento** é
+`tfidf_e5_norberto--layer11_mean--relevance`. A tabela de sete métodos fixa a
+representação escolhida pelo desempenho do NorBERTo isolado no desenvolvimento:
+`layer22_mean`. Mantém a política MMR histórica fixa.
+
+Hit@1 é a concordância da classe do primeiro vizinho. Revocação@3 por classe
+significa ao menos um dos três exemplos da classe verdadeira; pureza@3 é a
+fração que coincide. Usam gabarito só após recuperar. Revocação por documento
+também é exportada com denominador igual ao banco da classe. Nenhuma mede
+macro-F1 do GPT.
+
+| Método | Hit@1 | Revocação@3 por classe | Pureza@3 | Classes distintas |
 |---|---:|---:|---:|---:|
 | tfidf | 37.83% | 92.09% | 35.46% | 2.688 |
 | e5 | 38.29% | 100.00% | 33.33% | 3.000 |
@@ -54,18 +109,25 @@ Hit@1 is first-neighbor class agreement. Class Recall@3 means at least one of th
 | random | 32.76% | 71.15% | 33.32% | 2.119 |
 | length | 34.63% | 71.15% | 34.47% | 2.086 |
 
-These rows describe all 1,972 validation queries. Configuration choice uses development only; audit values for the chosen proposal are shown separately below.
+Essas linhas descrevem as 1,972 consultas de validação. A configuração usa só
+desenvolvimento; os valores da auditoria da proposta escolhida aparecem
+separadamente abaixo.
 
-| Selected proposal split | Balanced Hit@1 | Balanced purity@3 | Class Recall@3 |
+| Partição da proposta selecionada | Hit@1 balanceado | Pureza@3 balanceada | Revocação@3 por classe |
 |---|---:|---:|---:|
-| development | 40.37% | 37.71% | 72.97% |
-| audit | 37.97% | 37.31% | 71.53% |
+| Desenvolvimento | 40.37% | 37.71% | 72.97% |
+| Auditoria | 37.97% | 37.31% | 71.53% |
 
-Against the current TF-IDF+E5/legacy policy, the proposal's audit Hit@1 difference is -1.21%; descriptive group-bootstrap 95% interval [-4.41%, +1.99%]. Purity@3 changes by +1.93%. This interval describes retrieval label matching, not GPT improvement.
+Frente à política atual TF-IDF+E5/legacy, a diferença de Hit@1 na auditoria é
+-1.21%; intervalo descritivo de 95% por bootstrap de grupos [-4.41%, +1.99%].
+Pureza@3 muda +1.93%. O intervalo descreve correspondência de rótulos da
+recuperação, não melhora do GPT.
 
-## Pooling and layer ablation
+<a id="pooling-and-layer-ablation"></a>
 
-| NorBERTo view / policy | Development balanced Hit@1 | Audit balanced Hit@1 | Audit purity@3 |
+## Ablação de agregação e camada
+
+| Representação NorBERTo / política | Hit@1 balanceado no desenvolvimento | Hit@1 balanceado na auditoria | Pureza@3 da auditoria |
 |---|---:|---:|---:|
 | layer11_mean/legacy | 37.01% | 35.85% | 33.33% |
 | layer11_mean/relevance | 37.01% | 35.85% | 35.67% |
@@ -76,7 +138,7 @@ Against the current TF-IDF+E5/legacy policy, the proposal's audit Hit@1 differen
 | layer22_cls/legacy | 36.87% | 41.40% | 33.33% |
 | layer22_cls/relevance | 36.87% | 41.40% | 39.24% |
 
-| Encoder view | Random-pair cosine mean | Standard deviation | Mean-vector norm |
+| Representação do codificador | Cosseno médio de pares aleatórios | Desvio-padrão | Norma do vetor médio |
 |---|---:|---:|---:|
 | layer11_mean | 0.8068 | 0.5289 | 0.8812 |
 | layer11_cls | 0.9248 | 0.0447 | 0.9619 |
@@ -84,15 +146,32 @@ Against the current TF-IDF+E5/legacy policy, the proposal's audit Hit@1 differen
 | layer22_cls | 0.7960 | 0.1051 | 0.8936 |
 | e5 | 0.8849 | 0.0212 | 0.9411 |
 
-The four frozen views are not assumed to improve retrieval. High random-pair cosine and mean-vector norm indicate anisotropy: even unrelated training pairs can have high cosine. The wide layer11-mean spread further cautions against transferring an absolute cosine threshold between views. E5 uses its original query prefix and head truncation; NorBERTo uses its original head/tail policy, so cross-encoder differences include tokenization and truncation differences. Selecting layer22-CLS because its audit number looks higher would violate the development-only selection rule.
+Não se presume que as quatro representações congeladas melhorem a recuperação.
+Cosseno elevado de pares aleatórios e norma elevada do vetor médio indicam
+anisotropia: pares de treino sem relação também podem ter cosseno alto.
+A dispersão ampla de layer11-mean reforça a cautela ao transferir limiar
+absoluto entre representações. E5 usa seu prefixo de consulta e truncamento
+no início originais; NorBERTo usa a política início/fim original, portanto
+comparar codificadores inclui diferenças de tokenização/truncamento.
+Escolher layer22-CLS por seu número maior na auditoria violaria a seleção
+restrita ao desenvolvimento.
 
-## MMR and diversity ablation
+<a id="mmr-and-diversity-ablation"></a>
 
-Legacy MMR has relevance weight 0.8, unseen-class bonus 0.04, maximum two examples per class and 120 candidates. All variants retain exact/near-duplicate exclusion, unique similarity groups and train-only examples. Fusion uses equal reciprocal ranks, not raw mixed score scales.
+## Ablação de MMR e diversidade
 
-The class bonus is identical for every candidate at the first selection, with no redundancy yet. It cannot explain the weak first neighbor by itself. The bonus/cap mainly affect the second and third examples. Candidate rank and cosine shifts show when diversity replaces a closer neighbor.
+MMR histórico tem peso de relevância 0.8, bônus de classe ausente 0.04,
+máximo de dois exemplos por classe e 120 candidatos. Todas as variantes
+mantêm exclusão de duplicatas/quase duplicatas, grupos únicos e exemplos
+somente de treino. A fusão usa posições recíprocas iguais, não mistura
+escalas brutas de escores.
 
-| Current TF-IDF+E5 policy | Hit@1 | Recall@3 | Purity@3 | Unique classes | Mean selected rank |
+O bônus de classe é igual para todos na primeira escolha, ainda sem redundância.
+Sozinho não explica o primeiro vizinho fraco. Bônus/limite afetam sobretudo
+segundo e terceiro exemplos. Mudanças de posição e cosseno mostram quando a
+diversidade substitui um vizinho mais próximo.
+
+| Política atual TF-IDF+E5 | Hit@1 | Revocação@3 | Pureza@3 | Classes distintas | Posição média selecionada |
 |---|---:|---:|---:|---:|---:|
 | legacy | 38.79% | 83.67% | 35.73% | 2.423 | 2.62 |
 | no_bonus | 38.79% | 75.15% | 36.19% | 2.158 | 2.44 |
@@ -104,7 +183,7 @@ The class bonus is identical for every candidate at the first selection, with no
 | pool240 | 38.79% | 83.67% | 35.73% | 2.423 | 2.62 |
 | weight50 | 38.79% | 89.00% | 35.58% | 2.578 | 2.87 |
 
-| Dense retriever / policy | Recall@3 | Purity@3 | Unique classes | Mean selected rank |
+| Recuperador denso / política | Revocação@3 | Pureza@3 | Classes distintas | Posição média selecionada |
 |---|---:|---:|---:|---:|
 | e5--none--legacy | 100.00% | 33.33% | 3.000 | 5.70 |
 | e5--none--no_bonus | 77.84% | 37.10% | 2.174 | 3.62 |
@@ -119,13 +198,25 @@ The class bonus is identical for every candidate at the first selection, with no
 | norberto--layer22_mean--relevance | 72.16% | 37.34% | 1.995 | 2.20 |
 | norberto--layer22_mean--no_redundancy | 100.00% | 33.33% | 2.999 | 3.88 |
 
-For the E5 and selected NorBERTo-only legacy arms, every query retrieves all three classes. This makes Recall@3 exactly 100% and purity exactly one third; it is a consequence of forced diversity, not successful identification of the target class. Removing the cap alone does not fix it; removing the class bonus does. Dense cosine scores are tightly concentrated, so a fixed 0.04 bonus can dominate small relevance differences. Reciprocal-rank fusion changes the score spread, explaining why the same policy behaves differently across dense and fused arms.
+Nos braços históricos E5 e NorBERTo isolado selecionado, toda consulta recupera
+as três classes. Isso torna Revocação@3 exatamente 100% e pureza um terço;
+é consequência da diversidade forçada, não de identificar a classe-alvo.
+Remover só o limite não resolve; remover o bônus, sim. Cossenos densos são
+muito concentrados, e bônus fixo 0.04 pode dominar pequenas diferenças de
+relevância. A fusão por posições recíprocas altera a dispersão dos escores,
+explicando por que a mesma política age diferentemente em braços densos e fundidos.
 
-For the current hybrid, removing both bonus and cap raises purity while lowering class coverage; expanding the pool from 40 to 240 produces no aggregate benefit here. Removing redundancy alone does not solve the mismatch. Neither homogeneous nor class-diverse demonstrations are presumed better for GPT. These are retrieval tradeoffs, not confirmed GPT gains.
+No híbrido atual, retirar bônus e limite aumenta pureza e reduz cobertura;
+ampliar de 40 para 240 candidatos não traz benefício agregado aqui. Remover
+só redundância não resolve a divergência. Não se presume superioridade de
+demonstrações homogêneas ou diversificadas para GPT. São compromissos da
+recuperação, não ganhos confirmados do GPT.
 
-## Per-class retrieval diagnostics
+<a id="per-class-retrieval-diagnostics"></a>
 
-| Method | True class | Hit@1 | Class Recall@3 | Purity@3 |
+## Diagnósticos da recuperação por classe
+
+| Método | Classe verdadeira | Hit@1 | Revocação@3 por classe | Pureza@3 |
 |---|---|---:|---:|---:|
 | tfidf | c1 | 35.69% | 89.23% | 34.14% |
 | tfidf | c234 | 33.80% | 91.37% | 33.76% |
@@ -155,7 +246,7 @@ For the current hybrid, removing both bonus and cap raises purity while lowering
 | length | c234 | 47.10% | 77.79% | 41.02% |
 | length | c5 | 34.06% | 62.52% | 31.05% |
 
-| Method | Retrieved c1 | Retrieved c234 | Retrieved c5 | Mean lexical cosine | Mean E5 cosine | Mean NorBERTo cosine |
+| Método | c1 recuperados | c234 recuperados | c5 recuperados | Cosseno lexical médio | Cosseno E5 médio | Cosseno NorBERTo médio |
 |---|---:|---:|---:|---:|---:|---:|
 | tfidf | 31.66% | 32.74% | 35.60% | 0.4443 | n/a | n/a |
 | e5 | 33.33% | 33.33% | 33.33% | 0.3399 | 0.9456 | n/a |
@@ -167,19 +258,45 @@ For the current hybrid, removing both bonus and cap raises purity while lowering
 | random | 29.43% | 32.74% | 37.83% | 0.0314 | n/a | n/a |
 | length | 30.71% | 39.69% | 29.60% | 0.0381 | n/a | n/a |
 
-Per-class similarity results are preserved in the machine-readable aggregate and full local retrieval report. Similarities are reported in their own encoder space; they are not comparable confidence probabilities.
+Resultados de similaridade por classe estão no agregado estruturado e no
+relatório local completo. Similaridades são reportadas no espaço próprio de
+cada codificador; não são probabilidades comparáveis de confiança.
 
-## Routing versus acceptance
+<a id="routing-versus-acceptance"></a>
 
-Pre-call models see calibrated stacking/base probabilities, native class predictions, margin, entropy, disagreement and optionally the original retrieved-example statistics. Post-call models can additionally see the returned GPT class and its agreement with stacking, base votes and examples. Query gold never enters either feature function. New NorBERTo retrieval contexts are **not** paired with old GPT answers as if the API had seen them.
+## Roteamento versus aceitação
 
-The utility model estimates P(corrected)-P(harmed). It is a small regularized logistic model fitted inside each training fold. Five original group-disjoint outer folds assess the added policy conditionally on fixed historical upstream predictions; three inner group folds choose family, regularization, threshold and routing budget. The joint selector includes the family search, avoiding selection of a family on the same OOF scores used to claim its gain.
+Antes da chamada, os modelos veem probabilidades calibradas de stacking/bases,
+classes nativas, margem, entropia, divergência e, opcionalmente, estatísticas
+dos exemplos originalmente recuperados. Depois, podem ver a classe GPT
+retornada e sua concordância com stacking, votos-base e exemplos. O gabarito
+não entra em nenhuma função de atributos. Novos contextos recuperados pelo
+NorBERTo **não** são pareados com respostas antigas como se a API os tivesse visto.
 
-This is not a fresh end-to-end nested evaluation: a policy-training row's historical OOF stacking predictor may have been fitted using labels from a policy-evaluation fold. Own-group meta predictions remain OOF, and all newly fitted policy transforms/models exclude evaluation groups, but the upstream OOF matrix is frozen rather than regenerated for each policy split. Historical Qwen exposure and prior router development also remain. These restrictions prevent claiming an unbiased new cascade generalization estimate from this replay, even for a positive family score.
+O modelo de utilidade estima P(corrected)-P(harmed). É uma pequena regressão
+logística regularizada ajustada em cada fold de treino. Cinco folds externos
+originais com grupos disjuntos avaliam a política condicionalmente às previsões
+históricas fixas dos estágios anteriores; três internos escolhem família,
+regularização, limiar e orçamento. O seletor conjunto inclui a busca de família,
+evitando escolhê-la nos mesmos resultados OOF usados para alegar ganho.
 
-Only 236 historical queries have observed replies. Routing replay is restricted to this support; the other 1736 targets keep stacking because the replay policy never queries them. Effects of a new router outside this support cannot be identified without new GPT outcomes. Acceptance-only references use all logged calls (11.97% of this retrospective population), not a deployable 10% budget guarantee. Routed policies have per-fold 5/10% caps and include zero routing.
+Não é avaliação aninhada nova de ponta a ponta: o preditor OOF histórico de
+stacking de uma linha de treino da política pode ter usado rótulos de um fold
+de avaliação da política. As previsões do próprio grupo continuam OOF, e
+transformações/modelos novos excluem os grupos avaliados, mas a matriz OOF
+anterior é fixa, sem regeneração por divisão da política. Exposição Qwen e
+desenvolvimento anterior do roteador também permanecem. Essas restrições
+impedem alegar nova estimativa imparcial de generalização da cascata, mesmo
+com família positiva.
 
-| Grouped OOF policy | Correct /1972 | Accuracy | Macro-F1 | Corrected | Harmed | Requested targets in replay |
+Só 236 consultas históricas têm respostas observadas. A reavaliação restringe-se
+a elas; os outros 1736 alvos mantêm stacking porque a política não os consulta.
+Não se identificam efeitos de novo roteador fora dessa cobertura sem novas
+respostas GPT. Referências somente de aceitação usam todas as chamadas
+registradas (11.97% da população retrospectiva), não garantem orçamento de
+10% em produção. Políticas roteadas têm limites de 5/10% por fold e incluem zero.
+
+| Política OOF agrupada | Acertos /1972 | Acurácia | Macro-F1 | Corrigidos | Prejudicados | Alvos solicitados na reavaliação |
 |---|---:|---:|---:|---:|---:|---:|
 | baseline | 936 | 47.46% | 47.30% | 0 | 0 | 0 |
 | unconditional_logged | 936 | 47.46% | 47.20% | 37 | 37 | 236 |
@@ -191,11 +308,16 @@ Only 236 historical queries have observed replies. Routing replay is restricted 
 | cascade | 936 | 47.46% | 47.26% | 9 | 9 | 72 |
 | joint_nested_selection | 935 | 47.41% | 47.19% | 16 | 17 | 163 |
 
-The joint selector's descriptive 95% group-bootstrap interval for macro-F1 difference is [-0.71%, +0.45%]. It does not establish a benefit. Individual family improvements are exploratory; retrospective hypothesis generation on these historical results is an additional source of optimism.
+O intervalo descritivo de 95% por bootstrap de grupos da diferença de macro-F1
+do seletor conjunto é [-0.71%, +0.45%]. Não estabelece benefício. Melhoras de
+famílias isoladas são exploratórias; gerar hipóteses retrospectivamente nesses
+resultados acrescenta otimismo.
 
-## Fixed-rule controls and safe pre-call skips
+<a id="fixed-rule-controls-and-safe-pre-call-skips"></a>
 
-| Fixed rule | Correct | Macro-F1 | Corrected | Harmed | Equivalent requested targets | Targets safely skipped |
+## Controles de regras fixas e omissão segura antes da chamada
+
+| Regra fixa | Acertos | Macro-F1 | Corrigidos | Prejudicados | Alvos solicitados equivalentes | Alvos omitidos com segurança |
 |---|---:|---:|---:|---:|---:|---:|
 | protect_c234 | 941 | 47.50% | 11 | 6 | 71 | 165 |
 | two_base_votes | 935 | 47.17% | 25 | 26 | 188 | 48 |
@@ -204,53 +326,97 @@ The joint selector's descriptive 95% group-bootstrap interval for macro-F1 diffe
 | votes_and_example | 936 | 47.22% | 24 | 24 | 162 | 74 |
 | protect_and_votes | 940 | 47.48% | 5 | 1 | 45 | 191 |
 
-Fixed-rule results are descriptive and were not selected on a fresh test set. A pre-call skip is safe relative to its corresponding post-call rule when **none of the three valid GPT labels can both pass the rule and change stacking**. Exhaustive synthetic tests and the logged replay verify prediction equivalence. Counts are target instances, not API batches; a future plan must rebatch them to measure call savings. This does not prove that the rule itself beats stacking.
+Resultados de regras fixas são descritivos, sem seleção em teste novo.
+Omitir a chamada é seguro em relação à regra posterior quando **nenhum dos
+três rótulos GPT válidos pode passar na regra e mudar stacking**. Testes
+sintéticos exaustivos e reavaliação registrada verificam equivalência das
+previsões. Contagens são instâncias-alvo, não lotes de API; um plano futuro
+precisa reagrupar para medir economia de chamadas. Isso não prova que a regra
+supere stacking.
 
-| Same-budget uncertainty reference | Correct | Macro-F1 | Requested targets |
+| Referência de incerteza com mesmo orçamento | Acertos | Macro-F1 | Alvos solicitados |
 |---|---:|---:|---:|
 | uncertainty_matched_to_route_local | 930 | 46.96% | 116 |
 | uncertainty_matched_to_route_retrieval | 932 | 47.09% | 89 |
 
-A separate chronological check chose the policy only on 48 pilot queries and evaluated the remaining 1884 confirmation rows. It selected `two_examples`: 907 correct, macro-F1 47.88%, versus stacking 910 and 48.08%.
+Uma verificação cronológica separada escolheu a política só nas 48 consultas
+do piloto e avaliou as 1884 linhas restantes da confirmação. Selecionou
+`two_examples`: 907 acertos, macro-F1 47.88%, contra 910 e 48.08% do stacking.
 
-## Screening for any later paid evaluation
+<a id="screening-for-any-later-paid-evaluation"></a>
 
-Development-selected retrieval proposal: `tfidf_e5_norberto--layer11_mean--relevance`. Offline screening result: **does not pass the predeclared paid-trial screen**. Screening requires a positive lower audit Hit@1 difference interval and no mean purity decline versus the current hybrid. Class coverage/diversity/relevance remain tradeoffs requiring review. No paid call is authorized or executed by this report.
+## Critérios para eventual avaliação paga posterior
 
-Learned intervention positive-lower-bound screen: **not passed**. Do not promote a rule because it looks best retrospectively, or add more paid rounds to rescue an unconfirmed result. No production default is changed by this report. If a retrieval candidate passes the auxiliary screen, a small future matched trial must freeze prompts/routing first, retain a text+local control, and compare pure relevance with constrained MMR before claiming GPT quality improvement.
+Proposta selecionada no desenvolvimento:
+`tfidf_e5_norberto--layer11_mean--relevance`. Resultado offline: **não passa
+no critério predefinido para teste pago**. Exige limite inferior positivo da
+diferença de Hit@1 na auditoria e nenhuma queda da pureza média frente ao
+híbrido atual. Cobertura/diversidade/relevância ainda exigem revisão. O relatório
+não autoriza nem executa chamada paga.
 
-## Decisions from the measured evidence
+Critério de limite inferior positivo da intervenção aprendida: **não atendido**.
+Não promova regra por parecer melhor retrospectivamente nem acrescente rodadas
+pagas para resgatar resultado não confirmado. O relatório não muda padrões.
+Se um candidato de recuperação passar no critério auxiliar, um pequeno teste
+pareado futuro deve congelar prompts/roteamento, manter controle texto+local
+e comparar relevância pura com MMR restrito antes de alegar melhora GPT.
 
-- Retain the historical default unless a separately authorized validation establishes a better cascade. Fixed-upstream replay cannot promote a new default.
-- Keep NorBERTo retrieval as an optional offline research component. The development-selected proposal fails the paid-trial screen and does not earn promotion.
-- Candidate-pool expansion and learned acceptance need demonstrated benefit before adding their complexity to the active pipeline.
-- Keep the bonus/cap/redundancy switches and safe pre-call equivalence checks for reproducible diagnostics. Diversity's measurable effect does not establish a better GPT prompt.
-- No new retrieval configuration currently justifies a paid trial under the recorded evidence criteria. A later authorized study would need fresh grouped validation, frozen routing/prompts, a local-only control and explicit cost limits. Do not pick a new winner by reusing this audit.
+<a id="decisions-from-the-measured-evidence"></a>
 
-## Reproducibility and boundaries
+## Decisões fundamentadas nas medições
 
-Legacy retrieval trace reproduction: 236/236 exact example-ID sequences. The raw output contains 171 complete trace files, baseline traces, a source snapshot and hashes; model weights, cache namespaces, IDs and folds are pinned. All embedding arrays are finite/unit-normalized and caches are checksummed. Historical checkpoints, experiments and GPT responses were not overwritten.
+- Manter o padrão histórico até validação autorizada separadamente estabelecer
+  cascata melhor. Reavaliação com estágios anteriores fixos não promove padrão novo.
+- Manter recuperação NorBERTo como componente opcional de pesquisa offline.
+  A proposta escolhida no desenvolvimento falha no critério pago, sem promoção.
+- Ampliação de candidatos e aceitação aprendida precisam de benefício demonstrado
+  antes de acrescentar complexidade ao pipeline ativo.
+- Manter opções de bônus/limite/redundância e verificações de equivalência para
+  diagnósticos reproduzíveis. Efeito mensurável da diversidade não estabelece
+  prompt GPT melhor.
+- Nenhuma configuração nova justifica teste pago pelos critérios registrados.
+  Estudo futuro autorizado exigiria nova validação agrupada, roteamento/prompts
+  congelados, controle só local e limites explícitos de custo. Não escolha novo
+  vencedor reutilizando esta auditoria.
 
-Research token usage, new GPT cost and remote latency are all zero. Local computation time is exported separately; replayed requested-target counts do not represent new calls or a measured reduction in billed API batches.
+<a id="reproducibility-and-boundaries"></a>
 
-No test1/test2 optimization or final prediction was performed. Nested meta-model OOF prevents own-group meta fitting, subject to the fixed-upstream limitation above. No original base classifier or stacking was refitted. Future GPT evaluation must use newly valid cache keys for changed contexts; old replies cannot demonstrate improvements from new demonstrations.
+## Reprodutibilidade e limites
 
-## Independent verification and reproduction
+Reprodução da recuperação histórica: 236/236 sequências exatas de IDs dos
+exemplos. A saída bruta contém 171 rastreamentos completos, controles, cópia
+do código e hashes; pesos, espaços de cache, IDs e folds são fixados. Todos
+os embeddings são finitos/unitários, com caches verificados. Checkpoints,
+experimentos e respostas GPT históricos não foram sobrescritos.
 
-The complete mocked/offline regression suite passed **229 tests**. An independent
-scorer recomputed the three main retrieval metrics for all 173 methods/controls
-(341,156 query records), verified training labels and unique groups, checked all
-four finite unit-vector arrays, confirmed 288 policy fits exclude evaluation
-groups, and reproduced all nine intervention metric sets. Existing fixed final-set
-regression fixtures detect compatibility regressions only; they did not select
-any research configuration. Historical classifier/cascade sources and frozen
-artifacts have no changes. The explicit random/length lexical guard added after
-measurement excludes none of the examples selected in this study; the exact
-measured source remains preserved with its protocol hashes.
+Tokens da pesquisa, novo custo GPT e latência remota são zero. O tempo local
+é exportado separadamente; quantidades reavaliadas de alvos solicitados não
+representam novas chamadas nem redução medida de lotes cobrados.
 
-Local evidence is under `results/rag-offline-20261106/`: `features/`, `retrieval/`,
-`interventions-final/`, `report/`, and `independent-verification.json`. Previous
-report/replay directories are retained. See the
-[offline research guide](../guides/rag-offline-research.md) for commands, runtime
-requirements and data boundaries. Raw texts, caches, model features and 579 MB
-of intermediate evidence remain local; the compact aggregate is versioned.
+Não houve otimização ou previsão final em teste1/teste2. OOF aninhada impede
+ajuste do meta-modelo no próprio grupo, sujeita à limitação dos estágios
+anteriores fixos. Nenhum classificador-base ou stacking original foi reajustado.
+Avaliação GPT futura deve usar novas chaves válidas de cache para contextos
+mudados; respostas antigas não demonstram melhora por novas demonstrações.
+
+<a id="independent-verification-and-reproduction"></a>
+
+## Verificação independente e reprodução
+
+A suíte completa simulada/offline passou em **229 testes**. Um avaliador
+independente recalculou as três métricas principais nos 173 métodos/controles
+(341,156 consultas), verificou rótulos de treino e grupos únicos, conferiu os
+quatro arrays finitos/unitários, confirmou que 288 ajustes de políticas
+excluem grupos de avaliação e reproduziu os nove conjuntos de métricas de
+intervenção. Casos fixos finais detectam apenas regressões de compatibilidade;
+não selecionaram configurações. Fontes e artefatos históricos dos classificadores/
+cascata não mudaram. A proteção lexical explícita dos controles aleatório/
+comprimento adicionada após medir não exclui exemplos deste estudo; o código
+exato medido fica preservado com hashes do protocolo.
+
+A evidência local está em `results/rag-offline-20261106/`: `features/`,
+`retrieval/`, `interventions-final/`, `report/` e `independent-verification.json`.
+Relatórios/reavaliações anteriores permanecem. Veja o
+[guia da pesquisa offline](../guides/rag-offline-research.md) para comandos,
+ambiente e limites. Textos brutos, caches, atributos e 579 MB de evidência
+intermediária ficam locais; o agregado compacto é versionado.

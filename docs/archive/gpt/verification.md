@@ -1,6 +1,6 @@
 # Verificação da implementação — 03/11/2026
 
-[Documentation index](../../README.md) · Historical experiment record; use the guides for current commands.
+[Índice da documentação](../../README.md) · Registro histórico do experimento; use os guias para comandos atuais.
 
 Ambiente isolado `EP2/.venv`, Python 3.14.8, OpenAI SDK 2.54.0; dependências
 registradas em `requirements-lock.txt`. `pip check`: nenhuma incompatibilidade.
@@ -112,19 +112,18 @@ para experimentos seguintes.
 
 ## Comparação em lotes nos 300 registros — 04/11/2026
 
-- Comparação com teto de 200 processos e
-  três textos por chamada. O orçamento padrão continua oito; testes confirmam
-  a aceitação do orçamento maior, a rejeição de valores inválidos e a
-  preservação dos padrões.
+- Comparação com teto de 200 processos e três textos por chamada. O orçamento
+  padrão continua oito; testes confirmam aceitação do maior, rejeição de
+  valores inválidos e preservação dos padrões.
 - Suíte atual: `83 passed in 25.19s`. Conferência final de diferenças sem erros.
-- Dois braços concluídos, com 300 previsões ordenadas e alinhadas por hash em
-  cada um; mesmo código e ambiente, demonstrações apenas do banco de treino.
+- Dois braços concluídos, com 300 previsões ordenadas e alinhadas por hash
+  cada; mesmo código/ambiente, demonstrações só do banco de treino.
 - 192 processos reais (96 por braço), sem falhas; 1.572.211 tokens de entrada,
-  468.864 informados como cache remoto e 20.283 de saída. Não houve truncamento
-  de alvos no prompt. Embeddings locais reutilizados.
+  468.864 informados em cache remoto e 20.283 de saída. Sem truncamento dos
+  alvos. Embeddings locais reutilizados.
 - Acurácia lexical 121/300, híbrida 127/300; F1 macro 39,76% e 41,53%.
-  Acertos exclusivos: lexical 16 e híbrido 22. Recall c1 igual: 26/96.
+  Acertos exclusivos: lexical 16 e híbrido 22. Revocação c1 igual: 26/96.
 - Artefatos: `results/retrieval-hibrida-300-20261104/`, incluindo
-  `paired-analysis.json`; agregado versionado em `resultados-validacao-300.json`.
-  Nenhum teste1/teste2 utilizado. Não houve seleção automática nem expansão
-  adicional de chamadas após a conclusão.
+  `paired-analysis.json`; agregado em `resultados-validacao-300.json`.
+  Nenhum teste1/teste2 usado. Sem seleção automática ou expansão de chamadas
+  após concluir.

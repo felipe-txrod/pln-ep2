@@ -1,18 +1,18 @@
 # Avaliação de SVM e regressão logística em teste1
 
-[Documentation index](../README.md)
+[Índice da documentação](../README.md)
 
-Historical evaluation: the RL result below uses the former full-corpus model
-(20,092 training rows). The ensemble default now requires development-only
-RL in `models/rl-development/`; these scores do not apply to that new model.
-See the [current RL workflow](../../src/rl_classifier/README.md).
+Avaliação histórica: a RL abaixo usa o antigo modelo de corpus completo
+(20,092 linhas de treino). O ensemble padrão exige agora RL somente de
+desenvolvimento em `models/rl-development/`; estes resultados não se aplicam
+ao novo modelo. Veja o [fluxo atual da RL](../../src/rl_classifier/README.md).
 
 Avaliação dos artefatos já treinados do EP1 nas **900 respostas de teste1**,
 usando `test1-rotulado-para-teste-estatistico.xlsx` como gabarito. Os modelos
 receberam somente os textos de `test1.xlsx`; os rótulos foram lidos após a
 inferência para calcular as métricas. Nenhum parâmetro foi ajustado.
 
-| Modelo | Acurácia | Acertos | Macro-F1 | Macro-precision | Macro-recall |
+| Modelo | Acurácia | Acertos | Macro-F1 | Precisão macro | Revocação macro |
 |---|---:|---:|---:|---:|---:|
 | LinearSVC, `C=0.05` | **49,44%** | **445/900** | 49,06% | 49,18% | 49,44% |
 | Regressão logística, `C=0.25` | **49,33%** | **444/900** | 49,14% | 49,29% | 49,33% |

@@ -1,57 +1,62 @@
-# Historical training-scale audit: recipe 3
+<a id="historical-training-scale-audit-recipe-3"></a>
 
-Retired on 2026-11-05. The selected model is the unchanged original EP1 delivery
-adapter. Measurements below are historical; their training and diagnostic
-implementations were removed from the active source tree and preserved locally
-in `results/norberto-rollback-20261105/sources-before-rollback.tar.gz`.
+# Auditoria histórica da escala de treinamento: receita 3
 
-A new training-only audit compared both saved recipe-3 adapters on the same
-seed-42 stratified sample of 300 development training rows (100 per class).
-These rows were used to train both adapters. No optimizer was constructed,
-and test1/test2 were not accessed during this audit.
+Desativado em 2026-11-05. O modelo selecionado é o adaptador original da entrega
+do EP1, sem alterações. As medições abaixo são históricas; as implementações
+de treino e diagnóstico foram removidas das fontes ativas e preservadas em
+`results/norberto-rollback-20261105/sources-before-rollback.tar.gz`.
 
-| Measurement | Development adapter | Full-corpus adapter |
+Uma nova auditoria restrita ao treino comparou os dois adaptadores salvos da
+receita 3 na mesma amostra estratificada de 300 linhas de desenvolvimento
+(100 por classe), semente 42. Ambos treinaram nessas linhas. Nenhum otimizador
+foi construído, e teste1/teste2 não foram acessados nesta auditoria.
+
+| Medida | Adaptador de desenvolvimento | Adaptador do corpus completo |
 |---|---:|---:|
-| Correct on the shared training sample | 156/300 (52.00%) | 113/300 (37.67%) |
-| Shared-sample cross entropy | 0.98624 | 1.08960 |
-| Shared-sample predictions `c1 / c234 / c5` | 96 / 111 / 93 | 62 / 15 / 223 |
-| Peak logged pre-clipping optimizer gradient norm | 22.58 | 1,196.86 |
-| Final-adapter CPU gradient norm on 12 short training rows | 1.60418 | 1.63878 |
+| Acertos na amostra compartilhada de treino | 156/300 (52.00%) | 113/300 (37.67%) |
+| Entropia cruzada na amostra compartilhada | 0.98624 | 1.08960 |
+| Previsões na amostra compartilhada `c1 / c234 / c5` | 96 / 111 / 93 | 62 / 15 / 223 |
+| Pico registrado da norma do gradiente do otimizador antes da limitação | 22.58 | 1,196.86 |
+| Norma do gradiente em CPU do adaptador final em 12 respostas curtas de treino | 1.60418 | 1.63878 |
 
-The full adapter fits this shared training sample worse and already exhibits
-the `c5` bias there. This supports an optimization/fitting failure. These
-training-sample scores do not estimate held-out generalization.
+O adaptador completo ajusta pior essa amostra compartilhada e já exibe nela o
+viés para `c5`. Isso sustenta uma falha de otimização/ajuste. Os resultados na
+amostra de treino não estimam generalização em dados reservados.
 
-All 16,093 shared cached feature sets match exactly, and fresh tokenization
-matches all 20,092 full training rows. Training manifests, source hashes,
-partition coverage, exported tensors, and unchanged weight hashes passed
-verification. The training proportion of `c5` decreased from 34.59% to 34.30%;
-an increased class prior does not explain the prediction bias.
+Os 16,093 conjuntos compartilhados de atributos em cache coincidem exatamente,
+e nova tokenização coincide nas 20,092 linhas de treino completo. Manifestos,
+hashes das fontes, cobertura da partição, tensores exportados e hashes
+inalterados dos pesos passaram na verificação. A proporção de `c5` no treino
+caiu de 34.59% para 34.30%; aumento da frequência prévia da classe não explica
+o viés das previsões.
 
-The full run's first logged sample-unit norm above 25 occurs at update 1,100,
-before the first epoch's partial accumulation window at update 1,256. That
-tail therefore cannot be the initial trigger of this observed escalation.
-The final-adapter derivatives are normal-sized on the checked short batch:
-CPU SDPA/eager and GPU SDPA agree, with GPU relative gradient differences
-below 0.000011 for both adapters. First-attention gradient energy is only
-5.29% in the full adapter (12.74% in development). The earlier recipe-2
-checkpoint's first-attention concentration is not reproduced here.
+A primeira norma registrada da execução completa acima de 25, em unidades por
+amostra, ocorre na atualização 1,100, antes da janela parcial de acumulação da
+primeira época em 1,256. Logo, essa cauda não pode ser o gatilho inicial da
+escalada observada. As derivadas finais são normais no lote curto verificado:
+CPU SDPA/eager e GPU SDPA concordam, com diferenças relativas de gradiente em
+GPU inferiores a 0.000011 nos dois adaptadores. Só 5.29% da energia do gradiente
+está na primeira atenção do adaptador completo (12.74% no desenvolvimento).
+A concentração na primeira atenção do checkpoint anterior da receita 2 não
+se reproduz aqui.
 
-Recipe 3 preserves the intended loss and optimizer units, but does not ensure
-stable training as the dataset grows. Two epochs changed updates from 2,012
-to 2,512, warmup from 202 to 252 updates, and sampling order. The unique cause
-among row inclusion, ordering, schedule, and their interaction remains
-unisolated. Logs every 20 updates cannot verify actual clipping or locate the
-first unstable update exactly; normal endpoint derivatives do not certify the
-trajectory. A controlled follow-up needs fresh training with internal grouped
-validation, one changed factor at a time, and per-update tracing around the
-spike. Test1/test2 gold must not select the correction.
+A receita 3 preserva as unidades pretendidas da perda e do otimizador, mas não
+garante treino estável com mais dados. Duas épocas mudaram as atualizações de
+2,012 para 2,512, o aquecimento de 202 para 252 e a ordem de amostragem. A causa
+específica entre inclusão de linhas, ordem, agendamento e suas interações segue
+sem isolamento. Registros a cada 20 atualizações não verificam a limitação
+real nem localizam exatamente a primeira instabilidade; derivadas finais
+normais não certificam a trajetória. O acompanhamento controlado exige novo
+treino com validação interna agrupada, alterando um fator por vez e rastreando
+cada atualização próxima ao pico. O gabarito de teste1/teste2 não pode selecionar
+a correção.
 
-The [audit aggregate](../../results/data/norberto-training-scale-audit.json) records all
-measurements, hashes, and limitations. The audit took 74.40 seconds on the
-recorded offline ROCm environment, and 34 targeted synthetic CPU tests passed.
-Production recipes, adapters, and ensemble selection were preserved.
-Inside the validated image with standard EP1/cache mounts, reproduce with:
+O [agregado da auditoria](../../results/data/norberto-training-scale-audit.json)
+registra todas as medidas, hashes e limitações. A auditoria levou 74.40 segundos
+no ambiente ROCm offline registrado, e 34 testes sintéticos específicos em CPU
+passaram. Receitas de produção, adaptadores e seleção do ensemble foram
+preservados. Na imagem validada com as montagens padrão de EP1/cache, reproduza com:
 
 ```bash
 PYTHONPATH=src HSA_OVERRIDE_GFX_VERSION=10.3.0 \
@@ -60,25 +65,27 @@ python3 scripts/diagnostics/norberto/audit-training-scale.py \
   --output-dir results/norberto-scale-audit-another-new-run
 ```
 
-The follow-up forensic comparison identifies why the previous correction did
-not resolve full-corpus training: commit `f947d88` replaced the normalized
-Trainer with the legacy-compatible Trainer for both partitions. All **62/62
-sampled full-run gradients and learning rates before update 1,256** match the
-original unstable full run exactly. The matching spikes include updates
-1,100 and 1,120; the first logged divergence is only at 1,260, after tail
-weighting changes. On complete windows, multiplying normalized loss by four
-restores the legacy sum of microbatch means. This confirms recurrence of the
-known sampled trajectory, not bitwise equality of every hidden tensor.
+A comparação forense posterior identifica por que a correção anterior não
+resolveu o treino completo: o commit `f947d88` substituiu o Trainer normalizado
+pelo compatível com o histórico nas duas partições. As **62/62 amostras de
+gradientes e taxas da execução completa anteriores à atualização 1,256**
+coincidem exatamente com a execução histórica instável. Os picos coincidentes
+incluem 1,100 e 1,120; a primeira divergência registrada só ocorre em 1,260,
+após a mudança de ponderação da cauda. Em janelas completas, multiplicar a
+perda normalizada por quatro restaura a soma histórica das médias dos microlotes.
+Isso confirma a recorrência da trajetória amostrada conhecida, não igualdade
+bit a bit de todos os tensores ocultos.
 
-The earlier 600-update real-model probe hardcoded the development partition.
-Its agreement with EP1 and the tiny tests' deliberately scaled references
-validated compatibility, without covering that full-run regression. The
-probe now accepts `--partition full`. The production wrapper also requires
-the original frozen configuration, including learning rate 0.001. Neither
-the normalization fix nor the compatibility change validated a new optimizer
-configuration for both dataset sizes.
+O diagnóstico anterior de 600 atualizações com modelo real fixava a partição
+de desenvolvimento no código. Sua concordância com o EP1 e as referências
+intencionalmente escaladas dos testes pequenos validaram compatibilidade, sem
+cobrir a regressão da execução completa. Agora aceita `--partition full`.
+O invólucro de produção também exige a configuração congelada original,
+incluindo taxa de aprendizado 0.001. Nem a normalização nem a mudança de
+compatibilidade validaram nova configuração do otimizador para os dois tamanhos
+de base.
 
-The log-only comparison performs no model loading or optimization:
+A comparação restrita aos registros não carrega modelos nem executa otimização:
 
 ```bash
 PYTHONPATH=src python3 scripts/diagnostics/norberto/audit-training-scale.py \
@@ -86,37 +93,37 @@ PYTHONPATH=src python3 scripts/diagnostics/norberto/audit-training-scale.py \
   --output-dir results/norberto-history-regression-another-new-run
 ```
 
-The follow-up also performed **bounded real training**, separately from the
-initial saved-adapter audit. A per-update trace reached update 376 before
-being stopped to narrow the experiment. A fresh 320-update prefix reproduced
-all its first 320 batch identities and gradient norms and all 16 available
-historical log samples. It saved weights, AdamW, scheduler, and RNG at update
-200. Resuming without an intervention reproduced all 120 following batch
-identities, gradient norms, and update norms exactly; the final adapter binary
-was identical to the uninterrupted prefix.
+O acompanhamento também realizou **treinamento real limitado**, separado da
+auditoria inicial dos adaptadores salvos. Um rastreamento por atualização
+atingiu 376 antes de ser interrompido para restringir o experimento. Um novo
+prefixo de 320 atualizações reproduziu as identidades dos 320 primeiros lotes,
+suas normas de gradiente e as 16 amostras históricas disponíveis. Salvou pesos,
+AdamW, agendador e estado aleatório em 200. Retomar sem intervenção reproduziu
+exatamente as identidades dos 120 lotes seguintes, as normas dos gradientes e
+das atualizações; o binário final do adaptador foi idêntico ao prefixo contínuo.
 
-The controlled treatment resumed that same checkpoint and multiplied only
-the scheduled optimizer learning rate by 0.1 for updates 201–320. All batch
-identities matched, the first gradient was identical, and the first parameter
-update norm was 0.10000013 times the baseline. Loss normalization, compatibility
-scale, dropout RNG, optimizer moments, clipping, and scheduler timing were held
-fixed at the intervention boundary.
+O tratamento controlado retomou o mesmo checkpoint e multiplicou apenas a taxa
+agendada do otimizador por 0.1 nas atualizações 201–320. Todas as identidades dos
+lotes coincidiram, o primeiro gradiente foi idêntico e a primeira norma da
+atualização dos parâmetros foi 0.10000013 vezes a referência. Normalização da
+perda, escala de compatibilidade, estado aleatório do dropout, momentos do
+otimizador, limitação e tempos do agendador foram mantidos na intervenção.
 
-| Window 201–320 | Original optimizer rates | Rates multiplied by 0.1 |
+| Janela 201–320 | Taxas originais do otimizador | Taxas multiplicadas por 0.1 |
 |---|---:|---:|
-| Peak pre-clipping optimizer gradient norm | 576.49658 | 29.24076 |
-| Updates with norm above 100 | 10 | 0 |
-| Mean per-update example loss | 1.11307 | 1.08339 |
-| Mean parameter update norm | 0.12863 | 0.01396 |
+| Pico da norma do gradiente do otimizador antes da limitação | 576.49658 | 29.24076 |
+| Atualizações com norma acima de 100 | 10 | 0 |
+| Perda média por exemplo por atualização | 1.11307 | 1.08339 |
+| Norma média da atualização dos parâmetros | 0.12863 | 0.01396 |
 
-All post-clipping norms remained at most 1.000001. At the original peak,
-update 276, the first attention LoRA contained 99.76% of gradient energy;
-at update 257 it contained 99.73%. These transient peaks were missed by the
-old every-20-update logs and are distinct from normal endpoint derivatives.
-This provides local causal evidence that smaller optimizer updates avoid
-those peaks in the reproduced state. It does not isolate gradient scaling
-independently or establish an end-to-end stable recipe or accuracy gain.
-The new prefix exports are diagnostic, with no production replacement or
-test1/test2 access. The [aggregate](../../results/data/norberto-training-scale-audit.json)
-records the trace/checkpoint hashes, actual optimizer learning rates, negative
-control, 936 total diagnostic optimizer updates, and validation limits.
+Todas as normas após limitação ficaram em até 1.000001. No pico original,
+atualização 276, o LoRA da primeira atenção concentrou 99.76% da energia do
+gradiente; em 257, 99.73%. Os registros antigos a cada 20 atualizações não
+capturaram esses picos transitórios, distintos de derivadas finais normais.
+Isso fornece evidência causal local de que atualizações menores evitam esses
+picos no estado reproduzido. Não isola a escala dos gradientes nem estabelece
+receita estável de ponta a ponta ou ganho de acurácia. Os novos prefixos são
+diagnósticos, sem substituir produção nem acessar teste1/teste2. O
+[agregado](../../results/data/norberto-training-scale-audit.json) registra hashes
+do rastreamento/checkpoint, taxas reais, controle negativo, 936 atualizações
+diagnósticas no total e limites da validação.

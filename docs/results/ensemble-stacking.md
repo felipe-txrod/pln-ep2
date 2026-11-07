@@ -1,8 +1,10 @@
-# Stacking versus weighted soft voting nas 900 linhas
+<a id="stacking-versus-weighted-soft-voting-nas-900-linhas"></a>
 
-This document preserves the original **three-model** protocol and results.
-The current four-model defaults include Qwen; see the [current workflow](../guides/ensemble-qwen.md)
-and [integration results](ensemble-qwen.md).
+# Stacking versus votação suave ponderada nas 900 linhas
+
+Este documento preserva protocolo e resultados originais de **três modelos**.
+Os padrões atuais de quatro incluem Qwen; veja o
+[fluxo atual](../guides/ensemble-qwen.md) e os [resultados da integração](ensemble-qwen.md).
 
 O stacking **não superou o weighted soft voting nesta avaliação**: acertou
 442/900, contra 447/900. Acurácia caiu 0,56 ponto percentual e F1-macro caiu

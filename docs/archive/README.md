@@ -1,46 +1,53 @@
-# Experiment archive
+<a id="experiment-archive"></a>
 
-[Documentation index](../README.md)
+# Arquivo de experimentos
 
-Historical records are retained for traceability. Use the
-[current guides](../README.md#guides) for supported workflows and the
-[results index](../results/README.md) for current comparisons.
+[Índice da documentação](../README.md)
 
-## GPT and Codex studies
+Os registros históricos são mantidos para rastreabilidade. Use os
+[guias atuais](../README.md#guides) para os fluxos suportados e o
+[índice dos resultados](../results/README.md) para as comparações atuais.
 
-| Record | Content |
+<a id="gpt-and-codex-studies"></a>
+
+## Estudos com GPT e Codex
+
+| Registro | Conteúdo |
 |---|---|
-| [Usage and earlier workflows](gpt/usage.md) | Original installation, remote backends, development, exports, and statistical comparison |
-| [Decisions and requirements](gpt/decisions.md) | Initial GPT protocol and data analysis |
-| [First result](gpt/first-result.md) | Error analysis, costs, and initial findings |
-| [Hybrid retrieval](gpt/hybrid-retrieval.md) | Retrieval method, pilot, and 300-row comparison |
-| [Verification history](gpt/verification.md) | Earlier implementation checks and experiment milestones |
+| [Uso e fluxos anteriores](gpt/usage.md) | Instalação original, serviços remotos, desenvolvimento, exportação e comparação estatística |
+| [Decisões e requisitos](gpt/decisions.md) | Protocolo inicial do GPT e análise dos dados |
+| [Primeiro resultado](gpt/first-result.md) | Análise de erros, custos e constatações iniciais |
+| [Recuperação híbrida](gpt/hybrid-retrieval.md) | Método de recuperação, piloto e comparação em 300 linhas |
+| [Histórico de verificação](gpt/verification.md) | Verificações anteriores da implementação e marcos dos experimentos |
 
-## NorBERTo training investigations
+<a id="norberto-training-investigations"></a>
 
-| Record | Content |
+## Investigações de treinamento do NorBERTo
+
+| Registro | Conteúdo |
 |---|---|
-| [Legacy full-corpus test1 evaluation](norberto/legacy-full-test1.md) | Original accumulation behavior, 20,092 training rows |
-| [Recipe-2 full-corpus test1 evaluation](norberto/recipe2-full-test1.md) | Corrected mean loss before optimizer-unit compatibility |
-| [Recipe-2 development holdout evaluation](norberto/recipe2-development-holdout.md) | Instability reproduced on the frozen development partition |
-| [Regression investigation](norberto/regression-investigation.md) | Data, tokenizer, training arguments, and loss-normalization checks |
-| [Optimizer and backend audit](norberto/instability-audit.md) | CPU/GPU gradients, finite differences, and first-attention localization |
+| [Avaliação histórica em teste1 com o corpus completo](norberto/legacy-full-test1.md) | Comportamento original de acumulação, 20,092 linhas de treino |
+| [Avaliação da receita 2 em teste1 com o corpus completo](norberto/recipe2-full-test1.md) | Perda média corrigida antes da compatibilidade das unidades do otimizador |
+| [Avaliação da receita 2 no conjunto reservado de desenvolvimento](norberto/recipe2-development-holdout.md) | Instabilidade reproduzida na partição congelada de desenvolvimento |
+| [Investigação da regressão](norberto/regression-investigation.md) | Verificações de dados, tokenizador, argumentos de treinamento e normalização da perda |
+| [Auditoria do otimizador e da implementação computacional](norberto/instability-audit.md) | Gradientes em CPU/GPU, diferenças finitas e localização na primeira atenção |
 
-The unchanged original EP1 delivery adapter was selected on 2026-11-05.
-Experimental training corrections, diagnostic implementations, the convex-head
-variant, and their launchers were removed from the active code. Historical
-results, adapters, and caches remain intact. A local source backup and removed
-file hashes are in `results/norberto-rollback-20261105/`.
+O adaptador original da entrega do EP1, sem alterações, foi selecionado em
+2026-11-05. Correções experimentais de treinamento, implementações de diagnóstico,
+a variante de cabeça convexa e seus scripts foram removidos do código ativo.
+Resultados históricos, adaptadores e caches permanecem intactos. Uma cópia local
+do código e os hashes dos arquivos removidos estão em
+`results/norberto-rollback-20261105/`.
 
-| Retired workflow | Record |
+| Fluxo desativado | Registro |
 |---|---|
-| Recipe-3 training | [Historical training guide](norberto/recipe3-training.md) |
-| Optimizer-unit correction | [Historical implementation](norberto/recipe3-optimizer-units.md) |
-| Shared-training-sample and prefix audits | [Measured diagnostic results](norberto/recipe3-scale-audit.md) |
-| Frozen encoder with logistic head | [Historical workflow and CV](norberto/frozen-logistic.md) |
-| Candidate-08 final-adapter evaluation | [Historical evaluation](norberto/candidate08-evaluation.md) |
+| Treinamento da receita 3 | [Guia histórico de treinamento](norberto/recipe3-training.md) |
+| Correção das unidades do otimizador | [Implementação histórica](norberto/recipe3-optimizer-units.md) |
+| Auditorias da amostra compartilhada de treino e do prefixo | [Resultados medidos de diagnóstico](norberto/recipe3-scale-audit.md) |
+| Codificador congelado com cabeça logística | [Fluxo histórico e validação cruzada](norberto/frozen-logistic.md) |
+| Avaliação do adaptador final candidate-08 | [Avaliação histórica](norberto/candidate08-evaluation.md) |
 
-The [recipe-3 correction](norberto/recipe3-optimizer-units.md) and its
-[holdout evaluation](../results/norberto-recipe3-holdout.md) describe the
-subsequent optimizer-compatible implementation. Public aggregates for both
-current and archived experiments remain in [`results/data/`](../results/data/).
+A [correção da receita 3](norberto/recipe3-optimizer-units.md) e sua
+[avaliação no conjunto reservado](../results/norberto-recipe3-holdout.md) descrevem
+a implementação posterior compatível com o otimizador. Os agregados públicos
+dos experimentos atuais e arquivados permanecem em [`results/data/`](../results/data/).

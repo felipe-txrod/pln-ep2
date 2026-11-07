@@ -1,40 +1,47 @@
-# Evaluate the saved EP1 cross-validation winner
+<a id="evaluate-the-saved-ep1-cross-validation-winner"></a>
 
-Historical workflow retired on 2026-11-05. The unchanged original EP1 delivery
-adapter is the selected model. Commands below describe the former experiment;
-its active training/evaluation implementation has been removed. Local source
-snapshots are preserved in `results/norberto-rollback-20261105/sources-before-rollback.tar.gz`.
+# Avaliação do vencedor salvo da validação cruzada do EP1
 
-[Documentation index](../../README.md)
+Fluxo histórico desativado em 2026-11-05. O modelo selecionado é o adaptador
+original da entrega do EP1, sem alterações. Os comandos abaixo descrevem o
+experimento anterior; sua implementação ativa de treino/avaliação foi removida.
+Cópias locais do código estão em `results/norberto-rollback-20261105/sources-before-rollback.tar.gz`.
 
-EP1's completed three-finalist cross-validation ranked `candidate-08` first,
-with mean outer accuracy 43.7311%. Its configuration uses the pinned public
-NorBERTo base, 512-token head/tail input, LoRA rank 16/alpha 32/dropout 0.05,
-and learning rate 0.0003. The associated final adapter is
+[Índice da documentação](../../README.md)
+
+A validação cruzada concluída dos três finalistas do EP1 classificou
+`candidate-08` em primeiro, com acurácia externa média de 43.7311%. A configuração
+usa a base pública fixada do NorBERTo, entrada início/fim de 512 tokens,
+LoRA posto 16/alpha 32/dropout 0.05 e taxa de aprendizado 0.0003. O adaptador
+final associado está em
 `../EP1/artifacts/norberto-lora-grid-final-20260930-130937/final_model/`,
-with weights SHA-256
+com SHA-256 dos pesos
 `efdb8ede4ff587fdfd453ba12b2c524a3bf5a53f06170b1d47eea5ff98b53655`.
 
-This final adapter was initialized from the public base and trained on all
-16,093 development rows. It is distinct from each fold adapter. Three epochs
-were selected by the median of inner-selected epochs `2, 3, 3`. The 3,999
-holdout rows and their similarity components were excluded from training.
-No new training, epoch selection, or parameter search occurs in this workflow.
+Esse adaptador final foi inicializado da base pública e treinado nas 16,093
+linhas de desenvolvimento. Ele difere dos adaptadores de cada fold. Foram
+selecionadas três épocas pela mediana das épocas escolhidas internamente
+`2, 3, 3`. As 3,999 linhas reservadas e seus componentes de similaridade foram
+excluídos do treino. Este fluxo não executa novo treino, seleção de épocas ou
+busca de parâmetros.
 
-`scripts/norberto/evaluate-ep1-winner.py` checks the original CV winner,
-canonical configuration digest, source fold records, completed final training,
-adapter/tokenizer hashes, exact training row IDs/groups, and the public base.
-Hugging Face snapshot symlinks are verified against pinned file hashes. It
-loads the original EP1 inference implementation and FP32/SDPA runtime, freezes
-all parameters, and predicts holdout and test1 without labels. All predictions
-are persisted before labeled records are constructed. Test1 gold must align
-with all 900 original row IDs and response texts. The complete loaded model
-state hash must remain unchanged, with no parameter gradients or updates.
+`scripts/norberto/evaluate-ep1-winner.py` verifica o vencedor original da validação
+cruzada, o hash da configuração canônica, os registros dos folds de origem, o
+treino final concluído, os hashes do adaptador/tokenizador, os IDs/grupos exatos
+de treino e a base pública. Links simbólicos dos snapshots Hugging Face são
+verificados pelos hashes fixados. O script carrega a implementação original de
+inferência do EP1 e o ambiente FP32/SDPA, congela todos os parâmetros e prediz
+o conjunto reservado e teste1 sem rótulos. Todas as previsões são persistidas
+antes de construir registros rotulados. O gabarito de teste1 deve alinhar os
+900 IDs originais e textos. O hash de todo o estado carregado deve permanecer
+inalterado, sem gradientes nem atualizações de parâmetros.
 
-## Reproduction
+<a id="reproduction"></a>
 
-Run from EP2 using the existing offline image and a new output parent. EP1,
-the existing model, and the Hugging Face cache remain read-only:
+## Reprodução
+
+Execute a partir do EP2, usando a imagem offline existente e um novo diretório
+pai de saída. EP1, o modelo existente e o cache Hugging Face permanecem somente leitura:
 
 ```bash
 output_root="$PWD/results/ep1-candidate08-new"
@@ -57,22 +64,23 @@ docker run --rm --pull=never --network=none --cpus=2 \
   --output-dir /evaluation/run
 ```
 
-The report records model/source fingerprints, runtime versions, state integrity,
-tokenization, inference time, and metrics. Separate `holdout/` and `test1/`
-directories contain original row IDs, text hashes, logits, probabilities, and
-metrics. The historical holdout has been consulted before; its score remains
-exploratory. This evaluation does not change the published model or test2.
+O relatório registra identidades do modelo/código, versões do ambiente,
+integridade do estado, tokenização, tempo de inferência e métricas. Os diretórios
+separados `holdout/` e `test1/` contêm IDs originais, hashes dos textos, logits,
+probabilidades e métricas. O conjunto reservado histórico já foi consultado;
+seu resultado permanece exploratório. Esta avaliação não altera o modelo
+publicado nem teste2.
 
-See the [measured results](../../results/README.md#ep1-cv-winner-candidate-08-reloaded)
-for the completed run and independent verification.
+Veja os [resultados medidos](../../results/README.md#ep1-cv-winner-candidate-08-reloaded)
+para a execução concluída e sua verificação independente.
 
-The completed run is
+A execução concluída está em
 `results/norberto-ep1-candidate08-evaluation-20261105/evaluation/`:
-1,439/3,999 correct on holdout (35.98% accuracy, 35.31% macro-F1) and 313/900
-on test1 (34.78% accuracy, 34.30% macro-F1). Independent source parsing verified
-all rows and reconstructed probabilities from saved logits. The parent run
-directory preserves that verifier and its report; it also created
-`holdout/comparison.csv` and `test1/comparison.csv`, with gold labels,
-predictions, correctness, probabilities, and the original delivered EP1
-model's predictions. The original model remains at 45.31% holdout and 48.00%
-test1 accuracy; candidate-08 was not promoted.
+1,439/3,999 acertos no conjunto reservado (35.98% de acurácia, 35.31% de macro-F1)
+e 313/900 em teste1 (34.78% de acurácia, 34.30% de macro-F1). Uma leitura
+independente da fonte verificou todas as linhas e reconstruiu as probabilidades
+dos logits salvos. O diretório pai preserva o verificador e seu relatório;
+também foram criados `holdout/comparison.csv` e `test1/comparison.csv`, com
+gabarito, previsões, acertos, probabilidades e previsões do modelo original
+entregue no EP1. O modelo original mantém acurácia de 45.31% no conjunto
+reservado e 48.00% em teste1; candidate-08 não foi promovido.

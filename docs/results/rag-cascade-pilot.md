@@ -1,20 +1,33 @@
-# RAG context pilot: hybrid retrieval with three examples selected
+<a id="rag-context-pilot-hybrid-retrieval-with-three-examples-selected"></a>
 
-[Aggregate metrics and accounting](data/rag-cascade-pilot.json) · [Protocol and commands](../guides/rag-stacking.md) · [Original preparation record](rag-cascade-preparation.md)
+# Piloto de contexto RAG: recuperação híbrida com três exemplos selecionada
 
-Follow-up: the [completed confirmation](rag-cascade-confirmation.md) selected
-zero GPT routing; the pilot gain below did not persist. This report preserves
-the earlier exploratory milestone and its original selection.
+[Métricas agregadas e consumo](data/rag-cascade-pilot.json) · [Protocolo e comandos](../guides/rag-stacking.md) · [Registro original de preparação](rag-cascade-preparation.md)
 
-The manually launched pilot completed all **14 arms on the same 48 difficult OOF targets**, with 672 valid classifications and no final fallback. The best observed arm was **hybrid retrieval with three examples plus local predictions**: 19/48 correct, accuracy 39.58%, macro-F1 36.90%, versus stacking at 16/48, 33.33%, and 27.59%. It corrected eight stacking errors and harmed five correct stacking decisions.
+Acompanhamento: a [confirmação concluída](rag-cascade-confirmation.md) selecionou
+roteamento zero ao GPT; o ganho abaixo não persistiu. Este relatório preserva
+o marco exploratório anterior e sua escolha original.
 
-The predeclared paired-arm mean selected **hybrid retrieval with three examples** for a possible later confirmation. This selects the retrieval recipe only. Context strategy and routing budget have not been confirmed, and no RAG model was frozen or promoted. The existing zero-GPT cascade default is unchanged.
+O piloto iniciado manualmente concluiu os **14 braços nos mesmos 48 alvos OOF
+difíceis**, com 672 classificações válidas e nenhum fallback final. O melhor
+braço observado foi **recuperação híbrida com três exemplos e previsões locais**:
+19/48 acertos, acurácia 39.58%, macro-F1 36.90%, contra stacking com 16/48,
+33.33% e 27.59%. Corrigiu oito erros e prejudicou cinco acertos do stacking.
 
-## All pilot arms
+A média pareada predefinida selecionou **recuperação híbrida com três exemplos**
+para possível confirmação posterior. Isso escolhe só a receita de recuperação.
+Estratégia de contexto e orçamento não foram confirmados; nenhum modelo RAG
+foi congelado ou promovido. O padrão da cascata sem GPT não muda.
 
-All rows below use the same 48 targets. These are difficult selected cases, not overall holdout or test performance. Costs come from actual attempt journals; reused per-item allocations are not summed into the total.
+<a id="all-pilot-arms"></a>
 
-| Context | Correct | Accuracy | Macro-F1 | Corrected | Harmed | Estimated USD |
+## Todos os braços do piloto
+
+Todas as linhas abaixo usam os mesmos 48 alvos. São casos difíceis selecionados,
+não desempenho global reservado ou de teste. Custos vêm dos registros reais
+de tentativas; alocações por item reutilizadas não são somadas ao total.
+
+| Contexto | Acertos | Acurácia | Macro-F1 | Corrigidos | Prejudicados | USD estimados |
 |---|---:|---:|---:|---:|---:|---:|
 | Stacking | 16/48 | 33.33% | 27.59% | — | — | 0 |
 | text | 14/48 | 29.17% | 26.30% | 9 | 11 | 0.102298 |
@@ -32,28 +45,43 @@ All rows below use the same 48 targets. These are difficult selected cases, not 
 | hybrid-5-rag | 15/48 | 31.25% | 29.78% | 11 | 12 | 0.148044 |
 | hybrid-5-local | 14/48 | 29.17% | 25.60% | 5 | 7 | 0.184201 |
 
-Names ending in `rag` contain retrieved examples without local predictions; `local` RAG arms contain both. `text` is text-only; the plain `local` arm has local predictions without retrieved examples. Each RAG method compares three and five demonstrations.
+Nomes terminados em `rag` têm exemplos recuperados sem previsões locais;
+braços RAG `local` têm ambos. `text` é somente texto; o braço simples `local`
+tem previsões locais sem exemplos. Cada método RAG compara três e cinco demonstrações.
 
-## What helped in this sample
+<a id="what-helped-in-this-sample"></a>
 
-- Local predictions improved text-only GPT from 14 to 18 correct, macro-F1 26.30% to 33.07%.
-- Adding three hybrid demonstrations to local predictions produced one further correct case, macro-F1 33.07% to 36.90%.
-- The best RAG-only arm was TF-IDF with three demonstrations: 17 correct, macro-F1 32.25%. Hybrid RAG-only had 16 correct and macro-F1 29.91%.
-- Five demonstrations did not beat the selected three-example hybrid recipe. More context was not consistently better; semantic-only retrieval was especially weak.
-- The strongest combined arm still recovered only 3/17 true c1 cases. All three classes improved in F1 relative to stacking, but class c1 remains a major limitation.
+## O que ajudou nesta amostra
 
-These observations do not identify a causal mechanism for individual mistakes. Similar wording or topic may not convey a subjective clarity rating; that remains a hypothesis, not a measured explanation.
+- Previsões locais melhoraram GPT somente com texto de 14 para 18 acertos,
+  macro-F1 de 26.30% para 33.07%.
+- Adicionar três demonstrações híbridas às previsões locais trouxe mais um
+  acerto, macro-F1 de 33.07% para 36.90%.
+- O melhor braço só RAG foi TF-IDF com três demonstrações: 17 acertos,
+  macro-F1 32.25%. Híbrido só RAG teve 16 acertos e macro-F1 29.91%.
+- Cinco demonstrações não superaram a receita híbrida selecionada de três.
+  Mais contexto não foi consistentemente melhor; recuperação só semântica
+  foi particularmente fraca.
+- O melhor braço combinado ainda recuperou apenas 3/17 casos verdadeiros c1.
+  As três classes melhoraram em F1 frente ao stacking, mas c1 segue uma
+  limitação importante.
 
-## Per-class results and confusion matrices
+Essas observações não identificam mecanismo causal para erros individuais.
+Vocabulário ou assunto parecidos podem não transmitir uma nota subjetiva de
+clareza; isso continua hipótese, não explicação medida.
 
-| System | F1 c1 | F1 c234 | F1 c5 |
+<a id="per-class-results-and-confusion-matrices"></a>
+
+## Resultados por classe e matrizes de confusão
+
+| Sistema | F1 c1 | F1 c234 | F1 c5 |
 |---|---:|---:|---:|
 | Stacking | 16.67% | 47.06% | 19.05% |
-| Text | 10.00% | 38.89% | 30.00% |
+| Texto | 10.00% | 38.89% | 30.00% |
 | Local | 17.39% | 51.06% | 30.77% |
-| Hybrid 3 + local | 25.00% | 50.00% | 35.71% |
+| Híbrido 3 + local | 25.00% | 50.00% | 35.71% |
 
-Rows are true classes; columns are predicted classes, ordered `c1`, `c234`, `c5`.
+Linhas são classes verdadeiras; colunas, preditas em ordem `c1`, `c234`, `c5`.
 
 Stacking:
 
@@ -63,7 +91,7 @@ Stacking:
  0  8  2
 ```
 
-Hybrid 3 + local:
+Híbrido 3 + local:
 
 ```text
  3  7  7
@@ -71,27 +99,67 @@ Hybrid 3 + local:
  0  5  5
 ```
 
-## Resources and CLI-update recovery
+<a id="resources-and-cli-update-recovery"></a>
 
-The complete pilot used **84 successful batched calls**, plus **three archived failed attempts**, for 87 registered attempts within the original cap of 128. The final resume made ten new successful calls and reused 592 cached classifications. A Codex update changed the default executable from 0.166.0 to 0.167.0 during the first invocation. Resuming with the original versioned 0.166.0 executable restored exact planned metadata; no prompts, source fingerprints, base models or labels were changed.
+## Recursos e recuperação após atualização da CLI
 
-- Recorded usage: **1,065,917 input tokens**, including **147,840 cached input tokens**, and **17,205 output tokens**.
-- Total standard API-equivalent estimate: **USD 2.022988**, using configured prices of USD 2 input / 0.10 cached input / 10 output per million. This is not a ChatGPT subscription invoice.
-- Mean successful request latency: **7.93 seconds**. Summed successful request latency: **666.49 seconds**; concurrency means this is not wall time.
-- Archived failed attempts added 0.55 seconds of measured latency and have unknown token usage. Zero recorded failed-attempt tokens do not prove zero remote consumption; the estimate excludes unknown usage.
-- Run reports from the final invocation contain cache-replay wall times for earlier arms. A cumulative pilot wall time across manual interruption/resumption is not available.
-- No GPT calls were made to score or verify this pilot.
+O piloto inteiro usou **84 chamadas válidas em lotes** e **três tentativas
+falhas arquivadas**, totalizando 87, dentro do limite original de 128.
+A retomada final fez dez novas chamadas válidas e reutilizou 592 classificações
+em cache. Uma atualização Codex mudou o executável padrão de 0.166.0 para
+0.167.0 durante a primeira invocação. Retomar com o executável original
+versionado 0.166.0 restaurou os metadados exatos do plano; prompts, identidades
+das fontes, modelos-base e rótulos não mudaram.
 
-The authoritative totals sum the 84 successful active attempt histories once, plus the three archived failure histories. Per-arm amortized cached-receipt estimates can reuse earlier batches and must not be added as if each were a new billed call. Recovery preserves the failed journals, prior partial outputs, checksums and resource notes.
+- Consumo registrado: **1,065,917 tokens de entrada**, incluindo **147,840 em
+  cache**, e **17,205 de saída**.
+- Estimativa total equivalente à API padrão: **USD 2.022988**, pelos preços
+  configurados USD 2 entrada / 0.10 entrada em cache / 10 saída por milhão.
+  Não é fatura da assinatura ChatGPT.
+- Latência média válida: **7.93 segundos**. Soma das latências válidas:
+  **666.49 segundos**; pela simultaneidade, não é o tempo total decorrido.
+- Falhas arquivadas acrescentaram 0.55 segundos de latência medida e têm
+  consumo desconhecido. Zero tokens registrados não provam consumo remoto
+  zero; a estimativa exclui o desconhecido.
+- Relatórios da invocação final contêm tempos de reuso do cache para braços
+  anteriores. Não há tempo cumulativo do piloto entre interrupções/retomadas.
+- Nenhuma chamada GPT foi feita para avaliar ou verificar o piloto.
 
-## Isolation, verification and limits
+Os totais oficiais somam uma vez os 84 históricos ativos válidos e os três
+históricos falhos arquivados. Estimativas amortizadas por braço podem reutilizar
+lotes anteriores e não devem ser somadas como novas cobranças. A recuperação
+preserva falhas, saídas parciais, checksums e notas de recursos.
 
-The original 16,093-row training bank excludes all 3,999 holdout rows. Filtering/deduplication leaves 11,562 indexed examples. All selected demonstrations came from that bank, with three/five complete examples returned for every RAG target. The frozen four-member stacking and nested OOF routing predictions were reused without base retraining. Independent preflight checked all 672 prompts for literal target text, valid train-only labels, local evidence, duplicates and diversity constraints.
+<a id="isolation-verification-and-limits"></a>
 
-All 14 prediction sets were complete and checksum-verified before scoring opened the validation gold. An independent standard-library calculation reproduced every confusion matrix, accuracy, macro-F1, and corrected/harmed count. The 1,884-row confirmation cohort remains unused and has no similarity groups shared with the pilot. Test1 and test2 were not accessed by this experiment.
+## Isolamento, verificação e limites
 
-The observed best arm gains three correct cases over stacking. The descriptive exact two-sided McNemar p-value is **0.5811**, before accounting for searching 14 arms. This small exploratory sample does **not** establish a significant generalization improvement. The nested meta-model OOF protocol excludes meta in-sample fitting; inherited exposure from historical Qwen checkpoint selection on the holdout remains.
+O banco original de 16,093 linhas exclui 3,999 reservadas. Filtros/deduplicação
+deixam 11,562 exemplos indexados. Todas as demonstrações vieram dele, com
+três/cinco exemplos completos em cada alvo RAG. Stacking congelado de quatro
+membros e previsões aninhadas OOF foram reutilizados sem retreinar bases.
+A verificação prévia independente conferiu os 672 prompts: texto literal do
+alvo, rótulos válidos só de treino, evidência local, duplicatas e diversidade.
 
-Further classification requires explicit authorization. No confirmation, new frozen RAG package, test2 delivery or retrospective test1 evaluation was started.
+Os 14 conjuntos de previsões estavam completos e verificados antes da abertura
+do gabarito de validação. Cálculo independente da biblioteca padrão reproduziu
+matrizes, acurácia, macro-F1 e correções/prejuízos. A coorte de confirmação de
+1,884 linhas permanece sem uso e sem grupos compartilhados com o piloto.
+Teste1 e teste2 não foram acessados pelo experimento.
 
-Local evidence: `results/rag-context-pilot-20261106/pilot/{plan,run,selection,independent-summary}.json`, per-arm requests/context traces/predictions/attempts, `runtime-recovery-20261106/`, and the persistent response/embedding caches. Raw evidence is local and ignored by Git; the linked aggregate preserves the public metrics without texts or individual labels.
+O melhor braço observado ganha três acertos frente ao stacking. O p-valor
+exato bilateral descritivo de McNemar é **0.5811**, antes de considerar a busca
+em 14 braços. A pequena amostra exploratória **não** estabelece melhora
+significativa de generalização. O protocolo OOF aninhado exclui o ajuste nos
+próprios dados de avaliação do meta-modelo; a exposição herdada do checkpoint
+Qwen ao conjunto reservado permanece.
+
+Mais classificação exige autorização explícita. Não foi iniciada confirmação,
+novo pacote RAG congelado, entrega teste2 ou avaliação retrospectiva teste1.
+
+Evidência local:
+`results/rag-context-pilot-20261106/pilot/{plan,run,selection,independent-summary}.json`,
+solicitações/contextos/previsões/tentativas por braço,
+`runtime-recovery-20261106/` e caches persistentes de respostas/embeddings.
+Evidência bruta é local e ignorada pelo Git; o agregado vinculado preserva
+métricas públicas sem textos ou rótulos individuais.

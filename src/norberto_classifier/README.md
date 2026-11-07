@@ -1,39 +1,44 @@
-# Frozen EP1 NorBERTo inference package
+<a id="frozen-ep1-norberto-inference-package"></a>
 
-This is the selected NorBERTo for EP2. It exposes the unchanged final model
-already delivered in EP1. Experimental training/loss corrections and the
-logistic-head variant were retired on 2026-11-05. It has no
-training, hyperparameter selection, or evaluation command.
+# Pacote congelado de inferência do NorBERTo do EP1
 
-## Preserved model
+Este é o NorBERTo selecionado para EP2. Expõe o modelo final inalterado já
+entregue no EP1. Correções experimentais de treino/perda e variante de cabeça
+logística foram desativadas em 2026-11-05. Não tem comando de treinamento,
+seleção de hiperparâmetros ou avaliação.
 
-| Property | Value |
+<a id="preserved-model"></a>
+
+## Modelo preservado
+
+| Propriedade | Valor |
 |---|---|
 | Base | `Itau-Unibanco/NorBERTo-base` |
-| Revision | `db73446f89c96044863ea05a39f680524b84bccb` |
-| Original artifact | `EP1/artifacts/norberto-lora-final-ctx512-20260928` |
-| Adapter | LoRA rank 4, alpha 8, dropout 0.05, `Wqkv` modules |
-| Input | Only `resp_text`, case-sensitive |
-| Context | 512 tokens, head/tail truncation |
-| Precision and attention | FP32, SDPA, `reference_compile=False` |
-| Class order | `c1`, `c234`, `c5` |
-| Inference | Batch 8, two threads, CPU by default |
+| Revisão | `db73446f89c96044863ea05a39f680524b84bccb` |
+| Artefato original | `EP1/artifacts/norberto-lora-final-ctx512-20260928` |
+| Adaptador | LoRA posto 4, alpha 8, dropout 0.05, módulos `Wqkv` |
+| Entrada | Só `resp_text`, preservando maiúsculas/minúsculas |
+| Contexto | 512 tokens, truncamento início/fim |
+| Precisão e atenção | FP32, SDPA, `reference_compile=False` |
+| Ordem de classes | `c1`, `c234`, `c5` |
+| Inferência | Lote 8, duas threads, CPU por padrão |
 
-Official adapter SHA-256:
+SHA-256 oficial do adaptador:
 
 ```text
 d693f6e2995d117ad04a5692817527764fcccee6bfb2dde99120baf9fdd2d385
 ```
 
-The approved selection budget allowed three epochs; final training used two,
-selected from the median best epoch across folds. `approved_config.json`
-contains the budget and `config.json` the final training parameters. The
-original `run.json` records this distinction. Training used 16,093 development
-responses and excluded the 3,999 holdout responses.
+O orçamento aprovado permitia três épocas; o treino final usou duas, escolhidas
+pela mediana das melhores entre folds. `approved_config.json` contém orçamento,
+e `config.json`, parâmetros finais. `run.json` original registra a distinção.
+O treino usou 16,093 respostas e excluiu as 3,999 reservadas.
 
-## Files and integrity
+<a id="files-and-integrity"></a>
 
-The default package is [`models/norberto/`](../../models/norberto/README.md):
+## Arquivos e integridade
+
+O pacote padrão é [`models/norberto/`](../../models/norberto/README.md):
 
 ```text
 norberto/
@@ -57,39 +62,40 @@ norberto/
     tokenizer_config.json
 ```
 
-The adapter, classification head, tokenizer, configuration, and technical
-metadata are versioned. `base_model/model.safetensors` is ignored by Git;
-`base_reference.json` pins its public revision and SHA-256. After cloning:
+Adaptador, cabeça, tokenizador, configuração e metadados técnicos são versionados.
+`base_model/model.safetensors` é ignorado; `base_reference.json` fixa revisão
+pública e SHA-256. Após clonar:
 
 ```bash
 python3 scripts/models/prepare-base.py
 ```
 
-This restores and verifies missing base files without loading a model or
-training. `--verify-only` checks existing files without accessing the network.
-The complete local bundle occupies approximately 607 MB. The public base is
-licensed under CC BY-NC-SA 4.0; attribution and source links are in the
-[model package](../../models/norberto/README.md).
+Restaura/verifica ausentes sem carregar ou treinar modelo. `--verify-only`
+confere arquivos existentes sem rede. O pacote local completo ocupa cerca de
+607 MB. A base pública usa CC BY-NC-SA 4.0; atribuição e fontes estão no
+[pacote](../../models/norberto/README.md).
 
-The source [frozen manifest](frozen_manifest.json) identifies each inference
-file by SHA-256. Before loading, the package rejects altered files, a different
-base revision, or another adapter. Generated PEFT README and `training_args.bin`
-are omitted because inference does not need them; historical `run.json` retains
-their original records.
+O [manifesto congelado das fontes](frozen_manifest.json) identifica cada arquivo
+por SHA-256. Antes de carregar, o pacote rejeita alterações, revisão-base
+ou adaptador diferentes. README gerado pelo PEFT e `training_args.bin` são
+omitidos por serem desnecessários à inferência; `run.json` histórico mantém
+os registros originais.
 
-`NORBERTO_ARTIFACT_DIR` or `--artifact-dir` selects an alternate complete bundle.
-Without a published package, the previous `artifacts/norberto-ep1/` location
-remains a fallback. After preparing the base, inference requires neither EP1
-nor Hugging Face access. Model packages are excluded from Docker build contexts.
+`NORBERTO_ARTIFACT_DIR` ou `--artifact-dir` seleciona outro pacote completo.
+Sem pacote publicado, `artifacts/norberto-ep1/` permanece alternativa histórica.
+Após preparar a base, inferência não exige EP1 nem acesso Hugging Face.
+Pacotes de modelos são excluídos do contexto de construção Docker.
 
-## Usage
+<a id="usage"></a>
 
-The environment requires an appropriate CPU/ROCm PyTorch build, Transformers
-4.57.1, PEFT 0.17.1, Accelerate 1.10.1, and common EP2 dependencies. The `norberto`
-extra in `pyproject.toml` declares the three adaptation libraries but does not
-select the PyTorch distribution.
+## Uso
 
-From the EP2 root with dependencies installed:
+O ambiente exige PyTorch apropriado para CPU/ROCm, Transformers 4.57.1,
+PEFT 0.17.1, Accelerate 1.10.1 e dependências comuns EP2. O extra `norberto`
+de `pyproject.toml` declara as três bibliotecas de adaptação, mas não
+seleciona a distribuição PyTorch.
+
+Na raiz do EP2 com dependências instaladas:
 
 ```bash
 PYTHONPATH=src python -m norberto_classifier predict \
@@ -98,11 +104,10 @@ PYTHONPATH=src python -m norberto_classifier predict \
   --device cpu
 ```
 
-The CLI reads text only, ignores any gold labels, and requires a new output
-directory. It writes `predictions.jsonl` with original row IDs, text hashes,
-classes, and probabilities, plus `run.json` with provenance and configuration.
-It does not modify inputs or generate submission XLSX files. GPU use requires
-explicit `--device gpu`.
+A CLI lê só textos, ignora rótulos verdadeiros e exige novo diretório. Grava
+`predictions.jsonl` com IDs, hashes, classes e probabilidades e `run.json`
+com procedência/configuração. Não altera entradas nem gera XLSX de entrega.
+GPU exige `--device gpu` explícito.
 
 ```python
 from norberto_classifier import NorbertoClassifier
@@ -113,22 +118,23 @@ label = predictions[0].label
 probabilities = predictions[0].probabilities
 ```
 
-Importing the package or constructing the classifier loads no PyTorch, weights,
-or tokenizer. Loading occurs through `load()` or `predict()` with texts.
-Parameters remain frozen; inference uses `torch.inference_mode()`.
+Importar o pacote ou construir o classificador não carrega PyTorch, pesos ou
+tokenizador. O carregamento ocorre por `load()` ou `predict()` com textos.
+Parâmetros ficam congelados; inferência usa `torch.inference_mode()`.
 
-## Limitations
+<a id="limitations"></a>
 
-Normalization, truncation, and adapter loading preserve the EP1 inference
-modules identified in the manifest. Restoration was verified on all 900 test1
-rows: every label matches the original EP1 delivery (432/900 correct, 48.00%),
-and maximum probability difference from the historical CSV is 8.60e-8.
-The original adapter, tokenizer, and configurations match EP1. Verification
-artifacts are in `results/norberto-rollback-20261105/`; see the
-[restoration record](../../docs/results/data/norberto-ep1-restoration.json).
-The original inference/tokenization implementations and model weights were
-not modified during cleanup.
+## Limitações
 
-New inference does not replace the official EP1 predictions in statistical
-comparisons. Follow the EP2 protocol: freeze the method, submit test2, then
-compare test1 against EP1.
+Normalização, truncamento e carregamento preservam os módulos EP1 identificados
+no manifesto. A restauração foi verificada nas 900 linhas de teste1:
+todos os rótulos coincidem com a entrega original (432/900, 48.00%) e a
+diferença máxima de probabilidade contra o CSV histórico é 8.60e-8.
+Adaptador, tokenizador e configurações correspondem ao EP1. Artefatos em
+`results/norberto-rollback-20261105/`; veja o
+[registro da restauração](../../docs/results/data/norberto-ep1-restoration.json).
+Implementações originais de inferência/tokenização e pesos não mudaram na limpeza.
+
+Nova inferência não substitui previsões oficiais EP1 nas comparações
+estatísticas. Siga o protocolo EP2: congele o método, entregue teste2 e
+depois compare teste1 com EP1.

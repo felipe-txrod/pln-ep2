@@ -1,61 +1,64 @@
-# Development-only logistic regression
+<a id="development-only-logistic-regression"></a>
 
-`RLClassifier` is the ensemble member `rl`. Its default bundle is now
-`models/rl-development/`, trained on the fixed 16,093 EP1 development rows
-while reserving all 3,999 holdout rows. The local bundle has completed training and verification: 38 iterations,
-25.08 seconds, exact training-row coverage, and zero holdout group overlap.
-See the [trained model](../../models/rl-development/README.md). The earlier
-lexical comparison saved only its winning SVM pipeline; the preserved
-`models/rl/` artifact was fitted on all 20,092 rows and remains historical.
+# Regressão logística somente de desenvolvimento
 
-## Reproduce the selected model
+`RLClassifier` é o membro `rl`. O padrão agora é `models/rl-development/`,
+treinado nas 16,093 linhas fixas EP1, preservando 3,999 reservadas. O pacote
+local concluiu treino/verificação: 38 iterações, 25.08 segundos, cobertura
+exata e nenhuma sobreposição de grupos. Veja o
+[modelo treinado](../../models/rl-development/README.md). A comparação lexical
+anterior salvou só o SVM vencedor; `models/rl/` foi ajustado nas 20,092 linhas
+e permanece histórico.
 
-From the EP2 root, using the existing offline CPU image and sibling EP1:
+<a id="reproduce-the-selected-model"></a>
+
+## Reproduzir o modelo selecionado
+
+Na raiz do EP2, com imagem CPU offline existente e EP1 vizinho:
 
 ```bash
 bash scripts/rl/train.sh --dry-run
 bash scripts/rl/train.sh
 ```
 
-These commands are for a new output directory; the completed local bundle must
-not be overwritten. The first command validates dataset/split hashes, row counts, and disjoint
-similarity components without fitting or writing artifacts. The second fits
-only development, using EP1's original word/character TF-IDF builder and fixed
-`C=0.25`, L-BFGS, L2, 1,500 iterations, seed 42, and two CPU threads. There is
-no parameter search, holdout scoring, official-test access, or full-corpus fit.
-Nonconvergence fails. Training writes safe provenance, exact training row
-identities, checksummed joblib/metadata/configuration, and a manifest after
-reloading and validating the exported pipeline.
+Os comandos exigem novo diretório; não sobrescreva o pacote concluído.
+O primeiro valida hashes, contagens e componentes disjuntos sem ajustar ou
+gravar artefatos. O segundo ajusta só desenvolvimento, com construtor original
+EP1 de TF-IDF palavras/caracteres e `C=0.25` fixo, L-BFGS, L2, 1,500 iterações,
+semente 42 e duas threads. Sem busca, avaliação reservada, acesso a testes
+oficiais ou ajuste completo. Não convergência gera falha. O treino grava
+procedência segura, identidades exatas, joblib/metadados/configuração com
+checksums e manifesto após recarregar/validar o pipeline exportado.
 
-`RL_EP1_ROOT` and `RL_IMAGE` override the sibling checkout and local image.
-An existing output directory is rejected. `--output-dir` selects another new
-bundle; an alternate bundle must also be selected explicitly for inference
-and in the ensemble manifest. Training is not started by inference.
+`RL_EP1_ROOT` e `RL_IMAGE` substituem cópia vizinha e imagem local.
+Diretório existente é rejeitado. `--output-dir` seleciona novo pacote;
+alternativas também precisam ser selecionadas explicitamente na inferência
+e no manifesto do ensemble. Inferência não inicia treino.
 
-## Inference
+<a id="inference"></a>
 
-Use the pinned dependencies in `requirements-lexical.txt`:
+## Inferência
+
+Use dependências fixadas em `requirements-lexical.txt`:
 
 ```bash
 PYTHONPATH=src python3 -m rl_classifier predict \
   --input data/test2.xlsx --output-dir results/rl-development-test2
 ```
 
-For test1, use `data/test1.xlsx` and `results/rl-development-test1`. Prediction
-reads texts only and returns labels, probabilities, and named class scores.
-The ensemble checks the run's artifact hash against
-`models/rl-development/frozen_manifest.json`, so earlier full-corpus
-predictions cannot be reused as development predictions.
+Para teste1, use `data/test1.xlsx` e `results/rl-development-test1`. A predição
+lê só textos e retorna rótulos, probabilidades e escores nomeados por classe.
+O ensemble confere o hash contra `models/rl-development/frozen_manifest.json`,
+impedindo reutilizar previsões completas como de desenvolvimento.
 
-A missing development bundle produces an actionable error and never falls
-back to the historical full-corpus model. `RL_BUNDLE_DIR` selects an explicit
-alternate bundle; `--artifact`/`RL_ARTIFACT_PATH` select another copy under
-that bundle's integrity contract. Loading and prediction remain CPU-only.
+Pacote de desenvolvimento ausente gera erro com orientação e nunca recorre
+ao histórico completo. `RL_BUNDLE_DIR` seleciona alternativa explícita;
+`--artifact`/`RL_ARTIFACT_PATH` selecionam outra cópia dentro do contrato
+de integridade. Carregamento/predição continuam só em CPU.
 
-The historical full-corpus weights in `models/rl/` are preserved for
-traceability. Their earlier 49.33% test1 accuracy applies only to that model.
-The development-only model has now been evaluated separately: 1,803/3,999
-correct on holdout (45.09% accuracy, 44.78% macro-F1) and 447/900 on labeled
-test1 (49.67% accuracy, 49.32% macro-F1). All source rows and metrics were
-verified independently, with no refitting or parameter changes. See the
-[evaluation record](../../docs/results/data/rl-development-evaluation.json).
+Os pesos históricos completos de `models/rl/` ficam preservados. A acurácia
+antiga de teste1 49.33% só vale para eles. O modelo de desenvolvimento foi
+avaliado separadamente: 1,803/3,999 no conjunto reservado (45.09% acurácia,
+44.78% macro-F1) e 447/900 em teste1 rotulado (49.67%, 49.32%). Linhas e
+métricas foram verificadas independentemente, sem reajuste ou mudança de
+parâmetros. Veja o [registro](../../docs/results/data/rl-development-evaluation.json).

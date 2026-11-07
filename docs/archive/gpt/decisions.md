@@ -1,6 +1,6 @@
 # Requisitos e decisões do experimento GPT
 
-[Documentation index](../../README.md) · Historical experiment record; use the guides for current commands.
+[Índice da documentação](../../README.md) · Registro histórico do experimento; use os guias para comandos atuais.
 
 Leitura prévia: `ep2-enunciado.md` e `ep2-modelo-relatorio-com-analise.md`
 (integralmente), enunciado transcrito do EP1, README, decisão do NorBERTo,
@@ -81,20 +81,20 @@ duplicatas exatas, sem ajustar vocabulário/IDF nos alvos. Essa divisão não is
 paráfrases/duplicatas aproximadas e a pequena amostra de desenvolvimento aumenta
 incerteza. O resultado selecionado é exploratório; teste1 permanece fechado à busca.
 
-Na API, snapshot inicial verificado: `gpt-5.4-mini-2026-03-17`, Responses, Structured
-Outputs, reasoning `none`. Não é uma afirmação de melhor modelo para português.
-O modelo é configurável; não há troca automática nem parâmetros descartados em
-caso de erro. Não se envia seed de API não documentada. Temperatura é omitida por
-padrão para evitar assumir suporte; snapshot, ordem, prompt e cache são fixados.
-Não se promete determinismo absoluto de uma API remota.
+Na API, snapshot inicial verificado: `gpt-5.4-mini-2026-03-17`, Responses,
+saídas estruturadas, raciocínio `none`. Não é uma afirmação de melhor modelo
+para português. O modelo é configurável; não há troca automática nem descarte
+de parâmetros em caso de erro. Não se envia semente de API não documentada.
+Temperatura é omitida por padrão para não presumir suporte; snapshot, ordem,
+prompt e cache são fixados. Não se promete determinismo absoluto de API remota.
 
 ## Documentação oficial consultada em 03/11/2026
 
-- [Responses / criação](https://developers.openai.com/api/reference/python/resources/responses/methods/create): `input`, `text.format`, `store`, limites e usage.
-- [Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs): schema estrito, enum, recusas e respostas incompletas.
-- [GPT-5.4 mini](https://developers.openai.com/api/docs/models/gpt-5.4-mini): snapshot, Responses, Structured Outputs e reasoning none/low/medium/high/xhigh.
+- [Responses / criação](https://developers.openai.com/api/reference/python/resources/responses/methods/create): `input`, `text.format`, `store`, limites e consumo.
+- [Saídas estruturadas](https://developers.openai.com/api/docs/guides/structured-outputs): esquema estrito, enumeração, recusas e respostas incompletas.
+- [GPT-5.4 mini](https://developers.openai.com/api/docs/models/gpt-5.4-mini): snapshot, Responses, saídas estruturadas e raciocínio none/low/medium/high/xhigh.
 - [SDK oficial](https://developers.openai.com/api/docs/libraries): biblioteca Python e autenticação por variável de ambiente.
-- [Erros](https://developers.openai.com/api/docs/guides/error-codes): limites, timeout, falhas transitórias e Retry-After.
+- [Erros](https://developers.openai.com/api/docs/guides/error-codes): limites, tempo esgotado, falhas transitórias e Retry-After.
 
 Uma chamada independente por texto evita falhas de alinhamento entre respostas em
 lote. Cache SQLite por payload completo evita repetir textos idênticos e chamadas

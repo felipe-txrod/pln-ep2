@@ -1,6 +1,6 @@
 # Análise do primeiro resultado GPT — 04/11/2026
 
-[Documentation index](../../README.md) · Historical experiment record; use the guides for current commands.
+[Índice da documentação](../../README.md) · Registro histórico do experimento; use os guias para comandos atuais.
 
 ## Resultado observado e decisão
 
@@ -18,9 +18,9 @@ novamente conferidos. Foram comparadas as mesmas 900 respostas.
 |---|---:|---:|
 | Acurácia | 48,00% (432/900) | 42,44% (382/900) |
 | F1 macro | 47,86% | 40,39% |
-| Recall c1 | 39,33% (118/300) | 18,67% (56/300) |
-| Recall c234 | 51,67% (155/300) | 47,67% (143/300) |
-| Recall c5 | 53,00% (159/300) | 61,00% (183/300) |
+| Revocação c1 | 39,33% (118/300) | 18,67% (56/300) |
+| Revocação c234 | 51,67% (155/300) | 47,67% (143/300) |
+| Revocação c5 | 53,00% (159/300) | 61,00% (183/300) |
 
 O GPT perdeu 62 acertos em `c1` e 12 em `c234`, ganhando 24 em `c5`: saldo
 de **−50 acertos**, ou **−5,56 pontos percentuais**. Previu `c1` apenas 116

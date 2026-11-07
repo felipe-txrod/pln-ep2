@@ -1,8 +1,10 @@
-# Weighted soft voting — avaliação final nas 900 linhas
+<a id="weighted-soft-voting--avaliação-final-nas-900-linhas"></a>
 
-This document preserves the original **three-model** protocol and results.
-The current four-model defaults include Qwen; see the [current workflow](../guides/ensemble-qwen.md)
-and [integration results](ensemble-qwen.md).
+# Votação suave ponderada — avaliação final nas 900 linhas
+
+Este documento preserva protocolo e resultados originais de **três modelos**.
+Os padrões atuais de quatro incluem Qwen; veja o
+[fluxo atual](../guides/ensemble-qwen.md) e os [resultados da integração](ensemble-qwen.md).
 
 Implementação e avaliação concluídas em 05/11/2026. O ensemble foi congelado
 no commit `81e1cc5`, antes da leitura do gabarito nesta rodada. Nenhum dos
@@ -39,7 +41,7 @@ somente depois de persistir as previsões nativas, calibradas e do ensemble.
 | SVM original | 445 | 49,44% | 49,06% |
 | LR de desenvolvimento | 447 | 49,67% | 49,32% |
 | NorBERTo original | 432 | 48,00% | 47,86% |
-| **Weighted soft voting** | **447** | **49,67%** | **49,58%** |
+| **Votação suave ponderada** | **447** | **49,67%** | **49,58%** |
 
 O ensemble empata com a LR em acurácia, com F1-macro 0,26 ponto percentual
 maior. Sobre o NorBERTo, são 15 acertos e 1,67 ponto percentual de acurácia

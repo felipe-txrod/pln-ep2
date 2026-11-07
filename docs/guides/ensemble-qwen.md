@@ -1,43 +1,52 @@
-# Soft voting and stacking with the selected Qwen
+<a id="soft-voting-and-stacking-with-the-selected-qwen"></a>
 
-Both ensemble families now support the frozen SVM, development-only RL,
-original EP1 NorBERTo, and the selected `models/qwen/adapter/`. They use the
-same 16,093-row supervised training partition and 3,999-row holdout.
-The existing majority presets remain separate and retain three voters.
+# Votação suave e stacking com o Qwen selecionado
 
-## Selected artifacts and data roles
+As duas famílias de ensemble agora suportam SVM congelado, RL somente de
+desenvolvimento, NorBERTo original do EP1 e o Qwen selecionado em
+`models/qwen/adapter/`. Usam a mesma partição supervisionada de 16,093 linhas e
+conjunto reservado de 3,999. Os presets existentes de maioria permanecem
+separados e mantêm três votantes.
 
-| Method | Default artifact | Inputs |
+<a id="selected-artifacts-and-data-roles"></a>
+
+## Artefatos selecionados e papéis dos dados
+
+| Método | Artefato padrão | Entradas |
 |---|---|---|
-| Calibrated soft voting | `models/ensemble-soft-qwen/model.json` | Four distributions with explicit weights |
-| Probability stacking | `models/ensemble-stacking-qwen/model.json` | Twelve calibrated probabilities |
+| Votação suave calibrada | `models/ensemble-soft-qwen/model.json` | Quatro distribuições com pesos explícitos |
+| Stacking de probabilidades | `models/ensemble-stacking-qwen/model.json` | Doze probabilidades calibradas |
 
-The holdout roles are byte-identical to the original three-model ensembles:
-2,027 rows calibrate probabilities, and 1,972 select the soft weights or train
-the stacking meta-model. Rows and similarity components are disjoint.
+Os papéis do conjunto reservado são idênticos em bytes aos dos ensembles
+originais de três modelos: 2,027 linhas calibram probabilidades e 1,972
+selecionam pesos da votação suave ou treinam o meta-modelo de stacking.
+Linhas e componentes de similaridade são disjuntos.
 
-SVM uses sigmoid calibration. RL, NorBERTo, and Qwen use scalar temperature
-scaling only when a three-fold grouped check improves log loss on calibration
-rows. The weight grid contains the 35 distinct four-member quarter-simplex
-points, including uniform 25% weights. Macro-F1 chooses the mixture, with
-accuracy and distance to uniform weights breaking ties. Zero weights are
-allowed and must be reported. The selected Qwen weight is zero.
+O SVM usa calibração sigmoide. RL, NorBERTo e Qwen usam temperatura escalar
+somente quando uma verificação agrupada de três folds melhora a perda
+logarítmica nas linhas de calibração. A grade contém os 35 pontos distintos
+do simplex de quatro membros, em incrementos de um quarto, incluindo pesos
+uniformes de 25%. Macro-F1 escolhe a mistura; acurácia e distância aos pesos
+uniformes desempatam. Pesos zero são permitidos e devem ser reportados.
+O peso selecionado do Qwen é zero.
 
-Stacking uses all 12 probabilities, including models with zero soft weight.
-Five grouped folds on the 1,972 meta rows select from `C=[0.01, 0.1, 1, 10]`
-using the one-standard-error rule; the chosen C is 0.1. The exported JSON
-coefficients reproduce logistic regression probabilities without pickle or
-fitting during prediction.
+O stacking usa as 12 probabilidades, incluindo modelos com peso zero na votação
+suave. Cinco folds agrupados nas 1,972 linhas de meta-validação selecionam
+`C=[0.01, 0.1, 1, 10]` pela regra de um erro-padrão; C escolhido é 0.1.
+Os coeficientes JSON exportados reproduzem as probabilidades da regressão
+logística sem pickle nem ajuste durante a predição.
 
-Qwen received no gradient updates on the holdout, but the holdout selected
-its checkpoint. Together with earlier research exposure, this prevents
-treating these inputs as untouched final validation. Test1 labels are not
-used for calibration, weight selection, or meta-model fitting.
+Qwen não recebeu atualizações de gradiente no conjunto reservado, mas esse
+conjunto selecionou seu checkpoint. Isso e a exposição anterior em pesquisa
+impedem tratar essas entradas como validação final inédita. Os rótulos de
+Teste1 não calibram, selecionam pesos nem ajustam o meta-modelo.
 
-## Prediction
+<a id="prediction"></a>
 
-With the recorded test1 score files available, combining the saved member
-outputs is CPU-only. Use new directories:
+## Predição
+
+Com os arquivos registrados de escores de teste1 disponíveis, a combinação
+usa somente CPU. Use novos diretórios:
 
 ```bash
 PYTHONPATH=src python3 -m ensemble_classifier predict-soft \
@@ -48,9 +57,9 @@ PYTHONPATH=src python3 -m ensemble_classifier predict-stacking \
   --output-dir results/stacking-qwen-test1-new
 ```
 
-For fresh data or a clone without the ignored raw score files, use GPU
-inference and the selected public base caches. Neural models execute
-sequentially, releasing GPU allocations between models:
+Para dados novos ou uma cópia do repositório sem os escores brutos ignorados,
+use inferência em GPU e os caches das bases públicas selecionadas. Os modelos
+neurais executam sequencialmente, liberando as alocações de GPU entre modelos:
 
 ```bash
 PYTHONPATH=src python3 -m ensemble_classifier predict-soft \
@@ -62,32 +71,34 @@ PYTHONPATH=src python3 -m ensemble_classifier predict-stacking \
   --output-dir results/stacking-qwen-test2-new
 ```
 
-Run live prediction in the existing ROCm runtime with its bitsandbytes cache
-and GPU device mappings, as described in the [Qwen guide](qwen-finetuning.md).
-These commands do not train the base models, refit calibrators, or read gold.
-The test2 examples were not executed in this integration.
+Execute a predição direta no ambiente ROCm existente com cache bitsandbytes e
+mapeamentos de dispositivos GPU, conforme o [guia do Qwen](qwen-finetuning.md).
+Esses comandos não treinam modelos-base, reajustam calibradores nem leem o
+gabarito. Os exemplos de teste2 não foram executados nesta integração.
 
-## Reproducing the fit
+<a id="reproducing-the-fit"></a>
 
-The default configurations identify four members and pin the Qwen score file
-and run checksums. Reproducing a fit requires those local recorded scores:
+## Reprodução do ajuste
+
+As configurações padrão identificam quatro membros e fixam os checksums do
+arquivo de escores e da execução do Qwen. Reproduzir o ajuste exige esses
+escores locais registrados:
 
 ```bash
 PYTHONPATH=src python3 -m ensemble_classifier fit-soft \
   --config configs/ensemble-soft.json --output-dir results/soft-qwen-fit-new
 ```
 
-To fit another stacking artifact, copy `configs/ensemble-stacking.json` and
-point its `soft_model`, `soft_partition`, and `holdout_scores` fields at the
-intended immutable fit. Do not mix calibrators, partitions or scores from
-different model packages.
+Para ajustar outro artefato de stacking, copie `configs/ensemble-stacking.json`
+e aponte `soft_model`, `soft_partition` e `holdout_scores` para o ajuste imutável
+desejado. Não misture calibradores, partições ou escores de pacotes distintos.
 
-The three-member models remain under `models/ensemble-soft/` and
-`models/ensemble-stacking/`. Use `--model` to select them explicitly.
-Their original configurations are preserved as
-`configs/ensemble-soft-legacy.json` and `configs/ensemble-stacking-legacy.json`.
-Only the two audited original artifact checksums receive legacy compatibility;
-other artifacts still require their exact implementation identity.
+Os modelos de três membros permanecem em `models/ensemble-soft/` e
+`models/ensemble-stacking/`. Use `--model` para selecioná-los explicitamente.
+As configurações originais estão preservadas em `configs/ensemble-soft-legacy.json`
+e `configs/ensemble-stacking-legacy.json`. Somente os dois checksums originais
+auditados recebem compatibilidade histórica; outros artefatos ainda exigem a
+identidade exata da implementação.
 
-The [integration report](../results/ensemble-qwen.md) gives the measured
-test1 comparison and independent verification.
+O [relatório da integração](../results/ensemble-qwen.md) apresenta a comparação
+medida em teste1 e a verificação independente.

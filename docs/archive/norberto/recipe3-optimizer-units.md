@@ -1,93 +1,103 @@
-# NorBERTo optimizer-unit compatibility correction
+<a id="norberto-optimizer-unit-compatibility-correction"></a>
 
-Historical workflow retired on 2026-11-05. The unchanged original EP1 delivery
-adapter is the selected model. Commands below describe the former experiment;
-its active training/evaluation implementation has been removed. Local source
-snapshots are preserved in `results/norberto-rollback-20261105/sources-before-rollback.tar.gz`.
+# Correção de compatibilidade das unidades do otimizador do NorBERTo
 
-[Documentation index](../../README.md)
+Fluxo histórico desativado em 2026-11-05. O modelo selecionado é o adaptador
+original da entrega do EP1, sem alterações. Os comandos abaixo descrevem o
+experimento anterior; sua implementação ativa de treino/avaliação foi removida.
+Cópias locais do código estão em `results/norberto-rollback-20261105/sources-before-rollback.tar.gz`.
 
-The initial normalization fix corrected example weighting but changed the units
-of gradients consumed by the inherited clipping threshold and AdamW optimizer.
-Recipe version 3 makes the unit conversion explicit. This addresses a recipe
-compatibility defect; model accuracy still requires a completed independent
-holdout evaluation.
+[Índice da documentação](../../README.md)
 
-## Confirmed limitation of the correction
+A correção inicial da normalização corrigiu a ponderação dos exemplos, mas
+alterou as unidades dos gradientes consumidos pelo limiar herdado de limitação
+e pelo otimizador AdamW. A receita versão 3 torna explícita essa conversão.
+Isso resolve um defeito de compatibilidade da receita; a acurácia ainda exige
+uma avaliação independente concluída no conjunto reservado.
 
-The subsequent full-corpus regression audit found that recipe 3 reproduces
-**all 62 sampled pre-tail gradient norms and learning rates of the known
-unstable legacy full run**, including the spikes at updates 1,100 and 1,120.
-The first logged difference is at update 1,260, after the tail at 1,256.
-This follows from the intended compatibility conversion: on complete
-4-by-4 windows, `4 * sum(CE) / 16` is the original sum of microbatch means.
-The conversion was deployed in commit `f947d88` for both partitions.
+<a id="confirmed-limitation-of-the-correction"></a>
 
-The previous real-model prefix probe hardcoded `development` and ran only
-600 updates; its successful comparison to EP1 did not test the failing full
-trajectory. The tiny-model tests intentionally compare against gradients
-multiplied by four. They verify that conversion, not full-corpus stability.
-The prefix probe now accepts `--partition full` and derives its stop limit
-from that partition. A separate per-update tracer records actual clipping,
-batch hashes, and parameter updates and saves optimizer/scheduler/RNG state
-for controlled interventions.
+## Limitação confirmada da correção
 
-Recipe 3 is an EP1 compatibility implementation, not a validated correction
-for the full-corpus instability. The production wrapper also pins the original
-learning rate of 0.001 and does not offer a separate training configuration.
-Removing the conversion alone is not an established general remedy: recipe 2
-also failed on development data. See the [current audit](../../results/README.md#training-scale-audit-recipe-3)
-for evidence and the limits of the attribution.
+A auditoria posterior da regressão no corpus completo constatou que a receita
+3 reproduz **as 62 amostras de normas dos gradientes e taxas de aprendizado
+anteriores à cauda da execução histórica completa sabidamente instável**,
+inclusive os picos nas atualizações 1,100 e 1,120. A primeira diferença
+registrada ocorre em 1,260, após a cauda em 1,256. Isso decorre da conversão
+intencional de compatibilidade: em janelas completas de 4 por 4,
+`4 * sum(CE) / 16` é a soma original das médias dos microlotes. A conversão
+foi implantada no commit `f947d88` para ambas as partições.
 
-## Gradient units
+O diagnóstico anterior de prefixo com modelo real fixava `development` no
+código e executava só 600 atualizações; a comparação bem-sucedida com o EP1
+não testou a trajetória completa que falhava. Os testes com modelo pequeno
+comparam intencionalmente com gradientes multiplicados por quatro. Verificam
+a conversão, não a estabilidade no corpus completo. O diagnóstico agora aceita
+`--partition full` e deriva o limite dessa partição. Um rastreador separado
+registra limitação real, hashes dos lotes e atualizações dos parâmetros, e salva
+o estado do otimizador/agendador/gerador aleatório para intervenções controladas.
 
-For microbatch j with n_j labeled examples and N examples in the accumulated
-update, the reported contribution is `sum(CE_j) / N`. Backpropagation uses
-`K * sum(CE_j) / N`, where K is configured gradient accumulation (4). The
-Trainer's returned training loss is divided by K, and evaluation is unscaled.
-The original learning rate, clipping threshold, Adam epsilon, weight decay,
-seed, target layers, dataset partition, and epoch budget are preserved.
-Logged `grad_norm` is in optimizer units, as in EP1; divide it by K when
-comparing pre-clipping norms with version 2. The logged loss is already the
-example mean and must not be divided again.
+A receita 3 implementa compatibilidade com o EP1; não é uma correção validada
+para a instabilidade no corpus completo. O invólucro de produção também fixa
+a taxa original de 0.001 e não oferece configuração separada de treino.
+Remover apenas a conversão não é solução geral estabelecida: a receita 2
+também falhou no desenvolvimento. Veja a [auditoria atual](../../results/README.md#training-scale-audit-recipe-3)
+para as evidências e os limites da atribuição.
 
-For four equal microbatches, this reproduces the original EP1 gradient units.
-For unequal or incomplete groups, every example has the same weight. It does
-not reproduce the original excessive weighting of the one-example tail.
-The compatibility scaling is deliberately distinct from objective averaging;
-it is recorded explicitly rather than relying on Transformers' kwargs heuristic.
+<a id="gradient-units"></a>
 
-The implementation is isolated in
-``training_recipe.py``.
-The existing sample-loss helper remains unchanged so historical manifests and
-validation remain usable. The production wrapper selects recipe version 3;
-the holdout evaluator accepts versions 2 and 3 and verifies the new recipe hash
-and optimizer-scale contract when evaluating version 3.
+## Unidades dos gradientes
 
-## Verification
+Para o microlote j com n_j exemplos rotulados e N exemplos na atualização
+acumulada, a contribuição reportada é `sum(CE_j) / N`. A retropropagação usa
+`K * sum(CE_j) / N`, sendo K a acumulação configurada (4). A perda retornada
+pelo Trainer é dividida por K, e a avaliação não recebe escala. A taxa de
+aprendizado, limiar de limitação, epsilon do Adam, decaimento de pesos, semente,
+camadas-alvo, partição e orçamento de épocas originais são preservados.
+O `grad_norm` registrado usa unidades do otimizador, como no EP1; divida-o por
+K para comparar normas anteriores à limitação com a versão 2. A perda
+registrada já é a média por exemplo e não deve ser dividida novamente.
 
-The 24 CPU tests cover sample loss, partitions, complete and partial accumulation
-groups, gradients below and above the clipping threshold, three sequential
-AdamW updates, and unscaled evaluation loss. All passed in 8.01 seconds.
+Com quatro microlotes iguais, isso reproduz as unidades originais dos gradientes
+do EP1. Em grupos desiguais ou incompletos, cada exemplo recebe o mesmo peso.
+Não reproduz a ponderação excessiva original da cauda com um exemplo. A escala
+de compatibilidade é deliberadamente distinta da média do objetivo; fica
+registrada explicitamente, sem depender da heurística de kwargs do Transformers.
 
-A complete four-update tiny ModernBERT/PEFT Trainer run on GPU was compared
-with manual sample-weighted/scaled gradient accumulation, clipping and AdamW
-on CPU. Maximum parameter error was 1.49e-8; maximum gradient relative error
-was 2.68e-7. Frozen parameters remained identical. Reported loss matched the
-example mean. This verifies the integration, including the unequal 4+4+4+1 tail.
+A implementação está isolada em ``training_recipe.py``. O auxiliar existente
+de perda por amostra permanece inalterado para preservar manifestos e validação
+históricos. O invólucro de produção seleciona a receita versão 3; o avaliador
+do conjunto reservado aceita versões 2 e 3 e verifica o novo hash da receita e
+o contrato de escala do otimizador ao avaliar a versão 3.
 
-The bounded real-model diagnostic completed all 600 requested updates in
-559.68 seconds. It used all 16,093 development rows as the training dataset.
-All 30 logged gradient norms and learning rates matched the original EP1 run
-exactly. At update 540 the norm was 7.78463, compared with 253.149 in version 2
-(or 1.94616 versus 253.149 in comparable mean-gradient units).
-The original norm at that update was also 7.78463. It retains the original
-2,012-update learning-rate schedule and warmup; reducing `max_steps` would
-change those schedules and invalidate the comparison. The 3,999 holdout rows
-are excluded. The diagnostic exports to a new directory and its training status
-is intentionally `incomplete`; it must not be presented as a final classifier.
+<a id="verification"></a>
 
-Reproduce the bounded diagnostic inside the validated ROCm image:
+## Verificação
+
+Os 24 testes em CPU cobrem perda por amostra, partições, grupos completos e
+parciais de acumulação, gradientes abaixo/acima do limiar de limitação, três
+atualizações AdamW sequenciais e perda de avaliação sem escala. Todos passaram
+em 8.01 segundos.
+
+Uma execução completa de quatro atualizações do Trainer com ModernBERT/PEFT
+pequeno em GPU foi comparada com acumulação manual ponderada/escalada de
+gradientes, limitação e AdamW em CPU. O erro máximo dos parâmetros foi 1.49e-8;
+o erro relativo máximo do gradiente, 2.68e-7. Parâmetros congelados ficaram
+idênticos. A perda reportada coincidiu com a média por exemplo. Isso verifica
+a integração, incluindo a cauda desigual 4+4+4+1.
+
+O diagnóstico limitado com modelo real concluiu as 600 atualizações solicitadas
+em 559.68 segundos. Usou as 16,093 linhas de desenvolvimento como base de treino.
+As 30 normas e taxas de aprendizado registradas coincidiram exatamente com o
+EP1 original. Na atualização 540, a norma foi 7.78463, contra 253.149 na versão
+2 (ou 1.94616 contra 253.149 em unidades comparáveis do gradiente médio).
+A norma original nessa atualização também era 7.78463. O diagnóstico mantém
+o agendamento e aquecimento originais de 2,012 atualizações; reduzir `max_steps`
+alteraria esses agendamentos e invalidaria a comparação. As 3,999 linhas
+reservadas são excluídas. A saída usa novo diretório, e o estado de treinamento
+é intencionalmente `incomplete`; não deve ser apresentado como classificador final.
+
+Reproduza o diagnóstico limitado dentro da imagem ROCm validada:
 
 ```bash
 HSA_OVERRIDE_GFX_VERSION=10.3.0 PYTHONPATH=src \
@@ -96,7 +106,7 @@ python3 scripts/diagnostics/norberto/probe-training-prefix.py \
   --output-dir /workspace/results/norberto-v3-prefix-new
 ```
 
-A full development-only run can be started separately:
+Um treinamento completo somente no desenvolvimento pode ser iniciado separadamente:
 
 ```bash
 NORBERTO_IMAGE=pln-rocm:6.4.1 bash scripts/norberto/train.sh \
@@ -104,13 +114,13 @@ NORBERTO_IMAGE=pln-rocm:6.4.1 bash scripts/norberto/train.sh \
   --output-dir /workspace/results/norberto-development-compatible-v3
 ```
 
-The subsequent full run completed two epochs and 2,012 updates. Its
-[holdout evaluation](../../results/norberto-recipe3-holdout.md) records final quality
-and full-run gradient summaries. A short prefix alone does not establish
-long-run stability or quality. No test1/test2 labels were used for this
-correction, and no saved original adapter was replaced.
+A execução completa posterior concluiu duas épocas e 2,012 atualizações. Sua
+[avaliação no conjunto reservado](../../results/norberto-recipe3-holdout.md)
+registra a qualidade final e os resumos de gradientes da execução completa.
+Um prefixo curto não estabelece estabilidade nem qualidade a longo prazo.
+Esta correção não usou rótulos de teste1/teste2 nem substituiu adaptadores originais.
 
-For separate prediction and scoring on test1, see the
-[two-stage test1 commands](../../guides/norberto-test1.md). The prediction stage accepts
-this development-only adapter and records its identity; scoring uses only
-the persisted predictions on CPU.
+Para predição e avaliação separadas em teste1, veja os
+[comandos em duas etapas](../../guides/norberto-test1.md). A predição aceita
+este adaptador de desenvolvimento e registra sua identidade; a avaliação usa
+somente as previsões persistidas, em CPU.

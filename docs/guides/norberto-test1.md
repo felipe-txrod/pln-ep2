@@ -1,15 +1,18 @@
-# Predict and score test1 with the original EP1 NorBERTo
+<a id="predict-and-score-test1-with-the-original-ep1-norberto"></a>
 
-[Documentation index](../README.md)
+# Predição e avaliação de teste1 com o NorBERTo original do EP1
 
-The selected model is the unchanged EP1 delivery adapter in `models/norberto/`:
-LoRA rank 4/alpha 8, pinned public base revision, 512-token head/tail input,
-FP32/SDPA, and batch 8. Its original final training used two epochs on 16,093
-development responses. No training or loss correction runs in this workflow.
-Sibling EP1 sources and Hugging Face caches are not required after the model
-bundle has been restored. `NORBERTO_IMAGE` selects another compatible local image.
+[Índice da documentação](../README.md)
 
-Run from EP2 using the existing offline `pln-rocm:6.4.1` environment:
+O modelo selecionado é o adaptador original da entrega do EP1 em
+`models/norberto/`, sem alterações: LoRA posto 4/alpha 8, revisão pública da
+base fixada, entrada início/fim de 512 tokens, FP32/SDPA e lote 8. O treino
+final original usou duas épocas em 16,093 respostas de desenvolvimento.
+Este fluxo não treina nem corrige a perda. Fontes do EP1 vizinho e caches
+Hugging Face não são necessários após restaurar o pacote. `NORBERTO_IMAGE`
+seleciona outra imagem local compatível.
+
+Execute no EP2 usando o ambiente offline existente `pln-rocm:6.4.1`:
 
 ```bash
 bash scripts/norberto/test1.sh predict \
@@ -17,12 +20,12 @@ bash scripts/norberto/test1.sh predict \
   --output-dir results/norberto-ep1-test1-new
 ```
 
-This predicts all 900 text-only responses, saves row IDs, text hashes, labels
-and probabilities, and records the original adapter and artifact-manifest
-identities. Gold labels are not read. The package validates immutable base,
-adapter, tokenizer, configuration, and training metadata before loading.
+O comando prediz as 900 respostas somente a partir dos textos, salva IDs,
+hashes, rótulos e probabilidades e registra as identidades do adaptador original
+e do manifesto. Não lê gabaritos. Antes de carregar, o pacote valida base,
+adaptador, tokenizador, configuração e metadados imutáveis de treino.
 
-Score the persisted predictions separately, on CPU:
+Avalie as previsões persistidas separadamente, em CPU:
 
 ```bash
 bash scripts/norberto/test1.sh compare \
@@ -32,19 +35,19 @@ bash scripts/norberto/test1.sh compare \
   --output-dir results/norberto-ep1-test1-metrics-new
 ```
 
-Comparison requires the original EP1 adapter identity, an intact prediction
-file, and exact row/text alignment. It loads no model and writes accuracy,
-macro-F1, precision, recall, class reports, and a confusion matrix. Both stages
-require new output directories. The removed `--training-run` interface no
-longer accepts experimental adapters.
+A comparação exige a identidade original do adaptador EP1, arquivo de previsões
+íntegro e alinhamento exato de linhas/textos. Não carrega modelo e grava
+acurácia, macro-F1, precisão, revocação, relatórios de classes e matriz de
+confusão. Ambas as etapas exigem novos diretórios. A interface removida
+`--training-run` já não aceita adaptadores experimentais.
 
-The restored inference path was verified on all 900 rows against the original
-EP1 delivery: all labels match, with 432 correct predictions (48.00%) and
-47.86% macro-F1. Verification artifacts are under
-`results/norberto-rollback-20261105/`. The ensemble configuration identifies
-the original model through `artifact_manifest_sha256` and reads its selected
-predictions from `results/norberto-ep1-test1` (test1) or
-`results/norberto-ep1-test2` (test2). Test2 inference is a separate operation:
+O caminho de inferência restaurado foi verificado nas 900 linhas contra a
+entrega original do EP1: todos os rótulos coincidem, com 432 acertos (48.00%)
+e 47.86% de macro-F1. Os artefatos de verificação estão em
+`results/norberto-rollback-20261105/`. A configuração identifica o modelo
+original por `artifact_manifest_sha256` e lê as previsões selecionadas de
+`results/norberto-ep1-test1` (teste1) ou `results/norberto-ep1-test2` (teste2).
+A inferência em Teste2 é uma operação separada:
 
 ```bash
 PYTHONPATH=src python3 -m norberto_classifier predict \
@@ -52,4 +55,4 @@ PYTHONPATH=src python3 -m norberto_classifier predict \
   --output-dir results/norberto-ep1-test2
 ```
 
-No test2 prediction or delivery was performed during restoration.
+Nenhuma predição ou entrega de teste2 foi realizada durante a restauração.

@@ -1,29 +1,32 @@
-# Four-member calibrated soft voting
+<a id="four-member-calibrated-soft-voting"></a>
 
-This is the selected soft-voting package for SVM, development-only RL,
-original EP1 NorBERTo, and the selected EP1-split Qwen. All base weights remain
-frozen. Qwen uses `models/qwen/adapter/`; the historical Qwen adapter is excluded.
+# Votação suave calibrada de quatro membros
 
-The original 3,999-row holdout is split into the same group-disjoint roles as
-the three-member method: 2,027 calibration rows and 1,972 weight-selection rows.
-SVM uses sigmoid calibration; RL, NorBERTo, and Qwen use scalar temperatures
-selected by three-fold grouped checks on calibration rows only. Qwen's
-temperature is 1.515480709210816.
+Este é o pacote selecionado para SVM, RL de desenvolvimento, NorBERTo original
+do EP1 e Qwen na divisão EP1 selecionado. Todos os pesos-base ficam congelados.
+Qwen usa `models/qwen/adapter/`; o adaptador histórico é excluído.
 
-Thirty-five distinct quarter-simplex candidates were compared by macro-F1.
-The selected weights are **SVM 0.75, RL 0, NorBERTo 0.25, Qwen 0**. Qwen was
-scored, calibrated, and included in the search, but does not contribute to
-the selected weighted sum. Its zero weight is an outcome of holdout selection.
+As 3,999 linhas reservadas originais mantêm os papéis disjuntos do método de
+três membros: 2,027 para calibração e 1,972 para pesos. SVM usa sigmoide;
+RL, NorBERTo e Qwen usam temperaturas escalares selecionadas em três folds
+agrupados só na calibração. A temperatura Qwen é 1.515480709210816.
 
-Test1 scored **447/900 (49.67%)**, macro-F1 **49.58%**. All 900 labels equal
-the preserved three-member soft-voting result. No parameter was updated using
-test1 gold labels. The frozen model, calibration parameters, membership and
-code identity are in `model.json`; `frozen_manifest.json` pins its checksum.
+Trinta e cinco candidatos distintos do simplex, em incrementos de um quarto,
+foram comparados por macro-F1. Pesos selecionados: **SVM 0.75, RL 0,
+NorBERTo 0.25, Qwen 0**. Qwen foi avaliado, calibrado e incluído na busca,
+mas não contribui na soma escolhida. Seu peso zero resulta da seleção no
+conjunto reservado.
 
-CLI `predict-soft` defaults to this package. The original three-member package
-remains in `models/ensemble-soft/`. See the [integration report](../../docs/results/ensemble-qwen.md)
-and [usage guide](../../docs/guides/ensemble-qwen.md).
+Teste1 obteve **447/900 (49.67%)**, macro-F1 **49.58%**. Os 900 rótulos
+coincidem com a votação suave preservada de três membros. Nenhum parâmetro
+foi atualizado pelo gabarito. Modelo, calibração, composição e identidade
+do código ficam em `model.json`; `frozen_manifest.json` fixa o checksum.
 
-The holdout has historical exposure and selected the Qwen checkpoint. It is
-development validation, not an untouched final test. This task did not produce
-a test2 submission or establish the official test2-before-test1 order.
+A CLI `predict-soft` usa este pacote por padrão. O original de três membros
+permanece em `models/ensemble-soft/`. Veja o
+[relatório da integração](../../docs/results/ensemble-qwen.md) e o
+[guia de uso](../../docs/guides/ensemble-qwen.md).
+
+O conjunto reservado tem exposição histórica e selecionou o checkpoint Qwen.
+É validação de desenvolvimento, não teste final inédito. A tarefa não produziu
+entrega teste2 nem estabeleceu a ordem oficial teste2 antes de teste1.

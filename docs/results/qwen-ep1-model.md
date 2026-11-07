@@ -1,34 +1,38 @@
-# Selected Qwen: exact EP1 development partition
+<a id="selected-qwen-exact-ep1-development-partition"></a>
 
-[Results index](README.md) · [Model package](../../models/qwen/README.md)
-· [Verification aggregate](data/qwen-ep1-selected-model.json)
+# Qwen selecionado: partição exata de desenvolvimento do EP1
 
-The completed run `results/qwen-ep1-training-20261105/` is now the default
-Qwen model. Its selected adapter was copied without changing its weights to
-`models/qwen/adapter/`, together with the complete tokenizer, training
-provenance, validation metrics, frozen split, and SHA-256 manifest.
+[Índice dos resultados](README.md) · [Pacote do modelo](../../models/qwen/README.md)
+· [Agregado de verificação](data/qwen-ep1-selected-model.json)
 
-## Training and validation
+A execução concluída `results/qwen-ep1-training-20261105/` é o modelo Qwen
+padrão. O adaptador selecionado foi copiado, sem alterar pesos, para
+`models/qwen/adapter/`, com tokenizador completo, procedência, métricas de
+validação, divisão congelada e manifesto SHA-256.
 
-The configuration is Qwen3-1.7B revision
-`70d244cc86ccca08cf5af4e1e306ecf908b1ad5e`, QLoRA NF4, rank 8/alpha 16,
-context 256, batch 4 and accumulation 4, for three epochs. All 3,018 optimizer
-updates completed, with no skipped FP16 overflow steps. Training took
-11,273.37 seconds, approximately 3 h 8 min. The selected checkpoint is
-`checkpoint-3018`, and its weights exactly match the preserved adapter.
+<a id="training-and-validation"></a>
 
-| Partition | Rows | Use |
+## Treinamento e validação
+
+A configuração é Qwen3-1.7B revisão
+`70d244cc86ccca08cf5af4e1e306ecf908b1ad5e`, QLoRA NF4, posto 8/alpha 16,
+contexto 256, lote 4 e acumulação 4, por três épocas. As 3,018 atualizações
+terminaram sem passos ignorados por estouro FP16. O treino levou 11,273.37
+segundos, cerca de 3 h 8 min. O checkpoint selecionado é `checkpoint-3018`,
+e seus pesos coincidem exatamente com o adaptador preservado.
+
+| Partição | Linhas | Uso |
 |---|---:|---|
-| Frozen EP1 development | 16,093 | Weight fitting |
-| Frozen EP1 holdout | 3,999 | Evaluation and best-checkpoint selection |
+| Desenvolvimento congelado do EP1 | 16,093 | Ajuste dos pesos |
+| Conjunto reservado congelado do EP1 | 3,999 | Avaliação e seleção do melhor checkpoint |
 
-All 20,092 source texts, labels, and IDs were checked. Training IDs match
-development-only RL, and validation IDs match the frozen split. Rows,
-similarity groups, and normalized text do not cross the training boundary.
+Todos os 20,092 textos, rótulos e IDs foram conferidos. IDs de treino coincidem
+com a RL de desenvolvimento; os de validação, com a divisão congelada.
+Linhas, grupos e textos normalizados não cruzam a fronteira do treino.
 
-Validation achieved **1,791/3,999 correct (44.79%)**, macro-F1 **44.44%**.
-The confusion matrix, with true classes in rows and predicted classes in
-columns ordered `c1, c234, c5`, is:
+A validação obteve **1,791/3,999 acertos (44.79%)**, macro-F1 **44.44%**.
+A matriz, com classes verdadeiras nas linhas e preditas nas colunas em ordem
+`c1, c234, c5`, é:
 
 ```text
 [[571, 359, 327],
@@ -36,40 +40,44 @@ columns ordered `c1, c234, c5`, is:
  [260, 308, 757]]
 ```
 
-The holdout has been consulted historically and selects the Qwen checkpoint;
-this score is validation rather than an untouched final test. Test1 and test2
-were not evaluated while preserving this model.
+O conjunto reservado foi consultado historicamente e seleciona o checkpoint
+Qwen; o resultado é validação, não teste final inédito. Teste1 e teste2 não
+foram avaliados durante a preservação deste modelo.
 
-## Per-row export ordering audit
+<a id="per-row-export-ordering-audit"></a>
 
-The installed Trainer also applies `group_by_length` to evaluation. Aggregate
-metrics correctly pair logits with the Trainer's labels, but the original
-export zipped these reordered outputs with the original sequential records.
-Consequently, the historical `validation-predictions.json` has incorrect
-row-to-prediction associations. It must not be used for row-level analysis.
+## Auditoria da ordem da exportação por linha
 
-The exact output permutation was recovered on CPU using the locally saved
-`checkpoint-3018/rng_state.pth` and original length-grouped sampler. The
-reconstructed order changes 3,998 of 3,999 positions and reproduces every
-entry of the recorded confusion matrix, including all 1,791 correct answers.
-Aligned predictions and the recovered permutation were saved separately
-under `results/qwen-ep1-publication-20261105/`; the historical source file and
-weights were preserved.
+O Trainer instalado aplica `group_by_length` também à avaliação. As métricas
+agregadas pareiam corretamente logits e rótulos do Trainer, mas a exportação
+original associava essas saídas reordenadas aos registros sequenciais originais.
+Consequentemente, o `validation-predictions.json` histórico tem associações
+incorretas entre linhas e previsões. Não deve ser usado para análise por linha.
 
-Future Qwen training keeps length grouping for training batches but uses
-sequential evaluation. An explicit label-order check blocks misassociated
-exports, and a real CPU Trainer regression test verifies output row order
-with variable sequence lengths. No retraining or weight change was needed
-to preserve the selected adapter.
+A permutação exata foi recuperada em CPU usando
+`checkpoint-3018/rng_state.pth` salvo localmente e o amostrador original
+agrupado por comprimento. A ordem reconstruída muda 3,998 de 3,999 posições
+e reproduz toda a matriz registrada, incluindo 1,791 acertos. Previsões
+alinhadas e permutação foram salvas separadamente em
+`results/qwen-ep1-publication-20261105/`; fonte histórica e pesos foram preservados.
 
-## Default inference and artifact verification
+Treinos futuros mantêm agrupamento por comprimento nos lotes de treino, mas
+avaliação sequencial. Uma verificação explícita da ordem dos rótulos impede
+exportações desalinhadas, e um teste real do Trainer em CPU verifica a ordem
+com comprimentos variados. Não foi necessário retreinar nem alterar pesos
+para preservar o adaptador.
 
-Every package file was checksum-verified. All 225 saved tensors are finite,
-including the trained 3-by-2,048 classification head. The selected default
-was reloaded on the actual ROCm GPU and classified three synthetic texts with
-finite logits and normalized probabilities; its files remained unchanged.
+<a id="default-inference-and-artifact-verification"></a>
 
-Prediction now defaults to the saved package:
+## Inferência padrão e verificação dos artefatos
+
+Todos os arquivos do pacote foram conferidos por checksum. Os 225 tensores
+salvos são finitos, incluindo a cabeça treinada de 3 por 2,048. O padrão
+selecionado foi recarregado na GPU ROCm real e classificou três textos
+sintéticos com logits finitos e probabilidades normalizadas; os arquivos
+não mudaram.
+
+A predição agora usa o pacote salvo por padrão:
 
 ```bash
 QWEN_IMAGE=pln-rocm:6.4.1 \
@@ -78,20 +86,20 @@ bash scripts/qwen/container.sh predict \
   --input data/test2.xlsx --output-dir results/qwen-ep1-test2
 ```
 
-This example requires a new output directory and performs inference when
-explicitly executed. It was not run during model preservation. Use
-`--adapter` only for an explicit alternative. The separate test1 evaluation
-script also defaults to the verified package; `--training-run` remains an
-explicit historical-run override with its original source-identity checks.
+Este exemplo exige novo diretório e executa inferência quando chamado
+explicitamente. Não foi executado na preservação do modelo. Use `--adapter`
+apenas para alternativa explícita. O script separado de teste1 também usa o
+pacote verificado por padrão; `--training-run` continua selecionando execuções
+históricas explicitamente, com suas verificações originais de identidade.
 
-Subsequent inference for the [soft-voting and stacking integration](ensemble-qwen.md)
-scored **414/900 (46.00%)** on test1, macro-F1 **45.53%**. Qwen now
-participates in those pipelines, while majority presets retain three voters.
-Its member paths use `models/qwen/adapter` and selected
-`results/qwen-ep1-test1`/`-test2` directories, so historical predictions from
-the older adapter are not reused. Test2 was not generated in this integration.
+A inferência posterior da [integração de votação suave e stacking](ensemble-qwen.md)
+acertou **414/900 (46.00%)** em teste1, macro-F1 **45.53%**. Qwen participa
+desses pipelines, enquanto os presets de maioria mantêm três votantes.
+Seus caminhos usam `models/qwen/adapter` e os diretórios selecionados
+`results/qwen-ep1-test1`/`-test2`, sem reutilizar previsões do adaptador antigo.
+Teste2 não foi gerado nesta integração.
 
-To reproduce the byte-preserving export from the original local run:
+Para reproduzir a exportação preservando bytes da execução local original:
 
 ```bash
 python3 scripts/models/freeze.py --model qwen \

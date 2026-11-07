@@ -1,35 +1,40 @@
-# Frozen EP1 SVM classifier
+<a id="frozen-ep1-svm-classifier"></a>
 
-CPU inference with the trained `LinearSVC`, without training commands or
-automatic fitting. Loading occurs only through `load()` or `predict()`.
-Importing the package does not import scikit-learn, NumPy, PyTorch, or GPU libraries.
+# Classificador SVM congelado do EP1
 
-## Preserved configuration
+Inferência em CPU com `LinearSVC` treinado, sem comandos de treinamento ou
+ajuste automático. Carrega só por `load()` ou `predict()`. Importar o pacote
+não importa scikit-learn, NumPy, PyTorch ou bibliotecas GPU.
 
-- `LinearSVC`: `C=0.05`, `dual="auto"`, `max_iter=10000`, `tol=1e-4`, seed 42.
-- Word TF-IDF: n-grams 1–2, `min_df=2`, `max_df=0.98`, up to 60,000 features.
-- Character TF-IDF: `char_wb`, n-grams 3–5, `min_df=3`, up to 50,000 features.
-- Sublinear term frequency, L2 normalization, and FP32 matrices.
-- Preprocessing: HTML unescape, whitespace normalization, lowercase; accents,
-  punctuation, and negation are preserved.
-- Classes: `c1`, `c234`, `c5`; two CPU threads by default.
+<a id="preserved-configuration"></a>
 
-The original artifact is `EP1/artifacts/svm-fixed-holdout-20260923.joblib`,
-trained on 16,093 development responses. The versioned independent copy is
-[`models/svm/model.joblib`](../../models/svm/README.md), accompanied by
-`config.json`, `metadata.json`, and manifests. The source
-[frozen manifest](frozen_manifest.json) pins hashes and parameters.
-The previous `artifacts/svm-ep1/` path remains a fallback when no published
-package exists.
+## Configuração preservada
 
-## Environment and usage
+- `LinearSVC`: `C=0.05`, `dual="auto"`, `max_iter=10000`, `tol=1e-4`, semente 42.
+- TF-IDF de palavras: ngramas 1–2, `min_df=2`, `max_df=0.98`, até 60,000 atributos.
+- TF-IDF de caracteres: `char_wb`, ngramas 3–5, `min_df=3`, até 50,000 atributos.
+- Frequência sublinear, normalização L2 e matrizes FP32.
+- Pré-processamento: decodificação HTML, espaços normalizados, minúsculas;
+  acentos, pontuação e negação preservados.
+- Classes: `c1`, `c234`, `c5`; duas threads CPU por padrão.
 
-`requirements-lexical.txt` pins the EP1 dependencies. Use a separate Python 3.12
-environment: the loader requires the saved NumPy, SciPy, scikit-learn, and joblib
-versions. The general EP2 lock uses a different joblib version and does not
-replace these requirements. GPU libraries and pandas are unnecessary.
+O artefato original é `EP1/artifacts/svm-fixed-holdout-20260923.joblib`,
+treinado em 16,093 respostas. A cópia independente versionada é
+[`models/svm/model.joblib`](../../models/svm/README.md), com `config.json`,
+`metadata.json` e manifestos. O [manifesto congelado das fontes](frozen_manifest.json)
+fixa hashes e parâmetros. O caminho anterior `artifacts/svm-ep1/` permanece
+alternativa quando não há pacote publicado.
 
-From the EP2 root with these dependencies installed:
+<a id="environment-and-usage"></a>
+
+## Ambiente e uso
+
+`requirements-lexical.txt` fixa dependências EP1. Use ambiente Python 3.12
+separado: o carregador exige versões salvas de NumPy, SciPy, scikit-learn e
+joblib. O arquivo geral de dependências EP2 usa outro joblib e não substitui
+esses requisitos. Bibliotecas GPU e pandas são desnecessários.
+
+Na raiz do EP2 com essas dependências instaladas:
 
 ```bash
 PYTHONPATH=src python -m svm_classifier predict \
@@ -45,26 +50,26 @@ label = predictions[0].label
 scores = predictions[0].decision_scores
 ```
 
-The CLI writes `predictions.jsonl` and `run.json`, preserving row IDs and text
-hashes without changing the workbook or reading gold labels. `info` inspects the
-manifest and file presence without loading the model. `--artifact` and
-`SVM_ARTIFACT_PATH` select another copy with the same hash. `SVM_BUNDLE_DIR`
-selects the directory containing metadata, configuration, and the default
-`model.joblib`.
+A CLI grava `predictions.jsonl` e `run.json`, preservando IDs/hashes sem
+alterar planilha ou ler gabarito. `info` inspeciona manifesto/presença de
+arquivos sem carregar modelo. `--artifact` e `SVM_ARTIFACT_PATH` selecionam
+outra cópia com mesmo hash. `SVM_BUNDLE_DIR` seleciona o diretório de metadados,
+configuração e `model.joblib` padrão.
 
-SVM provides labels and decision margins, not probabilities. Do not apply
-softmax to margins to simulate calibrated probabilities. Ensemble participation
-uses labels, consensus or strict majority, and the configured arbiter.
+SVM fornece rótulos e margens, não probabilidades. Não aplique softmax para
+simular probabilidades calibradas. No ensemble, usa rótulos, consenso ou
+maioria estrita e árbitro configurado.
 
-## Serialization and validation
+<a id="serialization-and-validation"></a>
 
-The loader verifies the artifact hash before deserialization and remaps only
-the historical `clarity.data.normalize_text` reference to its equivalent local
-string preprocessing function. The copy requires neither EP1 imports nor its
-directory. The adaptation uses the
-[joblib 1.5.2 array loader](https://github.com/joblib/joblib/blob/1.5.2/joblib/numpy_pickle.py).
-Vocabularies, IDF, and coefficients are loaded from the trained artifact.
+## Serialização e validação
 
-The package previously completed CPU inference on all 900 test1 responses,
-with **49.44% accuracy (445/900)**. Row IDs, texts, parameters, and hashes were
-verified; see the [full evaluation](../../docs/results/lexical-test1.md).
+O carregador confere o hash antes da desserialização e remapeia só a referência
+histórica `clarity.data.normalize_text` para a função local equivalente de
+pré-processamento. A cópia não exige imports EP1 nem seu diretório. A adaptação
+usa o [carregador de arrays joblib 1.5.2](https://github.com/joblib/joblib/blob/1.5.2/joblib/numpy_pickle.py).
+Vocabulários, IDF e coeficientes vêm do artefato treinado.
+
+O pacote já concluiu inferência em CPU nas 900 respostas de teste1, com
+**49.44% de acurácia (445/900)**. IDs, textos, parâmetros e hashes foram
+verificados; veja a [avaliação completa](../../docs/results/lexical-test1.md).

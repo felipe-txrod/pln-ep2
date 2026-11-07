@@ -1,11 +1,11 @@
 # Ensemble extensível
 
-[Documentation index](../README.md)
+[Índice da documentação](../README.md)
 
-This guide covers majority/consensus composition and arbitration. The current
-probability-based soft-voting and stacking defaults include Qwen as a fourth
-candidate/member; see their [dedicated workflow](ensemble-qwen.md) and
-[measured results](../results/ensemble-qwen.md).
+Este guia cobre composição por maioria/consenso e arbitragem. Os padrões atuais
+de votação suave e stacking baseados em probabilidades incluem Qwen como quarto
+candidato/membro; veja o [fluxo específico](ensemble-qwen.md) e os
+[resultados medidos](../results/ensemble-qwen.md).
 
 ## Objetivo e escopo
 
@@ -35,17 +35,18 @@ Execução automática dos modelos e estratégias adicionais permanecem extensõ
 | GPT/Codex | `gpt_classifier.pipeline.run()` | Rótulo, sem probabilidades de classe | Adapter de desempate e importação de previsões válidas para os casos encaminhados |
 | Novo classificador | Contrato comum ou adapter | Rótulo; probabilidades e logits opcionais | Registro explícito de um novo tipo de adapter |
 
-The original Qwen `validation-predictions.json` contains hard predictions,
-not probabilities, and the selected run's export had a length-grouping row-order
-bug. Do not use that original file for row-level ensemble inputs. The separately
-recovered aligned export supports hard-label analysis only. Soft voting and
-stacking use newly inferred, source-aligned probabilities from the saved adapter;
-see the [ordering audit](../results/qwen-ep1-model.md#per-row-export-ordering-audit).
+O `validation-predictions.json` original do Qwen contém previsões de classe,
+não probabilidades, e a exportação selecionada tinha um erro na ordem das
+linhas causado pelo agrupamento por comprimento. Não use esse arquivo original
+como entrada por linha dos ensembles. A exportação alinhada recuperada
+separadamente serve apenas à análise de rótulos. Votação suave e stacking usam
+probabilidades recém-inferidas do adaptador salvo, alinhadas à fonte; veja a
+[auditoria da ordem](../results/qwen-ep1-model.md#per-row-export-ordering-audit).
 
-The majority presets use **NorBERTo + SVM + RL**, with one hard vote per model.
-A strict majority decides; when all three labels differ, RL breaks the tie.
-Qwen is optional in these presets. The earlier Qwen +
-NorBERTo consensus with GPT arbitration remains an optional historical setup.
+Os presets de maioria usam **NorBERTo + SVM + RL**, com um voto de classe por
+modelo. A maioria estrita decide; quando os três rótulos diferem, RL desempata.
+Qwen é opcional nesses presets. O consenso anterior Qwen + NorBERTo com
+arbitragem GPT permanece uma configuração histórica opcional.
 
 ## Seleção de membros
 
@@ -56,21 +57,23 @@ não exigem resultados disponíveis, exceto quando escolhidos como árbitro.
 Qualquer identificador
 adicional pode apontar para outra execução que siga o contrato de arquivos.
 
-The default is `norberto svm rl`, strategy `majority`, tiebreaker `rl`.
-The alternative `consensus` strategy routes every disagreement to its selected
-arbitrator. Changing composition or strategy creates a different identity and
-must precede an official test2 delivery.
+O padrão é `norberto svm rl`, estratégia `majority` e desempate `rl`.
+A estratégia alternativa `consensus` encaminha toda divergência ao árbitro
+selecionado. Mudar composição ou estratégia cria outra identidade e deve
+preceder uma entrega oficial de teste2.
 
-## Local majority configuration and exploratory comparison
+<a id="local-majority-configuration-and-exploratory-comparison"></a>
 
-The dedicated `configs/ensemble-majority.json` selects NorBERTo, SVM, and RL
-with one hard vote each and RL as the fixed arbitrator for three-way ties.
-`configs/ensemble-majority-test1.json` points to their saved test1 predictions.
-Both pin development-only model manifests and require no GPT configuration.
-The regular `ensemble.json` and `ensemble-test1.json` now use the same local
-majority defaults following the user's explicit exclusion of Qwen.
+## Configuração de maioria local e comparação exploratória
 
-Run the explicitly exploratory comparison on existing predictions:
+A configuração dedicada `configs/ensemble-majority.json` seleciona NorBERTo,
+SVM e RL, com um voto cada e RL como árbitro fixo nos empates de três classes.
+`configs/ensemble-majority-test1.json` aponta para as previsões salvas de teste1.
+Ambas fixam manifestos de modelos treinados somente no desenvolvimento e não
+exigem configuração GPT. `ensemble.json` e `ensemble-test1.json` agora usam os
+mesmos padrões de maioria local, após a exclusão explícita do Qwen pelo usuário.
+
+Execute a comparação explicitamente exploratória com as previsões existentes:
 
 ```bash
 PYTHONPATH=src python3 -m ensemble_classifier compare-majority \
@@ -80,59 +83,62 @@ PYTHONPATH=src python3 -m ensemble_classifier compare-majority \
   --output-dir results/ensemble-majority-comparison-new
 ```
 
-The command evaluates all nonempty subsets, with each local model as the
-fixed tiebreaker. Singletons appear once. The three-model preset produces
-15 configurations, including isolated-model baselines and two-member pairs.
-Predictions and configurations are persisted before reading gold, and every
-source/gold row must align. Accuracy determines the ranking, with macro-F1
-as a secondary ordering criterion; all maximum-accuracy ties are listed.
+O comando avalia todos os subconjuntos não vazios, com cada modelo local como
+árbitro fixo. Modelos isolados aparecem uma vez. O preset de três modelos gera
+15 configurações, incluindo referências isoladas e pares. Previsões e
+configurações são persistidas antes de ler o gabarito, e todas as linhas devem
+alinhar. A acurácia define a classificação, com macro-F1 como critério secundário;
+todos os empates de acurácia máxima são listados.
 
-This command writes exploratory evidence rather than an official delivery
-run; it does not require or generate test2 predictions. The official `combine`
-protocol still requires test2 first. No result is promoted automatically.
-The [measured comparison](../results/ensemble-majority.md) records 49.22% for
-the best trio and 49.67% for RL alone on the previously consulted test1 set.
+O comando grava evidência exploratória, não uma execução oficial de entrega;
+não exige nem gera previsões de teste2. O protocolo oficial `combine` ainda
+exige teste2 primeiro. Nenhum resultado é promovido automaticamente. A
+[comparação medida](../results/ensemble-majority.md) registra 49.22% para o
+melhor trio e 49.67% para RL isolada no teste1 já consultado.
 
-## Default training partitions and artifact selection
+<a id="default-training-partitions-and-artifact-selection"></a>
 
-| Member | Selected training rows | Reserved rows | Artifact |
+## Partições padrão de treinamento e seleção de artefatos
+
+| Membro | Linhas selecionadas de treino | Linhas reservadas | Artefato |
 |---|---:|---:|---|
 | NorBERTo | 16,093 | 3,999 | Unchanged original EP1 delivery adapter |
 | SVM | 16,093 | 3,999 | Original fixed-holdout SVM |
-| RL | 16,093 | 3,999 | `models/rl-development/`, generated with `bash scripts/rl/train.sh` |
-| Qwen (optional, excluded) | 16,093 | 3,999 | Selected `models/qwen/adapter/`, exact EP1 split |
+| RL | 16,093 | 3,999 | `models/rl-development/`, gerado com `bash scripts/rl/train.sh` |
+| Qwen (opcional, excluído) | 16,093 | 3,999 | `models/qwen/adapter/` selecionado, divisão exata do EP1 |
 
-Holdout rows are reserved for evaluation, not used as training data. RL's
-historical full-corpus package remains in `models/rl/`, but a missing
-`rl-development/` bundle stops inference instead of selecting that old model.
+As linhas reservadas servem à avaliação e não entram no treino. O pacote
+histórico de RL com corpus completo fica em `models/rl/`, mas a ausência de
+`rl-development/` interrompe a inferência em vez de selecionar o modelo antigo.
 
-Both ensemble configurations select `results/svm-development-test1` or
-`-test2`, and `results/rl-development-test1` or `-test2`. NorBERTo retains its
-`results/norberto-ep1-test1`/`-test2` paths. Each of these entries also declares
-`manifest`, which pins the selected artifact identity before importing saved
-predictions. Full-corpus predictions are rejected even if placed under the
-configured directory name. This check applies to selected members and local
-arbitrators. Default membership is NorBERTo + SVM + RL; Qwen is excluded.
+As duas configurações selecionam `results/svm-development-test1` ou `-test2`
+e `results/rl-development-test1` ou `-test2`. NorBERTo mantém os caminhos
+`results/norberto-ep1-test1`/`-test2`. Cada entrada também declara `manifest`,
+que fixa a identidade do artefato antes de importar previsões. Previsões do
+corpus completo são rejeitadas mesmo dentro do diretório configurado. A
+verificação vale para membros selecionados e árbitros locais. O conjunto
+padrão é NorBERTo + SVM + RL; Qwen fica excluído.
 
-Prepare RL only when needed:
+Prepare a RL somente quando necessário:
 
 ```bash
 bash scripts/rl/train.sh --dry-run
 bash scripts/rl/train.sh
 ```
 
-The first command is a read-only preflight; the second performs fixed-C
-training on development only. The [RL guide](../../src/rl_classifier/README.md)
-documents inference and generated artifacts. Training was not executed while changing these defaults. The user
-subsequently completed it, and the exported development model is now verified.
-Prediction outputs for each desired dataset are still a separate step.
+O primeiro comando faz uma verificação prévia somente de leitura; o segundo
+treina com C fixo apenas no desenvolvimento. O [guia da RL](../../src/rl_classifier/README.md)
+documenta inferência e artefatos gerados. Não houve treinamento durante a
+mudança desses padrões. O usuário o concluiu posteriormente, e o modelo de
+desenvolvimento exportado está verificado. Gerar previsões para cada base
+continua sendo uma etapa separada.
 
 ## Seleção do responsável pelo desempate
 
-`tiebreaker`, or CLI `--tiebreaker`, selects the arbitrator for unresolved
-votes independently of `models`. The shipped configurations select `rl`;
-omitting the field retains the backward-compatible `gpt` fallback. Other
-configured members can be selected explicitly.
+`tiebreaker`, ou `--tiebreaker` na CLI, seleciona o árbitro de votos não
+resolvidos independentemente de `models`. As configurações distribuídas
+selecionam `rl`; omitir o campo mantém a alternativa `gpt` por compatibilidade
+histórica. Outros membros configurados podem ser selecionados explicitamente.
 
 Exemplo: `--models qwen norberto --tiebreaker svm` mantém Qwen e NorBERTo
 como membros e usa SVM para resolver suas discordâncias. `--tiebreaker-run`
@@ -306,34 +312,34 @@ Uma composição ou política alternativa exige outra configuração e identidad
 
 ## Avaliação final em teste1, sem retreino
 
-The selected NorBERTo and the newly selected Qwen both use the frozen 16,093
-development rows and 3,999 holdout rows. Qwen's earlier 16,010/4,082 split is
-historical; optional Qwen entries now point to the saved EP1-split adapter.
-Qwen remains excluded from the default NorBERTo/SVM/RL ensemble. Its holdout
-selected the best checkpoint, while the weights were fitted only on development.
-SVM and logistic regression now default to the same frozen 16,093 development
-rows, reserving 3,999 holdout rows. The fixed EP1 parameters remain `C=0.05`
-and `C=0.25`. The development-only RL artifact completed training and verification; its
-fixed recipe can be reproduced using `bash scripts/rl/train.sh` with a new
-output directory. The historical 20,092-row RL is not a fallback.
+NorBERTo selecionado e o novo Qwen selecionado usam as mesmas 16,093 linhas
+congeladas de desenvolvimento e 3,999 reservadas. A divisão anterior do Qwen,
+16,010/4,082, é histórica; entradas opcionais agora apontam ao adaptador salvo
+com a divisão do EP1. Qwen permanece excluído do ensemble padrão NorBERTo/SVM/RL.
+Seu conjunto reservado selecionou o melhor checkpoint, enquanto os pesos foram
+ajustados só no desenvolvimento. SVM e regressão logística agora usam por
+padrão as mesmas 16,093 linhas congeladas, reservando 3,999. Os parâmetros
+fixos do EP1 permanecem `C=0.05` e `C=0.25`. O artefato de RL de desenvolvimento
+concluiu treino e verificação; sua receita fixa pode ser reproduzida com
+`bash scripts/rl/train.sh` e novo diretório. A RL histórica de 20,092 linhas
+não é uma alternativa automática.
 
 O protocolo inicial é:
 
-1. Fixar os artefatos dos membros selecionados já treinados, o modelo e a configuração
-   do árbitro, a regra de desempate e as estratégias de combinação. Não selecionar
-   pesos, limiares ou prompts com os resultados de teste1.
-2. Conferir a procedência dos membros: os textos, rótulos e grupos de teste1
-   não podem ter entrado no treinamento ou no banco de demonstrações. Eventual
-   sobreposição precisa ser identificada e declarada, mantendo todas as linhas
-   na avaliação oficial.
+1. Fixar artefatos treinados dos membros selecionados, modelo/configuração
+   do árbitro, desempate e estratégias. Não selecionar pesos, limiares ou
+   prompts por teste1.
+2. Conferir procedência: textos, rótulos e grupos de teste1 não podem ter
+   entrado no treino ou banco de demonstrações. Identificar e declarar
+   sobreposição, mantendo todas as linhas oficiais.
 3. Produzir teste2 como entrega, preservando linhas, textos e ordem.
-4. Predizer teste1 com exatamente a mesma configuração congelada. O classificador
-   recebe somente `resp_text`; o gabarito é acessado apenas na avaliação.
-5. Medir accuracy, macro-F1, macro-precision, macro-recall, matriz de confusão e
-   desempenho por classe nas 900 linhas de teste1. Comparar os membros locais
-   e o ensemble nas mesmas linhas; usar a entrega original do EP1 para McNemar.
-6. Informar a quantidade de casos encaminhados ao árbitro, a proporção de
-   desempates, o consumo e o tempo, separadamente das métricas de qualidade.
+4. Predizer teste1 com a mesma configuração congelada. O classificador recebe
+   só `resp_text`; gabarito apenas na avaliação.
+5. Medir acurácia, macro-F1, precisão macro, revocação macro, matriz e desempenho
+   por classe nas 900 linhas. Comparar membros e ensemble nas mesmas linhas;
+   usar a entrega original EP1 para McNemar.
+6. Informar casos encaminhados ao árbitro, proporção de empates, consumo e
+   tempo, separados da qualidade.
 
 O holdout do EP1 e a validação do Qwen pertencem ao histórico de treinamento e
 seleção dos membros; não substituem o teste1 rotulado como avaliação final.
