@@ -1,0 +1,14 @@
+{
+  "seed": 42,
+  "jobs": 2,
+  "cache_gib": 8,
+  "phase_a_folds": 3,
+  "phase_b_folds": 5,
+  "train": "data/train.xlsx",
+  "split": "data/ep1-development-holdout.csv",
+  "group_manifest": "../EP1/results/research/dataset-hypotheses-20260923/manifest.json",
+  "group_audit": "../EP1/results/research/dataset-hypotheses-20260923/audit.json",
+  "original_split": "../EP1/results/research/dataset-hypotheses-20260923/splits.csv",
+  "baseline": "models/ensemble-soft-qwen",
+  "baseline_scores": "results/ensemble-soft-qwen-20261105/scores"
+}
