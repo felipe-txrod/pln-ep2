@@ -1,0 +1,318 @@
+{
+  "status": "passed",
+  "phase": "b",
+  "search_sha256": "af5c938cba5c68164c64cce7e027e07e9795fdda69e3b3779c064e3b53ee2c20",
+  "verifier_sha256": "5587297d4bf3742caaf13d049cb381655670e29d53d0d39be252f444d3545aae",
+  "candidates": 20,
+  "folds": 100,
+  "eligible_candidates": 20,
+  "timeout_folds": 0,
+  "convergence_warning_folds": 0,
+  "source_fingerprints_verified": true,
+  "prediction_metrics_independently_reconstructed": true,
+  "fold_and_group_coverage_verified": true,
+  "one_se_selection_verified": true,
+  "baseline": {
+    "candidate_id": "0c57545cf1442c5a2542",
+    "candidate": {
+      "family": "word_char_wb",
+      "vectors": {
+        "word": {
+          "analyzer": "word",
+          "ngram_range": [
+            1,
+            2
+          ],
+          "min_df": 2,
+          "max_df": 0.98,
+          "sublinear_tf": true,
+          "binary": false,
+          "norm": "l2",
+          "max_features": 60000
+        },
+        "char": {
+          "analyzer": "char_wb",
+          "ngram_range": [
+            3,
+            5
+          ],
+          "min_df": 3,
+          "max_df": 1.0,
+          "sublinear_tf": true,
+          "binary": false,
+          "norm": "l2",
+          "max_features": 50000
+        }
+      },
+      "char_weight": 1.0,
+      "C": 0.05,
+      "class_weight": null,
+      "loss": "squared_hinge"
+    },
+    "eligible": true,
+    "mean_f1_macro": 0.4378028602089971,
+    "std_f1_macro": 0.01023024075846843,
+    "fold_f1_macro": [
+      0.44595958812077713,
+      0.43614941688184095,
+      0.4301261458527133,
+      0.4263532798421445,
+      0.45042587034750986
+    ],
+    "mean_feature_count": 110000.0,
+    "pooled_oof": {
+      "accuracy": 0.4444789660100665,
+      "f1_macro": 0.43883053368808217,
+      "confusion_matrix": [
+        [
+          2210,
+          1399,
+          1481
+        ],
+        [
+          1618,
+          1764,
+          2054
+        ],
+        [
+          1014,
+          1374,
+          3179
+        ]
+      ],
+      "per_class": {
+        "c1": {
+          "precision": 0.45642296571664603,
+          "recall": 0.43418467583497056,
+          "f1-score": 0.44502617801047123,
+          "support": 5090
+        },
+        "c234": {
+          "precision": 0.3888031739034604,
+          "recall": 0.32450331125827814,
+          "f1-score": 0.3537551388749624,
+          "support": 5436
+        },
+        "c5": {
+          "precision": 0.4734882335418528,
+          "recall": 0.5710436500808335,
+          "f1-score": 0.5177102841788128,
+          "support": 5567
+        }
+      }
+    }
+  },
+  "highest_mean": {
+    "candidate_id": "6a4dde97c3ec03d11e51",
+    "candidate": {
+      "family": "word_char_wb",
+      "vectors": {
+        "word": {
+          "analyzer": "word",
+          "ngram_range": [
+            1,
+            2
+          ],
+          "min_df": 2,
+          "max_df": 0.98,
+          "sublinear_tf": true,
+          "binary": false,
+          "norm": "l2",
+          "max_features": 60000
+        },
+        "char": {
+          "analyzer": "char_wb",
+          "ngram_range": [
+            3,
+            5
+          ],
+          "min_df": 3,
+          "max_df": 1.0,
+          "sublinear_tf": true,
+          "binary": false,
+          "norm": "l2",
+          "max_features": 50000
+        }
+      },
+      "char_weight": 0.5,
+      "C": 0.05,
+      "class_weight": "balanced",
+      "loss": "squared_hinge"
+    },
+    "eligible": true,
+    "mean_f1_macro": 0.4413440666266143,
+    "std_f1_macro": 0.008889410874243477,
+    "fold_f1_macro": [
+      0.4414753434354415,
+      0.437688456626518,
+      0.434042385663248,
+      0.4369900386225432,
+      0.45652410878532096
+    ],
+    "mean_feature_count": 110000.0,
+    "pooled_oof": {
+      "accuracy": 0.4485801280059653,
+      "f1_macro": 0.4424118278246684,
+      "confusion_matrix": [
+        [
+          2333,
+          1319,
+          1438
+        ],
+        [
+          1709,
+          1703,
+          2024
+        ],
+        [
+          1066,
+          1318,
+          3183
+        ]
+      ],
+      "per_class": {
+        "c1": {
+          "precision": 0.456734534064213,
+          "recall": 0.4583497053045187,
+          "f1-score": 0.45754069425377525,
+          "support": 5090
+        },
+        "c234": {
+          "precision": 0.3923963133640553,
+          "recall": 0.31328182487122885,
+          "f1-score": 0.3484042553191489,
+          "support": 5436
+        },
+        "c5": {
+          "precision": 0.47900677200902936,
+          "recall": 0.5717621699299443,
+          "f1-score": 0.5212905339010809,
+          "support": 5567
+        }
+      }
+    }
+  },
+  "one_se_selection": {
+    "candidate_id": "42c22ab6e0398e33b3ea",
+    "candidate": {
+      "family": "word_char_wb",
+      "vectors": {
+        "word": {
+          "analyzer": "word",
+          "ngram_range": [
+            1,
+            2
+          ],
+          "min_df": 5,
+          "max_df": 0.98,
+          "sublinear_tf": false,
+          "binary": true,
+          "norm": "l2",
+          "max_features": 60000
+        },
+        "char": {
+          "analyzer": "char_wb",
+          "ngram_range": [
+            3,
+            6
+          ],
+          "min_df": 3,
+          "max_df": 0.95,
+          "sublinear_tf": false,
+          "binary": true,
+          "norm": "l2",
+          "max_features": 50000
+        }
+      },
+      "char_weight": 1.0,
+      "C": 0.05,
+      "class_weight": null,
+      "loss": "squared_hinge"
+    },
+    "eligible": true,
+    "mean_f1_macro": 0.43829260052390184,
+    "std_f1_macro": 0.006074550169856932,
+    "fold_f1_macro": [
+      0.4407922187910862,
+      0.43959326881841404,
+      0.43641834364408316,
+      0.4291352835299067,
+      0.4455238878360189
+    ],
+    "mean_feature_count": 99204.2,
+    "pooled_oof": {
+      "accuracy": 0.44435468837382713,
+      "f1_macro": 0.4394464476981028,
+      "confusion_matrix": [
+        [
+          2220,
+          1414,
+          1456
+        ],
+        [
+          1589,
+          1795,
+          2052
+        ],
+        [
+          1012,
+          1419,
+          3136
+        ]
+      ],
+      "per_class": {
+        "c1": {
+          "precision": 0.46048537647790916,
+          "recall": 0.4361493123772102,
+          "f1-score": 0.44798708505700735,
+          "support": 5090
+        },
+        "c234": {
+          "precision": 0.3878565254969749,
+          "recall": 0.33020603384841796,
+          "f1-score": 0.35671701112877585,
+          "support": 5436
+        },
+        "c5": {
+          "precision": 0.4720048163756773,
+          "recall": 0.563319561702892,
+          "f1-score": 0.5136352469085251,
+          "support": 5567
+        }
+      }
+    }
+  },
+  "paired_development_diagnostics": {
+    "highest_mean": {
+      "mean_f1_delta": 0.003541206417617182,
+      "fold_f1_delta": [
+        -0.004484244685335648,
+        0.001539039744677062,
+        0.003916239810534683,
+        0.010636758780398714,
+        0.006098238437811099
+      ],
+      "corrected": 517,
+      "harmed": 451
+    },
+    "one_se_selection": {
+      "mean_f1_delta": 0.0004897403149047297,
+      "fold_f1_delta": [
+        -0.0051673693296909184,
+        0.0034438519365730946,
+        0.006292197791369858,
+        0.0027820036877622134,
+        -0.004901982511490988
+      ],
+      "corrected": 489,
+      "harmed": 491
+    }
+  },
+  "manifest_to_result_seconds": 424.7603316307068,
+  "timing_caveat": "Artifact timestamp window, including any pauses/resumes; imported folds were computed earlier.",
+  "test1_accessed": false,
+  "test2_accessed": false,
+  "limitation": "Development diagnostics after adaptive search; no final-set improvement or statistical superiority claimed.",
+  "run": "results/svm-final-budgeted-20261106",
+  "verification": "results/svm-final-budgeted-20261106/verification-phase-b.json"
+}

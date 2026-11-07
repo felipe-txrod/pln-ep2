@@ -1,0 +1,998 @@
+{
+  "status": "passed",
+  "phase": "a",
+  "search_sha256": "32a2dfffb3fac0c82c5ee390791be24b6babc89650601f8e2df87c77ae8f8f2a",
+  "verifier_sha256": "5587297d4bf3742caaf13d049cb381655670e29d53d0d39be252f444d3545aae",
+  "candidates": 96,
+  "folds": 288,
+  "eligible_candidates": 96,
+  "timeout_folds": 0,
+  "convergence_warning_folds": 0,
+  "source_fingerprints_verified": true,
+  "prediction_metrics_independently_reconstructed": true,
+  "fold_and_group_coverage_verified": true,
+  "one_se_selection_verified": true,
+  "baseline": {
+    "candidate_id": "0c57545cf1442c5a2542",
+    "candidate": {
+      "family": "word_char_wb",
+      "vectors": {
+        "word": {
+          "analyzer": "word",
+          "ngram_range": [
+            1,
+            2
+          ],
+          "min_df": 2,
+          "max_df": 0.98,
+          "sublinear_tf": true,
+          "binary": false,
+          "norm": "l2",
+          "max_features": 60000
+        },
+        "char": {
+          "analyzer": "char_wb",
+          "ngram_range": [
+            3,
+            5
+          ],
+          "min_df": 3,
+          "max_df": 1.0,
+          "sublinear_tf": true,
+          "binary": false,
+          "norm": "l2",
+          "max_features": 50000
+        }
+      },
+      "char_weight": 1.0,
+      "C": 0.05,
+      "class_weight": null,
+      "loss": "squared_hinge"
+    },
+    "eligible": true,
+    "mean_f1_macro": 0.43538424664943104,
+    "std_f1_macro": 0.007804009019193053,
+    "fold_f1_macro": [
+      0.4417337044237537,
+      0.43774719292886405,
+      0.42667184259567525
+    ],
+    "mean_feature_count": 110000.0,
+    "pooled_oof": {
+      "accuracy": 0.4408127757410054,
+      "f1_macro": 0.4354189920034699,
+      "confusion_matrix": [
+        [
+          2149,
+          1416,
+          1525
+        ],
+        [
+          1499,
+          1769,
+          2168
+        ],
+        [
+          930,
+          1461,
+          3176
+        ]
+      ],
+      "per_class": {
+        "c1": {
+          "precision": 0.4694189602446483,
+          "recall": 0.42220039292730843,
+          "f1-score": 0.4445593711212247,
+          "support": 5090
+        },
+        "c234": {
+          "precision": 0.38075764098148945,
+          "recall": 0.32542310522442974,
+          "f1-score": 0.35092243602459827,
+          "support": 5436
+        },
+        "c5": {
+          "precision": 0.4623671567913816,
+          "recall": 0.5705047601940003,
+          "f1-score": 0.5107751688645867,
+          "support": 5567
+        }
+      }
+    }
+  },
+  "highest_mean": {
+    "candidate_id": "d064ea0be480087dc339",
+    "candidate": {
+      "family": "word_char_wb",
+      "vectors": {
+        "word": {
+          "analyzer": "word",
+          "ngram_range": [
+            1,
+            2
+          ],
+          "min_df": 5,
+          "max_df": 0.98,
+          "sublinear_tf": false,
+          "binary": true,
+          "norm": "l2",
+          "max_features": 60000
+        },
+        "char": {
+          "analyzer": "char_wb",
+          "ngram_range": [
+            3,
+            6
+          ],
+          "min_df": 3,
+          "max_df": 0.95,
+          "sublinear_tf": false,
+          "binary": true,
+          "norm": "l2",
+          "max_features": 50000
+        }
+      },
+      "char_weight": 1.0,
+      "C": 0.05,
+      "class_weight": "balanced",
+      "loss": "squared_hinge"
+    },
+    "eligible": true,
+    "mean_f1_macro": 0.4365503924896949,
+    "std_f1_macro": 0.003263215491788094,
+    "fold_f1_macro": [
+      0.4401890647174658,
+      0.43557877310914833,
+      0.43388333964247067
+    ],
+    "mean_feature_count": 92870.66666666667,
+    "pooled_oof": {
+      "accuracy": 0.44168271919468094,
+      "f1_macro": 0.436755137769875,
+      "confusion_matrix": [
+        [
+          2307,
+          1346,
+          1437
+        ],
+        [
+          1674,
+          1728,
+          2034
+        ],
+        [
+          1079,
+          1415,
+          3073
+        ]
+      ],
+      "per_class": {
+        "c1": {
+          "precision": 0.4559288537549407,
+          "recall": 0.4532416502946955,
+          "f1-score": 0.45458128078817733,
+          "support": 5090
+        },
+        "c234": {
+          "precision": 0.3849409668077523,
+          "recall": 0.31788079470198677,
+          "f1-score": 0.34821158690176324,
+          "support": 5436
+        },
+        "c5": {
+          "precision": 0.4695904645476773,
+          "recall": 0.5520028740793964,
+          "f1-score": 0.5074725456196846,
+          "support": 5567
+        }
+      }
+    }
+  },
+  "one_se_selection": {
+    "candidate_id": "0da8ae8a3f525195dcf6",
+    "candidate": {
+      "family": "char",
+      "vectors": {
+        "char": {
+          "analyzer": "char",
+          "ngram_range": [
+            3,
+            5
+          ],
+          "min_df": 3,
+          "max_df": 1.0,
+          "sublinear_tf": true,
+          "binary": false,
+          "norm": "l2",
+          "max_features": 50000
+        }
+      },
+      "char_weight": 1.0,
+      "C": 0.05,
+      "class_weight": "balanced",
+      "loss": "squared_hinge"
+    },
+    "eligible": true,
+    "mean_f1_macro": 0.4354320203655308,
+    "std_f1_macro": 0.009497273291141787,
+    "fold_f1_macro": [
+      0.4361896888544439,
+      0.444527765468587,
+      0.4255786067735614
+    ],
+    "mean_feature_count": 50000.0,
+    "pooled_oof": {
+      "accuracy": 0.4417448580128006,
+      "f1_macro": 0.43559047215525704,
+      "confusion_matrix": [
+        [
+          2320,
+          1260,
+          1510
+        ],
+        [
+          1658,
+          1659,
+          2119
+        ],
+        [
+          1077,
+          1360,
+          3130
+        ]
+      ],
+      "per_class": {
+        "c1": {
+          "precision": 0.4589515331355094,
+          "recall": 0.45579567779960706,
+          "f1-score": 0.45736816165598815,
+          "support": 5090
+        },
+        "c234": {
+          "precision": 0.38770740827296096,
+          "recall": 0.3051876379690949,
+          "f1-score": 0.341533710756562,
+          "support": 5436
+        },
+        "c5": {
+          "precision": 0.4630862553632194,
+          "recall": 0.5622417819292258,
+          "f1-score": 0.5078695440532208,
+          "support": 5567
+        }
+      }
+    }
+  },
+  "paired_development_diagnostics": {
+    "highest_mean": {
+      "mean_f1_delta": 0.0011661458402638658,
+      "fold_f1_delta": [
+        -0.0015446397062879313,
+        -0.0021684198197157167,
+        0.007211497046795412
+      ],
+      "corrected": 551,
+      "harmed": 537
+    },
+    "one_se_selection": {
+      "mean_f1_delta": 4.7773716099763774e-05,
+      "fold_f1_delta": [
+        -0.005544015569309779,
+        0.006780572539722973,
+        -0.0010932358221138472
+      ],
+      "corrected": 784,
+      "harmed": 769
+    }
+  },
+  "next_phase_candidates": 20,
+  "manifest_to_result_seconds": 294.19981932640076,
+  "timing_caveat": "Artifact timestamp window, including any pauses/resumes; imported folds were computed earlier.",
+  "test1_accessed": false,
+  "test2_accessed": false,
+  "limitation": "Development diagnostics after adaptive search; no final-set improvement or statistical superiority claimed.",
+  "run": "results/svm-final-budgeted-20261106",
+  "verification": "results/svm-final-budgeted-20261106/verification-phase-a.json",
+  "phase_b_preview": [
+    {
+      "family": "word_char_wb",
+      "vectors": {
+        "word": {
+          "analyzer": "word",
+          "ngram_range": [
+            1,
+            2
+          ],
+          "min_df": 2,
+          "max_df": 0.98,
+          "sublinear_tf": true,
+          "binary": false,
+          "norm": "l2",
+          "max_features": 60000
+        },
+        "char": {
+          "analyzer": "char_wb",
+          "ngram_range": [
+            3,
+            5
+          ],
+          "min_df": 3,
+          "max_df": 1.0,
+          "sublinear_tf": true,
+          "binary": false,
+          "norm": "l2",
+          "max_features": 50000
+        }
+      },
+      "char_weight": 1.0,
+      "C": 0.05,
+      "class_weight": null,
+      "loss": "squared_hinge"
+    },
+    {
+      "family": "word_char_wb",
+      "vectors": {
+        "word": {
+          "analyzer": "word",
+          "ngram_range": [
+            1,
+            2
+          ],
+          "min_df": 5,
+          "max_df": 0.98,
+          "sublinear_tf": false,
+          "binary": true,
+          "norm": "l2",
+          "max_features": 60000
+        },
+        "char": {
+          "analyzer": "char_wb",
+          "ngram_range": [
+            3,
+            6
+          ],
+          "min_df": 3,
+          "max_df": 0.95,
+          "sublinear_tf": false,
+          "binary": true,
+          "norm": "l2",
+          "max_features": 50000
+        }
+      },
+      "char_weight": 1.0,
+      "C": 0.0158113883008419,
+      "class_weight": null,
+      "loss": "squared_hinge"
+    },
+    {
+      "family": "word_char_wb",
+      "vectors": {
+        "word": {
+          "analyzer": "word",
+          "ngram_range": [
+            1,
+            2
+          ],
+          "min_df": 5,
+          "max_df": 0.98,
+          "sublinear_tf": false,
+          "binary": true,
+          "norm": "l2",
+          "max_features": 60000
+        },
+        "char": {
+          "analyzer": "char_wb",
+          "ngram_range": [
+            3,
+            6
+          ],
+          "min_df": 3,
+          "max_df": 0.95,
+          "sublinear_tf": false,
+          "binary": true,
+          "norm": "l2",
+          "max_features": 50000
+        }
+      },
+      "char_weight": 1.0,
+      "C": 0.0158113883008419,
+      "class_weight": "balanced",
+      "loss": "squared_hinge"
+    },
+    {
+      "family": "word_char_wb",
+      "vectors": {
+        "word": {
+          "analyzer": "word",
+          "ngram_range": [
+            1,
+            2
+          ],
+          "min_df": 5,
+          "max_df": 0.98,
+          "sublinear_tf": false,
+          "binary": true,
+          "norm": "l2",
+          "max_features": 60000
+        },
+        "char": {
+          "analyzer": "char_wb",
+          "ngram_range": [
+            3,
+            6
+          ],
+          "min_df": 3,
+          "max_df": 0.95,
+          "sublinear_tf": false,
+          "binary": true,
+          "norm": "l2",
+          "max_features": 50000
+        }
+      },
+      "char_weight": 1.0,
+      "C": 0.05,
+      "class_weight": null,
+      "loss": "squared_hinge"
+    },
+    {
+      "family": "word_char_wb",
+      "vectors": {
+        "word": {
+          "analyzer": "word",
+          "ngram_range": [
+            1,
+            2
+          ],
+          "min_df": 5,
+          "max_df": 0.98,
+          "sublinear_tf": false,
+          "binary": true,
+          "norm": "l2",
+          "max_features": 60000
+        },
+        "char": {
+          "analyzer": "char_wb",
+          "ngram_range": [
+            3,
+            6
+          ],
+          "min_df": 3,
+          "max_df": 0.95,
+          "sublinear_tf": false,
+          "binary": true,
+          "norm": "l2",
+          "max_features": 50000
+        }
+      },
+      "char_weight": 1.0,
+      "C": 0.05,
+      "class_weight": "balanced",
+      "loss": "squared_hinge"
+    },
+    {
+      "family": "word_char_wb",
+      "vectors": {
+        "word": {
+          "analyzer": "word",
+          "ngram_range": [
+            1,
+            2
+          ],
+          "min_df": 5,
+          "max_df": 0.98,
+          "sublinear_tf": false,
+          "binary": true,
+          "norm": "l2",
+          "max_features": 60000
+        },
+        "char": {
+          "analyzer": "char_wb",
+          "ngram_range": [
+            3,
+            6
+          ],
+          "min_df": 3,
+          "max_df": 0.95,
+          "sublinear_tf": false,
+          "binary": true,
+          "norm": "l2",
+          "max_features": 50000
+        }
+      },
+      "char_weight": 1.0,
+      "C": 0.158113883008419,
+      "class_weight": null,
+      "loss": "squared_hinge"
+    },
+    {
+      "family": "word_char_wb",
+      "vectors": {
+        "word": {
+          "analyzer": "word",
+          "ngram_range": [
+            1,
+            2
+          ],
+          "min_df": 5,
+          "max_df": 0.98,
+          "sublinear_tf": false,
+          "binary": true,
+          "norm": "l2",
+          "max_features": 60000
+        },
+        "char": {
+          "analyzer": "char_wb",
+          "ngram_range": [
+            3,
+            6
+          ],
+          "min_df": 3,
+          "max_df": 0.95,
+          "sublinear_tf": false,
+          "binary": true,
+          "norm": "l2",
+          "max_features": 50000
+        }
+      },
+      "char_weight": 1.0,
+      "C": 0.158113883008419,
+      "class_weight": "balanced",
+      "loss": "squared_hinge"
+    },
+    {
+      "family": "word_char_wb",
+      "vectors": {
+        "word": {
+          "analyzer": "word",
+          "ngram_range": [
+            1,
+            2
+          ],
+          "min_df": 5,
+          "max_df": 0.98,
+          "sublinear_tf": false,
+          "binary": true,
+          "norm": "l2",
+          "max_features": 60000
+        },
+        "char": {
+          "analyzer": "char_wb",
+          "ngram_range": [
+            3,
+            6
+          ],
+          "min_df": 3,
+          "max_df": 0.95,
+          "sublinear_tf": false,
+          "binary": true,
+          "norm": "l2",
+          "max_features": 50000
+        }
+      },
+      "char_weight": 1.0,
+      "C": 0.05,
+      "class_weight": null,
+      "loss": "hinge"
+    },
+    {
+      "family": "word_char_wb",
+      "vectors": {
+        "word": {
+          "analyzer": "word",
+          "ngram_range": [
+            1,
+            2
+          ],
+          "min_df": 5,
+          "max_df": 0.98,
+          "sublinear_tf": false,
+          "binary": true,
+          "norm": "l2",
+          "max_features": 60000
+        },
+        "char": {
+          "analyzer": "char_wb",
+          "ngram_range": [
+            3,
+            6
+          ],
+          "min_df": 3,
+          "max_df": 0.95,
+          "sublinear_tf": false,
+          "binary": true,
+          "norm": "l2",
+          "max_features": 50000
+        }
+      },
+      "char_weight": 1.0,
+      "C": 0.05,
+      "class_weight": "balanced",
+      "loss": "hinge"
+    },
+    {
+      "family": "word_char_wb",
+      "vectors": {
+        "word": {
+          "analyzer": "word",
+          "ngram_range": [
+            1,
+            2
+          ],
+          "min_df": 5,
+          "max_df": 0.98,
+          "sublinear_tf": false,
+          "binary": true,
+          "norm": "l2",
+          "max_features": 60000
+        },
+        "char": {
+          "analyzer": "char_wb",
+          "ngram_range": [
+            3,
+            6
+          ],
+          "min_df": 3,
+          "max_df": 0.95,
+          "sublinear_tf": false,
+          "binary": true,
+          "norm": "l2",
+          "max_features": 50000
+        }
+      },
+      "char_weight": 0.5,
+      "C": 0.05,
+      "class_weight": "balanced",
+      "loss": "squared_hinge"
+    },
+    {
+      "family": "word_char_wb",
+      "vectors": {
+        "word": {
+          "analyzer": "word",
+          "ngram_range": [
+            1,
+            2
+          ],
+          "min_df": 5,
+          "max_df": 0.98,
+          "sublinear_tf": false,
+          "binary": true,
+          "norm": "l2",
+          "max_features": 60000
+        },
+        "char": {
+          "analyzer": "char_wb",
+          "ngram_range": [
+            3,
+            6
+          ],
+          "min_df": 3,
+          "max_df": 0.95,
+          "sublinear_tf": false,
+          "binary": true,
+          "norm": "l2",
+          "max_features": 50000
+        }
+      },
+      "char_weight": 2.0,
+      "C": 0.05,
+      "class_weight": "balanced",
+      "loss": "squared_hinge"
+    },
+    {
+      "family": "word_char_wb",
+      "vectors": {
+        "word": {
+          "analyzer": "word",
+          "ngram_range": [
+            1,
+            2
+          ],
+          "min_df": 2,
+          "max_df": 0.98,
+          "sublinear_tf": true,
+          "binary": false,
+          "norm": "l2",
+          "max_features": 60000
+        },
+        "char": {
+          "analyzer": "char_wb",
+          "ngram_range": [
+            3,
+            5
+          ],
+          "min_df": 3,
+          "max_df": 1.0,
+          "sublinear_tf": true,
+          "binary": false,
+          "norm": "l2",
+          "max_features": 50000
+        }
+      },
+      "char_weight": 1.0,
+      "C": 0.0158113883008419,
+      "class_weight": null,
+      "loss": "squared_hinge"
+    },
+    {
+      "family": "word_char_wb",
+      "vectors": {
+        "word": {
+          "analyzer": "word",
+          "ngram_range": [
+            1,
+            2
+          ],
+          "min_df": 2,
+          "max_df": 0.98,
+          "sublinear_tf": true,
+          "binary": false,
+          "norm": "l2",
+          "max_features": 60000
+        },
+        "char": {
+          "analyzer": "char_wb",
+          "ngram_range": [
+            3,
+            5
+          ],
+          "min_df": 3,
+          "max_df": 1.0,
+          "sublinear_tf": true,
+          "binary": false,
+          "norm": "l2",
+          "max_features": 50000
+        }
+      },
+      "char_weight": 1.0,
+      "C": 0.0158113883008419,
+      "class_weight": "balanced",
+      "loss": "squared_hinge"
+    },
+    {
+      "family": "word_char_wb",
+      "vectors": {
+        "word": {
+          "analyzer": "word",
+          "ngram_range": [
+            1,
+            2
+          ],
+          "min_df": 2,
+          "max_df": 0.98,
+          "sublinear_tf": true,
+          "binary": false,
+          "norm": "l2",
+          "max_features": 60000
+        },
+        "char": {
+          "analyzer": "char_wb",
+          "ngram_range": [
+            3,
+            5
+          ],
+          "min_df": 3,
+          "max_df": 1.0,
+          "sublinear_tf": true,
+          "binary": false,
+          "norm": "l2",
+          "max_features": 50000
+        }
+      },
+      "char_weight": 1.0,
+      "C": 0.05,
+      "class_weight": "balanced",
+      "loss": "squared_hinge"
+    },
+    {
+      "family": "word_char_wb",
+      "vectors": {
+        "word": {
+          "analyzer": "word",
+          "ngram_range": [
+            1,
+            2
+          ],
+          "min_df": 2,
+          "max_df": 0.98,
+          "sublinear_tf": true,
+          "binary": false,
+          "norm": "l2",
+          "max_features": 60000
+        },
+        "char": {
+          "analyzer": "char_wb",
+          "ngram_range": [
+            3,
+            5
+          ],
+          "min_df": 3,
+          "max_df": 1.0,
+          "sublinear_tf": true,
+          "binary": false,
+          "norm": "l2",
+          "max_features": 50000
+        }
+      },
+      "char_weight": 1.0,
+      "C": 0.158113883008419,
+      "class_weight": null,
+      "loss": "squared_hinge"
+    },
+    {
+      "family": "word_char_wb",
+      "vectors": {
+        "word": {
+          "analyzer": "word",
+          "ngram_range": [
+            1,
+            2
+          ],
+          "min_df": 2,
+          "max_df": 0.98,
+          "sublinear_tf": true,
+          "binary": false,
+          "norm": "l2",
+          "max_features": 60000
+        },
+        "char": {
+          "analyzer": "char_wb",
+          "ngram_range": [
+            3,
+            5
+          ],
+          "min_df": 3,
+          "max_df": 1.0,
+          "sublinear_tf": true,
+          "binary": false,
+          "norm": "l2",
+          "max_features": 50000
+        }
+      },
+      "char_weight": 1.0,
+      "C": 0.158113883008419,
+      "class_weight": "balanced",
+      "loss": "squared_hinge"
+    },
+    {
+      "family": "word_char_wb",
+      "vectors": {
+        "word": {
+          "analyzer": "word",
+          "ngram_range": [
+            1,
+            2
+          ],
+          "min_df": 2,
+          "max_df": 0.98,
+          "sublinear_tf": true,
+          "binary": false,
+          "norm": "l2",
+          "max_features": 60000
+        },
+        "char": {
+          "analyzer": "char_wb",
+          "ngram_range": [
+            3,
+            5
+          ],
+          "min_df": 3,
+          "max_df": 1.0,
+          "sublinear_tf": true,
+          "binary": false,
+          "norm": "l2",
+          "max_features": 50000
+        }
+      },
+      "char_weight": 1.0,
+      "C": 0.05,
+      "class_weight": null,
+      "loss": "hinge"
+    },
+    {
+      "family": "word_char_wb",
+      "vectors": {
+        "word": {
+          "analyzer": "word",
+          "ngram_range": [
+            1,
+            2
+          ],
+          "min_df": 2,
+          "max_df": 0.98,
+          "sublinear_tf": true,
+          "binary": false,
+          "norm": "l2",
+          "max_features": 60000
+        },
+        "char": {
+          "analyzer": "char_wb",
+          "ngram_range": [
+            3,
+            5
+          ],
+          "min_df": 3,
+          "max_df": 1.0,
+          "sublinear_tf": true,
+          "binary": false,
+          "norm": "l2",
+          "max_features": 50000
+        }
+      },
+      "char_weight": 1.0,
+      "C": 0.05,
+      "class_weight": "balanced",
+      "loss": "hinge"
+    },
+    {
+      "family": "word_char_wb",
+      "vectors": {
+        "word": {
+          "analyzer": "word",
+          "ngram_range": [
+            1,
+            2
+          ],
+          "min_df": 2,
+          "max_df": 0.98,
+          "sublinear_tf": true,
+          "binary": false,
+          "norm": "l2",
+          "max_features": 60000
+        },
+        "char": {
+          "analyzer": "char_wb",
+          "ngram_range": [
+            3,
+            5
+          ],
+          "min_df": 3,
+          "max_df": 1.0,
+          "sublinear_tf": true,
+          "binary": false,
+          "norm": "l2",
+          "max_features": 50000
+        }
+      },
+      "char_weight": 0.5,
+      "C": 0.05,
+      "class_weight": "balanced",
+      "loss": "squared_hinge"
+    },
+    {
+      "family": "word_char_wb",
+      "vectors": {
+        "word": {
+          "analyzer": "word",
+          "ngram_range": [
+            1,
+            2
+          ],
+          "min_df": 2,
+          "max_df": 0.98,
+          "sublinear_tf": true,
+          "binary": false,
+          "norm": "l2",
+          "max_features": 60000
+        },
+        "char": {
+          "analyzer": "char_wb",
+          "ngram_range": [
+            3,
+            5
+          ],
+          "min_df": 3,
+          "max_df": 1.0,
+          "sublinear_tf": true,
+          "binary": false,
+          "norm": "l2",
+          "max_features": 50000
+        }
+      },
+      "char_weight": 2.0,
+      "C": 0.05,
+      "class_weight": "balanced",
+      "loss": "squared_hinge"
+    }
+  ]
+}
