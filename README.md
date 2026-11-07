@@ -1,58 +1,110 @@
-# EP2 — e-SIC clarity classification
+<a id="ep2--e-sic-clarity-classification"></a>
 
-Supervised text classification with Qwen3-1.7B, NorBERTo, SVM, logistic
-regression, and a configurable ensemble with GPT arbitration. The input is
-`resp_text`; output labels are `c1`, `c234`, and `c5`.
+# EP2 — Classificação de clareza de respostas e-SIC
 
-The primary approach is **weighted soft voting: SVM 75%, NorBERTo 25%**,
-with macro-F1 **49.58%** on Test1 (447/900 correct; accuracy 49.67%).
-The [accepted ensemble decision](docs/decisions/ensemble-strategy.md) records
-the rationale, evaluation limitations and preservation of stacking/GPT/RAG
-experiments.
+Classificação supervisionada de textos com Qwen3-1.7B, NorBERTo, SVM,
+regressão logística e um ensemble configurável com arbitragem do GPT.
+A entrada é `resp_text`; os rótulos de saída são `c1`, `c234` e `c5`.
 
-The selected NorBERTo is the **unchanged EP1 delivery adapter** in
-`models/norberto/`: LoRA rank 4/alpha 8, two epochs on 16,093 development rows.
-It achieved 48.00% on test1 and 45.31% on the EP1 holdout. Experimental loss
-corrections, refits, and the frozen-encoder logistic variant have been retired.
+A abordagem principal é **votação suave ponderada: SVM 75%, NorBERTo 25%**,
+com **49.58% de macro-F1** no Teste1 (447/900 acertos; acurácia de 49.67%).
+A [decisão adotada para o ensemble](docs/decisions/ensemble-strategy.md) registra
+a justificativa, as limitações da avaliação e a preservação dos experimentos
+com stacking, GPT e RAG.
 
-The majority ensemble uses **NorBERTo + SVM + RL**, equal votes, and RL to
-break three-way ties. Soft voting and stacking now include **Qwen** as a fourth
-candidate/member. All four models reserve the same 3,999-row EP1 holdout.
+O NorBERTo selecionado é o **adaptador original da entrega do EP1, sem alterações**,
+em `models/norberto/`: LoRA com posto 4/alpha 8, duas épocas sobre 16,093 linhas
+de desenvolvimento. Obteve 48.00% no teste1 e 45.31% no conjunto reservado do EP1.
+As correções experimentais da perda, os retreinamentos e a variante de regressão
+logística com codificador congelado foram desativados.
 
-The default Qwen adapter is saved in `models/qwen/adapter/`, trained on the
-same 16,093/3,999 EP1 partition. Its validation accuracy is 44.79%, and test1
-accuracy is 46.00%. The four-candidate soft vote selected zero Qwen weight;
-stacking uses its probabilities. See the [integration results](docs/results/ensemble-qwen.md)
-and [selected model verification](docs/results/qwen-ep1-model.md).
+O ensemble majoritário usa **NorBERTo + SVM + RL**, com votos iguais e RL para
+desempatar quando os três divergem. A votação suave e o stacking agora incluem
+**Qwen** como quarto candidato/membro. Os quatro modelos reservam o mesmo
+conjunto de 3,999 linhas do EP1.
 
-## Documentation
+O adaptador padrão do Qwen está em `models/qwen/adapter/`, treinado na mesma
+partição 16,093/3,999 do EP1. Sua acurácia de validação é 44.79%, e a de teste1,
+46.00%. A votação suave com quatro candidatos selecionou peso zero para Qwen;
+o stacking utiliza suas probabilidades. Veja os [resultados da integração](docs/results/ensemble-qwen.md)
+e a [verificação do modelo selecionado](docs/results/qwen-ep1-model.md).
 
-Start with the **[documentation index](docs/README.md)**. Operational guides,
-measured results, assignment references, and historical experiments are separate.
+## Gerar o Excel de entrega
 
-| Task | Guide |
+Execução nativa, sem Docker. **CPU é o padrão do setup e da inferência**:
+
+```bash
+bash scripts/ensemble/setup-local.sh
+bash scripts/ensemble/deliver-test2.sh
+```
+
+O setup prepara PyTorch CPU e as dependências neurais. Os perfis explícitos são:
+
+| Uso | Comando de preparação |
 |---|---|
-| Reuse the unchanged EP1 NorBERTo adapter | [Original model](src/norberto_classifier/README.md) |
-| Predict test1, then compare with gold labels | [NorBERTo test1 workflow](docs/guides/norberto-test1.md) |
-| Set up, train, and run Qwen QLoRA | [Qwen fine-tuning](docs/guides/qwen-finetuning.md) |
-| Retrain Qwen on the same 16,093/3,999 split as EP1 models | [Exact EP1 partition](docs/guides/qwen-finetuning.md#retrain-with-the-exact-ep1-partition) |
-| Train development-only lexical logistic regression with holdout reserved | [RL workflow](src/rl_classifier/README.md) |
-| Select ensemble members and the tie-breaking model | [Ensemble](docs/guides/ensemble.md) |
-| Run four-model calibrated soft voting and stacking with Qwen | [Current ensemble workflow](docs/guides/ensemble-qwen.md) |
-| Route uncertain stacking decisions to GPT with OOF validation and persistent caching | [Selective GPT cascade](docs/guides/stacking-gpt-cascade.md) |
-| Prepare train-only RAG and four paired context ablations; classification is opt-in | [RAG + stacking context study](docs/guides/rag-stacking.md) |
-| Compare frozen NorBERTo retrieval, MMR and cached GPT acceptance without remote calls | [Offline research](docs/guides/rag-offline-research.md) and [measured findings](docs/results/rag-offline-research.md) |
-| Inspect the preserved three-model calibration and meta-LR protocol | [Soft voting](docs/guides/ensemble-soft.md) and [stacking](docs/guides/ensemble-stacking.md) |
-| Browse runnable scripts by model and purpose | [Script index](scripts/README.md) |
-| Restore frozen models and their pinned public bases | [Model artifacts](models/README.md) |
-| Compare measured classifier results | [Results index](docs/results/README.md) |
-| Reproduce NorBERTo + SVM + RL majority voting and its test1 comparison | [Majority ensemble](docs/results/ensemble-majority.md) |
-| Compare calibrated weighted soft voting with each frozen classifier | [Soft-voting results and confusion matrices](docs/results/ensemble-soft.md) |
-| Compare four-model ensembles against their three-model controls | [Qwen integration results](docs/results/ensemble-qwen.md) |
-| Inspect the original stacking comparison, including affected instances | [Three-model stacking results](docs/results/ensemble-stacking.md) |
-| Consult earlier GPT/Codex and training investigations | [Experiment archive](docs/archive/README.md) |
+| CPU completa (padrão) | `bash scripts/ensemble/setup-local.sh` |
+| Somente base lexical e exportação de previsões existentes | `bash scripts/ensemble/setup-local.sh --minimal` |
+| Bibliotecas neurais, preservando PyTorch já instalado no ambiente selecionado | `bash scripts/ensemble/setup-local.sh --with-neural` |
+| Ambiente completo novo com PyTorch ROCm | `bash scripts/ensemble/setup-local.sh --with-rocm` |
+| Ambiente completo novo com PyTorch CPU | `bash scripts/ensemble/setup-local.sh --with-cpu` |
 
-## Repository layout
+`--without-rocm` mantém o comportamento mínimo de `--minimal`; não instala nem
+substitui PyTorch. `--without-neural` omite as bibliotecas neurais. `--dry-run`
+mostra os comandos sem instalar. Use `--venv` para indicar um ambiente existente.
+
+A CPU é usada pelos modelos lexicais em todos os perfis. `--with-cpu` escolhe
+uma distribuição do PyTorch sem GPU para o NorBERTo; não é uma opção para
+habilitar o processador. O perfil mínimo não instala PyTorch e, sozinho, permite
+apenas exportar previsões existentes. Para inferência, use um ambiente neural
+completo, com PyTorch CPU ou ROCm.
+
+Para usar GPU explicitamente, prepare ROCm e selecione o dispositivo:
+
+```bash
+bash scripts/ensemble/setup-local.sh --with-rocm
+bash scripts/ensemble/deliver-test2.sh --device gpu
+```
+
+O arquivo final é **`deliveries/test2-soft-voting.xlsx`**, com as 897 respostas
+classificadas pelo Soft Voting congelado 75/25. A geração aplica os modelos já treinados.
+Cada execução recalcula as previsões de todos os membros e substitui os resultados
+e o Excel anteriores após validação, sem reutilizar o cache de previsões.
+Use `bash scripts/ensemble/deliver-test2.sh --check` para uma verificação sem
+inferência. Exportação sem inferência e configuração do Python estão
+no [guia da entrega final](docs/guides/final-delivery.md).
+
+<a id="documentation"></a>
+
+## Documentação
+
+Comece pelo **[índice da documentação](docs/README.md)**. Guias operacionais,
+resultados medidos, referências do enunciado e experimentos históricos estão separados.
+
+| Tarefa | Guia |
+|---|---|
+| Reutilizar o adaptador original do NorBERTo do EP1 sem alterações | [Modelo original](src/norberto_classifier/README.md) |
+| Predizer teste1 e depois comparar com o gabarito | [Fluxo do NorBERTo para teste1](docs/guides/norberto-test1.md) |
+| Configurar, treinar e executar Qwen com QLoRA | [Ajuste fino do Qwen](docs/guides/qwen-finetuning.md) |
+| Retreinar Qwen na mesma partição 16,093/3,999 dos modelos do EP1 | [Partição exata do EP1](docs/guides/qwen-finetuning.md#retrain-with-the-exact-ep1-partition) |
+| Treinar regressão logística lexical somente no desenvolvimento, preservando o conjunto reservado | [Fluxo da RL](src/rl_classifier/README.md) |
+| Selecionar os membros do ensemble e o modelo de desempate | [Ensemble](docs/guides/ensemble.md) |
+| Executar votação suave calibrada e stacking de quatro modelos com Qwen | [Fluxo atual dos ensembles](docs/guides/ensemble-qwen.md) |
+| Encaminhar decisões incertas do stacking ao GPT com validação OOF e cache persistente | [Cascata seletiva com GPT](docs/guides/stacking-gpt-cascade.md) |
+| Preparar RAG somente no treino e quatro ablações pareadas de contexto; classificação mediante ativação explícita | [Estudo de contexto RAG + stacking](docs/guides/rag-stacking.md) |
+| Comparar recuperação pelo NorBERTo congelado, MMR e aceitação de respostas GPT em cache, sem chamadas remotas | [Pesquisa offline](docs/guides/rag-offline-research.md) e [resultados medidos](docs/results/rag-offline-research.md) |
+| Examinar o protocolo preservado de calibração de três modelos e meta-RL | [Votação suave](docs/guides/ensemble-soft.md) e [stacking](docs/guides/ensemble-stacking.md) |
+| Consultar scripts executáveis por modelo e finalidade | [Índice dos scripts](scripts/README.md) |
+| Restaurar modelos congelados e suas bases públicas fixadas | [Artefatos dos modelos](models/README.md) |
+| Comparar resultados medidos dos classificadores | [Índice dos resultados](docs/results/README.md) |
+| Reproduzir a votação majoritária NorBERTo + SVM + RL e sua comparação em teste1 | [Ensemble majoritário](docs/results/ensemble-majority.md) |
+| Comparar votação suave ponderada calibrada com cada classificador congelado | [Resultados da votação suave e matrizes de confusão](docs/results/ensemble-soft.md) |
+| Comparar ensembles de quatro modelos com os controles de três modelos | [Resultados da integração do Qwen](docs/results/ensemble-qwen.md) |
+| Examinar a comparação original de stacking, incluindo as instâncias afetadas | [Resultados do stacking de três modelos](docs/results/ensemble-stacking.md) |
+| Consultar estudos anteriores com GPT/Codex e investigações de treinamento | [Arquivo de experimentos](docs/archive/README.md) |
+
+<a id="repository-layout"></a>
+
+## Estrutura do repositório
 
 ```text
 configs/       Classifier and experiment configurations
@@ -64,9 +116,11 @@ results/       Local runs and predictions; ignored by Git
 docs/          Guides, results, reference material, and archive
 ```
 
-## Base installation
+<a id="base-installation"></a>
 
-Use Python 3.11 or later and run commands from the repository root:
+## Instalação básica
+
+Use Python 3.11 ou posterior e execute os comandos na raiz do repositório:
 
 ```bash
 python3 -m venv .venv
@@ -74,51 +128,60 @@ python3 -m venv .venv
 .venv/bin/python -m pip install --no-deps -e .
 ```
 
-GPU training and inference use the ROCm environment documented in the model
-guides. On the RX 6650 XT, the validated container is `pln-rocm:6.4.1`, with
-`HSA_OVERRIDE_GFX_VERSION=10.3.0`. The base installation above does not select
-or install a GPU-specific PyTorch distribution.
+O treinamento e a inferência em GPU usam o ambiente ROCm documentado nos guias
+dos modelos. Na RX 6650 XT, o contêiner validado é `pln-rocm:6.4.1`, com
+`HSA_OVERRIDE_GFX_VERSION=10.3.0`. A instalação básica acima não seleciona
+nem instala uma distribuição do PyTorch específica para GPU.
 
-## Classifier packages
+<a id="classifier-packages"></a>
 
-| Package | Role |
+## Pacotes dos classificadores
+
+| Pacote | Função |
 |---|---|
-| `qwen_classifier` | Qwen3-1.7B classification with QLoRA adapters |
-| [norberto_classifier](src/norberto_classifier/README.md) | Unchanged original EP1 delivery adapter; inference only |
-| [svm_classifier](src/svm_classifier/README.md) | Frozen TF-IDF and SVM pipeline, CPU inference |
-| [rl_classifier](src/rl_classifier/README.md) | Frozen TF-IDF and logistic regression pipeline, CPU inference |
-| [ensemble_classifier](src/ensemble_classifier/README.md) | Configurable members and arbitration over saved predictions |
-| `cascade_classifier` | Nested OOF routing validation and selective GPT decisions over frozen stacking |
-| `rag_cascade` | Train-only retrieval/context pilot and enforced test2-before-test1 inference |
-| `rag_research` | Offline frozen-feature retrieval ablations and historical GPT intervention replay |
-| `gpt_classifier` | Remote classification, example retrieval, and shared evaluation |
+| `qwen_classifier` | Classificação com Qwen3-1.7B e adaptadores QLoRA |
+| [norberto_classifier](src/norberto_classifier/README.md) | Adaptador original da entrega do EP1 sem alterações; somente inferência |
+| [svm_classifier](src/svm_classifier/README.md) | Pipeline congelado de TF-IDF e SVM, inferência em CPU |
+| [rl_classifier](src/rl_classifier/README.md) | Pipeline congelado de TF-IDF e regressão logística, inferência em CPU |
+| [ensemble_classifier](src/ensemble_classifier/README.md) | Membros configuráveis e arbitragem sobre previsões salvas |
+| `cascade_classifier` | Validação aninhada OOF do roteamento e decisões seletivas do GPT sobre stacking congelado |
+| `rag_cascade` | Piloto de recuperação/contexto somente no treino e inferência com ordem obrigatória teste2 antes de teste1 |
+| `rag_research` | Ablações offline de recuperação com representações congeladas e reavaliação de intervenções históricas do GPT |
+| `gpt_classifier` | Classificação remota, recuperação de exemplos e avaliação compartilhada |
 
-Frozen packages live in `models/`; historical experimental adapters remain in
-their original run directories. The [model guide](models/README.md) explains
-formats, integrity checks, restoration, and public base revisions.
+Os pacotes congelados ficam em `models/`; os adaptadores experimentais históricos
+permanecem nos diretórios originais das execuções. O [guia dos modelos](models/README.md)
+explica formatos, verificações de integridade, restauração e revisões das bases públicas.
 
-## Data and evaluation
+<a id="data-and-evaluation"></a>
 
-The canonical training workbook, `data/train.xlsx`, has **20,092 responses**. NorBERTo's frozen
-partition uses **16,093 development rows** and **3,999 holdout rows**; training
-on 100% includes that former holdout. Each experiment records its own partition.
+## Dados e avaliação
 
-**Test1 has 900 rows** and serves final comparison with EP1. Predict texts
-before comparing with gold labels. **Test2 has 897 rows** and is the submission
-workbook. Do not select prompts, hyperparameters, or ensemble rules using test1
-labels. Holdout and test1 scores describe different datasets.
+A planilha canônica de treino, `data/train.xlsx`, contém **20,092 respostas**.
+A partição congelada do NorBERTo utiliza **16,093 linhas de desenvolvimento** e
+**3,999 linhas reservadas**; treinar em 100% inclui esse antigo conjunto reservado.
+Cada experimento registra sua própria partição.
 
-The [assignment](docs/reference/assignment.md) and
-[report template](docs/reference/report-template.md) define the academic
-requirements. Recorded metrics and their provenance are in the
-[results section](docs/results/README.md).
+**Teste1 tem 900 linhas** e serve à comparação final com o EP1. Gere as previsões
+dos textos antes de compará-las ao gabarito. **Teste2 tem 897 linhas** e é a planilha
+de entrega. Não selecione prompts, hiperparâmetros ou regras do ensemble usando
+os rótulos de teste1. Os resultados do conjunto reservado e de teste1 descrevem
+bases diferentes.
 
-## Verification
+O [enunciado](docs/reference/assignment.md) e o
+[modelo de relatório](docs/reference/report-template.md) definem os requisitos
+acadêmicos. As métricas registradas e sua procedência estão na
+[seção de resultados](docs/results/README.md).
+
+<a id="verification"></a>
+
+## Verificação
 
 ```bash
 .venv/bin/python -m pytest -q
 ```
 
-Optional model dependencies and real GPU integration checks are described in
-the corresponding guides. Earlier GPT/Codex commands, retrieval studies, and
-verification logs are retained in the [archive](docs/archive/README.md).
+Dependências opcionais dos modelos e verificações reais de integração com GPU
+estão nos respectivos guias. Comandos anteriores do GPT/Codex, estudos de
+recuperação e registros de verificação estão preservados no
+[arquivo](docs/archive/README.md).

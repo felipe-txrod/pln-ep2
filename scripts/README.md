@@ -1,21 +1,52 @@
-# Script entry points
+<a id="script-entry-points"></a>
 
-[Project documentation](../docs/README.md)
+# Pontos de entrada dos scripts
 
-Run commands from the EP2 root. Scripts are grouped by model or purpose.
-Dataset, model, cache, and result locations remain relative to the project root.
+[Documentação do projeto](../docs/README.md)
+
+Execute na raiz do EP2. Os scripts são agrupados por modelo ou finalidade.
+Caminhos de dados, modelos, caches e resultados são relativos à raiz.
+
+## Entrega final de Teste2
+
+```bash
+bash scripts/ensemble/setup-local.sh
+bash scripts/ensemble/deliver-test2.sh
+```
+
+Sem parâmetros, o setup prepara PyTorch CPU e as dependências neurais, e
+a entrega executa em CPU. Para GPU, use `setup-local.sh --with-rocm` e
+`deliver-test2.sh --device gpu`. `--minimal` ou `--without-rocm` instala só
+a base e mantém PyTorch intacto; `--with-neural` usa um PyTorch existente;
+`--with-cpu` explicita o padrão CPU. `--dry-run` apenas mostra o plano.
+Os modelos lexicais sempre usam CPU. O segundo comando do exemplo aplica a
+votação suave congelada e gera `deliveries/test2-soft-voting.xlsx`.
+Repetir o comando recalcula todos os membros e substitui as previsões e o Excel
+após validação. `--export-only` substitui apenas o Excel usando previsões concluídas.
+O executor é nativo, resolve o caminho do projeto e permite `--check`,
+`--export-only` e `--device gpu`. Consulte o
+[guia de entrega](../docs/guides/final-delivery.md).
+
+## Relatório do EP2
+
+| Ponto de entrada | Finalidade |
+|---|---|
+| `report/explain.py --output ARQUIVO.json` | Extrair coeficientes e contribuições locais exatas da RL congelada, sem treinamento |
+
+A interpretação requer as dependências lexicais e os dados/previsões identificados
+no [relatório](../docs/report/relatorio-ep2.md).
 
 ## NorBERTo
 
-The active model is the unchanged original EP1 delivery adapter in
-`models/norberto/`. Prediction verifies its pinned adapter/base and uses the
-original FP32/SDPA, 512-token head/tail representation.
+O modelo ativo é o adaptador original da entrega EP1 em `models/norberto/`,
+sem alterações. A predição verifica adaptador/base fixados e usa FP32/SDPA e
+representação início/fim original de 512 tokens.
 
-| Entry point | Purpose |
+| Ponto de entrada | Finalidade |
 |---|---|
-| `norberto/test1.sh predict` | Predict with the original EP1 adapter on GPU |
-| `norberto/test1.sh compare` | Score saved original-model predictions on CPU |
-| `norberto/evaluate-test1.py` | Python implementation of these two stages |
+| `norberto/test1.sh predict` | Predizer com adaptador original EP1 em GPU |
+| `norberto/test1.sh compare` | Avaliar previsões salvas do modelo original em CPU |
+| `norberto/evaluate-test1.py` | Implementação Python das duas etapas |
 
 ```bash
 bash scripts/norberto/test1.sh predict \
@@ -26,19 +57,21 @@ bash scripts/norberto/test1.sh compare \
   --output-dir results/norberto-ep1-test1-metrics-new
 ```
 
-Use the [test1 guide](../docs/guides/norberto-test1.md) and
-[original inference package](../src/norberto_classifier/README.md).
-The active package exposes inference only. Experimental loss corrections,
-training launchers, diagnostics, candidate-08 evaluators, and the frozen
-logistic variant were retired on 2026-11-05. Their measurements remain in the
-[archive](../docs/archive/README.md#norberto-training-investigations).
+Use o [guia teste1](../docs/guides/norberto-test1.md) e o
+[pacote original de inferência](../src/norberto_classifier/README.md).
+O pacote ativo expõe só inferência. Correções experimentais de perda,
+executores de treino, diagnósticos, avaliadores candidate-08 e variante
+logística congelada foram desativados em 2026-11-05. As medições estão no
+[arquivo](../docs/archive/README.md#norberto-training-investigations).
 
-### Exploratory grid-screening candidate-08
+<a id="exploratory-grid-screening-candidate-08"></a>
 
-The separate [candidate-08 screening workflow](../docs/guides/norberto-candidate08-screening.md)
-loads the original grid-search `best_adapter`, not its later final refit or a CV
-fold. This preserves the selected NorBERTo package and the primary soft-voting
-decision. To run the requested retrospective 900-row Test1 comparison:
+### Candidate-08 exploratório da triagem da grade
+
+O [fluxo separado de triagem candidate-08](../docs/guides/norberto-candidate08-screening.md)
+carrega `best_adapter` da grade original, não o ajuste final posterior ou um
+fold. Preserva o pacote NorBERTo selecionado e a decisão principal de votação
+suave. Para executar a comparação retrospectiva pedida de 900 linhas de Teste1:
 
 ```bash
 bash scripts/experiments/norberto/candidate08-test1.sh \
@@ -47,7 +80,28 @@ bash scripts/experiments/norberto/candidate08-test1.sh \
 
 ## SVM
 
-Evaluate a newly trained EP1 artifact without replacing the frozen model:
+A investigação SVM está concluída. O
+[relatório final](../docs/results/svm-final-optimization-final.md) mantém SVM
+original 75% / NorBERTo 25% inalterado. O desenvolvimento congelou A antes de
+Teste1; A tem macro-F1 49.5844% e 447/900, contra B=C com 49.5187% e 446/900.
+Pesos aninhados continuam 75/25. Sem promoção de padrão ou acesso a Teste2.
+
+| Ponto de entrada | Finalidade |
+|---|---|
+| `svm/finalize.sh` | Ajuste único, calibração/pesos aninhados, congelamento e avaliação separada de Teste1 executados; retomada valida artefatos |
+| `svm/verify-finalization.py` | Auditar independentemente métricas e procedência salvas de desenvolvimento ou predição final |
+| `svm/verify-confidence.py` | Reconstruir independentemente os 92 intervalos, sem ajuste/inferência |
+| `svm/research-budgeted.sh` | Busca agrupada limitada de duas fases concluída: 96/20 candidatos, 288/100 folds |
+| `svm/verify-search.py` | Auditar previsões salvas, cobertura de folds/grupos e decisões de um erro-padrão |
+| `svm/research.sh` | Busca original preservada, interrompida após 129 folds por tempo excessivo |
+
+Veja os guias de [finalização/verificação](../docs/guides/svm-finalization.md)
+e [busca limitada](../docs/guides/svm-budgeted-optimization.md) para comandos
+executados e retomada imutável. Experimentos longos são iniciados manualmente
+a pedido do usuário; nenhum ajuste segue os rótulos finais. Artefatos originais
+SVM/NorBERTo, resultados históricos e padrões são preservados.
+
+Avalie um artefato novo do EP1 sem substituir o modelo congelado:
 
 ```bash
 bash scripts/svm/test1.sh \
@@ -57,95 +111,103 @@ bash scripts/svm/test1.sh \
   --output-dir results/svm-full-test1
 ```
 
-This offline CPU-only command validates the saved recipe and adjacent metadata,
-persists text-only predictions, then reads gold labels to produce `metrics.json`.
-The output includes accuracy, macro-F1, precision, recall, and the confusion
-matrix. Use a new output directory. `SVM_IMAGE` overrides the existing image.
+O comando offline só de CPU valida receita e metadados adjacentes, persiste
+previsões só dos textos e depois lê rótulos para `metrics.json`. Inclui
+acurácia, macro-F1, precisão, revocação e matriz. Use novo diretório.
+`SVM_IMAGE` substitui a imagem existente.
 
-## Logistic regression
+<a id="logistic-regression"></a>
+
+## Regressão logística
 
 ```bash
 bash scripts/rl/train.sh --dry-run
 bash scripts/rl/train.sh
 ```
 
-The CPU-only offline launcher fits the fixed EP1 logistic recipe on 16,093
-frozen development rows and excludes all 3,999 holdout rows. It creates
-`models/rl-development/` for the selected RL default. The historical full-corpus
-RL model is preserved and never selected as a fallback. See the
-[RL guide](../src/rl_classifier/README.md).
+O executor offline só de CPU ajusta a receita fixa EP1 nas 16,093 linhas
+congeladas de desenvolvimento, excluindo 3,999 reservadas. Cria
+`models/rl-development/` para o padrão RL selecionado. A RL histórica completa
+é preservada e nunca usada como alternativa automática. Veja o
+[guia RL](../src/rl_classifier/README.md).
 
 ## Qwen
 
-| Entry point | Purpose |
+| Ponto de entrada | Finalidade |
 |---|---|
-| `qwen/container.sh` | Run the Qwen CLI in the configured ROCm image |
-| `qwen/evaluate-test1.py` | Evaluate an exported trained adapter on test1 |
+| `qwen/container.sh` | Executar CLI Qwen na imagem ROCm configurada |
+| `qwen/evaluate-test1.py` | Avaliar adaptador treinado exportado em teste1 |
 
-[Qwen workflow and compatibility](../docs/guides/qwen-finetuning.md).
+[Fluxo Qwen e compatibilidade](../docs/guides/qwen-finetuning.md).
 
-For retraining on the same development/holdout rows as the other local models,
-pass `--ep1-split data/ep1-development-holdout.csv` to `train` or `prepare`.
-The [exact command](../docs/guides/qwen-finetuning.md#retrain-with-the-exact-ep1-partition)
-uses a fresh output and automatic compatibility preflight. The selected Qwen
-now participates in [soft voting and stacking](../docs/guides/ensemble-qwen.md);
-majority presets retain three voters.
+Para retreinar nas mesmas linhas de desenvolvimento/conjunto reservado das
+outras bases locais, passe `--ep1-split data/ep1-development-holdout.csv` a
+`train` ou `prepare`. O [comando exato](../docs/guides/qwen-finetuning.md#retrain-with-the-exact-ep1-partition)
+usa nova saída e verificação automática de compatibilidade. Qwen selecionado
+participa de [votação suave e stacking](../docs/guides/ensemble-qwen.md);
+presets de maioria mantêm três votantes.
 
-## Model artifacts
+<a id="model-artifacts"></a>
 
-| Entry point | Purpose |
+## Artefatos dos modelos
+
+| Ponto de entrada | Finalidade |
 |---|---|
-| `models/prepare-base.py` | Restore or verify the pinned public NorBERTo base |
-| `models/freeze.py` | Export existing inference artifacts without training |
+| `models/prepare-base.py` | Restaurar/verificar a base pública NorBERTo fixada |
+| `models/freeze.py` | Exportar artefatos existentes de inferência sem treino |
 
 ```bash
 python3 scripts/models/prepare-base.py --verify-only
 python3 scripts/models/freeze.py --help
 ```
 
-[Artifact formats and restoration](../models/README.md).
+[Formatos e restauração de artefatos](../models/README.md).
 
-## Diagnostics and experiments
+<a id="diagnostics-and-experiments"></a>
 
-`diagnostics/audit-dataset-overlap.py` compares the six current EP1/EP2
-workbooks on CPU, without model loading. It reports file/content identity,
-exact and normalized text overlap, and conflicting labels. See the
-[dataset audit](../docs/results/dataset-overlap.md) for results and reproduction.
+## Diagnósticos e experimentos
 
-Former NorBERTo training diagnostics are historical records, with local
-source snapshots in
-`results/norberto-rollback-20261105/sources-before-rollback.tar.gz`.
+`diagnostics/audit-dataset-overlap.py` compara seis planilhas atuais EP1/EP2
+em CPU, sem carregar modelos. Reporta identidade de arquivo/conteúdo,
+sobreposição exata/normalizada e conflitos de rótulos. Veja a
+[auditoria dos dados](../docs/results/dataset-overlap.md) para resultados e reprodução.
 
-`experiments/gpt/pilot-efficiency.py` contains the earlier paired GPT/Codex
-pilot. It prepares a dry run by default; `--execute` enables remote requests.
-See the [historical GPT study](../docs/archive/gpt/first-result.md).
+Diagnósticos antigos de treino NorBERTo são registros históricos, com fontes
+locais em `results/norberto-rollback-20261105/sources-before-rollback.tar.gz`.
 
-## Compatibility commands
+`experiments/gpt/pilot-efficiency.py` contém o piloto pareado anterior GPT/Codex.
+Prepara simulação por padrão; `--execute` habilita pedidos remotos. Veja o
+[estudo GPT histórico](../docs/archive/gpt/first-result.md).
 
-`prepare-model-base.py` forwards to `models/prepare-base.py`, preserving
-restoration instructions emitted by frozen model packages. The removed
-NorBERTo training wrappers are available only in the historical source snapshot.
+<a id="compatibility-commands"></a>
 
-Choose a fresh output destination for every prediction or comparison run.
+## Comandos de compatibilidade
 
-## Weighted soft voting versus the EP1 delivery
+`prepare-model-base.py` encaminha para `models/prepare-base.py`, preservando
+as instruções emitidas pelos pacotes congelados. Invólucros removidos de
+retreinamento NorBERTo só estão na cópia histórica do código.
 
-`bash scripts/rag/offline.sh encode|retrieval|interventions|report` runs frozen
-NorBERTo extraction, retrieval ablations, cached GPT replay and evidence
-reporting. It exposes no GPT execution option. Use fresh output directories;
-see the [offline research guide](../docs/guides/rag-offline-research.md) and
-[measured findings](../docs/results/rag-offline-research.md).
+Escolha novo destino para cada execução de predição ou comparação.
 
-RAG context experiments use `python -m rag_cascade`. Pilot and confirmation are
-complete and selected zero GPT routing; final tests remain pending.
-Classification requires
-`--execute`; see the [RAG guide](../docs/guides/rag-stacking.md) for previews,
-train-only example retrieval and the test2-before-test1 guards.
+<a id="weighted-soft-voting-versus-the-ep1-delivery"></a>
 
-Selective stacking + GPT uses `python -m cascade_classifier`; no additional
-wrapper is required. The [cascade guide](../docs/guides/stacking-gpt-cascade.md)
-documents preparation, initial 10% prompt ablation, cached extension, frozen
-budget selection, prediction and separate final evaluation.
+## Votação suave ponderada contra a entrega EP1
+
+`bash scripts/rag/offline.sh encode|retrieval|interventions|report` executa
+extração NorBERTo congelada, ablações de recuperação, reavaliação GPT em cache
+e relatórios. Não expõe execução GPT. Use novos diretórios; veja o
+[guia offline](../docs/guides/rag-offline-research.md) e os
+[resultados medidos](../docs/results/rag-offline-research.md).
+
+Experimentos de contexto RAG usam `python -m rag_cascade`. Piloto e confirmação
+terminaram e selecionaram roteamento zero GPT; testes finais ficam pendentes.
+Classificar exige `--execute`; veja o [guia RAG](../docs/guides/rag-stacking.md)
+para prévias, recuperação só no treino e proteções da ordem teste2 antes de teste1.
+
+Stacking + GPT seletivo usa `python -m cascade_classifier`, sem novo invólucro.
+O [guia da cascata](../docs/guides/stacking-gpt-cascade.md) documenta preparação,
+ablação inicial de 10%, extensão em cache, seleção congelada do orçamento,
+predição e avaliação final separada.
 
 ```bash
 PYTHONPATH=src .venv/bin/python scripts/ensemble/compare-ep1.py \
@@ -154,18 +216,17 @@ PYTHONPATH=src .venv/bin/python scripts/ensemble/compare-ep1.py \
   --output-dir results/ensemble-soft-vs-ep1-new
 ```
 
-This offline CPU comparison verifies the frozen artifact and saved predictions,
-aligns the actual EP1 workbook with all 900 gold rows, and reports accuracy,
-macro-F1, confusion matrices and paired McNemar. It performs no inference or
-parameter tuning. It is an isolated comparison; it does not certify the
-assignment's test2-before-test1 order. See the
-[results and protocol limitations](../docs/results/ensemble-soft.md#conferência-contra-a-entrega-efetiva-do-ep1).
+A comparação offline em CPU verifica artefato congelado e previsões, alinha a
+planilha real EP1 às 900 linhas do gabarito e reporta acurácia, macro-F1,
+matrizes e McNemar pareado. Não faz inferência ou ajuste. É comparação isolada;
+não certifica a ordem do enunciado teste2 antes de teste1. Veja
+[resultados e limites do protocolo](../docs/results/ensemble-soft.md#conferência-contra-a-entrega-efetiva-do-ep1).
 
-The current four-model commands and frozen artifacts, including Qwen, are
-documented in the [Qwen ensemble guide](../docs/guides/ensemble-qwen.md).
+Comandos e artefatos atuais de quatro modelos com Qwen estão no
+[guia dos ensembles Qwen](../docs/guides/ensemble-qwen.md).
 
-For stacking, use `python -m ensemble_classifier fit-stacking`,
-`predict-stacking` and `evaluate-stacking`. No additional launcher is required.
-The [guide](../docs/guides/ensemble-stacking.md) gives the exact commands and
-cached-score workflow; the [results](../docs/results/ensemble-stacking.md)
-include per-class F1, confusion matrices and corrected/harmed Excel rows.
+Para stacking, use `python -m ensemble_classifier fit-stacking`,
+`predict-stacking` e `evaluate-stacking`, sem executor adicional.
+O [guia](../docs/guides/ensemble-stacking.md) dá comandos exatos e uso de escores
+em cache; os [resultados](../docs/results/ensemble-stacking.md) incluem F1 por
+classe, matrizes e linhas Excel corrigidas/prejudicadas.

@@ -1,0 +1,512 @@
+{
+  "method": "Exact additive logits of the frozen word/character logistic regression",
+  "training_performed": false,
+  "remote_calls": 0,
+  "model_sha256": "05d69e147a10b7c49ebe3893f247e0f23e8d61005aaf4fd7b7eb45845d49a20f",
+  "gold_sha256": "c92658298f95b6325a49b017b58673ebda450fa54dc2280d74393cb093378406",
+  "predictions_sha256": "abda308a63f5c6554aa4f08b7a0c3de6593c2c925c74da10904999970fe4cd49",
+  "labels": [
+    "c1",
+    "c234",
+    "c5"
+  ],
+  "global_word_terms": {
+    "c1": [
+      {
+        "term": "luis",
+        "coefficient": 0.3690774051574018
+      },
+      {
+        "term": "demanda",
+        "coefficient": 0.3498012662850547
+      },
+      {
+        "term": "para atendimento",
+        "coefficient": 0.34137833643300625
+      },
+      {
+        "term": "do nup",
+        "coefficient": 0.33736847494556355
+      },
+      {
+        "term": "sr luis",
+        "coefficient": 0.3366442207662305
+      },
+      {
+        "term": "sra comunicamos",
+        "coefficient": 0.32741544864575534
+      },
+      {
+        "term": "processo",
+        "coefficient": 0.321181054314535
+      },
+      {
+        "term": "solicitação",
+        "coefficient": 0.3098731477307255
+      },
+      {
+        "term": "não se",
+        "coefficient": 0.3033339808786767
+      },
+      {
+        "term": "abaixo http",
+        "coefficient": 0.30279628175289
+      },
+      {
+        "term": "todos os",
+        "coefficient": 0.29987602911319733
+      },
+      {
+        "term": "do banco",
+        "coefficient": 0.2985673500151083
+      },
+      {
+        "term": "de dados",
+        "coefficient": 0.28933945229871977
+      },
+      {
+        "term": "costa",
+        "coefficient": 0.2866043404725114
+      },
+      {
+        "term": "segue solicitação",
+        "coefficient": 0.28600638604539863
+      }
+    ],
+    "c234": [
+      {
+        "term": "sistemas",
+        "coefficient": 0.3698262827082344
+      },
+      {
+        "term": "quanto",
+        "coefficient": 0.3628415263320885
+      },
+      {
+        "term": "requisitos",
+        "coefficient": 0.35880305712956817
+      },
+      {
+        "term": "segue anexa",
+        "coefficient": 0.3547789389766691
+      },
+      {
+        "term": "se no",
+        "coefficient": 0.35366268718994104
+      },
+      {
+        "term": "arquivo anexo",
+        "coefficient": 0.33044014604313166
+      },
+      {
+        "term": "prezado",
+        "coefficient": 0.31310274133092736
+      },
+      {
+        "term": "prezado em",
+        "coefficient": 0.30797934731407806
+      },
+      {
+        "term": "reitoria",
+        "coefficient": 0.2979693554288841
+      },
+      {
+        "term": "pedido de",
+        "coefficient": 0.2874839249309056
+      },
+      {
+        "term": "04",
+        "coefficient": 0.2847179556261841
+      },
+      {
+        "term": "forma",
+        "coefficient": 0.2841678243907051
+      },
+      {
+        "term": "de",
+        "coefficient": 0.267501044007212
+      },
+      {
+        "term": "norte",
+        "coefficient": 0.2641822846652091
+      },
+      {
+        "term": "concurso",
+        "coefficient": 0.2637028198799147
+      }
+    ],
+    "c5": [
+      {
+        "term": "dnpm",
+        "coefficient": 0.6728308515122807
+      },
+      {
+        "term": "questionário",
+        "coefficient": 0.6189409010174081
+      },
+      {
+        "term": "solicitação encaminhamos",
+        "coefficient": 0.544287224572765
+      },
+      {
+        "term": "sic dnpm",
+        "coefficient": 0.5341539564250642
+      },
+      {
+        "term": "anexo os",
+        "coefficient": 0.5064833069934306
+      },
+      {
+        "term": "ainda não",
+        "coefficient": 0.43755988337314816
+      },
+      {
+        "term": "há",
+        "coefficient": 0.43602503881569876
+      },
+      {
+        "term": "solicitado",
+        "coefficient": 0.43403650393883914
+      },
+      {
+        "term": "vaga",
+        "coefficient": 0.4274971784793888
+      },
+      {
+        "term": "seguem",
+        "coefficient": 0.41321952045837484
+      },
+      {
+        "term": "documento solicitado",
+        "coefficient": 0.4077114593885585
+      },
+      {
+        "term": "nenhum",
+        "coefficient": 0.3939670931836652
+      },
+      {
+        "term": "segue anexo",
+        "coefficient": 0.3602856825367188
+      },
+      {
+        "term": "odila",
+        "coefficient": 0.35783280566678566
+      },
+      {
+        "term": "anexo cópia",
+        "coefficient": 0.34823242929693426
+      }
+    ]
+  },
+  "local": [
+    {
+      "excel_row": 25,
+      "text": "Senhora,  não existe prazo previsto para a situação descrita na sua solicitação.  Atenciosamente, SIC Susep",
+      "gold": "c1",
+      "soft_prediction": "c5",
+      "soft_probabilities": {
+        "c1": 0.3475122805563958,
+        "c234": 0.3006469127644401,
+        "c5": 0.3518408066791642
+      },
+      "logistic_prediction": "c5",
+      "logistic_intercept": 0.1593700095060129,
+      "logistic_score": 0.2109515025946534,
+      "all_contributions_sum": 0.0515814930886404,
+      "top_absolute_contributions": [
+        {
+          "feature": "word__solicitação atenciosamente",
+          "contribution": -0.05208056624715291
+        },
+        {
+          "feature": "word__susep",
+          "contribution": -0.04059176993848675
+        },
+        {
+          "feature": "word__não existe",
+          "contribution": 0.03618103186151574
+        },
+        {
+          "feature": "word__existe",
+          "contribution": 0.033922702381375625
+        },
+        {
+          "feature": "word__atenciosamente sic",
+          "contribution": 0.029166241249125566
+        },
+        {
+          "feature": "word__senhora",
+          "contribution": 0.024409528199452617
+        },
+        {
+          "feature": "char__ suse",
+          "contribution": -0.017414832322496805
+        },
+        {
+          "feature": "word__na sua",
+          "contribution": 0.017248123113724458
+        },
+        {
+          "feature": "char__susep",
+          "contribution": -0.015105825622685946
+        },
+        {
+          "feature": "char__usep",
+          "contribution": -0.015105825622685946
+        },
+        {
+          "feature": "char__suse",
+          "contribution": -0.014578781158553503
+        },
+        {
+          "feature": "word__previsto para",
+          "contribution": 0.014538091714984762
+        },
+        {
+          "feature": "word__prazo previsto",
+          "contribution": -0.012956290685349266
+        },
+        {
+          "feature": "char__sep",
+          "contribution": -0.012495383678684562
+        },
+        {
+          "feature": "word__sic",
+          "contribution": 0.012404799057906498
+        }
+      ]
+    },
+    {
+      "excel_row": 77,
+      "text": "Prezado Senhor.",
+      "gold": "c5",
+      "soft_prediction": "c1",
+      "soft_probabilities": {
+        "c1": 0.38077972641207436,
+        "c234": 0.2698261797698305,
+        "c5": 0.3493940938180953
+      },
+      "logistic_prediction": "c1",
+      "logistic_intercept": 0.008896223436346974,
+      "logistic_score": 0.2659398508123264,
+      "all_contributions_sum": 0.2570436273759794,
+      "top_absolute_contributions": [
+        {
+          "feature": "word__prezado senhor",
+          "contribution": 0.11057701604709086
+        },
+        {
+          "feature": "word__senhor",
+          "contribution": 0.08537065063291195
+        },
+        {
+          "feature": "char__or.",
+          "contribution": 0.014637669328222412
+        },
+        {
+          "feature": "char__or. ",
+          "contribution": 0.013652317901621375
+        },
+        {
+          "feature": "char__ezado",
+          "contribution": 0.012193095662936197
+        },
+        {
+          "feature": "char__r. ",
+          "contribution": 0.009337186848210489
+        },
+        {
+          "feature": "char__do ",
+          "contribution": 0.008726132707961817
+        },
+        {
+          "feature": "char__nhor.",
+          "contribution": -0.008275453009605827
+        },
+        {
+          "feature": "char__nho",
+          "contribution": 0.008166019789328322
+        },
+        {
+          "feature": "char__hor.",
+          "contribution": -0.007954058743793796
+        },
+        {
+          "feature": "char__ sen",
+          "contribution": 0.007681671371999514
+        },
+        {
+          "feature": "char__hor. ",
+          "contribution": -0.00728809791036026
+        },
+        {
+          "feature": "char__ pre",
+          "contribution": -0.0070268725495943605
+        },
+        {
+          "feature": "char__enho",
+          "contribution": 0.005934147369707609
+        },
+        {
+          "feature": "char__ pr",
+          "contribution": -0.0058281833826701315
+        }
+      ]
+    },
+    {
+      "excel_row": 137,
+      "text": "Prezada cidadã,  Segue anexa a resposta.  Atenciosamente,",
+      "gold": "c1",
+      "soft_prediction": "c5",
+      "soft_probabilities": {
+        "c1": 0.23252126447176175,
+        "c234": 0.354579794758998,
+        "c5": 0.4128989407692402
+      },
+      "logistic_prediction": "c5",
+      "logistic_intercept": 0.1593700095060129,
+      "logistic_score": 0.24372972232207435,
+      "all_contributions_sum": 0.0843597128160615,
+      "top_absolute_contributions": [
+        {
+          "feature": "word__resposta atenciosamente",
+          "contribution": -0.06394523874839658
+        },
+        {
+          "feature": "word__prezada",
+          "contribution": 0.05779957500286758
+        },
+        {
+          "feature": "word__prezada cidadã",
+          "contribution": 0.055333340181820866
+        },
+        {
+          "feature": "word__segue anexa",
+          "contribution": -0.05325511327202898
+        },
+        {
+          "feature": "word__resposta",
+          "contribution": -0.0313350347798816
+        },
+        {
+          "feature": "char__ezada",
+          "contribution": 0.026293231324135313
+        },
+        {
+          "feature": "word__anexa resposta",
+          "contribution": -0.022586823676404463
+        },
+        {
+          "feature": "char__osta.",
+          "contribution": -0.020870171292238008
+        },
+        {
+          "feature": "char__zada ",
+          "contribution": 0.020325588508600514
+        },
+        {
+          "feature": "char__ ane",
+          "contribution": 0.01967303086807361
+        },
+        {
+          "feature": "char__ anex",
+          "contribution": 0.019068580393066796
+        },
+        {
+          "feature": "word__cidadã",
+          "contribution": 0.01883491453453771
+        },
+        {
+          "feature": "char__ane",
+          "contribution": 0.01870413145959513
+        },
+        {
+          "feature": "word__anexa",
+          "contribution": 0.01783233151950694
+        },
+        {
+          "feature": "char__zada",
+          "contribution": 0.017603173160460436
+        }
+      ]
+    },
+    {
+      "excel_row": 693,
+      "text": "Sua resposta segue em anexo.",
+      "gold": "c1",
+      "soft_prediction": "c5",
+      "soft_probabilities": {
+        "c1": 0.23895695491731422,
+        "c234": 0.3280031754529134,
+        "c5": 0.43303986962977237
+      },
+      "logistic_prediction": "c5",
+      "logistic_intercept": 0.1593700095060129,
+      "logistic_score": 0.40504924142051824,
+      "all_contributions_sum": 0.2456792319145053,
+      "top_absolute_contributions": [
+        {
+          "feature": "word__segue em",
+          "contribution": -0.08900591199067975
+        },
+        {
+          "feature": "word__anexo",
+          "contribution": 0.06056514551681568
+        },
+        {
+          "feature": "word__em anexo",
+          "contribution": 0.04746705074983554
+        },
+        {
+          "feature": "word__resposta",
+          "contribution": -0.03977892535309287
+        },
+        {
+          "feature": "word__em",
+          "contribution": 0.03420321565683875
+        },
+        {
+          "feature": "word__sua resposta",
+          "contribution": 0.033247951171311144
+        },
+        {
+          "feature": "char__exo. ",
+          "contribution": 0.030851282891993913
+        },
+        {
+          "feature": "word__resposta segue",
+          "contribution": -0.030169328419036582
+        },
+        {
+          "feature": "char__ ane",
+          "contribution": 0.029692768010658743
+        },
+        {
+          "feature": "char__ anex",
+          "contribution": 0.028780463839456875
+        },
+        {
+          "feature": "char__exo.",
+          "contribution": 0.028325631689488526
+        },
+        {
+          "feature": "char__ane",
+          "contribution": 0.02823039483542898
+        },
+        {
+          "feature": "char__nexo.",
+          "contribution": 0.02575303186569936
+        },
+        {
+          "feature": "char__anex",
+          "contribution": 0.02557600789934929
+        },
+        {
+          "feature": "char__xo. ",
+          "contribution": 0.023419839088703428
+        }
+      ]
+    }
+  ],
+  "limitations": "Explains the logistic classifier only; coefficients are associations, not causal clarity criteria or explanations of neural or ensemble internals."
+}

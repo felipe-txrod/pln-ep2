@@ -1,449 +1,516 @@
-# Measured results
+<a id="measured-results"></a>
 
-[Documentation index](../README.md)
+# Resultados medidos
 
-Compare results only on the same dataset and preserve the training recipe
-and partition recorded by each report. The original EP1 NorBERTo reference
-has 48.00% accuracy on test1 and 45.31% on its frozen holdout.
+[Índice da documentação](../README.md)
 
-The [accepted project decision](../decisions/ensemble-strategy.md) retains
-weighted soft voting (SVM 75%, NorBERTo 25%) as the primary approach: Test1
-macro-F1 49.58%, accuracy 49.67% (447/900). Stacking, GPT and RAG studies remain
-preserved below, together with their exploratory and data-partition limitations.
+Compare resultados somente na mesma base e preserve a receita de treino e a
+partição registradas em cada relatório. A referência original do NorBERTo do
+EP1 tem acurácia de 48.00% em teste1 e 45.31% no conjunto reservado congelado.
 
-## Offline retrieval and selective acceptance: no promotion
+A [decisão adotada pelo projeto](../decisions/ensemble-strategy.md) mantém a
+votação suave ponderada (SVM 75%, NorBERTo 25%) como abordagem principal:
+macro-F1 de Teste1 49.58%, acurácia 49.67% (447/900). Estudos de stacking, GPT
+e RAG ficam preservados abaixo, com suas limitações exploratórias e de partição.
 
-The [offline investigation](rag-offline-research.md) compares 171 retrieval
-variants plus two baselines on 1,972 validation rows, reusing frozen NorBERTo,
-E5 and historical GPT replies. The development-selected triple fusion did not
-improve audit Hit@1: 37.27% versus 38.48% for the current hybrid. Diversity
-ablations expose a purity/coverage tradeoff; expanded candidate pools add no
-measured benefit. The joint nested intervention selector scored macro-F1
-47.19%, versus stacking's 47.30% on these same 1,972 rows. Replay has limited
-logged support and fixed upstream OOF predictions, so family scores do not
-establish end-to-end generalization. No candidate passed the recorded paid-trial
-screen. Zero new GPT calls, no base-model refits or default changes. The
-[aggregate](data/rag-offline-research.json) and
-[reproduction guide](../guides/rag-offline-research.md) preserve the evidence.
+<a id="final-svm-optimization-completed-retain-the-original-ensemble"></a>
 
-## RAG context confirmation: zero GPT routing selected
+## Otimização final do SVM concluída: manter o ensemble original
 
-The [completed confirmation](rag-cascade-confirmation.md) scored all 1,884 OOF
-rows under four contexts and 0/5/10% routing. Original stacking won at 910 correct,
-accuracy 48.30%, macro-F1 48.08%. Every nonzero candidate lost macro-F1; the best
-was local predictions at 5%, with 47.84%. The hybrid RAG/local pilot gain did not
-persist. There were 94 successful calls, no failures/fallbacks, and USD 1.6595524
-estimated API-equivalent known usage. No final tests, production changes or new
-remote calls were made during scoring. The
-[aggregate](data/rag-cascade-confirmation.json) includes all metrics and audits.
+O [relatório final completo](svm-final-optimization-final.md) mantém A, o ensemble
+original SVM 75% / NorBERTo 25% inalterado. O desenvolvimento congelou essa
+recomendação antes de Teste1. Nas mesmas 900 linhas finais, A acerta 447 e
+obtém macro-F1 49.5844%; B/C otimizados acertam 446 e obtêm 49.5187%. A seleção
+aninhada mantém 75/25 nos cinco folds externos, tornando B e C idênticos.
+Corrigem 21 erros de A e prejudicam 22 acertos; o intervalo pareado de macro-F1
+inclui zero. Não se estabelece melhora consistente nem diferença significativa.
 
-## RAG context pilot: exploratory gain not confirmed
+As buscas agrupadas terminaram: 96 candidatos / 288 folds na fase A e 20 / 100
+na fase B, sem tempo esgotado ou aviso de convergência. Um SVM selecionado foi
+retreinado, a calibração aninhada escolheu sigmoide, e todas as métricas finais
+e 92 intervalos passaram na reconstrução independente. Teste1 é retrospectivo
+e mantém todas as linhas apesar da sobreposição histórica. Teste2, artefatos
+originais e padrões ativos permanecem inalterados.
 
-The [completed 48-target pilot](rag-cascade-pilot.md) compared 14 context arms
-using train-only TF-IDF/E5/hybrid retrieval and three/five demonstrations. The
-paired-arm rule selected hybrid retrieval with three examples. Its combined
-local-prediction arm scored 19/48, macro-F1 36.90%, versus stacking at 16/48 and
-27.59% on the same difficult cases: eight errors corrected, five correct labels
-harmed. This small exploratory gain was not statistically significant and did
-not persist in the subsequent 1,884-row confirmation. The pilot used 84 successful
-batched calls plus three archived failed attempts, with USD 2.022988 estimated
-API-equivalent known usage. No final tests or production defaults changed.
-The [original preparation record](rag-cascade-preparation.md),
-[aggregate](data/rag-cascade-pilot.json), and [guide](../guides/rag-stacking.md)
-preserve the milestones, recovery accounting and test2-before-test1 protocol.
+Veja o [agregado](data/svm-final-optimization.json), a
+[revisão do orçamento e evidências da validação cruzada](svm-budgeted-optimization.md),
+o [registro original de preparação](svm-final-optimization.md) e o
+[guia de execução/verificação](../guides/svm-finalization.md).
 
-## Stacking + selective GPT: no measured improvement
+<a id="offline-retrieval-and-selective-acceptance-no-promotion"></a>
 
-The [completed cascade experiment](stacking-gpt-cascade.md) uses nested 5x5
-grouped OOF predictions to select routing, prompt context and budget without
-in-sample meta-model predictions. The 10% ablation preferred local model
-predictions over text-only context, but neither improved stacking. Validation
-selected **zero GPT calls** by macro-F1. Frozen 5/10/20% configurations scored
-435/434/436 correct on test1, below stacking's 440/900. Macro-F1 was 48.18%,
-48.05%, 48.18%, versus 48.80% for stacking. All 900 labels were scored only
-after prediction; no final result changed the selected configuration.
+## Recuperação offline e aceitação seletiva: sem promoção
 
-The experiment used 97 successful batched Codex requests in total, including
-23 for the final comparison, with no failures. Observed tokens correspond to
-USD 1.672858 at standard API-equivalent prices; this is not a ChatGPT invoice.
-The [frozen package](../../models/stacking-gpt-cascade/README.md) preserves the
-zero-budget choice, optional nonzero comparisons, source identities and audits.
-All 201 tests passed; independent arithmetic verified routing and all metrics.
+A [investigação offline](rag-offline-research.md) compara 171 variantes de
+recuperação e duas referências em 1,972 linhas, reutilizando NorBERTo congelado,
+E5 e respostas GPT históricas. A fusão tripla escolhida no desenvolvimento
+não melhorou Hit@1 na auditoria: 37.27% contra 38.48% do híbrido atual.
+Ablações de diversidade mostram o compromisso pureza/cobertura; ampliar o
+conjunto de candidatos não traz benefício medido. O seletor conjunto aninhado
+de intervenções obteve macro-F1 47.19%, contra 47.30% do stacking nas mesmas
+1,972 linhas. A reavaliação tem cobertura registrada limitada e previsões OOF
+anteriores fixas; resultados por família não estabelecem generalização de
+ponta a ponta. Nenhum candidato passou no critério registrado para teste pago.
+Zero novas chamadas GPT, sem reajuste dos modelos-base ou mudança de padrões.
+O [agregado](data/rag-offline-research.json) e o
+[guia de reprodução](../guides/rag-offline-research.md) preservam a evidência.
 
-## Qwen added to soft voting and stacking
+<a id="rag-context-confirmation-zero-gpt-routing-selected"></a>
 
-The [four-model integration](ensemble-qwen.md) preserves the original EP1
-split and the disjoint 2,027 calibration / 1,972 meta-training rows. Soft voting
-selected SVM 75%, RL 0%, NorBERTo 25%, Qwen 0% from 35 fixed candidates and
-reproduced **447/900 (49.67%)**. Stacking uses all twelve probabilities and
-scored **440/900 (48.89%)**, versus 442/900 for its three-model control.
-Qwen alone scored **414/900 (46.00%)**. No parameters were tuned on test1.
-The new default soft/stacking packages coexist with the original artifacts;
-the separate majority presets retain three voters. Independent arithmetic
-verified all scores, weights, predictions and metrics. Qwen's checkpoint
-selection used the holdout, so inherited validation exposure still applies.
+## Confirmação de contexto RAG: roteamento zero ao GPT selecionado
 
-## Selected Qwen: frozen EP1 partition
+A [confirmação concluída](rag-cascade-confirmation.md) avaliou as 1,884 linhas
+OOF em quatro contextos e roteamento 0/5/10%. Stacking original venceu com
+910 acertos, acurácia 48.30% e macro-F1 48.08%. Todos os candidatos com GPT
+perderam macro-F1; o melhor usou previsões locais a 5%, com 47.84%. O ganho
+do piloto híbrido RAG/local não persistiu. Houve 94 chamadas válidas, sem
+falhas/fallbacks, com consumo conhecido estimado de USD 1.6595524 equivalente
+à API. A avaliação não executou testes finais, mudanças em produção nem novas
+chamadas remotas. O [agregado](data/rag-cascade-confirmation.json) inclui todas
+as métricas e auditorias.
 
-The completed 16,093/3,999 run is now the default Qwen model in
-`models/qwen/adapter/`. It completed three epochs and 3,018 updates; validation
-scored **1,791/3,999 (44.79%)**, macro-F1 **44.44%**. All source rows, selected
-checkpoint, package checksums and 225 finite tensors were checked, followed
-by real GPU reload on synthetic texts. The original per-row validation export
-had a length-grouping order bug; exact checkpoint-RNG recovery reproduced
-the aggregate metrics and saved aligned records separately. Subsequent test1
-inference scored 414/900; Qwen now participates in soft voting and stacking.
-See the [model and audit](qwen-ep1-model.md).
+<a id="rag-context-pilot-exploratory-gain-not-confirmed"></a>
 
-## Original three-model stacking versus weighted soft voting
+## Piloto de contexto RAG: ganho exploratório não confirmado
 
-The [stacking comparison](ensemble-stacking.md) reuses the same frozen models,
-calibrators and 1,972 development rows as soft-weight selection. Five grouped
-stratified folds selected meta-LR C=0.1 from four fixed candidates using a
-one-standard-error rule. It scored **442/900 (49.11%)**, macro-F1 **49.03%**,
-below weighted soft voting at 447/900 (49.67%), macro-F1 49.58%. It corrected
-40 soft errors and harmed 45 correct cases; exact McNemar p=0.664645.
-The report includes per-class F1, confusion matrices and affected Excel rows.
-No base model was refitted, no test-label tuning occurred and earlier artifacts
-were preserved. This remains an exploratory comparison with historical exposure.
+O [piloto concluído de 48 alvos](rag-cascade-pilot.md) comparou 14 braços com
+recuperação TF-IDF/E5/híbrida somente no treino e três/cinco demonstrações.
+A regra pareada escolheu recuperação híbrida com três exemplos. O braço
+combinado com previsões locais acertou 19/48, macro-F1 36.90%, contra 16/48
+e 27.59% do stacking nos mesmos casos difíceis: oito erros corrigidos e cinco
+acertos prejudicados. O pequeno ganho exploratório não foi estatisticamente
+significativo e não persistiu na confirmação posterior de 1,884 linhas.
+O piloto usou 84 chamadas válidas em lotes e três tentativas falhas arquivadas,
+com consumo conhecido estimado de USD 2.022988 equivalente à API. Nenhum teste
+final ou padrão de produção mudou. O [registro original de preparação](rag-cascade-preparation.md),
+[agregado](data/rag-cascade-pilot.json) e [guia](../guides/rag-stacking.md)
+preservam marcos, contabilização da recuperação e protocolo teste2 antes de teste1.
 
-## Local majority ensemble: test1 comparison
+<a id="stacking--selective-gpt-no-measured-improvement"></a>
 
-The [weighted soft-voting comparison](ensemble-soft.md) is a separate frozen
-method: 2,027 holdout rows calibrate probabilities and 1,972 select weights by
-macro-F1 from 16 candidates. It scores 447/900 (49.67%) and 49.58% macro-F1,
-using SVM 0.75, LR 0.00 and NorBERTo 0.25. The report includes all individual
-confusion matrices, calibration effects and inherited cross-dataset text overlap.
-The [direct comparison with the actual EP1 delivery](ensemble-soft.md#conferência-contra-a-entrega-efetiva-do-ep1)
-confirms all 900 original labels match the saved NorBERTo predictions. Exact
-two-sided McNemar gives p=0.303327: the numerical gain is not statistically
-significant at 0.05. The official test2-before-test1 order was not established.
+## Stacking + GPT seletivo: sem melhora medida
 
-The majority presets use NorBERTo + SVM + RL, strict majority, with RL
-arbitration; the separate soft/stacking defaults now also evaluate Qwen. The [holdout isolation audit and
-results](ensemble-holdout.md) confirm all 3,999 holdout rows and their groups
-were excluded from the selected models' fitting. NorBERTo scores 1,812/3,999
-(45.31%); RL and the best trio each score 1,803/3,999 (45.09%); SVM scores
-1,792/3,999 (44.81%).
+O [experimento concluído da cascata](stacking-gpt-cascade.md) usa previsões OOF
+agrupadas aninhadas 5x5 para escolher roteamento, contexto e orçamento, sem
+previsões do meta-modelo nos próprios dados de ajuste. A ablação de 10% preferiu
+previsões locais ao texto isolado, mas nenhuma melhorou stacking. A validação
+selecionou **zero chamadas GPT** por macro-F1. As configurações congeladas
+5/10/20% acertaram 435/434/436 em teste1, abaixo de 440/900 do stacking.
+Macro-F1 foi 48.18%, 48.05%, 48.18%, contra 48.80%. Os 900 rótulos só foram
+avaliados após a predição; resultados finais não mudaram a configuração.
 
-The best NorBERTo + SVM + RL majority used RL for three-way ties: **443/900
-(49.22%)**, below RL alone at 447/900 (49.67%). All three use development-only
-artifacts with holdout reserved. Fifteen fixed voting configurations were
-compared as an explicitly exploratory study, yielding six distinct prediction
-sequences. See the [results and reproduction command](ensemble-majority.md)
-and [independently verified aggregate](data/ensemble-majority-test1.json).
+O experimento usou 97 pedidos Codex válidos em lotes, incluindo 23 na comparação
+final, sem falhas. Os tokens observados correspondem a USD 1.672858 pelos
+preços padrão equivalentes à API; não é fatura ChatGPT. O
+[pacote congelado](../../models/stacking-gpt-cascade/README.md) preserva orçamento
+zero, comparações positivas opcionais, identidades e auditorias. Os 201 testes
+passaram; cálculos independentes verificaram roteamento e métricas.
 
-## Selected NorBERTo: unchanged EP1 delivery
+<a id="qwen-added-to-soft-voting-and-stacking"></a>
 
-The selected artifact is `models/norberto/final_model/`, SHA-256
+## Qwen adicionado à votação suave e ao stacking
+
+A [integração de quatro modelos](ensemble-qwen.md) preserva a divisão original
+do EP1 e as 2,027 linhas de calibração / 1,972 de meta-treino disjuntas.
+Votação suave selecionou SVM 75%, RL 0%, NorBERTo 25%, Qwen 0% entre 35
+candidatos fixos e reproduziu **447/900 (49.67%)**. Stacking usa doze
+probabilidades e acertou **440/900 (48.89%)**, contra 442/900 do controle de
+três modelos. Qwen isolado acertou **414/900 (46.00%)**. Nenhum parâmetro foi
+ajustado em teste1. Os novos pacotes padrão coexistem com os originais; os
+presets separados de maioria mantêm três votantes. Cálculos independentes
+verificaram escores, pesos, previsões e métricas. O checkpoint Qwen usou o
+conjunto reservado, mantendo a limitação herdada de exposição na validação.
+
+<a id="selected-qwen-frozen-ep1-partition"></a>
+
+## Qwen selecionado: partição congelada do EP1
+
+A execução 16,093/3,999 concluída é o padrão Qwen em `models/qwen/adapter/`.
+Concluiu três épocas e 3,018 atualizações; validação: **1,791/3,999 (44.79%)**,
+macro-F1 **44.44%**. Todas as linhas, checkpoint, checksums e 225 tensores finitos
+foram conferidos, seguidos de recarga real em GPU com textos sintéticos.
+A exportação original por linha tinha erro de ordem pelo agrupamento por
+comprimento; a recuperação exata do estado aleatório do checkpoint reproduziu
+as métricas agregadas e salvou registros alinhados separadamente. A inferência
+posterior de teste1 acertou 414/900; Qwen participa de votação suave e stacking.
+Veja [modelo e auditoria](qwen-ep1-model.md).
+
+<a id="original-three-model-stacking-versus-weighted-soft-voting"></a>
+
+## Stacking original de três modelos contra votação suave ponderada
+
+A [comparação de stacking](ensemble-stacking.md) reutiliza modelos, calibradores
+e 1,972 linhas de desenvolvimento da seleção dos pesos suaves. Cinco folds
+agrupados estratificados selecionaram C=0.1 da meta-RL entre quatro candidatos
+fixos pela regra de um erro-padrão. Acertou **442/900 (49.11%)**, macro-F1
+**49.03%**, abaixo da votação suave: 447/900 (49.67%), macro-F1 49.58%.
+Corrigiu 40 erros e prejudicou 45 acertos; McNemar exato p=0.664645.
+O relatório inclui F1 por classe, matrizes e linhas Excel afetadas. Nenhum
+modelo-base foi reajustado, não houve ajuste pelos rótulos finais e artefatos
+anteriores foram preservados. A comparação permanece exploratória, com
+exposição histórica.
+
+<a id="local-majority-ensemble-test1-comparison"></a>
+
+## Ensemble de maioria local: comparação em teste1
+
+A [comparação de votação suave ponderada](ensemble-soft.md) é um método separado
+congelado: 2,027 linhas reservadas calibram e 1,972 escolhem pesos por macro-F1
+entre 16 candidatos. Obtém 447/900 (49.67%) e macro-F1 49.58%, com SVM 0.75,
+LR 0.00 e NorBERTo 0.25. O relatório inclui matrizes individuais, efeitos da
+calibração e sobreposição herdada entre bases. A
+[comparação direta com a entrega efetiva do EP1](ensemble-soft.md#conferência-contra-a-entrega-efetiva-do-ep1)
+confirma que os 900 rótulos originais coincidem com as previsões salvas NorBERTo.
+McNemar exato bilateral dá p=0.303327: o ganho numérico não é significativo
+a 0.05. A ordem oficial teste2 antes de teste1 não foi estabelecida.
+
+Os presets de maioria usam NorBERTo + SVM + RL, maioria estrita e arbitragem
+RL; os padrões separados de votação suave/stacking agora também avaliam Qwen.
+A [auditoria de isolamento e resultados do conjunto reservado](ensemble-holdout.md)
+confirma que as 3,999 linhas e seus grupos ficaram fora do ajuste dos modelos
+selecionados. NorBERTo acerta 1,812/3,999 (45.31%); RL e o melhor trio,
+1,803/3,999 (45.09%); SVM, 1,792/3,999 (44.81%).
+
+A melhor maioria NorBERTo + SVM + RL usou RL no desempate triplo: **443/900
+(49.22%)**, abaixo de RL isolada com 447/900 (49.67%). Os três usam artefatos
+somente de desenvolvimento, preservando o conjunto reservado. Quinze
+configurações fixas foram comparadas em estudo explicitamente exploratório,
+gerando seis sequências distintas. Veja [resultados e comando de reprodução](ensemble-majority.md)
+e [agregado verificado independentemente](data/ensemble-majority-test1.json).
+
+<a id="selected-norberto-unchanged-ep1-delivery"></a>
+
+## NorBERTo selecionado: entrega original do EP1 sem alterações
+
+O artefato selecionado é `models/norberto/final_model/`, SHA-256
 `d693f6e2995d117ad04a5692817527764fcccee6bfb2dde99120baf9fdd2d385`.
-It retains the original adapter, trained head, tokenizer, base revision,
-512-token head/tail representation, FP32/SDPA, and original settings. Its
-final training used two epochs on 16,093 development rows. No loss correction,
-new adapter training, or convex-head replacement is active.
+Mantém adaptador, cabeça treinada, tokenizador, revisão-base, representação
+início/fim de 512 tokens, FP32/SDPA e parâmetros originais. Seu treino final
+usou duas épocas em 16,093 linhas de desenvolvimento. Nenhuma correção de
+perda, novo treino de adaptador ou substituição por cabeça convexa está ativa.
 
-Restoration was verified by predicting all 900 test1 texts again: every label
-matches the EP1 delivery, with 432 correct (48.00%) and 47.86% macro-F1.
-The maximum probability difference from the original saved CSV is 8.60e-8.
-An independent ZIP/XML reader confirmed all texts, gold labels, row IDs,
-metrics, and the original adapter/tokenizer/configuration identity. Historical
-holdout accuracy remains 45.31%; no new holdout inference was needed.
+A restauração foi verificada predizendo novamente os 900 textos de teste1:
+todos os rótulos coincidem com a entrega EP1, com 432 acertos (48.00%) e
+47.86% de macro-F1. A diferença máxima de probabilidade contra o CSV original
+é 8.60e-8. Um leitor ZIP/XML independente confirmou textos, rótulos, IDs,
+métricas e identidades originais de adaptador/tokenizador/configuração.
+A acurácia histórica no conjunto reservado continua 45.31%; não foi necessária
+nova inferência nele.
 
-The source cleanup retired 34 experimental files, preserving a local source
-snapshot and all previous result/model/cache directories. Test1 commands and
-the ensemble now select the original model explicitly. The available suite
-passed 115 tests; two optional test modules require the unavailable `openai`
-SDK. No model was retrained and no test2 prediction or delivery was generated.
-See the [restoration record](data/norberto-ep1-restoration.json) and
-[current workflow](../guides/norberto-test1.md).
+A limpeza desativou 34 arquivos experimentais, preservando uma cópia local do
+código e todos os diretórios de resultados/modelos/caches. Os comandos de
+teste1 e o ensemble agora selecionam explicitamente o original. A suíte
+disponível passou em 115 testes; dois módulos opcionais exigem o SDK `openai`
+indisponível. Nenhum modelo foi retreinado nem predição/entrega de teste2 gerada.
+Veja o [registro da restauração](data/norberto-ep1-restoration.json) e o
+[fluxo atual](../guides/norberto-test1.md).
 
-## Ensemble defaults: development models with holdout reserved
+<a id="ensemble-defaults-development-models-with-holdout-reserved"></a>
 
-NorBERTo and SVM select the original 16,093-row development artifacts. RL now
-defaults to a development-only bundle under `models/rl-development/`. The user
-completed training: fixed C=0.25, 38 iterations, 25.08 seconds, with 3,999 holdout
-rows excluded. Subsequent verification checked all 16,093 training identities,
-model/source hashes, zero group overlap, default loading, and synthetic
-inference. See the [RL verification](data/rl-development-verification.json).
-The historical 20,092-row RL remains archived in `models/rl/` and is not a
-fallback. The subsequent RL evaluation is recorded below.
+## Padrões do ensemble: modelos de desenvolvimento com conjunto reservado preservado
 
-Both ensemble configurations pin the selected NorBERTo/SVM/RL manifests and
-reject saved predictions from different artifacts. Historical Qwen used a
-16,010/4,082 split; its newly selected package uses the same EP1 16,093/3,999
-split and remains excluded. The user subsequently
-selected NorBERTo + SVM + RL majority voting with RL arbitration as the default. The
-available suite passed 121 tests, including a synthetic logistic fit verifying
-that holdout-only vocabulary is excluded and the exported bundle reloads.
-SVM test1 predictions were regenerated only to record the current runtime:
-all 900 labels match the previous development model. No new scoring, test2
-inference, or remote request occurred.
+NorBERTo e SVM selecionam os artefatos originais de desenvolvimento de 16,093
+linhas. RL agora usa por padrão `models/rl-development/`. O usuário concluiu
+o treino: C=0.25 fixo, 38 iterações, 25.08 segundos, excluindo as 3,999 linhas
+reservadas. A verificação posterior conferiu as 16,093 identidades de treino,
+hashes, ausência de sobreposição de grupos, carregamento padrão e inferência
+sintética. Veja a [verificação da RL](data/rl-development-verification.json).
+A RL histórica de 20,092 linhas fica arquivada em `models/rl/`, sem uso como
+alternativa automática. A avaliação posterior está abaixo.
 
-See the [configuration record](data/ensemble-development-defaults.json) and
-[RL command guide](../../src/rl_classifier/README.md).
+As duas configurações fixam manifestos NorBERTo/SVM/RL e rejeitam previsões de
+artefatos diferentes. O Qwen histórico usou divisão 16,010/4,082; o pacote
+novo selecionado usa EP1 16,093/3,999 e permanece excluído. Depois, o usuário
+selecionou maioria NorBERTo + SVM + RL com arbitragem RL como padrão. A suíte
+disponível passou em 121 testes, incluindo ajuste logístico sintético que
+verifica exclusão de vocabulário exclusivo do conjunto reservado e recarga do
+pacote exportado. Previsões SVM de teste1 foram regeneradas só para registrar
+o ambiente atual: os 900 rótulos coincidem com o modelo de desenvolvimento
+anterior. Não houve nova avaliação, inferência teste2 ou solicitação remota.
 
-## Development-only RL: holdout and test1
+Veja o [registro da configuração](data/ensemble-development-defaults.json) e
+o [guia de comandos da RL](../../src/rl_classifier/README.md).
 
-The saved C=0.25 logistic model was evaluated without refitting or parameter
-selection. Training used 16,093 development rows; all 3,999 holdout rows and
-their similarity components remained outside fitting.
+<a id="development-only-rl-holdout-and-test1"></a>
 
-| Dataset | Correct | Accuracy | Macro-F1 |
+## RL somente de desenvolvimento: conjunto reservado e teste1
+
+O modelo logístico salvo de C=0.25 foi avaliado sem reajuste ou seleção de
+parâmetros. O treino usou 16,093 linhas; as 3,999 reservadas e seus componentes
+de similaridade ficaram fora do ajuste.
+
+| Base | Acertos | Acurácia | Macro-F1 |
 |---|---:|---:|---:|
-| Frozen EP1 holdout | 1,803 / 3,999 | 45.09% | 44.78% |
-| Test1 against the labeled workbook | 447 / 900 | 49.67% | 49.32% |
+| Conjunto reservado congelado do EP1 | 1,803 / 3,999 | 45.09% | 44.78% |
+| Teste1 contra a planilha rotulada | 447 / 900 | 49.67% | 49.32% |
 
-Both datasets' text-only predictions were saved before loading gold for
-scoring. An independent ZIP/XML source reader verified all 4,899 row IDs,
-texts, and labels, manually recomputed the confusion matrices and metrics,
-and reconstructed probabilities from decision scores (maximum error 2.23e-16).
-Every holdout label matches the historical EP1 lexical logistic comparison.
-All model-file hashes remained unchanged. Test1 gains three correct predictions
-over the historical full-corpus RL (444/900); this descriptive difference does
-not establish a general accuracy advantage for less training data.
+As previsões dos textos de ambas as bases foram salvas antes do gabarito.
+Um leitor ZIP/XML independente verificou os 4,899 IDs, textos e rótulos,
+recalculou manualmente matrizes e métricas e reconstruiu probabilidades dos
+escores de decisão (erro máximo 2.23e-16). Cada rótulo reservado coincide com
+a comparação logística lexical histórica do EP1. Todos os hashes permaneceram
+inalterados. Teste1 ganha três acertos frente à RL histórica completa (444/900);
+essa diferença descritiva não estabelece vantagem geral de menos dados de treino.
 
-Raw results, predictions, per-row comparisons, and evaluator/verifier snapshots
-are under `results/rl-development-evaluation-20261105/`. The selected ensemble
-test1 run is now `results/rl-development-test1`, with the development-model
-identity verified. No test2 prediction, remote call, or new training occurred.
-The holdout and test1 have been consulted historically; this remains a
-descriptive evaluation. See the [verified aggregate](data/rl-development-evaluation.json).
+Resultados brutos, previsões, comparações por linha e cópias do avaliador/
+verificador estão em `results/rl-development-evaluation-20261105/`. A execução
+selecionada de teste1 é agora `results/rl-development-test1`, com identidade
+do modelo verificada. Não houve predição teste2, chamada remota ou novo treino.
+Conjunto reservado e teste1 já foram consultados; a avaliação é descritiva.
+Veja o [agregado verificado](data/rl-development-evaluation.json).
 
-## Test1: 900 labeled responses
+<a id="test1-900-labeled-responses"></a>
 
-| Model | Accuracy | Report |
+## Teste1: 900 respostas rotuladas
+
+| Modelo | Acurácia | Relatório |
 |---|---:|---|
-| SVM, full-corpus refit | 50.11% | [Verified full-corpus evaluations](data/full-test1-verification.json) |
-| RL, development-only with holdout reserved | 49.67% | [Verified RL evaluation](data/rl-development-evaluation.json) |
-| Frozen EP1 SVM | 49.44% | [CPU classifier evaluation](lexical-test1.md) |
-| Historical EP1 logistic regression, full corpus | 49.33% | [CPU classifier evaluation](lexical-test1.md) |
-| Original EP1 NorBERTo | 48.00% | Reference documented in the [Qwen comparison](qwen-test1.md) |
-| NorBERTo recipe 3, development-trained | 46.89% | [Saved test1 metrics](data/norberto-recipe3-test1-summary.json) |
-| Qwen3-1.7B QLoRA | 46.67% | [Qwen evaluation](qwen-test1.md) |
-| NorBERTo recipe 3, full-corpus refit | 38.56% | [Verified full-corpus evaluations](data/full-test1-verification.json) |
-| EP1 CV winner candidate-08, development final adapter | 34.78% | [Reloaded adapter evaluation](data/norberto-ep1-candidate08-evaluation.json) |
+| SVM, retreinamento completo | 50.11% | [Avaliações verificadas no corpus completo](data/full-test1-verification.json) |
+| RL, somente desenvolvimento com conjunto reservado preservado | 49.67% | [Avaliação verificada da RL](data/rl-development-evaluation.json) |
+| SVM congelado do EP1 | 49.44% | [Avaliação dos classificadores em CPU](lexical-test1.md) |
+| Regressão logística histórica do EP1, corpus completo | 49.33% | [Avaliação dos classificadores em CPU](lexical-test1.md) |
+| NorBERTo original do EP1 | 48.00% | Referência documentada na [comparação Qwen](qwen-test1.md) |
+| NorBERTo receita 3, treinado no desenvolvimento | 46.89% | [Métricas salvas de teste1](data/norberto-recipe3-test1-summary.json) |
+| Qwen3-1.7B QLoRA | 46.67% | [Avaliação Qwen](qwen-test1.md) |
+| NorBERTo receita 3, retreinamento completo | 38.56% | [Avaliações verificadas no corpus completo](data/full-test1-verification.json) |
+| Vencedor da validação cruzada do EP1 candidate-08, adaptador final de desenvolvimento | 34.78% | [Avaliação do adaptador recarregado](data/norberto-ep1-candidate08-evaluation.json) |
 
-The development-trained recipe-3 row records 422/900 correct predictions (46.8889%, rounded
-to 46.89%), read from the existing completed comparison. Its macro-F1 is
-46.85%. No new inference was performed to assemble this index.
+A linha da receita 3 treinada no desenvolvimento registra 422/900 acertos
+(46.8889%, arredondado a 46.89%), lidos da comparação concluída existente.
+Seu macro-F1 é 46.85%. Nenhuma inferência nova foi feita para montar o índice.
 
-The table lists results documented with versioned aggregates. New NorBERTo
-adapters are distinct models. Their separate test1 prediction/scoring
-commands are in the [test1 guide](../guides/norberto-test1.md); a holdout score
-must not be substituted for a test1 result.
+A tabela lista resultados com agregados versionados. Novos adaptadores NorBERTo
+são modelos distintos. Os comandos separados de predição/avaliação de teste1
+estão no [guia](../guides/norberto-test1.md); resultado do conjunto reservado
+não deve substituir resultado de teste1.
 
-## Historical NorBERTo experiments
+<a id="historical-norberto-experiments"></a>
 
-The following experiments are retained as evidence. Their corrections, refits,
-and logistic-head workflows have been retired and are not used by the selected
-EP1 model.
+## Experimentos históricos do NorBERTo
 
-### Frozen NorBERTo logistic: EP1 cross-validation
+Os experimentos a seguir ficam preservados como evidência. Suas correções,
+retreinamentos e fluxos de cabeça logística foram desativados e não são usados
+pelo modelo EP1 selecionado.
 
-The public encoder was frozen in evaluation mode and its 768-dimensional
-masked-mean document vectors were L2-normalized. Only the logistic head was
-fitted. All 16,093 development rows use **exactly the original NorBERTo EP1
-outer and inner row partitions**; the 3,999 holdout rows were excluded before
-tokenization. This protocol has three outer folds and the first inner holdout
-from five grouped splits, without an outer-training refit.
+<a id="frozen-norberto-logistic-ep1-cross-validation"></a>
 
-| Model on the same development outer folds | Correct / 16,093 | Pooled accuracy | Pooled macro-F1 |
+### NorBERTo congelado com regressão logística: validação cruzada do EP1
+
+O codificador público foi congelado em avaliação, e seus vetores de documentos
+de 768 dimensões, agregados por média mascarada, foram normalizados em L2.
+Só a cabeça logística foi ajustada. As 16,093 linhas usam **exatamente as
+partições internas e externas originais do NorBERTo no EP1**; as 3,999
+reservadas foram excluídas antes da tokenização. O protocolo tem três folds
+externos e o primeiro conjunto interno reservado entre cinco divisões agrupadas,
+sem reajuste no treino externo completo.
+
+| Modelo nos mesmos folds externos de desenvolvimento | Acertos / 16,093 | Acurácia reunida | Macro-F1 reunido |
 |---|---:|---:|---:|
-| Frozen public NorBERTo + logistic regression | 6,850 | 42.57% | 42.20% |
-| Original EP1 NorBERTo LoRA | 6,995 | 43.47% | 43.22% |
-| EP1 lexical logistic, matched inner training rows | 7,078 | 43.98% | 43.51% |
-| EP1 lexical logistic, complete outer training rows | 7,080 | 43.99% | 43.54% |
+| NorBERTo público congelado + regressão logística | 6,850 | 42.57% | 42.20% |
+| NorBERTo LoRA original do EP1 | 6,995 | 43.47% | 43.22% |
+| Logística lexical EP1, mesmas linhas de treino interno | 7,078 | 43.98% | 43.51% |
+| Logística lexical EP1, treino externo completo | 7,080 | 43.99% | 43.54% |
 
-Historical controls reuse the saved EP1 OOF predictions after checking all
-row IDs, labels, groups, and folds. They were not rerun. The new candidate
-loses 145 correct predictions (-0.90 percentage points) relative to LoRA.
-Its descriptive paired similarity-group bootstrap interval for that delta is
-[-1.84, +0.01] points; this does not establish equivalence. The fixed folds and
-historically reused holdout make the experiment exploratory.
+Controles históricos reutilizam previsões OOF salvas após conferir IDs, rótulos,
+grupos e folds. Não foram reexecutados. O novo candidato perde 145 acertos
+(-0.90 pontos percentuais) frente ao LoRA. O intervalo descritivo do bootstrap
+pareado por grupos de similaridade é [-1.84, +0.01] pontos; não estabelece
+equivalência. Folds fixos e conjunto reservado historicamente reutilizado
+tornam o experimento exploratório.
 
-| Fold | Inner-selected C | Outer accuracy | Outer macro-F1 |
+| Fold | C selecionado internamente | Acurácia externa | Macro-F1 externo |
 |---|---:|---:|---:|
 | 1 | 1 | 42.97% | 42.24% |
 | 2 | 10 | 42.81% | 42.64% |
 | 3 | 10 | 41.95% | 41.48% |
 
-All nine prespecified L-BFGS fits converged in 46–372 iterations. The final
-development classifier uses the predeclared median C=10 and converged in
-134 iterations. Outer scores did not select that parameter. The encoder had
-zero trainable parameters, zero optimizer updates, and an identical loaded
-state SHA-256 before and after extraction. This removes encoder optimization
-from this pipeline; it does not guarantee monotonic accuracy with more data.
+Os nove ajustes L-BFGS predefinidos convergiram em 46–372 iterações. O
+classificador final de desenvolvimento usa a mediana predefinida C=10 e
+convergiu em 134. Resultados externos não selecionaram esse parâmetro.
+O codificador tinha zero parâmetros treináveis, zero atualizações e SHA-256
+do estado carregado idêntico antes/depois da extração. Isso remove sua
+otimização do pipeline, sem garantir acurácia monotônica com mais dados.
 
-Extraction encoded 14,469 unique texts in 252.05 seconds, with peak allocated
-VRAM 1,300.62 MiB. Head CV took 34.67 seconds and final fitting 5.38 seconds
-on CPU. The final safe NPZ head and manifest are in
-`results/norberto-frozen-logistic-ep1-20261105/model/`; the original models and
-ensemble configuration were preserved.
+A extração codificou 14,469 textos únicos em 252.05 segundos, com pico de VRAM
+alocada 1,300.62 MiB. A validação cruzada da cabeça levou 34.67 segundos e o
+ajuste final 5.38, em CPU. A cabeça NPZ segura e o manifesto estão em
+`results/norberto-frozen-logistic-ep1-20261105/model/`; modelos originais e
+configuração do ensemble foram preservados.
 
-An independent ZIP/XML reader verified all OOF source texts, labels, row IDs,
-and metrics. Direct reconstruction of probabilities from all three exported
-heads matched saved OOF probabilities exactly. Cold inference, safe reload,
-cache ordering, and the prediction CLI passed on three synthetic responses.
-The subsequent holdout evaluation is recorded below. The new classifier has
-not been scored on test1 or test2.
+Um leitor ZIP/XML independente verificou todos os textos-fonte OOF, rótulos,
+IDs e métricas. A reconstrução direta das probabilidades das três cabeças
+exportadas coincidiu exatamente com as OOF salvas. Inferência sem cache,
+recarga segura, ordem do cache e CLI passaram com três respostas sintéticas.
+A avaliação posterior do conjunto reservado está abaixo. O novo classificador
+não foi avaliado em teste1 ou teste2.
 
-The available regression suite passed 153 tests, including the new pipeline
-checks; two unrelated modules could not be collected because the ROCm image
-lacks the optional `openai` SDK. An existing reference test separately checked
-the historical EP1 test1 predictions; those labels did not enter this model's
-selection, fitting, or evaluation.
+A suíte de regressão disponível passou em 153 testes, incluindo o novo pipeline;
+dois módulos não relacionados não puderam ser coletados por falta do SDK
+opcional `openai` na imagem ROCm. Um teste de referência existente verificou
+separadamente as previsões históricas EP1 de teste1; esses rótulos não entraram
+na seleção, ajuste ou avaliação deste modelo.
 
-See the [technical aggregate](data/norberto-frozen-logistic-ep1.json) and the
-[reproduction guide](../archive/norberto/frozen-logistic.md).
+Veja o [agregado técnico](data/norberto-frozen-logistic-ep1.json) e o
+[guia de reprodução](../archive/norberto/frozen-logistic.md).
 
-### Frozen NorBERTo logistic: unchanged classifier on EP1 holdout
+<a id="frozen-norberto-logistic-unchanged-classifier-on-ep1-holdout"></a>
 
-The saved C=10 development classifier was evaluated on all 3,999 reserved
-holdout rows, without refitting, parameter selection, or adapter loading.
-The 16,093 development rows and 12,956 development similarity components are
-disjoint from the 3,999 holdout rows and 3,281 holdout components. Source and
-split hashes match training. Every prediction was saved before constructing
-gold-bearing records for scoring. Classifier, manifest, and encoder state
-hashes remained unchanged.
+### NorBERTo congelado com regressão logística: classificador inalterado no conjunto reservado do EP1
 
-| Model on the same holdout rows | Correct / 3,999 | Accuracy | Macro-F1 |
+O classificador salvo de desenvolvimento C=10 foi avaliado nas 3,999 linhas
+reservadas, sem reajuste, seleção de parâmetros ou carregamento de adaptador.
+As 16,093 linhas e 12,956 componentes de desenvolvimento são disjuntos das
+3,999 linhas e 3,281 componentes reservados. Hashes de fonte/divisão coincidem
+com o treino. Cada previsão foi salva antes de construir registros rotulados
+para avaliação. Hashes do classificador, manifesto e codificador não mudaram.
+
+| Modelo nas mesmas linhas reservadas | Acertos / 3,999 | Acurácia | Macro-F1 |
 |---|---:|---:|---:|
-| Frozen public NorBERTo + logistic regression | 1,694 | 42.36% | 42.08% |
-| Original EP1 NorBERTo LoRA | 1,812 | 45.31% | 45.31% |
-| EP1 lexical logistic regression | 1,803 | 45.09% | 44.78% |
-| Frozen EP1 lexical SVM | 1,792 | 44.81% | 44.47% |
-| NorBERTo LoRA recipe 3, development-trained | 1,792 | 44.81% | 44.81% |
+| NorBERTo público congelado + regressão logística | 1,694 | 42.36% | 42.08% |
+| NorBERTo LoRA original do EP1 | 1,812 | 45.31% | 45.31% |
+| Regressão logística lexical EP1 | 1,803 | 45.09% | 44.78% |
+| SVM lexical congelado do EP1 | 1,792 | 44.81% | 44.47% |
+| NorBERTo LoRA receita 3, treinado no desenvolvimento | 1,792 | 44.81% | 44.81% |
 
-Historical controls reuse saved predictions after checking all row IDs and
-groups/gold labels, or source text hashes for the recipe-3 JSONL. No baseline
-was retrained or rerun. The new candidate loses 118 correct predictions
-(-2.95 percentage points) to original LoRA; the descriptive paired
-similarity-component bootstrap interval is [-5.14, -1.00] points (2,000 draws,
-seed 42). This historically consulted holdout remains exploratory.
+Controles reutilizam previsões salvas após conferir IDs e grupos/rótulos, ou
+hashes dos textos no JSONL da receita 3. Nenhuma referência foi retreinada
+ou reexecutada. O novo candidato perde 118 acertos (-2.95 pontos percentuais)
+para LoRA original; o intervalo descritivo do bootstrap pareado por componentes
+é [-5.14, -1.00] pontos (2,000 sorteios, semente 42). O conjunto reservado já
+consultado continua exploratório.
 
-Holdout accuracy is 0.20 percentage points below the 42.57% development OOF
-score. That proximity does not establish stability when training size changes:
-the final head was not refitted during this evaluation. The fixed encoder
-avoids adapter optimization, but the representation has lower observed
-classification quality than the controls.
+A acurácia reservada é 0.20 pontos percentuais abaixo dos 42.57% OOF de
+desenvolvimento. Essa proximidade não estabelece estabilidade com outro tamanho
+de treino: a cabeça final não foi reajustada nesta avaliação. O codificador
+fixo evita otimização do adaptador, mas a representação mostra qualidade de
+classificação inferior à dos controles.
 
-The confusion matrix, with true classes in rows and predicted classes in
-columns ordered `c1, c234, c5`, is `[[497,394,366], [396,477,544], [253,352,720]]`.
-Recall is 39.54%, 33.66%, and 54.34%, respectively. Extracting 3,705 unique
-holdout texts took 72.90 seconds with peak allocated VRAM 1,300.62 MiB; the
-complete evaluation took 75.00 seconds, offline. Encoder trainable parameters
-and optimizer updates were both zero.
+A matriz, com classes verdadeiras nas linhas e preditas nas colunas em ordem
+`c1, c234, c5`, é `[[497,394,366], [396,477,544], [253,352,720]]`.
+A revocação é 39.54%, 33.66% e 54.34%, respectivamente. Extrair 3,705 textos
+únicos reservados levou 72.90 segundos, com pico de VRAM alocada 1,300.62 MiB;
+a avaliação completa levou 75.00 segundos, offline. Parâmetros treináveis do
+codificador e atualizações do otimizador foram ambos zero.
 
-An independent ZIP/XML workbook reader verified every source text, gold
-label, row ID, and frozen group. All 3,999 probability vectors were recomputed
-directly from the exported safe NPZ head and saved embeddings, with maximum
-absolute error zero. Manual confusion-matrix, accuracy, F1, recall, and paired
-control counts matched the report. Artifacts are preserved separately in
-`results/norberto-frozen-logistic-holdout-20261105/`; the original training
-manifest remains an immutable record of the earlier development-only run.
-No new official test evaluation or full-corpus fit was performed.
+Um leitor ZIP/XML independente verificou cada texto, rótulo, ID e grupo
+congelado. Os 3,999 vetores de probabilidades foram recalculados diretamente
+da cabeça NPZ segura e dos embeddings salvos, com erro absoluto máximo zero.
+Cálculos manuais de matriz, acurácia, F1, revocação e contagens pareadas
+coincidiram com o relatório. Os artefatos estão separados em
+`results/norberto-frozen-logistic-holdout-20261105/`; o manifesto original é
+registro imutável da execução anterior só de desenvolvimento. Não houve nova
+avaliação oficial nem ajuste completo.
 
-See the [holdout aggregate](data/norberto-frozen-logistic-holdout.json) and
-[reproduction command](../archive/norberto/frozen-logistic.md#holdout-evaluation).
+Veja o [agregado do conjunto reservado](data/norberto-frozen-logistic-holdout.json)
+e o [comando de reprodução](../archive/norberto/frozen-logistic.md#holdout-evaluation).
 
-### EP1 CV winner: candidate-08 reloaded
+<a id="ep1-cv-winner-candidate-08-reloaded"></a>
 
-EP1's saved three-finalist CV ranked `candidate-08` first, with mean accuracy
-43.73% (LoRA rank 16, alpha 32, learning rate 0.0003). At the user's request,
-the preserved final adapter was reloaded and evaluated on holdout and test1.
-This is the adapter trained on all 16,093 development rows for three epochs,
-selected by the median inner-selected epochs `2, 3, 3`; it is not a fold
-checkpoint. No retraining, parameter search, or model promotion occurred.
+### Vencedor da validação cruzada do EP1: candidate-08 recarregado
 
-| Evaluation | Candidate-08 correct | Candidate-08 accuracy | Candidate-08 macro-F1 | Original EP1 accuracy |
+A validação salva dos três finalistas classificou `candidate-08` primeiro,
+com acurácia média 43.73% (LoRA posto 16, alpha 32, taxa 0.0003). A pedido do
+usuário, o adaptador final preservado foi recarregado e avaliado no conjunto
+reservado e teste1. É o adaptador treinado nas 16,093 linhas por três épocas,
+selecionadas pela mediana interna `2, 3, 3`; não é checkpoint de fold.
+Não houve retreinamento, busca ou promoção.
+
+| Avaliação | Acertos candidate-08 | Acurácia candidate-08 | Macro-F1 candidate-08 | Acurácia original EP1 |
 |---|---:|---:|---:|---:|
-| Frozen holdout, 3,999 rows | 1,439 | 35.98% | 35.31% | 45.31% (1,812 correct) |
-| Test1, 900 rows | 313 | 34.78% | 34.30% | 48.00% (432 correct) |
+| Conjunto reservado congelado, 3,999 linhas | 1,439 | 35.98% | 35.31% | 45.31% (1,812 acertos) |
+| Teste1, 900 linhas | 313 | 34.78% | 34.30% | 48.00% (432 acertos) |
 
-Test1 was scored against `data/test1-rotulado-para-teste-estatistico.xlsx`,
-after checking every row ID and response text against the unlabeled input.
-All predictions for both datasets were saved before constructing gold-bearing
-records. The final adapter files and complete loaded model state were
-unchanged, with zero trainable parameters, parameter gradients, or optimizer
-updates during inference. Training and holdout similarity groups were disjoint.
+Teste1 foi avaliado contra `data/test1-rotulado-para-teste-estatistico.xlsx`
+após conferir IDs e textos com a entrada não rotulada. Todas as previsões de
+ambas as bases foram salvas antes dos registros com gabarito. Arquivos do
+adaptador final e estado completo carregado permaneceram inalterados, com
+zero parâmetros treináveis, gradientes ou atualizações na inferência.
+Grupos de similaridade de treino e conjunto reservado eram disjuntos.
 
-Independent ZIP/XML source parsing, manual metrics, and probability
-reconstruction from saved logits verified all 4,899 rows. Every holdout
-prediction matched the historical candidate-08 evaluation (maximum probability
-difference 2.97e-8). The original delivered-model controls were recomputed
-from their saved predictions. Candidate-08 loses 373 correct holdout predictions
-(-9.33 percentage points) and 119 test1 predictions (-13.22 points) relative
-to that original model. Its CV advantage did not generalize to the final
-adapter. The historically consulted holdout remains exploratory.
+Leitura ZIP/XML independente, métricas manuais e reconstrução dos logits
+verificaram as 4,899 linhas. Cada previsão reservada coincidiu com a avaliação
+histórica candidate-08 (diferença máxima de probabilidade 2.97e-8). Controles
+do modelo entregue foram recalculados das previsões salvas. Candidate-08 perde
+373 acertos reservados (-9.33 pontos percentuais) e 119 em teste1 (-13.22 pontos)
+frente ao original. A vantagem na validação cruzada não generalizou ao
+adaptador final. O conjunto reservado já consultado continua exploratório.
 
-The run took 200.64 seconds offline, with 152.12 seconds for holdout and 33.74
-seconds for test1, including dataset tokenization. Peak allocated GPU memory
-was 954.91 MiB. Six relevant regression checks passed. Predictions, metrics,
-and per-row gold comparisons are under
+A execução levou 200.64 segundos offline, sendo 152.12 no conjunto reservado
+e 33.74 em teste1, incluindo tokenização. O pico de memória alocada na GPU
+foi 954.91 MiB. Seis verificações de regressão relevantes passaram. Previsões,
+métricas e comparações com gabarito por linha estão em
 `results/norberto-ep1-candidate08-evaluation-20261105/evaluation/`.
 
-See the [verified aggregate](data/norberto-ep1-candidate08-evaluation.json) and
-[reproduction guide](../archive/norberto/candidate08-evaluation.md).
+Veja o [agregado verificado](data/norberto-ep1-candidate08-evaluation.json) e
+o [guia de reprodução](../archive/norberto/candidate08-evaluation.md).
 
-## Full-corpus refits: verified test1 results
+<a id="full-corpus-refits-verified-test1-results"></a>
 
-Both models were trained on all 20,092 training rows. Metrics below were
-independently recomputed on CPU from their existing saved predictions, with
-all 900 gold/source response texts and row IDs aligned. Artifact, training,
-prediction, and workbook hashes were checked. No model inference or retraining
-was performed during verification.
+## Retreinamentos completos: resultados verificados de teste1
 
-| Model | Correct | Accuracy | Macro-F1 | Macro-precision | Macro-recall |
+Ambos os modelos treinaram nas 20,092 linhas. As métricas abaixo foram
+recalculadas independentemente em CPU das previsões existentes, alinhando
+os 900 textos/IDs da fonte e do gabarito. Hashes de artefatos, treino, previsões
+e planilhas foram conferidos. A verificação não executou inferência nem
+retreinamento.
+
+| Modelo | Acertos | Acurácia | Macro-F1 | Precisão macro | Revocação macro |
 |---|---:|---:|---:|---:|---:|
-| SVM, fixed C=0.05 | 451/900 | 50.11% | 49.87% | 49.93% | 50.11% |
-| NorBERTo recipe 3 | 347/900 | 38.56% | 33.29% | 40.83% | 38.56% |
+| SVM, C=0.05 fixo | 451/900 | 50.11% | 49.87% | 49.93% | 50.11% |
+| NorBERTo receita 3 | 347/900 | 38.56% | 33.29% | 40.83% | 38.56% |
 
-The full SVM gains six correct predictions (+0.67 percentage points) relative
-to the development-trained frozen SVM (445/900). This descriptive difference
-does not establish statistical significance.
+O SVM completo ganha seis acertos (+0.67 pontos percentuais) frente ao congelado
+de desenvolvimento (445/900). Essa diferença descritiva não estabelece
+significância estatística.
 
-The full NorBERTo loses 75 correct predictions (-8.33 percentage points)
-relative to recipe 3 trained on the development partition (422/900). Its
-prediction counts are `c1=216`, `c234=62`, and `c5=622`; gold has 300 rows per
-class. Recall is 30.33% for c1, 9.00% for c234, and 76.33% for c5.
+O NorBERTo completo perde 75 acertos (-8.33 pontos percentuais) frente à receita
+3 treinada no desenvolvimento (422/900). As contagens preditas são `c1=216`,
+`c234=62` e `c5=622`; o gabarito tem 300 por classe. Revocação: 30.33% em c1,
+9.00% em c234 e 76.33% em c5.
 
-NorBERTo reached all 2,512 updates and two epochs in 40.20 minutes without a
-budget stop. Completion did not produce improved classification quality.
-The largest logged pre-clipping gradient norm was 1,196.86 at update 1,120,
-compared with 22.58 in the development run; both use optimizer scale 4.
-This spike and the prediction imbalance are consistent with unstable
-optimization, but these checks do not establish its cause. No training
-configuration or ensemble membership was changed based on test1 labels.
+NorBERTo concluiu 2,512 atualizações e duas épocas em 40.20 minutos sem parar
+pelo orçamento. A conclusão não melhorou a classificação. A maior norma
+registrada antes da limitação foi 1,196.86 em 1,120, contra 22.58 no
+desenvolvimento; ambos usam escala do otimizador 4. O pico e o desequilíbrio
+das previsões são compatíveis com otimização instável, sem estabelecer sua
+causa. Nenhuma configuração de treino ou composição de ensemble mudou pelos
+rótulos de teste1.
 
-The [verification aggregate](data/full-test1-verification.json) includes full
-metrics, confusion matrices, per-class scores, and model identities.
+O [agregado da verificação](data/full-test1-verification.json) inclui métricas
+completas, matrizes, resultados por classe e identidades dos modelos.
 
-### Training-scale audit: recipe 3
+<a id="training-scale-audit-recipe-3"></a>
 
-This retired experiment is preserved in the
-[historical audit](../archive/norberto/recipe3-scale-audit.md). The measured
-300-row training-sample accuracy of 52% was not held-out validation accuracy.
-The original EP1 delivery model is selected; none of these training changes
-are active.
+### Auditoria da escala de treinamento: receita 3
 
-## NorBERTo frozen holdout: 3,999 responses
+Este experimento desativado está na [auditoria histórica](../archive/norberto/recipe3-scale-audit.md).
+A acurácia de 52% na amostra de 300 linhas de treino não era validação em
+conjunto reservado. O modelo original da entrega do EP1 está selecionado;
+nenhuma dessas mudanças de treino está ativa.
 
-| Adapter | Accuracy | Macro-F1 | Report |
+<a id="norberto-frozen-holdout-3999-responses"></a>
+
+## Conjunto reservado congelado do NorBERTo: 3,999 respostas
+
+| Adaptador | Acurácia | Macro-F1 | Relatório |
 |---|---:|---:|---|
-| Original EP1 | 45.31% | 45.31% | Reference in the recipe-3 comparison |
-| Recipe 3, optimizer-compatible | 44.81% | 44.81% | [Completed validation](norberto-recipe3-holdout.md) |
-| Recipe 2, mean-loss gradient units | 35.66% | 35.59% | [Historical validation](../archive/norberto/recipe2-development-holdout.md) |
+| EP1 original | 45.31% | 45.31% | Referência na comparação da receita 3 |
+| Receita 3, compatível com o otimizador | 44.81% | 44.81% | [Validação concluída](norberto-recipe3-holdout.md) |
+| Receita 2, gradientes em unidades da perda média | 35.66% | 35.59% | [Validação histórica](../archive/norberto/recipe2-development-holdout.md) |
 
-Full-corpus adapters include the former holdout in training and cannot use
-these rows as unseen validation. Older full-corpus test1 evaluations and
-training investigations are listed in the [archive](../archive/README.md).
+Adaptadores do corpus completo incluem o antigo conjunto reservado no treino
+e não podem usar essas linhas como validação inédita. Avaliações antigas de
+teste1 e investigações de treino estão no [arquivo](../archive/README.md).
 
-## Technical aggregates
+<a id="technical-aggregates"></a>
 
-[Dataset overlap audit](dataset-overlap.md) verifies the reused training corpus,
-test1 identity, and exact/normalized text overlap across training and both tests.
+## Agregados técnicos
 
-JSON files in [`data/`](data/) contain the recorded metrics, hashes, execution
-checks, and paired comparisons. They retain their original filenames and bytes.
-Each detailed report links its own aggregate. Raw predictions, checkpoints,
-and caches are local run artifacts and are not duplicated here.
+A [auditoria de sobreposição](dataset-overlap.md) verifica o corpus reutilizado,
+a identidade de teste1 e a sobreposição exata/normalizada entre treino e ambos
+os testes.
+
+Os JSON em [`data/`](data/) contêm métricas, hashes, verificações de execução
+e comparações pareadas registrados. Mantêm nomes e bytes originais. Cada
+relatório detalhado vincula seu agregado. Previsões brutas, checkpoints e
+caches são artefatos locais de execução e não são duplicados aqui.
