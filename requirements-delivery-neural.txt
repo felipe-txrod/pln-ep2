@@ -1,0 +1,8 @@
+# Use setup-local.sh --with-neural after providing a compatible PyTorch build.
+-c requirements-delivery-torch.txt
+transformers==4.57.1
+peft==0.17.1
+accelerate==1.10.1
+tokenizers==0.22.2
+huggingface-hub==0.36.2
+safetensors==0.8.0

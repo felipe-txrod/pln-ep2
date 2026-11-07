@@ -1,0 +1,2 @@
+# Minimal delivery dependencies; neural libraries and PyTorch are opt-in.
+-r requirements-lexical.txt

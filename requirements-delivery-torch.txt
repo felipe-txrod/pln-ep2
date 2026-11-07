@@ -1,0 +1,2 @@
+# Constraint only: the setup script installs a backend only when requested.
+torch==2.8.0
