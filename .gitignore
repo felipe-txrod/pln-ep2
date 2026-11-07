@@ -1,23 +1,32 @@
-.venv/
-.venv-qwen/
-.venv-lexical/
+# Local Python environments and caches.
+.venv*/
 __pycache__/
+*.py[cod]
 *.egg-info/
 .pytest_cache/
 .cache/
+
+# Secrets and local agent instructions.
 .env
 .env.*
 !.env.example
-results/*
-!results/README.md
-deliveries/
-artifacts/norberto-ep1/
-artifacts/svm-ep1/
-artifacts/rl-ep1/
-models/*/base_model/*.safetensors
-models/*/base_model/*.bin
-models/**/.freeze-*
-models/**/.base-download-*
 .agents/
 .codex/
 AGENTS.md
+
+# Raw runs, temporary exports and generated reports.
+/results/*
+!/results/README.md
+/output/
+*.delivery.lock
+/deliveries/*
+!/deliveries/test2-soft-voting.xlsx
+
+# Local EP1 copies and public base weights; keep trained final artifacts.
+/artifacts/norberto-ep1/
+/artifacts/svm-ep1/
+/artifacts/rl-ep1/
+/models/**/base_model/**/*.safetensors
+/models/**/base_model/**/*.bin
+/models/**/.freeze-*
+/models/**/.base-download-*
