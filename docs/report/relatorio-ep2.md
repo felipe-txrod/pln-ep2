@@ -164,6 +164,49 @@ A tabela resume os principais parâmetros investigados no EP2. Para o SVM, os de
 
 Os parâmetros do Qwen descritos na seção 4.3 constituem a configuração treinada, sem alegação de uma busca exaustiva sobre todos eles. De modo semelhante, `C=0.25` da RL foi mantido da referência de desenvolvimento; não foi escolhido com os rótulos de Teste1.
 
+A otimização final do SVM concluiu duas fases de validação cruzada agrupada: 96 configurações em três folds na fase A e 20 configurações em cinco folds na fase B. A segunda fase refinou duas receitas de palavras + `char_wb`: a sublinear original e uma binária. Os planos e resultados estão em `results/svm-final-budgeted-20261106/phase-a/` e `phase-b/`, com [agregados da fase A](../results/data/svm-budgeted-phase-a.json) e [da fase B](../results/data/svm-budgeted-phase-b.json). A tabela apresenta os valores efetivamente avaliados, respeitando as receitas fracionárias, sem implicar um produto cartesiano entre todas as opções.
+
+| Parâmetro do SVM / TF-IDF | Fase A | Fase B |
+|---|---|---|
+| Representação | Palavras, `char`, `char_wb`, palavras + `char_wb` | Palavras + `char_wb` |
+| Regularização `C` | {0.005; 0.05; 0.5} | {0.0158113883008419; 0.05; 0.158113883008419} |
+| `class_weight` | {`None`; `balanced`} | {`None`; `balanced`} |
+| Perda `loss` | `squared_hinge` | {`squared_hinge`; `hinge`} |
+| `ngram_range` de palavras | {(1,1); (1,2); (1,3)} | (1,2) |
+| `ngram_range` de caracteres | {(2,4); (3,5); (3,6)} | {(3,5); (3,6)} |
+| `min_df` de palavras | {1; 2; 5} | {2; 5} |
+| `min_df` de caracteres | {2; 3} | 3 |
+| `max_df` de palavras | {0.98; 1.0} | 0.98 |
+| `max_df` de caracteres | {0.95; 0.98; 1.0} | {0.95; 1.0} |
+| Pares (`binary`, `sublinear_tf`) dos ramos | {(`False`, `True`); (`False`, `False`); (`True`, `False`)} | {(`False`, `True`); (`True`, `False`)} |
+| Normalização `norm` | {`l1`; `l2`} | `l2` |
+| Peso do ramo de caracteres, com peso de palavras fixo em 1 | 1.0 | {0.5; 1.0; 2.0} |
+| `max_features` (fixo por ramo) | Palavras: 60.000; caracteres: 50.000 | Palavras: 60.000; caracteres: 50.000 |
+
+Nas duas fases, `penalty='l2'`, `tol=1e-4` e `max_iter=20000` permaneceram fixos; `dual='auto'` foi usado com `squared_hinge` e `dual=True` com `hinge`. As sementes foram 42 na fase A e 143 na fase B; o reajuste final da configuração selecionada usou semente 42. Esses controles não foram objeto de busca.
+
+**Melhores valores encontrados e configuração mantida.** A maior média de F1-macro da fase B foi 44,1344%, mas a regra predefinida de um erro-padrão selecionou o candidato `42c22ab6e0398e33b3ea`, com média de 43,8293%, dentro do limiar de 43,7369% e com menos atributos. A tabela distingue o máximo observado, a configuração selecionada para o novo SVM e a configuração original efetivamente mantida na entrega, conforme o [registro da otimização final](../results/data/svm-final-optimization.json).
+
+| Parâmetro | Maior média na fase B | Selecionado pela regra de um erro-padrão | Original mantido |
+|---|---|---|---|
+| Representação | Palavras + `char_wb` | Palavras + `char_wb` | Palavras + `char_wb` |
+| `C` | 0.05 | 0.05 | 0.05 |
+| `class_weight` | `balanced` | `None` | `None` |
+| `loss` | `squared_hinge` | `squared_hinge` | `squared_hinge` |
+| `ngram_range` de palavras | (1,2) | (1,2) | (1,2) |
+| `ngram_range` de caracteres | (3,5) | (3,6) | (3,5) |
+| `min_df` de palavras | 2 | 5 | 2 |
+| `min_df` de caracteres | 3 | 3 | 3 |
+| `max_df` de palavras | 0.98 | 0.98 | 0.98 |
+| `max_df` de caracteres | 1.0 | 0.95 | 1.0 |
+| `binary` (ambos os ramos) | `False` | `True` | `False` |
+| `sublinear_tf` (ambos os ramos) | `True` | `False` | `True` |
+| `norm` (ambos os ramos) | `l2` | `l2` | `l2` |
+| Peso de palavras / caracteres | 1.0 / 0.5 | 1.0 / 1.0 | 1.0 / 1.0 |
+| `max_features` de palavras / caracteres | 60.000 / 50.000 | 60.000 / 50.000 | 60.000 / 50.000 |
+
+O novo SVM não foi adotado porque seu ensemble obteve apenas +0,0164 pp de F1-macro na meta-validação, melhorou em dois dos cinco folds e apresentou intervalo pareado de 95% que inclui zero, falhando nos critérios predefinidos de substituição. A decisão, congelada antes de Teste1, manteve o SVM original com peso 0,75 e o NorBERTo original com peso 0,25.
+
 ## 6. Método final e procedimento de reprodução experimental
 
 ### 6.1. Calibração e composição
