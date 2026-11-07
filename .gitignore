@@ -20,7 +20,9 @@ AGENTS.md
 /output/
 *.delivery.lock
 /deliveries/*
-!/deliveries/test2-soft-voting.xlsx
+!/deliveries/Grupo 3 - test2.xlsx
+!/deliveries/Grupo 3 - Relatório EP2.pdf
+!/deliveries/Grupo 3 - Slides EP2.pdf
 
 # Local EP1 copies and public base weights; keep trained final artifacts.
 /artifacts/norberto-ep1/
